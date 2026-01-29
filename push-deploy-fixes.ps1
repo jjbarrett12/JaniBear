@@ -18,7 +18,7 @@ if (-not $status) {
 }
 
 Write-Host "Committing..."
-git commit -m "Fix Vercel 404 NOT_FOUND: manifest icons, sw.js in public, /contact page, middleware allowlist, auth callback validation"
+git commit -m "Fix Vercel 404: remove vercel.json, middleware only for /app/*, fail-safe middleware"
 if ($LASTEXITCODE -ne 0) { exit 1 }
 
 Write-Host "Pushing to origin main..."

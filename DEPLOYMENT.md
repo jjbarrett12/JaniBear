@@ -43,9 +43,14 @@ All migrations should be run in production Supabase:
    vercel
    ```
 
-2. **Add Environment Variables**
-   - Go to Project Settings → Environment Variables
-   - Add all required variables
+2. **Add Environment Variables** (required to avoid 404 / NOT_FOUND)
+   - Go to **Vercel Dashboard → Your Project → Settings → Environment Variables**
+   - Add these for **Production**, **Preview**, and **Development** (or at least Production):
+   - `NEXT_PUBLIC_SUPABASE_URL` = `https://YOUR-PROJECT.supabase.co` (no trailing slash)
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY` = your project’s anon/public key from Supabase
+   - (Optional) `NEXT_PUBLIC_APP_URL` = your app URL, e.g. `https://your-app.vercel.app` (no trailing slash)
+   - Add Stripe and other variables from the Pre-Deployment Checklist above.
+   - **Redeploy** after adding or changing env vars (Deployments → ⋮ → Redeploy).
 
 3. **Deploy**
    ```bash
@@ -138,6 +143,24 @@ All migrations should be run in production Supabase:
 - Verify environment variables
 - Check Supabase connection
 - Review server logs
+
+### 404 NOT_FOUND on Vercel
+1. **Check which URL 404s**  
+   Try `https://your-app.vercel.app/api/health` — if it returns `{"ok":true,"env":true}`, the app is running and the 404 is for a specific page; if it also 404s, the deployment or routing is wrong.
+
+2. **Vercel project settings**
+   - **Root Directory**: If the repo has JaniBear in a subfolder, set Root Directory to that folder (e.g. `JaniBear`).
+   - **Framework Preset**: Should be "Next.js" (auto-detected from `package.json`).
+   - **Build Command**: `npm run build` (or leave default).
+   - **Output Directory**: leave default (Vercel uses Next.js output).
+
+3. **Environment variables**
+   - In Vercel: Settings → Environment Variables.
+   - Add `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` for Production, Preview, and Development.
+   - Redeploy after changing env vars (Deployments → ⋮ → Redeploy).
+
+4. **Redeploy**
+   - After changing env or settings, trigger a new deployment (push a commit or Redeploy from the dashboard).
 
 ### Performance Issues
 - Enable Next.js caching

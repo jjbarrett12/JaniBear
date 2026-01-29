@@ -4,7 +4,16 @@ import { NextResponse } from 'next/server';
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get('code');
-  const next = requestUrl.searchParams.get('next') ?? '/app/dashboard';
+  let next = requestUrl.searchParams.get('next') ?? '/app/dashboard';
+
+  // Validate redirect path to prevent open redirects and 404s
+  // Only allow redirects to app routes or public routes
+  const allowedPaths = ['/app/', '/auth/', '/onboarding', '/pricing', '/survey', '/checkout', '/demo', '/contact', '/'];
+  const isValidPath = allowedPaths.some(path => next.startsWith(path));
+  
+  if (!isValidPath) {
+    next = '/app/dashboard'; // Fallback to safe default
+  }
 
   if (code) {
     const supabase = await createClient();

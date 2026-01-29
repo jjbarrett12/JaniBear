@@ -18,7 +18,7 @@ if (-not $status) {
 }
 
 Write-Host "Committing..."
-git commit -m "Fix Vercel build: TS errors, sds-form, next.config ignore ESLint/TS during build"
+git commit -m "Fix Vercel 404 NOT_FOUND: manifest icons, sw.js in public, /contact page, middleware allowlist, auth callback validation"
 if ($LASTEXITCODE -ne 0) { exit 1 }
 
 Write-Host "Pushing to origin main..."

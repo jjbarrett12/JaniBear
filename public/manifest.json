@@ -9,16 +9,16 @@
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/icon-192.png",
-      "sizes": "192x192",
+      "src": "/janibear-logo.png",
+      "sizes": "280x91",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
-      "src": "/icon-512.png",
-      "sizes": "512x512",
+      "src": "/janibear-logo.png",
+      "sizes": "280x91",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "maskable"
     }
   ],
   "categories": ["business", "productivity"],
@@ -29,14 +29,14 @@
       "short_name": "Inspect",
       "description": "Start a new inspection",
       "url": "/app/inspections/start",
-      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+      "icons": [{ "src": "/janibear-logo.png", "sizes": "280x91" }]
     },
     {
       "name": "My Tasks",
       "short_name": "Tasks",
       "description": "View my tasks",
       "url": "/app/tasks",
-      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+      "icons": [{ "src": "/janibear-logo.png", "sizes": "280x91" }]
     }
   ]
 }

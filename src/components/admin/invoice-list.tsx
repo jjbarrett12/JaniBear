@@ -6,7 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, Calendar, DollarSign, CheckCircle, XCircle, Clock } from 'lucide-react';
+import { Search, Calendar, DollarSign, CheckCircle, XCircle, Clock, FileText } from 'lucide-react';
 import { formatDate, formatCurrency } from '@/lib/utils';
 
 interface Invoice {
@@ -113,7 +113,7 @@ export function InvoiceList({ invoices: initialInvoices }: InvoiceListProps) {
       {filteredInvoices.length === 0 ? (
         <Card>
           <CardContent className="p-12 text-center">
-            <Receipt className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+            <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
             <p className="text-gray-600">No invoices found</p>
           </CardContent>
         </Card>

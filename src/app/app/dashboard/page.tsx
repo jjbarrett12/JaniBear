@@ -73,17 +73,18 @@ export default async function DashboardPage() {
     : null;
 
   // Get recent activity
-  const activities = [];
-  
+  type ActivityItem = { id: string; type: 'inspection' | 'issue'; action: string; description: string; timestamp: string; href: string; status: string };
+  const activities: ActivityItem[] = [];
+
   // Recent inspections
   if (recentInspections) {
-    recentInspections.forEach((insp: any) => {
+    recentInspections.forEach((insp: { id: string; locations?: { name?: string }; completed_at?: string; created_at?: string; total_score?: number | null }) => {
       activities.push({
         id: insp.id,
         type: 'inspection' as const,
         action: 'Inspection completed',
         description: `${insp.locations?.name || 'Unknown Location'}`,
-        timestamp: insp.completed_at || insp.created_at,
+        timestamp: insp.completed_at || insp.created_at || '',
         href: `/app/inspections/${insp.id}`,
         status: insp.total_score !== null ? 'completed' : 'pending',
       });
@@ -104,10 +105,10 @@ export default async function DashboardPage() {
         id: issue.id,
         type: 'issue' as const,
         action: 'Issue created',
-        description: issue.title,
-        timestamp: issue.created_at,
+        description: issue.title ?? '',
+        timestamp: issue.created_at ?? '',
         href: `/app/issues/${issue.id}`,
-        status: issue.status,
+        status: issue.status ?? 'pending',
       });
     });
   }

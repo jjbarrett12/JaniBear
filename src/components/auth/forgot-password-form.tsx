@@ -1,0 +1,110 @@
+'use client';
+
+import { useState } from 'react';
+import { createClient } from '@/lib/supabase/client';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Card, CardContent } from '@/components/ui/card';
+import Link from 'next/link';
+import { CheckCircle2 } from 'lucide-react';
+
+export function ForgotPasswordForm() {
+  const [email, setEmail] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError(null);
+    setSuccess(false);
+
+    const supabase = createClient();
+    const redirectBase = (typeof window !== 'undefined' && process.env.NEXT_PUBLIC_APP_URL)
+      ? process.env.NEXT_PUBLIC_APP_URL.replace(/\/$/, '')
+      : (typeof window !== 'undefined' ? window.location.origin : '');
+    
+    const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${redirectBase}/auth/reset-password`,
+    });
+    
+    if (resetError) {
+      setError(resetError.message);
+    } else {
+      setSuccess(true);
+    }
+    
+    setIsLoading(false);
+  };
+
+  if (success) {
+    return (
+      <Card className="shadow-xl border-0">
+        <CardContent className="p-6 md:p-8">
+          <div className="text-center space-y-4">
+            <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
+              <CheckCircle2 className="h-8 w-8 text-green-600" />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900">Check Your Email</h2>
+            <p className="text-gray-600">
+              We've sent a password reset link to <strong>{email}</strong>
+            </p>
+            <p className="text-sm text-gray-500">
+              Click the link in the email to reset your password. The link will expire in 1 hour.
+            </p>
+            <div className="pt-4">
+              <Link href="/auth/login">
+                <Button variant="outline">Back to Sign In</Button>
+              </Link>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <Card className="shadow-xl border-0">
+      <CardContent className="p-6 md:p-8">
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div className="space-y-2">
+            <Label htmlFor="email" className="text-sm font-semibold">Email Address</Label>
+            <Input
+              id="email"
+              type="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              disabled={isLoading}
+              className="h-12 text-base"
+            />
+          </div>
+          
+          {error && (
+            <div className="text-sm text-destructive bg-destructive/10 p-4 rounded-lg border border-destructive/20">
+              {error}
+            </div>
+          )}
+          
+          <Button 
+            type="submit" 
+            className="w-full h-12 text-base font-semibold" 
+            disabled={isLoading}
+            size="lg"
+          >
+            {isLoading ? 'Sending...' : 'Send Reset Link'}
+          </Button>
+          
+          <div className="text-center pt-2">
+            <Link href="/auth/login" className="text-sm text-primary hover:underline font-medium">
+              Back to Sign In
+            </Link>
+          </div>
+        </form>
+      </CardContent>
+    </Card>
+  );
+}

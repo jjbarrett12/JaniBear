@@ -4,7 +4,19 @@ Use this folder when git is broken or you need to push changes so Vercel deploys
 
 ---
 
-## Quick: Push changes and deploy
+## Easiest: Double-click to deploy (same as Witness)
+
+In the **JaniBear folder** (one level up from this folder), double-click:
+
+- **deploy.bat** — deploys to Vercel (same as Witness). No git, just deploy.
+- **fix-git-and-deploy.bat** — sets git author, amends last commit, then deploys to Vercel.
+- **update-janibear-com.bat** — push to GitHub so janibear.com updates (recommended for live site).
+
+See **DEPLOY-STEPS.md** in the JaniBear folder for full steps.
+
+---
+
+## Push changes and deploy (GitHub → Vercel, updates janibear.com)
 
 1. Open PowerShell in the **JaniBear** folder (not inside this folder).
 2. Run:

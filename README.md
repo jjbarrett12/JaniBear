@@ -2,6 +2,8 @@
 
 A comprehensive, mobile-first janitorial quality inspection and management platform built with Next.js 14, TypeScript, TailwindCSS, and Supabase.
 
+<!-- Trigger Vercel deploy -->
+
 ## 🚀 Features
 
 ### Core Functionality

@@ -8,14 +8,14 @@ export default function PricingPage() {
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100">
       <nav className="border-b border-zinc-800/80 bg-zinc-950/80 backdrop-blur-xl sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block">
+        <div className="container mx-auto px-4 py-6 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2 bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block" style={{ minHeight: 140 }}>
             <Image
               src="/janibear-logo.png"
               alt="Janibear"
-              width={280}
-              height={91}
-              className="h-14 md:h-20 w-auto object-contain bg-transparent"
+              width={560}
+              height={182}
+              className="!h-[140px] md:!h-[200px] w-auto !max-h-none object-contain bg-transparent"
               unoptimized
             />
           </Link>

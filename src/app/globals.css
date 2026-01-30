@@ -161,3 +161,15 @@
     animation: gradient-shift 3s ease infinite;
   }
 }
+
+/* Force header logo size (marketing nav) */
+nav img[alt="Janibear"] {
+  height: 140px !important;
+  width: auto !important;
+  max-height: none !important;
+}
+@media (min-width: 768px) {
+  nav img[alt="Janibear"] {
+    height: 200px !important;
+  }
+}

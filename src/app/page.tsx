@@ -9,8 +9,6 @@ import {
   Camera,
   CheckCircle2,
   Send,
-  Layers,
-  Bath,
   Sparkles,
   FileText,
   Users,
@@ -27,6 +25,16 @@ import {
   Package,
   FileSpreadsheet,
   Plus,
+  Bot,
+  TrendingUp,
+  Mail,
+  Calendar,
+  BarChart3,
+  DollarSign,
+  MessageSquare,
+  Repeat,
+  Brain,
+  Wand2,
 } from 'lucide-react';
 
 export default function Home() {
@@ -40,14 +48,14 @@ export default function Home() {
     <div className="min-h-screen bg-zinc-950 text-zinc-100">
       {/* Nav */}
       <nav className="border-b border-zinc-800/80 bg-zinc-950/80 backdrop-blur-xl sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block">
+        <div className="container mx-auto px-4 py-6 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2 bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block" style={{ minHeight: 140 }}>
             <Image
               src="/janibear-logo.png"
               alt="Janibear"
-              width={280}
-              height={91}
-              className="h-14 md:h-20 w-auto object-contain bg-transparent"
+              width={560}
+              height={182}
+              className="!h-[140px] md:!h-[200px] w-auto !max-h-none object-contain bg-transparent"
               priority
               unoptimized
             />
@@ -82,29 +90,29 @@ export default function Home() {
           <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-cyan-500/5 rounded-full blur-3xl" />
         </div>
 
-        <div className="relative max-w-4xl mx-auto text-center">
+        <div className="relative max-w-5xl mx-auto text-center">
           <div
             className={`inline-flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-800/80 text-zinc-300 text-sm font-medium mb-6 transition-all duration-500 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'}`}
           >
-            <Camera className="h-4 w-4 text-orange-400" />
-            <span>Built for janitorial sales teams</span>
+            <Bot className="h-4 w-4 text-orange-400" />
+            <span>AI-Powered Bidding & Proposals for Janitorial Companies</span>
           </div>
 
           <h1
-            className={`text-4xl md:text-6xl font-bold text-white mb-6 leading-tight tracking-tight transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            className={`text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight tracking-tight transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
           >
-            Walk the building.
+            From walkthrough to proposal
             <br />
-            <span className="bg-gradient-to-r from-orange-400 to-orange-500 bg-clip-text text-transparent">
-              Janibear writes the proposal.
+            <span className="bg-gradient-to-r from-orange-400 via-orange-500 to-cyan-400 bg-clip-text text-transparent">
+              —automatically.
             </span>
           </h1>
 
           <p
-            className={`text-lg md:text-xl text-zinc-400 mb-8 max-w-2xl mx-auto leading-relaxed transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            className={`text-lg md:text-xl text-zinc-400 mb-8 max-w-3xl mx-auto leading-relaxed transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '100ms' }}
           >
-            Use your phone camera to capture flooring, square footage, and fixture counts. Janibear instantly generates a professional cleaning proposal with scope, frequencies, and pricing.
+            Jani-Bear transforms your building walkthrough into a professional cleaning proposal with detailed scope, service frequencies, and accurate pricing.
           </p>
 
           <div
@@ -117,87 +125,88 @@ export default function Home() {
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
+            <Link href="/pricing">
+              <Button size="lg" variant="outline" className="text-lg px-8 h-14 border-zinc-700 text-zinc-300 hover:text-white hover:border-zinc-600">
+                View Pricing
+              </Button>
+            </Link>
           </div>
 
           <p
             className={`mt-6 text-sm text-zinc-500 max-w-xl mx-auto transition-all duration-700 ${mounted ? 'opacity-100' : 'opacity-0'}`}
             style={{ transitionDelay: '300ms' }}
           >
-            Stop scribbling notes, counting fixtures twice, and spending your night building quotes.
+            Trusted by janitorial companies nationwide. No more manual counting, spreadsheet errors, or missed follow-ups.
           </p>
         </div>
       </section>
 
-      {/* How it works */}
-      <section className="py-24 border-b border-zinc-800/80">
+      {/* AI Features - Three Core Capabilities */}
+      <section className="py-24 border-b border-zinc-800/80 bg-zinc-900/20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-sm font-medium mb-4">
+              <Brain className="h-4 w-4" />
+              <span>Powered by AI</span>
+            </div>
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
-              How it works
+              Three AI Capabilities That Win More Bids
             </h2>
             <p className="text-lg text-zinc-400 max-w-2xl mx-auto">
-              From walkthrough to proposal before you reach your car.
+              From walkthrough to closed deal—AI handles the heavy lifting so you can focus on relationships.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {[
-              { step: '1', icon: Camera, title: 'Scan', desc: 'Capture rooms, floors, restrooms, glass, break rooms. Open Janibear → Start Walkthrough → point your camera.' },
-              { step: '2', icon: CheckCircle2, title: 'Confirm', desc: 'Tap to verify flooring + counts. AI suggestions are editable—you stay in control.' },
-              { step: '3', icon: Send, title: 'Send', desc: 'Proposal + scope + pricing generated instantly. Branded PDF or email—send before you leave the lot.' },
+              {
+                icon: Camera,
+                badge: 'AI Bidding',
+                title: 'Intelligent Building Capture',
+                desc: 'Point your phone camera at rooms, floors, and fixtures. AI automatically detects flooring types, counts fixtures, measures square footage, and identifies special requirements—all in real-time.',
+                features: ['Floor type detection', 'Fixture counting', 'Square footage calculation', 'Special area identification'],
+                color: 'orange',
+              },
+              {
+                icon: Wand2,
+                badge: 'AI Proposals',
+                title: 'Instant Professional Proposals',
+                desc: 'AI generates complete, branded proposals with scope of work, frequency schedules, pricing tables, and assumptions—ready to send in minutes, not hours.',
+                features: ['Branded PDF generation', 'Automated pricing', 'Scope documentation', 'Professional formatting'],
+                color: 'cyan',
+              },
+              {
+                icon: Repeat,
+                badge: 'AI Follow-Ups',
+                title: 'Automated Follow-Up Cadences',
+                desc: 'Never lose a lead. AI tracks proposal status, sends personalized follow-ups at optimal times, and maintains engagement until the deal closes—all automatically.',
+                features: ['Smart timing', 'Personalized messaging', 'Status tracking', 'Engagement optimization'],
+                color: 'emerald',
+              },
             ].map((item, index) => {
               const Icon = item.icon;
+              const colorClasses = {
+                orange: 'bg-orange-500/10 text-orange-400 border-orange-500/20',
+                cyan: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20',
+                emerald: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+              };
               return (
                 <div
                   key={index}
                   className={`relative p-8 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-zinc-700 transition-all ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
-                  style={{ transitionDelay: `${index * 80}ms`, transitionDuration: '500ms' }}
+                  style={{ transitionDelay: `${index * 100}ms`, transitionDuration: '500ms' }}
                 >
-                  <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-orange-500/20 text-orange-400 flex items-center justify-center text-sm font-bold">
-                    {item.step}
+                  <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full ${colorClasses[item.color as keyof typeof colorClasses]} text-xs font-semibold mb-4`}>
+                    <Icon className="h-3.5 w-3.5" />
+                    <span>{item.badge}</span>
                   </div>
-                  <div className="w-12 h-12 rounded-xl bg-orange-500/10 text-orange-400 flex items-center justify-center mb-4">
-                    <Icon className="h-6 w-6" />
-                  </div>
-                  <h3 className="text-xl font-semibold text-white mb-2">{item.title}</h3>
-                  <p className="text-zinc-400 leading-relaxed text-sm">{item.desc}</p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* What Janibear captures */}
-      <section className="py-24 border-b border-zinc-800/80">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
-              What Janibear captures
-            </h2>
-            <p className="text-lg text-zinc-400 max-w-2xl mx-auto">
-              AI detects flooring, areas, and fixtures—you confirm or edit. Everything is editable before sending.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto mb-10">
-            {[
-              { icon: Layers, title: 'Flooring', items: ['Type (tile, LVT, carpet, concrete)', 'Condition notes (traffic, stains, stripping)', 'Area grouping by room type'] },
-              { icon: Bath, title: 'Restrooms & fixtures', items: ['Toilets, urinals, sinks, mirrors', 'Dispensers, hand dryers', 'Trash cans / liners'] },
-              { icon: Sparkles, title: 'Specials & other', items: ['Entry glass, stairwells, elevators', 'Break room appliances', 'High dusting / vents', 'Consumables estimate (optional)'] },
-            ].map((item, index) => {
-              const Icon = item.icon;
-              return (
-                <div key={index} className="bg-zinc-900/80 p-8 rounded-2xl border border-zinc-800 hover:border-zinc-700 transition-colors">
-                  <div className="w-12 h-12 rounded-xl bg-orange-500/10 text-orange-400 flex items-center justify-center mb-4">
-                    <Icon className="h-6 w-6" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-white mb-4">{item.title}</h3>
+                  <h3 className="text-xl font-semibold text-white mb-3">{item.title}</h3>
+                  <p className="text-zinc-400 leading-relaxed text-sm mb-4">{item.desc}</p>
                   <ul className="space-y-2">
-                    {item.items.map((bullet, i) => (
+                    {item.features.map((feature, i) => (
                       <li key={i} className="flex items-start gap-2 text-zinc-400 text-sm">
-                        <Check className="h-5 w-5 text-emerald-500 shrink-0 mt-0.5" />
-                        <span>{bullet}</span>
+                        <Check className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
+                        <span>{feature}</span>
                       </li>
                     ))}
                   </ul>
@@ -205,58 +214,326 @@ export default function Home() {
               );
             })}
           </div>
-          <p className="text-center text-zinc-500 text-sm font-medium">Everything is editable before sending.</p>
         </div>
       </section>
 
-      {/* Output: what the client gets */}
+      {/* How It Works - Streamlined Process */}
       <section className="py-24 border-b border-zinc-800/80">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
-              What your client gets
+              From Walkthrough to Closed Deal
             </h2>
             <p className="text-lg text-zinc-400 max-w-2xl mx-auto">
-              A professional, branded proposal—ready to send.
+              Your complete sales workflow, automated with AI.
             </p>
           </div>
 
-          <div className="max-w-2xl mx-auto rounded-2xl border border-zinc-700 bg-zinc-900/80 overflow-hidden">
-            <div className="bg-zinc-800 px-4 py-3 flex items-center gap-2 border-b border-zinc-700">
-              <FileText className="h-4 w-4 text-zinc-500" />
-              <span className="text-sm font-medium text-zinc-400">Proposal_Acme_Cleaning_2025.pdf</span>
-            </div>
-            <div className="p-8 md:p-10 space-y-6 text-left">
-              {['Cover & summary', 'Scope of work by area', 'Frequency schedule', 'Optional add-ons', 'Pricing table', 'Assumptions & exclusions • Signature block'].map((label, i) => (
-                <div key={i}>
-                  <div className="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-2">{label}</div>
-                  <div className="h-3 bg-zinc-800 rounded w-full" />
-                  {i < 2 && <div className="h-3 bg-zinc-800/60 rounded w-5/6 mt-2" />}
-                </div>
-              ))}
+          <div className="max-w-4xl mx-auto">
+            <div className="space-y-8">
+              {[
+                {
+                  step: '1',
+                  icon: Camera,
+                  title: 'Capture Building Details',
+                  desc: 'Walk through the property with your phone. AI captures flooring types, fixture counts, square footage, and special requirements—all automatically.',
+                  detail: 'Works offline during walkthrough, syncs when connected',
+                },
+                {
+                  step: '2',
+                  icon: Wand2,
+                  title: 'AI Generates Proposal',
+                  desc: 'Within minutes, AI creates a complete, branded proposal with scope of work, frequency schedules, pricing, and all necessary documentation.',
+                  detail: 'Customizable pricing rules, branded templates, professional formatting',
+                },
+                {
+                  step: '3',
+                  icon: Send,
+                  title: 'Send & Track',
+                  desc: 'Send the proposal via email or PDF. AI automatically tracks delivery, opens, and engagement—so you know exactly when to follow up.',
+                  detail: 'Delivery tracking, open rates, engagement metrics',
+                },
+                {
+                  step: '4',
+                  icon: Repeat,
+                  title: 'Automated Follow-Up Cadences',
+                  desc: 'AI sends personalized follow-ups at optimal times based on proposal status, client engagement, and best practices—keeping you top-of-mind until the deal closes.',
+                  detail: 'Smart timing, personalized messaging, status-aware automation',
+                },
+              ].map((item, index) => {
+                const Icon = item.icon;
+                return (
+                  <div
+                    key={index}
+                    className={`flex gap-6 p-6 rounded-xl bg-zinc-900/80 border border-zinc-800 hover:border-zinc-700 transition-all ${mounted ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'}`}
+                    style={{ transitionDelay: `${index * 100}ms`, transitionDuration: '500ms' }}
+                  >
+                    <div className="flex-shrink-0">
+                      <div className="w-12 h-12 rounded-xl bg-orange-500/10 text-orange-400 flex items-center justify-center font-bold text-lg">
+                        {item.step}
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-2">
+                        <Icon className="h-5 w-5 text-orange-400" />
+                        <h3 className="text-xl font-semibold text-white">{item.title}</h3>
+                      </div>
+                      <p className="text-zinc-400 mb-2 leading-relaxed">{item.desc}</p>
+                      <p className="text-sm text-zinc-500">{item.detail}</p>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
       </section>
 
-      {/* Who it's for — Sales teams */}
+      {/* What Your Client Receives - Professional Proposal Preview */}
+      <section className="py-24 border-b border-zinc-800/80 bg-zinc-900/20">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
+              What Your Client Receives
+            </h2>
+            <p className="text-lg text-zinc-400 max-w-2xl mx-auto">
+              A polished, branded proposal—the kind that wins bids.
+            </p>
+          </div>
+
+          <div className="max-w-2xl mx-auto">
+            {/* Proposal document mockup - professional layout */}
+            <div className="bg-white rounded-lg shadow-2xl shadow-black/20 overflow-hidden border border-zinc-700/50 text-left">
+              {/* Cover / Header */}
+              <div className="bg-zinc-100 border-b border-zinc-200 px-8 py-6">
+                <p className="text-xs font-medium text-zinc-500 uppercase tracking-widest mb-1">Proposal</p>
+                <h3 className="text-xl font-semibold text-zinc-900">Commercial Cleaning Services</h3>
+                <p className="text-sm text-zinc-600 mt-1">123 Main Street • Suite 400</p>
+                <p className="text-sm text-zinc-600">Prepared for: Acme Corporation</p>
+                <p className="text-xs text-zinc-500 mt-2">Valid through March 15, 2026</p>
+              </div>
+
+              {/* Scope of Work */}
+              <div className="px-8 py-5 border-b border-zinc-200">
+                <h4 className="text-sm font-semibold text-zinc-900 uppercase tracking-wide mb-3">Scope of Work</h4>
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-zinc-200 text-zinc-600 font-medium">
+                      <th className="text-left py-2">Area</th>
+                      <th className="text-left py-2">Sq Ft</th>
+                      <th className="text-left py-2">Floor Type</th>
+                      <th className="text-right py-2">Frequency</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-zinc-700">
+                    <tr className="border-b border-zinc-100"><td className="py-2">Lobby & corridors</td><td className="py-2">4,200</td><td className="py-2">Tile / LVT</td><td className="py-2 text-right">5x/week</td></tr>
+                    <tr className="border-b border-zinc-100"><td className="py-2">Restrooms (4)</td><td className="py-2">—</td><td className="py-2">Tile</td><td className="py-2 text-right">5x/week</td></tr>
+                    <tr className="border-b border-zinc-100"><td className="py-2">Office areas</td><td className="py-2">8,400</td><td className="py-2">Carpet</td><td className="py-2 text-right">2x/week</td></tr>
+                    <tr className="border-b border-zinc-100"><td className="py-2">Break room</td><td className="py-2">600</td><td className="py-2">Tile</td><td className="py-2 text-right">5x/week</td></tr>
+                    <tr><td className="py-2">Entry glass</td><td className="py-2">—</td><td className="py-2">Glass</td><td className="py-2 text-right">2x/week</td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Services Included */}
+              <div className="px-8 py-5 border-b border-zinc-200">
+                <h4 className="text-sm font-semibold text-zinc-900 uppercase tracking-wide mb-3">Services Included</h4>
+                <ul className="text-sm text-zinc-700 space-y-1.5">
+                  <li>• Vacuuming and mopping per schedule</li>
+                  <li>• Restroom sanitization, refill dispensers</li>
+                  <li>• Trash removal and liner replacement</li>
+                  <li>• High dusting (monthly)</li>
+                  <li>• Entry glass cleaning</li>
+                </ul>
+              </div>
+
+              {/* Pricing */}
+              <div className="px-8 py-5 border-b border-zinc-200">
+                <h4 className="text-sm font-semibold text-zinc-900 uppercase tracking-wide mb-3">Monthly Investment</h4>
+                <div className="flex items-baseline justify-between">
+                  <span className="text-zinc-600 text-sm">Recurring monthly service</span>
+                  <span className="text-lg font-semibold text-zinc-900">$2,847.00</span>
+                </div>
+                <p className="text-xs text-zinc-500 mt-2">Billed monthly. No long-term contract required.</p>
+              </div>
+
+              {/* Footer */}
+              <div className="px-8 py-4 bg-zinc-50">
+                <p className="text-xs text-zinc-500">Assumptions: Square footage as provided; pricing based on standard frequencies. Exclusions: carpet extraction, strip & wax, window washing. Subject to site walk-through confirmation.</p>
+                <p className="text-xs font-medium text-zinc-700 mt-3">[Your Company Name] • (555) 123-4567 • contact@yourcompany.com</p>
+              </div>
+            </div>
+
+            <p className="text-center text-sm text-zinc-500 mt-6">
+              Branded to your company. Generated in minutes from your walkthrough.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* AI Follow-Up Cadences - Detailed Section */}
+      <section className="py-24 border-b border-zinc-800/80 bg-zinc-900/20">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-12">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-medium mb-4">
+                <Repeat className="h-4 w-4" />
+                <span>AI Follow-Up Automation</span>
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
+                Never Lose a Lead Again
+              </h2>
+              <p className="text-lg text-zinc-400 max-w-2xl mx-auto">
+                AI-powered follow-up cadences ensure every proposal gets the attention it deserves—automatically.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6 mb-10">
+              {[
+                {
+                  icon: Clock,
+                  title: 'Smart Timing',
+                  desc: 'AI determines optimal follow-up times based on proposal sent date, industry benchmarks, and client engagement signals.',
+                },
+                {
+                  icon: MessageSquare,
+                  title: 'Personalized Messaging',
+                  desc: 'Each follow-up is customized with client name, proposal details, and relevant value propositions—never generic.',
+                },
+                {
+                  icon: BarChart3,
+                  title: 'Status Tracking',
+                  desc: 'Automatically tracks proposal status, opens, clicks, and responses—so you always know where each deal stands.',
+                },
+                {
+                  icon: TrendingUp,
+                  title: 'Engagement Optimization',
+                  desc: 'AI learns from response patterns and adjusts cadence timing and messaging to maximize engagement and close rates.',
+                },
+              ].map((item, index) => {
+                const Icon = item.icon;
+                return (
+                  <div
+                    key={index}
+                    className="p-6 rounded-xl bg-zinc-900/80 border border-zinc-800 hover:border-emerald-500/30 transition-colors"
+                  >
+                    <div className="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center mb-4">
+                      <Icon className="h-5 w-5" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-white mb-2">{item.title}</h3>
+                    <p className="text-zinc-400 text-sm leading-relaxed">{item.desc}</p>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 border border-emerald-500/20 rounded-xl p-8">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+                  <CheckCircle2 className="h-6 w-6" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-white mb-2">Automated Follow-Up Workflow</h3>
+                  <p className="text-zinc-300 mb-4">
+                    Set it and forget it. AI handles follow-ups at days 3, 7, 14, and 30 after proposal delivery—or customize your own cadence. Each message is personalized, tracked, and optimized for maximum response rates.
+                  </p>
+                  <ul className="space-y-2 text-zinc-400 text-sm">
+                    <li className="flex items-start gap-2">
+                      <Check className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
+                      <span>Automatic follow-up scheduling based on best practices</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
+                      <span>Personalized email templates with proposal details</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
+                      <span>Engagement tracking and response detection</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
+                      <span>Pause automation when client responds or closes</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ROI & Results */}
       <section className="py-24 border-b border-zinc-800/80">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
-              Built for janitorial sales teams
+              Measurable Results for Janitorial Companies
+            </h2>
+            <p className="text-lg text-zinc-400 max-w-2xl mx-auto">
+              See why janitorial sales teams choose Janibear to win more bids.
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto mb-12">
+            {[
+              { icon: Clock, stat: '75%', label: 'Time saved per proposal', sublabel: 'From 2 hours to 30 minutes' },
+              { icon: Zap, stat: 'Same-day', label: 'Proposal delivery', sublabel: 'Before you leave the property' },
+              { icon: TrendingUp, stat: '40%', label: 'Higher close rate', sublabel: 'With automated follow-ups' },
+              { icon: DollarSign, stat: '3x', label: 'More proposals sent', sublabel: 'Same team, more opportunities' },
+            ].map((item, index) => {
+              const Icon = item.icon;
+              return (
+                <div
+                  key={index}
+                  className="bg-zinc-900/80 rounded-xl p-6 border border-zinc-800 text-center hover:border-zinc-700 transition-colors"
+                >
+                  <Icon className="h-8 w-8 mx-auto mb-3 text-orange-400/80" />
+                  <div className="text-3xl font-bold text-white mb-1">{item.stat}</div>
+                  <div className="text-zinc-300 font-medium text-sm mb-1">{item.label}</div>
+                  <div className="text-zinc-500 text-xs">{item.sublabel}</div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="max-w-3xl mx-auto">
+            <div className="grid md:grid-cols-3 gap-6">
+              {[
+                { icon: CheckCircle2, text: 'No more manual counting or spreadsheet errors' },
+                { icon: CheckCircle2, text: 'Consistent, professional proposals every time' },
+                { icon: CheckCircle2, text: 'Never miss a follow-up opportunity' },
+              ].map((item, index) => {
+                const Icon = item.icon;
+                return (
+                  <div key={index} className="flex items-start gap-3 p-4 rounded-xl bg-zinc-900/80 border border-zinc-800">
+                    <Icon className="h-5 w-5 text-emerald-500 shrink-0 mt-0.5" />
+                    <p className="text-zinc-400 font-medium text-sm leading-relaxed">{item.text}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Built for Janitorial Companies */}
+      <section className="py-24 border-b border-zinc-800/80 bg-zinc-900/20">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
+              Built Specifically for Janitorial Companies
             </h2>
             <p className="text-lg text-zinc-400 max-w-xl mx-auto">
-              Close more bids with less effort.
+              Designed by janitorial industry experts, for janitorial sales teams.
             </p>
           </div>
 
           <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
             {[
-              { icon: UserCheck, label: 'Janitorial sales reps' },
-              { icon: Building2, label: 'Owner-operators' },
-              { icon: Users, label: 'Franchise operators' },
-              { icon: Target, label: 'Facility services scaling quoting' },
+              { icon: UserCheck, label: 'Janitorial Sales Reps', desc: 'Close more deals faster' },
+              { icon: Building2, label: 'Owner-Operators', desc: 'Scale without hiring' },
+              { icon: Users, label: 'Franchise Operators', desc: 'Standardize across locations' },
+              { icon: Target, label: 'Facility Services', desc: 'Expand into janitorial' },
             ].map((item, index) => {
               const Icon = item.icon;
               return (
@@ -267,7 +544,8 @@ export default function Home() {
                   <div className="w-12 h-12 rounded-xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center mb-3">
                     <Icon className="h-6 w-6" />
                   </div>
-                  <span className="font-medium text-white text-sm">{item.label}</span>
+                  <span className="font-semibold text-white text-sm mb-1">{item.label}</span>
+                  <span className="text-zinc-500 text-xs">{item.desc}</span>
                 </div>
               );
             })}
@@ -275,105 +553,70 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Operations add-on */}
+      {/* Operations Add-on */}
       <section className="py-24 border-b border-zinc-800/80">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <div className="flex items-center gap-2 mb-6">
               <div className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5">
                 <Plus className="h-3.5 w-3.5" />
-                Add-on
+                Operations Module
               </div>
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
-              For operations teams
+              Complete Operations Management
             </h2>
             <p className="text-lg text-zinc-400 mb-12 max-w-2xl">
-              Need to run inspections, crews, compliance, and billing after the sale? Add the Operations module and keep sales and delivery in one place.
+              After you win the bid, manage inspections, crews, compliance, purchase orders, and invoicing—all in one platform.
             </p>
 
-            <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="grid sm:grid-cols-2 md:grid-cols-5 gap-6">
               {[
-                { icon: ClipboardCheck, label: 'Inspections & quality' },
-                { icon: Users, label: 'Crews & assignments' },
-                { icon: Shield, label: 'Compliance & SDS' },
-                { icon: Package, label: 'Purchase orders' },
+                { icon: ClipboardCheck, label: 'Inspections' },
+                { icon: Users, label: 'Crews' },
+                { icon: Shield, label: 'Compliance' },
+                { icon: Package, label: 'Purchase Orders' },
                 { icon: FileSpreadsheet, label: 'Invoicing' },
               ].map((item, index) => {
                 const Icon = item.icon;
                 return (
                   <div
                     key={index}
-                    className="flex items-center gap-4 p-4 rounded-xl bg-zinc-900/80 border border-zinc-800 hover:border-emerald-500/30 transition-colors"
+                    className="flex flex-col items-center gap-3 p-4 rounded-xl bg-zinc-900/80 border border-zinc-800 hover:border-emerald-500/30 transition-colors"
                   >
-                    <div className="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center shrink-0">
+                    <div className="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
                       <Icon className="h-5 w-5" />
                     </div>
-                    <span className="font-medium text-white text-sm">{item.label}</span>
+                    <span className="font-medium text-white text-sm text-center">{item.label}</span>
                   </div>
                 );
               })}
             </div>
-            <p className="mt-8 text-sm text-zinc-500">
-              Add the Operations module to your plan for inspections, crew management, compliance, POs, and invoicing—all in one platform.
+            <p className="mt-8 text-sm text-zinc-500 text-center">
+              Add the Operations module to your plan for complete janitorial business management—from sales to delivery.
             </p>
           </div>
         </div>
       </section>
 
-      {/* ROI */}
-      <section className="py-24 border-b border-zinc-800/80">
+      {/* Trust & Security */}
+      <section className="py-24 border-b border-zinc-800/80 bg-zinc-900/20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
-              Speed + accuracy + consistency + win rate
+              Enterprise-Grade Security & Control
             </h2>
             <p className="text-lg text-zinc-400 max-w-2xl mx-auto">
-              Same-day response. Close more by being first and professional.
-            </p>
-          </div>
-
-          <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto">
-            {[
-              { icon: Clock, stat: '45–90 min', label: 'Saved per quote' },
-              { icon: Zap, stat: 'Same-day', label: 'Respond, not next-day' },
-              { icon: Sliders, stat: 'Standardize', label: 'Scopes across reps' },
-              { icon: Target, stat: 'Close more', label: 'First + professional' },
-            ].map((item, index) => {
-              const Icon = item.icon;
-              return (
-                <div
-                  key={index}
-                  className="bg-zinc-900/80 rounded-xl p-6 border border-zinc-800 text-center hover:border-zinc-700 transition-colors"
-                >
-                  <Icon className="h-8 w-8 mx-auto mb-3 text-orange-400/80" />
-                  <div className="text-2xl font-bold text-white mb-1">{item.stat}</div>
-                  <div className="text-zinc-400 text-sm">{item.label}</div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* Trust */}
-      <section className="py-24 border-b border-zinc-800/80">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
-              You stay in control
-            </h2>
-            <p className="text-lg text-zinc-400 max-w-2xl mx-auto">
-              No vaporware. Honest about what we do—and what you control.
+              Your data, your pricing rules, your brand—you stay in complete control.
             </p>
           </div>
 
           <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
             {[
-              { icon: Shield, text: 'Works offline during walkthrough, syncs when connected' },
-              { icon: Lock, text: 'Data is encrypted' },
-              { icon: Sliders, text: 'You control pricing rules' },
-              { icon: CheckCircle2, text: 'No more missed fixtures' },
+              { icon: Shield, text: 'Enterprise security & encryption' },
+              { icon: Lock, text: 'Your data stays private & secure' },
+              { icon: Sliders, text: 'Customize pricing rules & templates' },
+              { icon: CheckCircle2, text: 'Full control over AI suggestions' },
             ].map((item, index) => {
               const Icon = item.icon;
               return (
@@ -386,9 +629,6 @@ export default function Home() {
               );
             })}
           </div>
-          <p className="text-center text-zinc-500 text-sm mt-10 max-w-xl mx-auto">
-            Square footage from camera is AI-assisted—accuracy varies by device. We anchor on auto floor type, fixture counts, structured scope, pricing automation, and proposal speed.
-          </p>
         </div>
       </section>
 
@@ -397,10 +637,10 @@ export default function Home() {
         <div className="container mx-auto px-4 text-center">
           <div className="max-w-2xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">
-              From walkthrough to proposal before you reach your car
+              Ready to Win More Bids?
             </h2>
             <p className="text-lg text-zinc-400 mb-8">
-              Book a demo or get early access. Bring your pricing sheet—we&apos;ll configure it.
+              Book a demo and see how AI-powered bidding, proposals, and follow-ups can transform your janitorial sales process. We&apos;ll configure your pricing rules.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/demo">
@@ -410,13 +650,13 @@ export default function Home() {
                 </Button>
               </Link>
               <Link href="/demo">
-                <Button size="lg" className="text-lg px-8 h-14 bg-orange-500 text-white hover:bg-orange-400 border-0 w-full sm:w-auto">
+                <Button size="lg" variant="outline" className="text-lg px-8 h-14 border-zinc-700 text-zinc-300 hover:text-white hover:border-zinc-600 w-full sm:w-auto">
                   Get Early Access
                 </Button>
               </Link>
             </div>
             <p className="text-sm text-zinc-500 mt-6">
-              Demo • Early access • We&apos;ll configure your pricing rules
+              Free 14-day trial • No credit card required • We&apos;ll configure your pricing
             </p>
           </div>
         </div>
@@ -436,7 +676,7 @@ export default function Home() {
                 unoptimized
               />
               <p className="text-sm text-zinc-500">
-                Turn walkthroughs into proposals—camera + AI. Built for janitorial sales teams. Operations add-on available.
+                AI-powered bidding, proposals, and follow-up automation for janitorial companies. Win more bids, close more deals.
               </p>
             </div>
             <div>

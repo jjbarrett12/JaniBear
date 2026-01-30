@@ -7,17 +7,21 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 });
 
 const plans: Record<string, { priceId: string; name: string }> = {
-  starter: {
-    priceId: process.env.STRIPE_STARTER_PRICE_ID || 'price_starter',
-    name: 'Starter Plan',
+  'sales-1': {
+    priceId: process.env.STRIPE_SALES_1_PRICE_ID || 'price_sales_1',
+    name: 'Sales 1',
   },
-  professional: {
-    priceId: process.env.STRIPE_PROFESSIONAL_PRICE_ID || 'price_professional',
-    name: 'Professional Plan',
+  'sales-2': {
+    priceId: process.env.STRIPE_SALES_2_PRICE_ID || 'price_sales_2',
+    name: 'Sales 2',
   },
-  enterprise: {
-    priceId: process.env.STRIPE_ENTERPRISE_PRICE_ID || 'price_enterprise',
-    name: 'Enterprise Plan',
+  'sales-1-qc-1': {
+    priceId: process.env.STRIPE_SALES_1_QC_1_PRICE_ID || 'price_sales_1_qc_1',
+    name: 'Sales 1 + QC 1',
+  },
+  'sales-2-qc-2': {
+    priceId: process.env.STRIPE_SALES_2_QC_2_PRICE_ID || 'price_sales_2_qc_2',
+    name: 'Sales 2 + QC 2',
   },
 };
 

@@ -10,51 +10,70 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
 
 const plans = [
   {
-    id: 'starter',
-    name: 'Starter',
+    id: 'sales-1',
+    name: 'Sales 1',
+    tagline: 'Strictly sales',
     price: 49,
-    description: 'Perfect for small cleaning businesses',
+    description: 'Everything you need to close more cleaning deals',
     features: [
-      'Up to 5 locations',
-      'Unlimited inspections',
-      'Issue tracking',
-      'Basic reporting',
-      'Mobile app access',
+      'Lead import (paste, voice, scan, email)',
+      'Sales pipeline & lead management',
+      'Walk-through scheduling',
+      '5-page customizable proposals',
+      'AI proposal suggestions (crew, hours, pricing)',
+      'Up to 5 active leads',
       'Email support',
     ],
     popular: false,
   },
   {
-    id: 'professional',
-    name: 'Professional',
-    price: 149,
-    description: 'Ideal for growing businesses',
+    id: 'sales-2',
+    name: 'Sales 2',
+    tagline: 'Sales, scaled',
+    price: 99,
+    description: 'More capacity and power for sales teams',
     features: [
-      'Up to 25 locations',
-      'Unlimited inspections',
-      'Advanced issue tracking',
-      'Team management',
-      'Crew assignments',
-      'Task scheduling',
-      'Advanced analytics',
+      'Everything in Sales 1',
+      'Unlimited active leads',
+      'Multiple users / team',
+      'Locations & templates',
+      'Bids & estimates',
+      'Contracts upload',
       'Priority support',
     ],
     popular: true,
   },
   {
-    id: 'enterprise',
-    name: 'Enterprise',
-    price: 399,
-    description: 'For large organizations',
+    id: 'sales-1-qc-1',
+    name: 'Sales 1 + QC 1',
+    tagline: 'Sales + QC & admin',
+    price: 79,
+    description: 'Sales plus task breakdown and basic operations',
     features: [
-      'Unlimited locations',
-      'Unlimited inspections',
-      'All Professional features',
-      'Custom integrations',
-      'Dedicated account manager',
-      'Custom reporting',
-      'API access',
-      '24/7 phone support',
+      'Everything in Sales 1',
+      'QC Task Assign: split schedules into per-employee task lists',
+      'My Tasks for cleaners',
+      'Basic inspections',
+      'Up to 3 crews',
+      'Email support',
+    ],
+    popular: false,
+  },
+  {
+    id: 'sales-2-qc-2',
+    name: 'Sales 2 + QC 2',
+    tagline: 'Full sales + operations',
+    price: 149,
+    description: 'Complete sales and operations in one place',
+    features: [
+      'Everything in Sales 2',
+      'Everything in QC 1, plus:',
+      'Unlimited crews & schedules',
+      'Inspections & issue tracking',
+      'Compliance & SDS management',
+      'Purchase orders & invoicing',
+      'Admin & employee management',
+      'Priority support',
     ],
     popular: false,
   },
@@ -93,16 +112,15 @@ export function PricingCards({ dark }: PricingCardsProps) {
   };
 
   return (
-    <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
       {plans.map((plan) => (
         <Card
           key={plan.id}
+          id={plan.id}
           className={
             dark
-              ? `bg-zinc-900/80 border-zinc-800 hover:border-zinc-700 transition-colors relative ${plan.popular ? 'border-orange-500/50 ring-1 ring-orange-500/20' : ''}`
-              : plan.popular
-                ? 'border-primary border-2 shadow-lg relative'
-                : ''
+              ? `bg-zinc-900/80 border-zinc-800 hover:border-zinc-700 transition-colors relative flex flex-col ${plan.popular ? 'border-orange-500/50 ring-1 ring-orange-500/20' : ''}`
+              : `flex flex-col ${plan.popular ? 'border-primary border-2 shadow-lg relative' : ''}`
           }
         >
           {plan.popular && (
@@ -118,25 +136,34 @@ export function PricingCards({ dark }: PricingCardsProps) {
               </span>
             </div>
           )}
-          <CardHeader>
-            <CardTitle className={dark ? 'text-2xl text-white' : 'text-2xl'}>{plan.name}</CardTitle>
-            <CardDescription className={dark ? 'text-zinc-400' : ''}>{plan.description}</CardDescription>
-            <div className="mt-4">
-              <span className={dark ? 'text-4xl font-bold text-white' : 'text-4xl font-bold'}>${plan.price}</span>
-              <span className={dark ? 'text-zinc-500' : 'text-gray-600'}>/month</span>
+          <CardHeader className="pb-3">
+            <p className={dark ? 'text-xs font-medium text-orange-400 uppercase tracking-wider' : 'text-xs font-medium text-primary uppercase tracking-wider'}>
+              {plan.tagline}
+            </p>
+            <CardTitle className={dark ? 'text-xl text-white' : 'text-xl'}>{plan.name}</CardTitle>
+            <CardDescription className={dark ? 'text-zinc-400 text-sm' : 'text-sm'}>
+              {plan.description}
+            </CardDescription>
+            <div className="mt-3">
+              <span className={dark ? 'text-3xl font-bold text-white' : 'text-3xl font-bold'}>
+                ${plan.price}
+              </span>
+              <span className={dark ? 'text-zinc-500 text-sm' : 'text-gray-600 text-sm'}>/month</span>
             </div>
           </CardHeader>
-          <CardContent>
-            <ul className="space-y-3">
+          <CardContent className="flex-1 pt-0">
+            <ul className="space-y-2.5">
               {plan.features.map((feature, index) => (
                 <li key={index} className="flex items-start gap-2">
-                  <Check className={`h-5 w-5 flex-shrink-0 mt-0.5 ${dark ? 'text-orange-400' : 'text-primary'}`} />
-                  <span className={dark ? 'text-zinc-400 text-sm' : 'text-gray-700'}>{feature}</span>
+                  <Check className={`h-4 w-4 flex-shrink-0 mt-0.5 ${dark ? 'text-orange-400' : 'text-primary'}`} />
+                  <span className={dark ? 'text-zinc-400 text-sm leading-snug' : 'text-gray-700 text-sm leading-snug'}>
+                    {feature}
+                  </span>
                 </li>
               ))}
             </ul>
           </CardContent>
-          <CardFooter>
+          <CardFooter className="pt-4">
             <Button
               className={dark ? 'w-full bg-orange-500 text-white hover:bg-orange-400 border-0' : 'w-full'}
               variant={dark ? undefined : plan.popular ? 'default' : 'outline'}

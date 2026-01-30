@@ -48,35 +48,47 @@ export default function Home() {
     <div className="min-h-screen bg-zinc-950 text-zinc-100">
       {/* Nav */}
       <nav className="border-b border-zinc-800/80 bg-zinc-950/80 backdrop-blur-xl sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-6 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block" style={{ minHeight: 140 }}>
+        <div className="container mx-auto px-4 py-1.5 flex items-center justify-between gap-4">
+          <Link href="/" className="flex items-center shrink-0 bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block" style={{ minHeight: 40 }}>
             <Image
               src="/janibear-logo.png"
               alt="Janibear"
               width={560}
               height={182}
-              className="!h-[140px] md:!h-[200px] w-auto !max-h-none object-contain bg-transparent"
+              className="!h-8 md:!h-10 w-auto !max-h-none object-contain bg-transparent"
               priority
               unoptimized
             />
           </Link>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-end gap-4 md:gap-6 flex-1 min-w-0">
             <Link href="/pricing">
-              <Button variant="ghost" className="text-zinc-300 hover:text-white hover:bg-zinc-800">
+              <Button variant="ghost" size="sm" className="text-zinc-300 hover:text-white hover:bg-zinc-800 shrink-0">
                 Pricing
               </Button>
             </Link>
-            <Link href="/survey" className="text-zinc-300 hover:text-white transition-colors font-medium">
-              Find Your Plan
+            <Link href="/survey">
+              <Button variant="ghost" size="sm" className="text-zinc-300 hover:text-white hover:bg-zinc-800 shrink-0">
+                Find Your Plan
+              </Button>
+            </Link>
+            <Link href="/#features">
+              <Button variant="ghost" size="sm" className="text-zinc-300 hover:text-white hover:bg-zinc-800 shrink-0">
+                Features
+              </Button>
+            </Link>
+            <Link href="/contact">
+              <Button variant="ghost" size="sm" className="text-zinc-300 hover:text-white hover:bg-zinc-800 shrink-0">
+                Contact
+              </Button>
             </Link>
             <Link href="/auth/login">
-              <Button variant="ghost" className="text-zinc-300 hover:text-white hover:bg-zinc-800">
+              <Button variant="ghost" size="sm" className="text-zinc-300 hover:text-white hover:bg-zinc-800 shrink-0">
                 Sign In
               </Button>
             </Link>
-            <Link href="/demo">
-              <Button className="bg-orange-500 text-white hover:bg-orange-400 border-0 shadow-lg hover:shadow-orange-500/25">
-                Book a Demo
+            <Link href="/auth/signup">
+              <Button size="sm" className="bg-orange-500 text-white hover:bg-orange-400 border-0 shadow-lg hover:shadow-orange-500/25 shrink-0">
+                Get Started
               </Button>
             </Link>
           </div>
@@ -119,9 +131,9 @@ export default function Home() {
             className={`flex flex-col sm:flex-row gap-4 justify-center transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '200ms' }}
           >
-            <Link href="/demo">
+            <Link href="/auth/signup">
               <Button size="lg" className="text-lg px-8 h-14 bg-orange-500 text-white hover:bg-orange-400 border-0 shadow-lg hover:shadow-xl hover:shadow-orange-500/25 transition-all">
-                Book a Demo
+                Get Started
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
@@ -142,7 +154,7 @@ export default function Home() {
       </section>
 
       {/* AI Features - Three Core Capabilities */}
-      <section className="py-24 border-b border-zinc-800/80 bg-zinc-900/20">
+      <section id="features" className="py-24 border-b border-zinc-800/80 bg-zinc-900/20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-sm font-medium mb-4">
@@ -640,18 +652,18 @@ export default function Home() {
               Ready to Win More Bids?
             </h2>
             <p className="text-lg text-zinc-400 mb-8">
-              Book a demo and see how AI-powered bidding, proposals, and follow-ups can transform your janitorial sales process. We&apos;ll configure your pricing rules.
+              Sign up free and see how AI-powered bidding, proposals, and follow-ups can transform your janitorial sales process. No credit card required.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/demo">
+              <Link href="/auth/signup">
                 <Button size="lg" className="text-lg px-8 h-14 bg-orange-500 text-white hover:bg-orange-400 border-0 shadow-lg hover:shadow-xl hover:shadow-orange-500/25 transition-all w-full sm:w-auto">
-                  Book a Demo
+                  Get Started
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
-              <Link href="/demo">
+              <Link href="/pricing">
                 <Button size="lg" variant="outline" className="text-lg px-8 h-14 border-zinc-700 text-zinc-300 hover:text-white hover:border-zinc-600 w-full sm:w-auto">
-                  Get Early Access
+                  View Pricing
                 </Button>
               </Link>
             </div>
@@ -682,9 +694,11 @@ export default function Home() {
             <div>
               <h4 className="text-white font-semibold mb-4 text-sm">Product</h4>
               <ul className="space-y-2 text-sm">
-                <li><Link href="/demo" className="hover:text-white transition-colors">Book a Demo</Link></li>
+                <li><Link href="/auth/signup" className="hover:text-white transition-colors">Get Started</Link></li>
                 <li><Link href="/pricing" className="hover:text-white transition-colors">Pricing</Link></li>
                 <li><Link href="/survey" className="hover:text-white transition-colors">Find Your Plan</Link></li>
+                <li><Link href="/#features" className="hover:text-white transition-colors">Features</Link></li>
+                <li><Link href="/contact" className="hover:text-white transition-colors">Contact</Link></li>
                 <li><Link href="/auth/login" className="hover:text-white transition-colors">Sign In</Link></li>
               </ul>
             </div>

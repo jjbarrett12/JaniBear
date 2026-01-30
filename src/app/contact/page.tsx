@@ -12,14 +12,14 @@ export default function ContactPage() {
     <div className="min-h-screen bg-zinc-950 text-zinc-100">
       {/* Nav */}
       <nav className="border-b border-zinc-800/80 bg-zinc-950/80 backdrop-blur-xl sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-6 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block" style={{ minHeight: 140 }}>
+        <div className="container mx-auto px-4 py-2 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2 bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block" style={{ minHeight: 56 }}>
             <Image
               src="/janibear-logo.png"
               alt="Janibear"
               width={560}
               height={182}
-              className="!h-[140px] md:!h-[200px] w-auto !max-h-none object-contain bg-transparent"
+              className="!h-20 md:!h-24 w-auto !max-h-none object-contain bg-transparent"
               priority
               unoptimized
             />
@@ -204,9 +204,11 @@ export default function ContactPage() {
             <div>
               <h4 className="text-white font-semibold mb-4 text-sm">Product</h4>
               <ul className="space-y-2 text-sm">
-                <li><Link href="/demo" className="hover:text-white transition-colors">Book a Demo</Link></li>
+                <li><Link href="/auth/signup" className="hover:text-white transition-colors">Get Started</Link></li>
                 <li><Link href="/pricing" className="hover:text-white transition-colors">Pricing</Link></li>
                 <li><Link href="/survey" className="hover:text-white transition-colors">Find Your Plan</Link></li>
+                <li><Link href="/#features" className="hover:text-white transition-colors">Features</Link></li>
+                <li><Link href="/contact" className="hover:text-white transition-colors">Contact</Link></li>
                 <li><Link href="/auth/login" className="hover:text-white transition-colors">Sign In</Link></li>
               </ul>
             </div>

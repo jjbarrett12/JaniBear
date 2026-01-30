@@ -17,7 +17,9 @@ import {
   Users,
   FileUp,
   Calculator,
-  Settings
+  Settings,
+  TrendingUp,
+  ListChecks
 } from 'lucide-react';
 
 export async function AppSidebar() {
@@ -34,6 +36,7 @@ export async function AppSidebar() {
   
   const navItems = [
     { href: '/app/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { href: '/app/sales', label: 'Sales', icon: TrendingUp },
     { href: '/app/locations', label: 'Locations', icon: MapPin },
     { href: '/app/crews', label: 'Crews', icon: Users },
     { href: '/app/templates', label: 'Templates', icon: FileText },
@@ -43,6 +46,7 @@ export async function AppSidebar() {
     { href: '/app/issues', label: 'Issues', icon: AlertCircle },
     { href: '/app/bids', label: 'Bids & Estimates', icon: Calculator },
     { href: '/app/contracts', label: 'Contracts', icon: FileUp },
+    { href: '/app/qc-assign', label: 'QC Task Assign', icon: ListChecks },
     { href: '/app/admin', label: 'Admin', icon: Settings },
     { href: '/app/settings', label: 'Settings', icon: Settings },
   ];

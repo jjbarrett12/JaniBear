@@ -15,48 +15,19 @@ interface SurveyAnswer {
 
 const questions = [
   {
-    id: 'locations',
-    question: 'How many locations do you manage?',
+    id: 'focus',
+    question: 'What do you need JaniBear for?',
     options: [
-      { value: '1-5', label: '1-5 locations', plan: 'starter' },
-      { value: '6-25', label: '6-25 locations', plan: 'professional' },
-      { value: '26+', label: '26+ locations', plan: 'enterprise' },
+      { value: 'sales-only', label: 'Strictly sales (leads, proposals, walk-throughs)', plan: 'sales-1' },
+      { value: 'sales-qc', label: 'Sales plus QC and admin (task lists, inspections, operations)', plan: 'sales-1-qc-1' },
     ],
   },
   {
-    id: 'inspections',
-    question: 'How many inspections do you perform per month?',
+    id: 'scale',
+    question: 'What scale fits your business?',
     options: [
-      { value: '1-20', label: '1-20 inspections', plan: 'starter' },
-      { value: '21-100', label: '21-100 inspections', plan: 'professional' },
-      { value: '100+', label: '100+ inspections', plan: 'enterprise' },
-    ],
-  },
-  {
-    id: 'team',
-    question: 'How many team members will use the platform?',
-    options: [
-      { value: '1-5', label: '1-5 team members', plan: 'starter' },
-      { value: '6-20', label: '6-20 team members', plan: 'professional' },
-      { value: '21+', label: '21+ team members', plan: 'enterprise' },
-    ],
-  },
-  {
-    id: 'features',
-    question: 'Which features are most important to you?',
-    options: [
-      { value: 'basic', label: 'Basic inspections and reporting', plan: 'starter' },
-      { value: 'advanced', label: 'Team management and scheduling', plan: 'professional' },
-      { value: 'enterprise', label: 'Custom integrations and API access', plan: 'enterprise' },
-    ],
-  },
-  {
-    id: 'support',
-    question: 'What level of support do you need?',
-    options: [
-      { value: 'email', label: 'Email support is sufficient', plan: 'starter' },
-      { value: 'priority', label: 'Priority email and chat support', plan: 'professional' },
-      { value: 'dedicated', label: 'Dedicated account manager', plan: 'enterprise' },
+      { value: 'small', label: 'Smaller: few locations, one or a few users', plan: 'sales-1' },
+      { value: 'large', label: 'Larger: many locations, team, bids & contracts', plan: 'sales-2' },
     ],
   },
 ];
@@ -89,24 +60,16 @@ export function SurveyWizard({ dark }: SurveyWizardProps) {
   };
 
   const calculateRecommendation = () => {
-    const planScores: Record<string, number> = { starter: 0, professional: 0, enterprise: 0 };
-
-    Object.values(answers).forEach((answer) => {
-      const question = questions.find((q) => q.options.some((opt) => opt.value === answer));
-      if (question) {
-        const option = question.options.find((opt) => opt.value === answer);
-        if (option) {
-          planScores[option.plan] = (planScores[option.plan] || 0) + 1;
-        }
-      }
-    });
-
-    // Find the plan with the highest score
-    const maxScore = Math.max(...Object.values(planScores));
-    const recommended = Object.keys(planScores).find(
-      (plan) => planScores[plan] === maxScore
-    ) || 'professional';
-
+    const focus = answers['focus'];
+    const scale = answers['scale'];
+    // Map focus + scale to the 4 plans: Sales 1, Sales 2, Sales 1 + QC 1, Sales 2 + QC 2
+    let recommended = 'sales-2';
+    if (focus === 'sales-only' && scale === 'small') recommended = 'sales-1';
+    else if (focus === 'sales-only' && scale === 'large') recommended = 'sales-2';
+    else if (focus === 'sales-qc' && scale === 'small') recommended = 'sales-1-qc-1';
+    else if (focus === 'sales-qc' && scale === 'large') recommended = 'sales-2-qc-2';
+    else if (focus === 'sales-only') recommended = scale === 'large' ? 'sales-2' : 'sales-1';
+    else if (focus === 'sales-qc') recommended = scale === 'large' ? 'sales-2-qc-2' : 'sales-1-qc-1';
     setRecommendedPlan(recommended);
   };
 
@@ -116,9 +79,10 @@ export function SurveyWizard({ dark }: SurveyWizardProps) {
 
   if (recommendedPlan) {
     const planNames: Record<string, string> = {
-      starter: 'Starter',
-      professional: 'Professional',
-      enterprise: 'Enterprise',
+      'sales-1': 'Sales 1',
+      'sales-2': 'Sales 2',
+      'sales-1-qc-1': 'Sales 1 + QC 1',
+      'sales-2-qc-2': 'Sales 2 + QC 2',
     };
 
     return (

@@ -162,14 +162,34 @@
   }
 }
 
-/* Force header logo size (marketing nav) */
+/* Force header logo size (marketing nav) – compact header */
 nav img[alt="Janibear"] {
-  height: 140px !important;
+  height: 40px !important;
   width: auto !important;
   max-height: none !important;
 }
 @media (min-width: 768px) {
   nav img[alt="Janibear"] {
-    height: 200px !important;
+    height: 44px !important;
+  }
+}
+
+/* Proposal document: page breaks and print styling */
+@media print {
+  .proposal-document {
+    background: #fff !important;
+  }
+  .proposal-document section {
+    break-after: page;
+    page-break-after: always;
+    box-shadow: none !important;
+    border: none !important;
+  }
+  .proposal-document section:last-child {
+    break-after: auto;
+    page-break-after: auto;
+  }
+  .print\:hidden {
+    display: none !important;
   }
 }

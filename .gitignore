@@ -32,6 +32,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# optional: your live URL (one line) - used by deploy-easy.ps1 to open after deploy
+.deploy-url
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

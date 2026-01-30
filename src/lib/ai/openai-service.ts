@@ -12,7 +12,7 @@ interface AIConfig {
 interface AIRequest {
   prompt: string;
   context?: Record<string, any>;
-  feature: 'compliance' | 'sds' | 'po' | 'invoicing' | 'phone' | 'general';
+  feature: 'compliance' | 'sds' | 'po' | 'invoicing' | 'phone' | 'proposal' | 'general';
 }
 
 export class OpenAIService {
@@ -205,6 +205,59 @@ Return as JSON.`;
     }
   }
 
+  async suggestProposal(input: {
+    square_footage: number;
+    flooring_breakdown?: Array<{ type: string; sqft: number }>;
+    cleaning_frequency?: string;
+    restrooms?: number;
+    notes?: string;
+  }): Promise<{
+    suggested_crew_size: number;
+    estimated_hours_per_visit: number;
+    cleaning_speed_sqft_per_hour: number;
+    notes: string;
+    labor_estimate?: number;
+  }> {
+    const prompt = `You are a janitorial bidding expert. Given:
+- Square footage: ${input.square_footage} sq ft
+- Flooring breakdown: ${JSON.stringify(input.flooring_breakdown || [])}
+- Cleaning frequency: ${input.cleaning_frequency || 'Not specified'}
+- Restrooms: ${input.restrooms ?? 'Not specified'}
+- Notes: ${input.notes || 'None'}
+
+Suggest:
+1. suggested_crew_size: number of people needed per visit (integer)
+2. estimated_hours_per_visit: total hours per cleaning visit (number)
+3. cleaning_speed_sqft_per_hour: effective sq ft per hour for labor (number)
+4. notes: brief recommendation (string)
+5. labor_estimate: optional monthly labor cost if hourly rate is $25 (number)
+
+Return valid JSON only, no markdown.`;
+
+    const response = await this.generateText({
+      prompt,
+      feature: 'proposal',
+    });
+
+    try {
+      const parsed = JSON.parse(response.replace(/^```\w*\n?|\n?```$/g, '').trim());
+      return {
+        suggested_crew_size: parsed.suggested_crew_size ?? 1,
+        estimated_hours_per_visit: parsed.estimated_hours_per_visit ?? 0,
+        cleaning_speed_sqft_per_hour: parsed.cleaning_speed_sqft_per_hour ?? 0,
+        notes: parsed.notes ?? '',
+        labor_estimate: parsed.labor_estimate,
+      };
+    } catch {
+      return {
+        suggested_crew_size: 1,
+        estimated_hours_per_visit: 0,
+        cleaning_speed_sqft_per_hour: 0,
+        notes: response || 'AI suggestion unavailable.',
+      };
+    }
+  }
+
   private getSystemPrompt(feature: string): string {
     const prompts: Record<string, string> = {
       compliance: 'You are a compliance expert helping janitorial businesses maintain regulatory compliance. Provide clear, actionable advice.',
@@ -212,6 +265,7 @@ Return as JSON.`;
       po: 'You are a procurement expert helping janitorial businesses optimize their supply orders. Provide practical recommendations.',
       invoicing: 'You are a professional business writer creating clear, professional invoice notes for janitorial services.',
       phone: 'You are a customer service analyst. Analyze phone calls and extract key information, sentiment, and action items.',
+      proposal: 'You are a janitorial bidding expert. Suggest crew size, hours per visit, cleaning speeds (sq ft per hour), and labor estimates. Return only valid JSON.',
       general: 'You are a helpful AI assistant for a janitorial quality inspection SaaS platform.',
     };
 

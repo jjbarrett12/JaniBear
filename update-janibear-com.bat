@@ -33,6 +33,10 @@ echo Making sure we're on main (rename master if needed)...
 git branch -M main
 
 echo.
+echo Pulling remote changes (so push won't be rejected)...
+git pull origin main --rebase
+
+echo.
 echo Pushing to GitHub (main)...
 git push -u origin main
 

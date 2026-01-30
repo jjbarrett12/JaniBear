@@ -30,13 +30,14 @@ Vercel will then build from GitHub and update the deployment that janibear.com u
 ### Option B: Do it in a terminal
 
 1. Open PowerShell or Command Prompt.
-2. Run:
-   ```bat
-   cd /d "C:\Users\jjbarrett\OneDrive - Bear Facility Supply\Desktop\JaniBear"
+2. Run (PowerShell: use `cd "path"` with no `/d`; CMD: use `cd /d "path"`):
+   ```powershell
+   cd "C:\Users\jjbarrett\OneDrive - Bear Facility Supply\Desktop\JaniBear"
    git add -A
    git status
    git commit -m "Update site"
-   git push origin main
+   git branch -M main
+   git push -u origin main
    ```
 3. Wait 2–3 minutes for Vercel to build from GitHub.
 4. Hard‑refresh janibear.com (Ctrl+Shift+R).

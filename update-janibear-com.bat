@@ -29,8 +29,12 @@ echo Commit created.
 
 :push
 echo.
+echo Making sure we're on main (rename master if needed)...
+git branch -M main
+
+echo.
 echo Pushing to GitHub (main)...
-git push origin main
+git push -u origin main
 
 if errorlevel 1 (
     echo.

@@ -1,5 +1,9 @@
 # How to Deploy JaniBear to Vercel
 
+**Easiest:** Double-click **deploy-easy.bat** in the JaniBear folder. See **DEPLOY.md** for the short version.
+
+---
+
 JaniBear is on Vercel. Your live site is your Vercel URL (e.g. **jani-bear-xxxx.vercel.app** or your custom domain).
 
 To **update** it with new code, use one of the options below. **Option 2** is the easiest: double-click to deploy.

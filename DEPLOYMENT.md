@@ -1,5 +1,9 @@
 # Deployment Guide
 
+**Easiest:** Double-click **deploy-easy.bat** in the JaniBear folder. See **DEPLOY.md** for the short version.
+
+---
+
 ## Pre-Deployment Checklist
 
 ### ✅ 1. Environment Variables

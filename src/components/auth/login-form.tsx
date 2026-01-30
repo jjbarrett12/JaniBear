@@ -15,6 +15,9 @@ export function LoginForm() {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [errorCode, setErrorCode] = useState<string | null>(null);
+  const [resendSuccess, setResendSuccess] = useState(false);
+  const [resending, setResending] = useState(false);
   const [isMagicLink, setIsMagicLink] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
 
@@ -30,10 +33,32 @@ export function LoginForm() {
     }
   }, []);
 
+  const handleResendConfirmation = async () => {
+    if (!email?.trim()) return;
+    setResending(true);
+    setResendSuccess(false);
+    setError(null);
+    setErrorCode(null);
+    const supabase = createClient();
+    const { error: resendError } = await supabase.auth.resend({
+      type: 'signup',
+      email: email.trim(),
+    });
+    setResending(false);
+    if (resendError) {
+      setError(resendError.message);
+    } else {
+      setResendSuccess(true);
+      setError(null);
+    }
+  };
+
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
+    setErrorCode(null);
+    setResendSuccess(false);
 
     const supabase = createClient();
     
@@ -59,11 +84,13 @@ export function LoginForm() {
       
       if (error) {
         console.error('Login error:', error);
-        // Provide more helpful error messages
-        if (error.message.includes('Invalid login credentials')) {
+        const code = (error as { code?: string }).code ?? '';
+        setErrorCode(code);
+        // Use error.code for reliable detection (Supabase Auth API)
+        if (code === 'invalid_credentials' || error.message.includes('Invalid login credentials')) {
           setError('Invalid email or password. Please check your credentials and try again.');
-        } else if (error.message.includes('Email not confirmed')) {
-          setError('Please check your email and confirm your account before signing in.');
+        } else if (code === 'email_not_confirmed' || error.message.includes('Email not confirmed')) {
+          setError('Your email is not confirmed yet. Check your inbox (and spam) for the confirmation link, then try again.');
         } else {
           setError(error.message);
         }
@@ -85,13 +112,14 @@ export function LoginForm() {
           localStorage.removeItem('janibear_remember_me');
         }
 
-        // Redirect based on onboarding status
+        // Full page redirect so the server receives auth cookies on the next request.
+        // router.push() can run before cookies are set, so the server may not see the session.
         if (!membership) {
-          router.push('/onboarding');
+          window.location.href = '/onboarding';
         } else {
-          router.push('/app/dashboard');
+          window.location.href = '/app/dashboard';
         }
-        router.refresh();
+        return;
       }
     }
     
@@ -152,9 +180,26 @@ export function LoginForm() {
             </>
           )}
           
+          {resendSuccess && (
+            <div className="text-sm text-green-700 bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
+              Confirmation email sent. Check your inbox (and spam), then try signing in again.
+            </div>
+          )}
           {error && (
-            <div className="text-sm text-destructive bg-destructive/10 p-4 rounded-lg border border-destructive/20">
-              {error}
+            <div className="text-sm text-destructive bg-destructive/10 p-4 rounded-lg border border-destructive/20 space-y-2">
+              <p>{error}</p>
+              {errorCode === 'email_not_confirmed' && email?.trim() && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={handleResendConfirmation}
+                  disabled={resending}
+                  className="mt-2"
+                >
+                  {resending ? 'Sending...' : 'Resend confirmation email'}
+                </Button>
+              )}
             </div>
           )}
           

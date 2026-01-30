@@ -1,5 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Explicit for Vercel: use default Next.js output (do not override Output Directory in Vercel)
+  distDir: '.next',
   images: {
     remotePatterns: [
       {

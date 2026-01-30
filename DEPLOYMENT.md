@@ -145,6 +145,8 @@ All migrations should be run in production Supabase:
 - Review server logs
 
 ### 404 NOT_FOUND on Vercel
+**Full checklist:** See [VERCEL_404_CHECKLIST.md](./VERCEL_404_CHECKLIST.md). Most common cause: **Output Directory** overridden in Vercel — leave it empty and redeploy.
+
 1. **Check which URL 404s**  
    Try `https://your-app.vercel.app/api/health` — if it returns `{"ok":true,"env":true}`, the app is running and the 404 is for a specific page; if it also 404s, the deployment or routing is wrong.
 
@@ -152,7 +154,7 @@ All migrations should be run in production Supabase:
    - **Root Directory**: If the repo has JaniBear in a subfolder, set Root Directory to that folder (e.g. `JaniBear`).
    - **Framework Preset**: Should be "Next.js" (auto-detected from `package.json`).
    - **Build Command**: `npm run build` (or leave default).
-   - **Output Directory**: leave default (Vercel uses Next.js output).
+   - **Output Directory**: Leave **empty** (do not override). If set to `out` or `public`, clear it and redeploy.
 
 3. **Environment variables**
    - In Vercel: Settings → Environment Variables.

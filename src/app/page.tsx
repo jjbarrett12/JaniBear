@@ -169,7 +169,7 @@ export default function Home() {
       </section>
 
       {/* What Janibear captures */}
-      <section className="py-24 bg-zinc-900/30 border-b border-zinc-800/80">
+      <section className="py-24 border-b border-zinc-800/80">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
@@ -240,7 +240,7 @@ export default function Home() {
       </section>
 
       {/* Who it's for — Sales teams */}
-      <section className="py-24 bg-zinc-900/30 border-b border-zinc-800/80">
+      <section className="py-24 border-b border-zinc-800/80">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
@@ -357,7 +357,7 @@ export default function Home() {
       </section>
 
       {/* Trust */}
-      <section className="py-24 bg-zinc-900/30 border-b border-zinc-800/80">
+      <section className="py-24 border-b border-zinc-800/80">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">

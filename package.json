@@ -7,6 +7,7 @@
   },
   "scripts": {
     "dev": "next dev -p 3001",
+    "dev:clean": "node -e \"require('fs').rmSync('.next',{recursive:true,force:true})\" && next dev -p 3001",
     "build": "next build",
     "start": "next start -p 3001",
     "deploy": "powershell -NoProfile -ExecutionPolicy Bypass -File ./deploy-easy.ps1",

@@ -1,6 +1,7 @@
 'use server';
 
 import { createClient } from '@/lib/supabase/server';
+import { requireOrg } from '@/lib/auth';
 import { requirePermission } from '@/lib/permissions';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
@@ -14,7 +15,8 @@ const createWalkthroughSchema = z.object({
 });
 
 export async function createWalkthrough(formData: FormData) {
-  await requirePermission('create_proposals'); // Assuming sales role
+  await requirePermission('create_proposals');
+  const org = await requireOrg();
   const supabase = await createClient();
   
   const rawData = {
@@ -29,6 +31,7 @@ export async function createWalkthrough(formData: FormData) {
   const { data, error } = await supabase
     .from('walkthroughs')
     .insert({
+      org_id: org.org_id,
       opportunity_id: rawData.opportunity_id || null,
       site_id: rawData.site_id || null,
       scheduled_at: rawData.scheduled_at,
@@ -41,8 +44,8 @@ export async function createWalkthrough(formData: FormData) {
     throw new Error(error.message);
   }
 
-  revalidatePath('/walkthroughs');
-  redirect(`/walkthroughs/${data.id}`);
+  revalidatePath('/app/walkthroughs');
+  redirect(`/app/walkthroughs/${data.id}`);
 }
 
 export async function updateWalkthroughStatus(id: string, status: string) {
@@ -55,5 +58,5 @@ export async function updateWalkthroughStatus(id: string, status: string) {
     .eq('id', id);
 
   if (error) throw error;
-  revalidatePath(`/walkthroughs/${id}`);
+  revalidatePath(`/app/walkthroughs/${id}`);
 }

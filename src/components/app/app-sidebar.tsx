@@ -19,7 +19,9 @@ import {
   Calculator,
   Settings,
   TrendingUp,
-  ListChecks
+  ListChecks,
+  Building2,
+  FileSearch
 } from 'lucide-react';
 
 export async function AppSidebar() {
@@ -36,7 +38,9 @@ export async function AppSidebar() {
   
   const navItems = [
     { href: '/app/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { href: '/app/crm/clients', label: 'Clients', icon: Building2 },
     { href: '/app/sales', label: 'Sales', icon: TrendingUp },
+    { href: '/app/walkthroughs', label: 'Walkthroughs', icon: FileSearch },
     { href: '/app/locations', label: 'Locations', icon: MapPin },
     { href: '/app/crews', label: 'Crews', icon: Users },
     { href: '/app/templates', label: 'Templates', icon: FileText },

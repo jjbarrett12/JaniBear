@@ -45,7 +45,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100">
+    <div className="landing-page min-h-screen bg-zinc-950 text-zinc-100">
       {/* Nav - compact header */}
       <nav className="border-b border-zinc-800/80 bg-zinc-950/80 backdrop-blur-xl sticky top-0 z-50 h-12">
         <div className="container mx-auto px-4 h-full flex items-center justify-between gap-4">
@@ -62,32 +62,32 @@ export default function Home() {
           </Link>
           <div className="flex items-center justify-end gap-4 md:gap-6 flex-1 min-w-0">
             <Link href="/pricing">
-              <Button variant="ghost" size="sm" className="text-zinc-300 hover:text-white hover:bg-zinc-800 shrink-0">
+              <Button variant="ghost" size="sm" className="landing-nav-link text-zinc-300 hover:text-white hover:bg-zinc-800 shrink-0">
                 Pricing
               </Button>
             </Link>
             <Link href="/survey">
-              <Button variant="ghost" size="sm" className="text-zinc-300 hover:text-white hover:bg-zinc-800 shrink-0">
+              <Button variant="ghost" size="sm" className="landing-nav-link text-zinc-300 hover:text-white hover:bg-zinc-800 shrink-0">
                 Find Your Plan
               </Button>
             </Link>
             <Link href="/#features">
-              <Button variant="ghost" size="sm" className="text-zinc-300 hover:text-white hover:bg-zinc-800 shrink-0">
+              <Button variant="ghost" size="sm" className="landing-nav-link text-zinc-300 hover:text-white hover:bg-zinc-800 shrink-0">
                 Features
               </Button>
             </Link>
             <Link href="/contact">
-              <Button variant="ghost" size="sm" className="text-zinc-300 hover:text-white hover:bg-zinc-800 shrink-0">
+              <Button variant="ghost" size="sm" className="landing-nav-link text-zinc-300 hover:text-white hover:bg-zinc-800 shrink-0">
                 Contact
               </Button>
             </Link>
             <Link href="/auth/login">
-              <Button variant="ghost" size="sm" className="text-zinc-300 hover:text-white hover:bg-zinc-800 shrink-0">
+              <Button variant="ghost" size="sm" className="landing-nav-link text-zinc-300 hover:text-white hover:bg-zinc-800 shrink-0">
                 Sign In
               </Button>
             </Link>
             <Link href="/auth/signup">
-              <Button size="sm" className="bg-orange-500 text-white hover:bg-orange-400 border-0 shadow-lg hover:shadow-orange-500/25 shrink-0">
+              <Button size="sm" className="landing-cta shrink-0">
                 Get Started
               </Button>
             </Link>
@@ -115,7 +115,7 @@ export default function Home() {
           >
             From walkthrough to proposal
             <br />
-            <span className="bg-gradient-to-r from-orange-400 via-orange-500 to-cyan-400 bg-clip-text text-transparent">
+            <span className="gradient-text bg-gradient-to-r from-orange-400 via-orange-500 to-cyan-400 bg-clip-text text-transparent">
               —automatically.
             </span>
           </h1>
@@ -132,13 +132,13 @@ export default function Home() {
             style={{ transitionDelay: '200ms' }}
           >
             <Link href="/auth/signup">
-              <Button size="lg" className="text-lg px-8 h-14 bg-orange-500 text-white hover:bg-orange-400 border-0 shadow-lg hover:shadow-xl hover:shadow-orange-500/25 transition-all">
+              <Button size="lg" className="landing-cta landing-cta-lg text-lg px-8 h-14">
                 Get Started
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
             <Link href="/pricing">
-              <Button size="lg" variant="outline" className="text-lg px-8 h-14 border-zinc-700 text-zinc-300 hover:text-white hover:border-zinc-600">
+              <Button size="lg" variant="outline" className="landing-outline text-lg px-8 h-14 border-zinc-700 text-zinc-300 hover:text-white hover:border-zinc-600">
                 View Pricing
               </Button>
             </Link>

@@ -11,11 +11,20 @@ const PUBLIC_PATHS = [
   '/demo',
   '/contact',
   '/api',
+  '/proposals/', // public proposal view by token
 ];
 
 function isPublicPath(pathname: string): boolean {
   if (pathname === '/') return true;
   return PUBLIC_PATHS.some((p) => pathname.startsWith(p));
+}
+
+// Redirect old /dashboard, /crm, /walkthroughs to /app/* so one design is used
+function redirectToApp(pathname: string): string | null {
+  if (pathname === '/dashboard' || pathname === '/dashboard/') return '/app/dashboard';
+  if (pathname.startsWith('/crm/')) return '/app' + pathname;
+  if (pathname.startsWith('/walkthroughs')) return '/app' + pathname;
+  return null;
 }
 
 export async function updateSession(request: NextRequest) {
@@ -63,7 +72,15 @@ export async function updateSession(request: NextRequest) {
       data: { user },
     } = await supabase.auth.getUser();
 
-    if (!user && !isPublicPath(request.nextUrl.pathname)) {
+    const pathname = request.nextUrl.pathname;
+    const appRedirect = redirectToApp(pathname);
+    if (appRedirect) {
+      const url = request.nextUrl.clone();
+      url.pathname = appRedirect;
+      return NextResponse.redirect(url);
+    }
+
+    if (!user && !isPublicPath(pathname)) {
       const url = request.nextUrl.clone();
       url.pathname = '/auth/login';
       return NextResponse.redirect(url);

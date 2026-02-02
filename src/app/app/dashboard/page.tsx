@@ -216,6 +216,18 @@ export default async function DashboardPage() {
                   Create Schedule
                 </Button>
               </Link>
+              <Link href="/app/walkthroughs/new">
+                <Button variant="outline" className="w-full justify-start h-14 text-base">
+                  <Plus className="h-5 w-5 mr-3" />
+                  New Walkthrough
+                </Button>
+              </Link>
+              <Link href="/app/crm/clients/new">
+                <Button variant="outline" className="w-full justify-start h-14 text-base">
+                  <Plus className="h-5 w-5 mr-3" />
+                  Add Client
+                </Button>
+              </Link>
             </div>
           </CardContent>
         </Card>

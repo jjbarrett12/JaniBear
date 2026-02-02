@@ -8,10 +8,19 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 export function PWAInstaller() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [showInstallPrompt, setShowInstallPrompt] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted || typeof window === 'undefined') return;
     // Check if already installed
     if (window.matchMedia('(display-mode: standalone)').matches) {
+      return;
+    }
+    if (sessionStorage.getItem('pwa-install-dismissed') === 'true') {
       return;
     }
 
@@ -27,7 +36,7 @@ export function PWAInstaller() {
     return () => {
       window.removeEventListener('beforeinstallprompt', handler);
     };
-  }, []);
+  }, [mounted]);
 
   const handleInstall = async () => {
     if (!deferredPrompt) return;
@@ -48,7 +57,10 @@ export function PWAInstaller() {
     sessionStorage.setItem('pwa-install-dismissed', 'true');
   };
 
-  if (!showInstallPrompt || sessionStorage.getItem('pwa-install-dismissed')) {
+  if (!mounted || !showInstallPrompt) {
+    return null;
+  }
+  if (typeof window !== 'undefined' && sessionStorage.getItem('pwa-install-dismissed') === 'true') {
     return null;
   }
 

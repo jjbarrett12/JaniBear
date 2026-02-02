@@ -31,8 +31,8 @@ export default async function WalkthroughsPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Walkthroughs</h1>
-        <Link href="/walkthroughs/new">
+        <h1 className="text-3xl font-bold text-gray-900">Walkthroughs</h1>
+        <Link href="/app/walkthroughs/new">
           <Button>
             <Plus className="mr-2 h-4 w-4" />
             New Walkthrough
@@ -40,7 +40,7 @@ export default async function WalkthroughsPage() {
         </Link>
       </div>
 
-      <div className="rounded-md border">
+      <div className="rounded-md border bg-white">
         <Table>
           <TableHeader>
             <TableRow>
@@ -64,7 +64,7 @@ export default async function WalkthroughsPage() {
                   </Badge>
                 </TableCell>
                 <TableCell className="text-right">
-                  <Link href={`/walkthroughs/${w.id}`}>
+                  <Link href={`/app/walkthroughs/${w.id}`}>
                     <Button variant="ghost" size="sm">View</Button>
                   </Link>
                 </TableCell>

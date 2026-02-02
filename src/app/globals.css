@@ -7,18 +7,36 @@
   background-color: #09090b !important;
   color: #f4f4f5;
 }
-.landing-page nav {
-  background: rgba(9, 9, 11, 0.9) !important;
-  border-color: rgba(39, 39, 42, 0.8);
+/* Landing header: white background, black text */
+.landing-header {
+  background: #fff !important;
+  border-color: #e5e7eb !important;
 }
-.landing-page .landing-nav-link {
-  color: #d4d4d8 !important;
+.landing-header .landing-nav-link {
+  color: #111 !important;
   background: transparent !important;
   border: none !important;
 }
-.landing-page .landing-nav-link:hover {
-  color: #fff !important;
-  background: #27272a !important;
+.landing-header .landing-nav-link:hover {
+  color: #000 !important;
+  background: #f3f4f6 !important;
+}
+/* Large logo within same header height (h-12 = 48px) */
+.landing-logo-wrap {
+  max-height: 48px;
+  display: flex;
+  align-items: center;
+}
+.landing-header .landing-logo {
+  max-height: 46px !important;
+  height: 46px !important;
+  width: auto !important;
+}
+@media (min-width: 768px) {
+  .landing-header .landing-logo {
+    max-height: 48px !important;
+    height: 48px !important;
+  }
 }
 .landing-page .landing-cta {
   background: #f97316 !important;
@@ -215,18 +233,6 @@
   .animate-gradient {
     background-size: 200% 200%;
     animation: gradient-shift 3s ease infinite;
-  }
-}
-
-/* Force header logo size (marketing nav) – compact header */
-nav img[alt="Janibear"] {
-  height: 40px !important;
-  width: auto !important;
-  max-height: none !important;
-}
-@media (min-width: 768px) {
-  nav img[alt="Janibear"] {
-    height: 44px !important;
   }
 }
 

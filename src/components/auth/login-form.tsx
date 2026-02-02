@@ -8,11 +8,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Eye, EyeOff } from 'lucide-react';
 
 export function LoginForm() {
   const searchParams = useSearchParams();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [errorCode, setErrorCode] = useState<string | null>(null);
@@ -121,8 +123,9 @@ export function LoginForm() {
         }
 
         const targetPath = membership ? '/app/dashboard' : '/onboarding';
-        // Redirect via /auth/continue so cookies have time to be set before the app sees the request.
-        // Otherwise the server often doesn't see the session and sends the user back to login.
+        // Give the Supabase client time to persist the session to cookies before navigating.
+        // Otherwise the server may not see the session and redirect back to login.
+        await new Promise((r) => setTimeout(r, 350));
         const continueUrl = `/auth/continue?next=${encodeURIComponent(targetPath)}`;
         window.location.href = continueUrl;
         return;
@@ -154,16 +157,27 @@ export function LoginForm() {
             <>
               <div className="space-y-2">
                 <Label htmlFor="password" className="text-sm font-semibold">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="Enter your password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  disabled={isLoading}
-                  className="h-14 text-base"
-                />
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="Enter your password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    disabled={isLoading}
+                    className="h-14 text-base pr-12"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((p) => !p)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary/20 rounded p-1"
+                    tabIndex={-1}
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  >
+                    {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                  </button>
+                </div>
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">

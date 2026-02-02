@@ -6,9 +6,9 @@ import { createClient } from '@/lib/supabase/client';
 
 const ALLOWED_PATHS = ['/app/', '/onboarding', '/auth/'];
 const DEFAULT_NEXT = '/app/dashboard';
-const INITIAL_DELAY_MS = 400;
-const RETRY_DELAY_MS = 250;
-const MAX_ATTEMPTS = 6;
+const INITIAL_DELAY_MS = 600;
+const RETRY_DELAY_MS = 300;
+const MAX_ATTEMPTS = 8;
 
 export default function AuthContinuePage() {
   const searchParams = useSearchParams();

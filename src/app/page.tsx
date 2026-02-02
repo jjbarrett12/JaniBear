@@ -46,16 +46,16 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100">
-      {/* Nav */}
-      <nav className="border-b border-zinc-800/80 bg-zinc-950/80 backdrop-blur-xl sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-1.5 flex items-center justify-between gap-4">
-          <Link href="/" className="flex items-center shrink-0 bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block" style={{ minHeight: 40 }}>
+      {/* Nav - compact header */}
+      <nav className="border-b border-zinc-800/80 bg-zinc-950/80 backdrop-blur-xl sticky top-0 z-50 h-12">
+        <div className="container mx-auto px-4 h-full flex items-center justify-between gap-4">
+          <Link href="/" className="flex items-center shrink-0 bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block">
             <Image
               src="/janibear-logo.png"
               alt="Janibear"
-              width={560}
-              height={182}
-              className="!h-8 md:!h-10 w-auto !max-h-none object-contain bg-transparent"
+              width={280}
+              height={91}
+              className="!h-6 md:!h-7 w-auto !max-h-none object-contain bg-transparent"
               priority
               unoptimized
             />

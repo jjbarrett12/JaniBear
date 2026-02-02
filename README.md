@@ -1,174 +1,105 @@
-# Janibear - Janitorial Quality Management SaaS
+# Janibear - Janitorial Quality Management & Sales AI SaaS
 
-A comprehensive, mobile-first janitorial quality inspection and management platform built with Next.js 14, TypeScript, TailwindCSS, and Supabase.
+A comprehensive, multi-tenant SaaS for janitorial businesses, featuring AI-powered proposals, walkthroughs, quality control, and operations management.
 
-<!-- Trigger Vercel deploy -->
+## 🚀 Key Modules
 
-## 🚀 Features
+### 1. Sales & AI Proposals
+- **Walkthroughs**: Mobile-friendly capture (text, photo, video, audio)
+- **AI Extraction**: Auto-generates scope of work from walkthrough data (stubbed)
+- **Proposals**: Create, edit, and send professional proposals with e-sign/approval
+- **CRM**: Manage Clients, Sites, Leads, and Opportunities
+- **Public Proposal Links**: Client-facing view for acceptance
 
-### Core Functionality
-- **Multi-tenant Architecture**: Each organization has isolated data with role-based access control
-- **User Authentication**: Secure email/password and magic link authentication via Supabase Auth
-- **Organization Management**: Onboarding flow for new organizations
-- **Location Management**: CRUD operations for buildings/accounts with optional areas/sub-areas
-- **Inspection System**: 
-  - Template builder with sections and items
-  - Multiple item types (yes/no, scale, text, photo, etc.)
-  - Real-time scoring with weights and required flags
-  - GPS tagging and photo capture
-  - Mobile-optimized inspection flow
-- **Issue Tracking**: Create issues from failed inspection items with status tracking, assignments, and comments
-- **Team Management**: Crews, crew members, and assignments to locations
-- **Task Management**: Individual task assignments with real-time completion tracking
-- **Scheduling**: One-time and recurring (weekly) inspection schedules
-- **Reporting**: Printable reports and shareable public links
-- **Bid Calculator**: Calculate fair market value for cleaning bids based on square footage, facilities, and usage
-- **Contract Management**: Upload and assign service contracts to locations
-- **Multi-language Support**: English and Spanish UI support per user
+### 2. QC & Retention
+- **Inspections**: Customizable templates, scoring, and mobile execution
+- **Issues**: Issue tracking, SLAs, and work order generation
+- **Client Reports**: Monthly automated reports (PDF/HTML)
 
-### Marketing & Payments
-- **Professional Landing Page**: Modern, responsive marketing site
-- **Pricing Plans**: Three tiers (Starter, Professional, Enterprise)
-- **Customer Survey**: Interactive quiz to recommend the best plan
-- **Stripe Integration**: Secure payment processing with subscription management
-- **Password Strength Meter**: Real-time password strength indicator
+### 3. Operations
+- **Workload**: Employee management and workload balancing
+- **Scheduling**: Recurring inspection and task schedules
 
 ## 🛠️ Tech Stack
 
-- **Framework**: Next.js 14 (App Router)
+- **Framework**: Next.js 14+ (App Router)
 - **Language**: TypeScript
-- **Styling**: TailwindCSS + shadcn/ui components
-- **Database**: Supabase (PostgreSQL)
-- **Authentication**: Supabase Auth
-- **Storage**: Supabase Storage
-- **Payments**: Stripe
-- **Form Validation**: React Hook Form + Zod
-- **Icons**: Lucide React
-
-## 📋 Prerequisites
-
-- Node.js 18+ and npm
-- Supabase account and project
-- Stripe account (for payments)
+- **Styling**: TailwindCSS + shadcn/ui
+- **Database**: Supabase (PostgreSQL, Auth, Storage, RLS)
+- **AI Integration**: Stubs ready for OpenAI/Whisper integration
+- **Validation**: Zod + React Hook Form
 
 ## 🔧 Setup Instructions
 
-### 1. Clone and Install
+### 1. Environment Setup
+
+Create `.env.local`:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=your_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+```
+
+### 2. Database Migrations
+
+Run the SQL migrations in Supabase SQL Editor in order:
+1. `supabase/migrations/001_initial_schema.sql` (and 002-009 if not already run)
+2. **`supabase/migrations/010_foundation_update.sql`** (Critical: Adds new SaaS foundation tables)
+
+### 3. Storage Setup
+
+Create the following public buckets in Supabase Storage:
+- `walkthrough-media`
+- `inspection-photos`
+- `proposal-pdfs` (optional)
+
+Ensure policies allow authenticated uploads and public reads (or signed URLs).
+
+### 4. Run Locally
 
 ```bash
 npm install
-```
-
-### 2. Environment Variables
-
-Create a `.env.local` file in the root directory:
-
-```env
-# Supabase Configuration
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-
-# Stripe Configuration (for payments)
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
-STRIPE_SECRET_KEY=your_stripe_secret_key
-STRIPE_WEBHOOK_SECRET=your_stripe_webhook_secret
-
-# Stripe Price IDs (create products in Stripe Dashboard)
-STRIPE_STARTER_PRICE_ID=price_xxxxx
-STRIPE_PROFESSIONAL_PRICE_ID=price_xxxxx
-STRIPE_ENTERPRISE_PRICE_ID=price_xxxxx
-```
-
-### 3. Database Setup
-
-Run the SQL migrations in your Supabase SQL Editor:
-
-1. `supabase/migrations/001_initial_schema.sql` - Creates all tables
-2. `supabase/migrations/002_rls_policies.sql` - Sets up Row Level Security
-3. `supabase/migrations/003_create_storage_bucket.sql` - Creates storage bucket for photos
-
-### 4. Stripe Setup
-
-1. Create products and prices in Stripe Dashboard
-2. Copy the Price IDs to your `.env.local`
-3. Set up webhook endpoint: `https://yourdomain.com/api/webhook`
-4. Add webhook secret to `.env.local`
-
-### 5. Run Development Server
-
-```bash
 npm run dev
 ```
 
-Visit `http://localhost:3000`
+Visit `http://localhost:3001`.
 
 ## 📁 Project Structure
 
 ```
 src/
-├── app/                    # Next.js App Router pages
-│   ├── auth/              # Authentication pages
-│   ├── app/               # Main application (protected)
-│   ├── api/               # API routes (Stripe, etc.)
-│   ├── pricing/           # Pricing page
-│   ├── survey/            # Customer survey
-│   └── checkout/          # Payment success page
-├── components/
-│   ├── auth/              # Authentication components
-│   ├── pricing/           # Pricing components
-│   ├── survey/            # Survey components
-│   └── ui/                # shadcn/ui components
+├── app/
+│   ├── (auth)/            # Login, Signup
+│   ├── (app)/             # Protected App Routes (Dashboard, CRM, etc.)
+│   │   ├── dashboard/
+│   │   ├── crm/
+│   │   ├── walkthroughs/
+│   │   ├── proposals/
+│   │   └── qc/
+│   ├── api/               # API Routes & Webhooks
+│   └── page.tsx           # Landing Page
+├── components/            # UI Components (shadcn)
 ├── lib/
-│   ├── supabase/          # Supabase client utilities
-│   ├── auth.ts            # Auth helper functions
-│   └── utils.ts           # Utility functions
-└── supabase/
-    └── migrations/        # Database migrations
+│   ├── supabase/          # Client/Server helpers
+│   ├── ai/                # AI Service Stubs
+│   ├── permissions.ts     # Role-based access control
+│   └── auth.ts            # Auth utilities
+└── actions/               # Server Actions
 ```
 
-## 🔐 Authentication Flow
+## 🔐 Permissions & Roles
 
-1. **Sign Up**: User creates account → Profile created → Onboarding (if needed)
-2. **Sign In**: Email/password or magic link → Dashboard redirect
-3. **Password Reset**: Forgot password → Email link → Reset password page
+Defined in `src/lib/permissions.ts`.
+Roles: `owner`, `admin`, `sales`, `ops`, `inspector`, `cleaner`, `client`.
 
-## 💳 Payment Flow
+## 🤖 AI Features (Stubs)
 
-1. User selects plan on pricing page or via survey recommendation
-2. Click "Get Started" → Stripe Checkout session created
-3. User completes payment → Webhook updates subscription
-4. Redirect to success page → Sign up to activate account
+Located in `src/lib/ai/`. Connect your providers (OpenAI, Anthropic) here:
+- `transcribeAudio(path)`
+- `extractScope(text)`
+- `generateProposal(scope)`
 
-## 🎨 UI Components
+## 📅 Scheduled Jobs
 
-Built with shadcn/ui components:
-- Button, Input, Label, Card
-- Select, Textarea, RadioGroup
-- All styled with TailwindCSS
-
-## 📱 Mobile-First Design
-
-- Responsive layouts for all screen sizes
-- Touch-optimized forms and buttons
-- Mobile-friendly inspection flow
-- Optimized image loading
-
-## 🔒 Security
-
-- Row Level Security (RLS) on all database tables
-- Organization-scoped data access
-- Role-based permissions (Owner, Manager, Inspector, ClientViewer)
-- Secure password requirements (8+ chars, strength meter)
-- HTTPS-only in production
-
-## 📝 License
-
-Private - All rights reserved
-
-## 🤝 Support
-
-For issues or questions, please contact support.
-
----
-
-Built with ❤️ for janitorial service providers
+For Follow-up Sequences and Monthly Reports, use Supabase Edge Functions invoked by pg_cron or an external scheduler (e.g., Vercel Cron).
+(Stubs provided in database schema for `sequences` and `report_runs`).

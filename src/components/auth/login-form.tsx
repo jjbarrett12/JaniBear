@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -10,7 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 export function LoginForm() {
-  const router = useRouter();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -20,6 +20,14 @@ export function LoginForm() {
   const [resending, setResending] = useState(false);
   const [isMagicLink, setIsMagicLink] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+
+  // Show session error if redirected from auth/continue (session could not be established)
+  useEffect(() => {
+    const sessionError = searchParams.get('error');
+    if (sessionError === 'session') {
+      setError('Session could not be established. Please sign in again.');
+    }
+  }, [searchParams]);
 
   // Load saved credentials on mount
   useEffect(() => {
@@ -112,13 +120,11 @@ export function LoginForm() {
           localStorage.removeItem('janibear_remember_me');
         }
 
-        // Full page redirect so the server receives auth cookies on the next request.
-        // router.push() can run before cookies are set, so the server may not see the session.
-        if (!membership) {
-          window.location.href = '/onboarding';
-        } else {
-          window.location.href = '/app/dashboard';
-        }
+        const targetPath = membership ? '/app/dashboard' : '/onboarding';
+        // Redirect via /auth/continue so cookies have time to be set before the app sees the request.
+        // Otherwise the server often doesn't see the session and sends the user back to login.
+        const continueUrl = `/auth/continue?next=${encodeURIComponent(targetPath)}`;
+        window.location.href = continueUrl;
         return;
       }
     }

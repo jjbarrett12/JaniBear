@@ -11,7 +11,7 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  // TEMPORARY: Disable middleware for all routes to rule out 404 from middleware.
-  // After 404 is fixed, restore to: matcher: ['/app/:path*']
-  matcher: ['/__middleware_disabled_do_not_use'],
+  matcher: [
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)',
+  ],
 };

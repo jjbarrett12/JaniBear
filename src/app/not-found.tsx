@@ -20,6 +20,11 @@ export default function NotFound() {
               Go home
             </Button>
           </Link>
+          <Link href="/auth/login">
+            <Button variant="outline" className="w-full sm:w-auto border-zinc-700 text-zinc-300 hover:bg-zinc-800">
+              Sign in
+            </Button>
+          </Link>
           <Link href="/demo">
             <Button variant="outline" className="w-full sm:w-auto border-zinc-700 text-zinc-300 hover:bg-zinc-800">
               Book a demo

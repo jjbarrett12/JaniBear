@@ -7,6 +7,26 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
+function SignOutLink() {
+  const [signingOut, setSigningOut] = useState(false);
+  const handleSignOut = async () => {
+    setSigningOut(true);
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    window.location.href = '/auth/login';
+  };
+  return (
+    <button
+      type="button"
+      onClick={handleSignOut}
+      disabled={signingOut}
+      className="font-medium text-orange-600 hover:text-orange-700 disabled:opacity-50"
+    >
+      {signingOut ? 'Signing out…' : 'Sign out and go to sign in'}
+    </button>
+  );
+}
+
 export function OnboardingForm() {
   const [orgName, setOrgName] = useState('');
   const [fullName, setFullName] = useState('');
@@ -113,6 +133,11 @@ export function OnboardingForm() {
           <Button type="submit" className="w-full h-14 text-lg" disabled={isLoading} size="lg">
             {isLoading ? 'Creating...' : 'Create Organization'}
           </Button>
+
+          <p className="text-center text-sm text-zinc-500 pt-2">
+            Need to use a different account?{' '}
+            <SignOutLink />
+          </p>
         </form>
       </CardContent>
     </Card>

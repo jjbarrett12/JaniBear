@@ -49,14 +49,20 @@ export function LoginForm() {
     const redirectTo = typeof window !== 'undefined'
       ? `${window.location.origin}/auth/callback`
       : undefined;
-    const { error: oauthError } = await supabase.auth.signInWithOAuth({
+    const { data, error: oauthError } = await supabase.auth.signInWithOAuth({
       provider,
       options: redirectTo ? { redirectTo } : undefined,
     });
     if (oauthError) {
       setError(oauthError.message);
       setOauthLoading(null);
+      return;
     }
+    if (data?.url) {
+      window.location.href = data.url;
+      return;
+    }
+    setOauthLoading(null);
   };
 
   useEffect(() => {

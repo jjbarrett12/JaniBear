@@ -43,14 +43,20 @@ export function SignupForm() {
     setOauthLoading(provider);
     setError(null);
     const supabase = createClient();
-    const { error: oauthError } = await supabase.auth.signInWithOAuth({
+    const { data, error: oauthError } = await supabase.auth.signInWithOAuth({
       provider,
       options: { redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent('/onboarding')}` },
     });
     if (oauthError) {
       setError(oauthError.message);
       setOauthLoading(null);
+      return;
     }
+    if (data?.url) {
+      window.location.href = data.url;
+      return;
+    }
+    setOauthLoading(null);
   };
 
   const handleSignup = async (e: React.FormEvent) => {

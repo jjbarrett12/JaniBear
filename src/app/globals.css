@@ -21,16 +21,18 @@
   color: #000 !important;
   background: #f3f4f6 !important;
 }
-/* Header logo: slightly larger; sign-in page keeps its own larger logo */
+/* Header logo: full size (unchanged); nav has fixed height so logo overflows */
 .landing-logo-wrap {
-  max-height: 160px;
   display: flex;
   align-items: center;
+  overflow: visible;
+  flex-shrink: 0;
 }
 .landing-header .landing-logo {
   max-height: 140px !important;
   height: 140px !important;
   width: auto !important;
+  flex-shrink: 0;
 }
 @media (min-width: 768px) {
   .landing-header .landing-logo {

@@ -48,19 +48,24 @@ export async function updateSession(request: NextRequest) {
   }
 
   try {
+    // Use secure cookies on HTTPS so session cookies are sent on next request
+    const isSecure = request.nextUrl.protocol === 'https:';
+    const cookieOptions = { path: '/', sameSite: 'lax' as const, secure: isSecure };
+
     const supabase = createServerClient(
       supabaseUrl,
       supabaseAnonKey,
       {
+        cookieOptions,
         cookies: {
           get(key: string) {
             return request.cookies.get(key)?.value ?? null;
           },
           set(key: string, value: string, options: Record<string, unknown>) {
-            supabaseResponse.cookies.set(key, value, options);
+            supabaseResponse.cookies.set(key, value, { ...cookieOptions, ...options });
           },
           remove(key: string, options: Record<string, unknown>) {
-            supabaseResponse.cookies.set(key, '', { ...options, maxAge: 0 });
+            supabaseResponse.cookies.set(key, '', { ...cookieOptions, ...options, maxAge: 0 });
           },
         },
       }

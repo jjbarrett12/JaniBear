@@ -47,10 +47,10 @@ export default function Home() {
 
   return (
     <div className="landing-page min-h-screen bg-zinc-950 text-zinc-100">
-      {/* Nav - white header, black text, large logo */}
-      <nav className="landing-header border-b border-gray-200 bg-white sticky top-0 z-50 min-h-[4rem] h-auto py-1.5 flex items-center">
-        <div className="container mx-auto px-4 h-full flex items-center justify-between gap-4">
-          <Link href="/" className="flex items-center shrink-0 bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block landing-logo-wrap">
+      {/* Nav - fixed height ~25% shorter; logo full size and overflows */}
+      <nav className="landing-header border-b border-gray-200 bg-white sticky top-0 z-50 h-[105px] md:h-[120px] py-0 flex items-center overflow-visible">
+        <div className="container mx-auto px-4 h-full flex items-center justify-between gap-4 overflow-visible min-h-0">
+          <Link href="/" className="landing-logo-wrap flex items-center shrink-0 overflow-visible bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block [&>span]:overflow-visible">
             <Image
               src="/janibear-logo.png"
               alt="Janibear"
@@ -96,8 +96,8 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Hero */}
-      <section className="relative container mx-auto px-4 py-16 md:py-24 overflow-hidden">
+      {/* Hero - negative top margin reclaims space from logo overflow */}
+      <section className="relative container mx-auto px-4 pt-12 md:pt-14 pb-16 md:pb-24 overflow-hidden -mt-4">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-3xl" />
           <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-cyan-500/5 rounded-full blur-3xl" />
@@ -114,10 +114,9 @@ export default function Home() {
           <h1
             className={`text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight tracking-tight transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
           >
-            From walkthrough to proposal
-            <br />
+            Win More Cleaning Contracts. Run Better Operations -{' '}
             <span className="gradient-text bg-gradient-to-r from-orange-400 via-orange-500 to-cyan-400 bg-clip-text text-transparent">
-              —automatically.
+              Automatically
             </span>
           </h1>
 
@@ -125,7 +124,7 @@ export default function Home() {
             className={`text-lg md:text-xl text-zinc-400 mb-8 max-w-3xl mx-auto leading-relaxed transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '100ms' }}
           >
-            Jani-Bear transforms your building walkthrough into a professional cleaning proposal with detailed scope, service frequencies, and accurate pricing.
+            AI-powered proposals, inspections, and quality control—built for modern commercial cleaning companies
           </p>
 
           <div
@@ -302,15 +301,15 @@ export default function Home() {
         </div>
       </section>
 
-      {/* What Your Client Receives - 6–8 Page Proposal Sample (Auto-Scroll) */}
+      {/* Proposal sample section - hero subhead as section title */}
       <section className="py-24 border-b border-zinc-800/80 bg-zinc-900/20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
-              What Your Client Receives
+              AI-powered proposals, inspections, and quality control
             </h2>
             <p className="text-lg text-zinc-400 max-w-2xl mx-auto">
-              A polished, 6–8 page proposal—the kind that wins bids. Use your own custom template; we merge in customer and job details for every bid.
+              Built for modern commercial cleaning companies. A polished, 6–8 page proposal—the kind that wins bids. Use your own custom template; we merge in customer and job details for every bid.
             </p>
           </div>
 

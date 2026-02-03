@@ -161,11 +161,18 @@ export function LoginForm() {
         }
 
         const targetPath = membership ? '/app/dashboard' : '/onboarding';
-        // Let session persist to cookies, then go via auth/continue so the server
-        // can read the cookie and redirect (or client polls and redirects).
-        await supabase.auth.getSession();
-        await new Promise((r) => setTimeout(r, 1500));
-        window.location.replace(`/auth/continue?next=${encodeURIComponent(targetPath)}`);
+        // Wait until session is in cookies (poll), then full-page redirect so the next request includes auth.
+        const maxWait = 5000;
+        const step = 200;
+        let elapsed = 0;
+        while (elapsed < maxWait) {
+          const { data } = await supabase.auth.getSession();
+          if (data.session) break;
+          await new Promise((r) => setTimeout(r, step));
+          elapsed += step;
+        }
+        await new Promise((r) => setTimeout(r, 2000));
+        window.location.href = targetPath;
         return;
       }
     }

@@ -170,11 +170,28 @@ export function LoginForm() {
         // Default to onboarding
       }
 
-      // Send user through /auth/continue so the next request sends cookies and server sees session
       const origin = typeof window !== 'undefined' ? window.location.origin : '';
-      await new Promise((r) => setTimeout(r, 1200));
-      const continueUrl = `${origin}/auth/continue?next=${encodeURIComponent(targetPath)}`;
-      window.location.href = continueUrl;
+      // Hard cap: after 3s always reset so user is never stuck
+      const safetyTimer = setTimeout(() => {
+        setError('Session could not be saved. Try incognito mode or a different browser.');
+        setIsLoading(false);
+      }, 3000);
+
+      const POLL_MS = 200;
+      const MAX_POLLS = 15; // 3s max
+      for (let i = 0; i < MAX_POLLS; i++) {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+          clearTimeout(safetyTimer);
+          window.location.href = `${origin}${targetPath}`;
+          return;
+        }
+        await new Promise((r) => setTimeout(r, POLL_MS));
+      }
+
+      clearTimeout(safetyTimer);
+      setError('Session could not be saved. Try incognito mode or a different browser.');
+      setIsLoading(false);
       return;
     }
     setIsLoading(false);

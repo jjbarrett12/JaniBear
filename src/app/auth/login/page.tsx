@@ -18,34 +18,40 @@ export default async function LoginPage() {
   }
   
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 px-4 py-8">
-      <div className="w-full max-w-md space-y-4">
-        {/* Logo Section */}
+    <div
+      className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-zinc-50 via-white to-orange-50/30 px-4"
+      style={{ paddingTop: '1.5rem', paddingBottom: '2rem' }}
+    >
+      <div
+        className="w-full max-w-md"
+        style={{ marginTop: '-5rem' }}
+      >
+        {/* Logo + Welcome — compact, tight to form */}
         <div className="text-center">
-          <div className="flex justify-center mb-2 [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block">
+          <div className="flex justify-center [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block">
             <Image
               src="/janibear-logo.png"
               alt="Janibear Logo"
               width={600}
               height={200}
-              className="h-36 md:h-44 lg:h-56 w-auto object-contain bg-transparent"
+              className="w-auto object-contain bg-transparent"
+              style={{ imageRendering: 'auto', height: '5rem', maxHeight: '7rem' }}
               priority
               unoptimized
-              style={{ 
-                imageRendering: 'auto',
-              }}
             />
           </div>
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">
-            Welcome Back
+          <h1 className="text-xl sm:text-2xl font-bold text-zinc-900 mt-1">
+            Welcome back
           </h1>
-          <p className="text-gray-600 text-base">
+          <p className="text-zinc-500 text-sm mt-0.5">
             Sign in to your Janibear account
           </p>
         </div>
 
-        {/* Login Form */}
-        <LoginForm />
+        {/* Login Form — tight under welcome */}
+        <div style={{ marginTop: '-1rem' }}>
+          <LoginForm />
+        </div>
       </div>
     </div>
   );

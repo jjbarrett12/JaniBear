@@ -35,7 +35,7 @@ export default async function LoginPage() {
               width={600}
               height={200}
               className="w-auto object-contain bg-transparent"
-              style={{ imageRendering: 'auto', height: '14rem', maxHeight: '16rem' }}
+              style={{ imageRendering: 'auto', height: '14rem', maxHeight: '18rem' }}
               priority
               unoptimized
             />

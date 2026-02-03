@@ -21,21 +21,21 @@
   color: #000 !important;
   background: #f3f4f6 !important;
 }
-/* Header logo: 2x larger (~276px / ~288px), gap unchanged */
+/* Header logo: compact size (sign-in page keeps its own larger logo) */
 .landing-logo-wrap {
-  max-height: 288px;
+  max-height: 144px;
   display: flex;
   align-items: center;
 }
 .landing-header .landing-logo {
-  max-height: 276px !important;
-  height: 276px !important;
+  max-height: 120px !important;
+  height: 120px !important;
   width: auto !important;
 }
 @media (min-width: 768px) {
   .landing-header .landing-logo {
-    max-height: 288px !important;
-    height: 288px !important;
+    max-height: 140px !important;
+    height: 140px !important;
   }
 }
 .landing-page .landing-cta {

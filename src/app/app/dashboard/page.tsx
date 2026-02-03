@@ -1,238 +1,260 @@
 import { createClient } from '@/lib/supabase/server';
-import { requireOrg } from '@/lib/auth';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { requireOrg, getCurrentUser } from '@/lib/auth';
 import { StatsCards } from '@/components/dashboard/stats-cards';
+import { QuickActions } from '@/components/dashboard/quick-actions';
 import { RecentActivity } from '@/components/dashboard/recent-activity';
-import { ClipboardCheck, AlertCircle, MapPin, TrendingUp, Plus, ArrowRight } from 'lucide-react';
-import Link from 'next/link';
-import { formatDate } from '@/lib/utils';
+import { PipelineWidget } from '@/components/dashboard/pipeline-widget';
+import { TodaysSchedule } from '@/components/dashboard/todays-schedule';
+import { InspectionChart } from '@/components/dashboard/charts/inspection-chart';
 
 export default async function DashboardPage() {
   const org = await requireOrg();
+  const user = await getCurrentUser();
   const supabase = await createClient();
 
-  // Get recent inspections
-  const { data: recentInspections } = await supabase
-    .from('inspections')
-    .select('*, locations(name)')
-    .eq('org_id', org.org_id)
-    .order('created_at', { ascending: false })
-    .limit(5);
+  // Parallel data fetching for better performance
+  const [
+    inspectionsResult,
+    issuesResult,
+    locationsResult,
+    crewsResult,
+    proposalsResult,
+    walkthroughsResult,
+    schedulesResult,
+    recentIssuesResult,
+    inspectionScoresResult,
+  ] = await Promise.all([
+    // Recent inspections
+    supabase
+      .from('inspections')
+      .select('*, locations(name)')
+      .eq('org_id', org.org_id)
+      .order('created_at', { ascending: false })
+      .limit(5),
+    
+    // Issues
+    supabase
+      .from('issues')
+      .select('*', { count: 'exact' })
+      .eq('org_id', org.org_id)
+      .eq('status', 'open'),
+    
+    // Locations
+    supabase
+      .from('locations')
+      .select('*', { count: 'exact', head: true })
+      .eq('org_id', org.org_id),
+    
+    // Crews
+    supabase
+      .from('crews')
+      .select('*', { count: 'exact', head: true })
+      .eq('org_id', org.org_id),
+    
+    // Proposals
+    supabase
+      .from('proposals')
+      .select('id, total_amount, status, created_at, leads(full_name, company_name)')
+      .eq('org_id', org.org_id)
+      .in('status', ['draft', 'sent'])
+      .order('created_at', { ascending: false })
+      .limit(10),
+    
+    // Recent walkthroughs
+    supabase
+      .from('walkthroughs')
+      .select('*', { count: 'exact', head: true })
+      .eq('org_id', org.org_id),
+    
+    // Today's schedules
+    supabase
+      .from('schedules')
+      .select('id, locations(name), crews(name), is_active')
+      .eq('org_id', org.org_id)
+      .eq('is_active', true)
+      .limit(5),
+    
+    // Recent issues for activity
+    supabase
+      .from('issues')
+      .select('id, title, status, created_at')
+      .eq('org_id', org.org_id)
+      .order('created_at', { ascending: false })
+      .limit(5),
+    
+    // Inspection scores for chart
+    supabase
+      .from('inspections')
+      .select('total_score, created_at')
+      .eq('org_id', org.org_id)
+      .not('total_score', 'is', null)
+      .order('created_at', { ascending: false })
+      .limit(14),
+  ]);
 
-  // Get open issues count
-  const { count: openIssuesCount } = await supabase
+  const recentInspections = inspectionsResult.data || [];
+  const openIssuesCount = issuesResult.count || 0;
+  const totalIssuesCount = (await supabase
     .from('issues')
     .select('*', { count: 'exact', head: true })
-    .eq('org_id', org.org_id)
-    .eq('status', 'open');
+    .eq('org_id', org.org_id)).count || 0;
+  const locationsCount = locationsResult.count || 0;
+  const crewsCount = crewsResult.count || 0;
+  const proposals = proposalsResult.data || [];
+  const walkthroughsCount = walkthroughsResult.count || 0;
+  const todaysSchedules = schedulesResult.data || [];
+  const recentIssues = recentIssuesResult.data || [];
+  const inspectionScores = inspectionScoresResult.data || [];
 
-  // Get locations count
-  const { count: locationsCount } = await supabase
-    .from('locations')
-    .select('*', { count: 'exact', head: true })
-    .eq('org_id', org.org_id);
-
-  // Get crews count
-  const { count: crewsCount } = await supabase
-    .from('crews')
-    .select('*', { count: 'exact', head: true })
-    .eq('org_id', org.org_id);
-
-  // Get pending tasks count
-  const { count: pendingTasksCount } = await supabase
-    .from('tasks')
-    .select('*', { count: 'exact', head: true })
-    .eq('org_id', org.org_id)
-    .eq('status', 'pending');
-
-  // Get total issues count
-  const { count: totalIssuesCount } = await supabase
-    .from('issues')
-    .select('*', { count: 'exact', head: true })
-    .eq('org_id', org.org_id);
-
-  // Get completed inspections count
-  const { count: completedInspectionsCount } = await supabase
+  // Calculate completed inspections
+  const completedInspectionsCount = (await supabase
     .from('inspections')
     .select('*', { count: 'exact', head: true })
     .eq('org_id', org.org_id)
-    .not('total_score', 'is', null);
+    .not('total_score', 'is', null)).count || 0;
 
-  // Calculate average score from recent inspections
-  const { data: scoreData } = await supabase
-    .from('inspections')
-    .select('total_score')
-    .eq('org_id', org.org_id)
-    .not('total_score', 'is', null)
-    .order('created_at', { ascending: false })
-    .limit(10);
+  // Calculate average score
+  const avgScore = inspectionScores.length > 0
+    ? inspectionScores.reduce((sum, i) => sum + (i.total_score || 0), 0) / inspectionScores.length
+    : undefined;
 
-  const avgScore = scoreData && scoreData.length > 0
-    ? scoreData.reduce((sum, i) => sum + (i.total_score || 0), 0) / scoreData.length
-    : null;
+  // Calculate pipeline value
+  const pipelineValue = proposals.reduce((sum, p) => sum + (p.total_amount || 0), 0);
 
-  // Get recent activity
-  type ActivityItem = { id: string; type: 'inspection' | 'issue'; action: string; description: string; timestamp: string; href: string; status: string };
+  // Format proposals for widget
+  const formattedProposals = proposals.map((p: any) => ({
+    id: p.id,
+    lead_name: p.leads?.full_name || 'Unknown',
+    company_name: p.leads?.company_name,
+    total_amount: p.total_amount || 0,
+    status: p.status,
+    created_at: p.created_at,
+  }));
+
+  // Format today's schedules
+  const formattedSchedules = todaysSchedules.map((s: any) => ({
+    id: s.id,
+    location_name: s.locations?.name || 'Unknown Location',
+    crew_name: s.crews?.name,
+    status: 'pending' as const,
+  }));
+
+  // Prepare chart data
+  const chartData = inspectionScores
+    .slice(0, 7)
+    .reverse()
+    .map((score, index) => ({
+      date: new Date(score.created_at).toLocaleDateString('en-US', { weekday: 'short' }),
+      score: score.total_score || 0,
+      count: 1,
+    }));
+
+  // Build activity feed
+  type ActivityItem = { 
+    id: string; 
+    type: 'inspection' | 'issue'; 
+    action: string; 
+    description: string; 
+    timestamp: string; 
+    href: string; 
+    status: string;
+  };
   const activities: ActivityItem[] = [];
 
-  // Recent inspections
-  if (recentInspections) {
-    recentInspections.forEach((insp: { id: string; locations?: { name?: string }; completed_at?: string; created_at?: string; total_score?: number | null }) => {
-      activities.push({
-        id: insp.id,
-        type: 'inspection' as const,
-        action: 'Inspection completed',
-        description: `${insp.locations?.name || 'Unknown Location'}`,
-        timestamp: insp.completed_at || insp.created_at || '',
-        href: `/app/inspections/${insp.id}`,
-        status: insp.total_score !== null ? 'completed' : 'pending',
-      });
+  recentInspections.forEach((insp: any) => {
+    activities.push({
+      id: insp.id,
+      type: 'inspection',
+      action: insp.total_score !== null ? 'Inspection completed' : 'Inspection started',
+      description: insp.locations?.name || 'Unknown Location',
+      timestamp: insp.completed_at || insp.created_at || '',
+      href: `/app/inspections/${insp.id}`,
+      status: insp.total_score !== null ? 'completed' : 'pending',
     });
-  }
+  });
 
-  // Recent issues
-  const { data: recentIssues } = await supabase
-    .from('issues')
-    .select('id, title, status, created_at')
-    .eq('org_id', org.org_id)
-    .order('created_at', { ascending: false })
-    .limit(5);
-
-  if (recentIssues) {
-    recentIssues.forEach((issue) => {
-      activities.push({
-        id: issue.id,
-        type: 'issue' as const,
-        action: 'Issue created',
-        description: issue.title ?? '',
-        timestamp: issue.created_at ?? '',
-        href: `/app/issues/${issue.id}`,
-        status: issue.status ?? 'pending',
-      });
+  recentIssues.forEach((issue: any) => {
+    activities.push({
+      id: issue.id,
+      type: 'issue',
+      action: 'Issue reported',
+      description: issue.title || '',
+      timestamp: issue.created_at || '',
+      href: `/app/issues/${issue.id}`,
+      status: issue.status || 'open',
     });
-  }
+  });
 
-  // Sort by timestamp and limit
+  // Sort by timestamp
   activities.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
-  const recentActivities = activities.slice(0, 10);
+
+  // Get user's name for greeting
+  const userName = user?.user_metadata?.full_name?.split(' ')[0] || 'there';
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-gray-600 mt-1">Welcome back to JANIBEAR</p>
+    <div className="space-y-6 pb-8">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
+            Welcome back, {userName}
+          </h1>
+          <p className="text-gray-500 mt-1">
+            Here&apos;s what&apos;s happening with your business today
+          </p>
+        </div>
+        <div className="flex items-center gap-2 text-sm text-gray-500">
+          <span className="hidden md:inline">
+            {new Date().toLocaleDateString('en-US', { 
+              weekday: 'long', 
+              year: 'numeric', 
+              month: 'long', 
+              day: 'numeric' 
+            })}
+          </span>
+        </div>
       </div>
 
+      {/* Stats Cards */}
       <StatsCards
         stats={{
-          openIssues: openIssuesCount || 0,
-          totalLocations: locationsCount || 0,
-          recentInspections: recentInspections?.length || 0,
-          completedInspections: completedInspectionsCount || 0,
-          pendingTasks: pendingTasksCount || 0,
-          totalCrews: crewsCount || 0,
-          avgScore: avgScore || undefined,
-          totalIssues: totalIssuesCount || undefined,
+          openIssues: openIssuesCount,
+          totalLocations: locationsCount,
+          recentInspections: recentInspections.length,
+          completedInspections: completedInspectionsCount,
+          pendingTasks: 0,
+          totalCrews: crewsCount,
+          avgScore,
+          totalIssues: totalIssuesCount,
+          pendingProposals: proposals.length,
+          proposalValue: pipelineValue,
+          recentWalkthroughs: walkthroughsCount,
         }}
       />
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>Recent Inspections</CardTitle>
-            <Link href="/app/inspections/start">
-              <Button size="lg" variant="outline" className="h-12">
-                <Plus className="h-5 w-5 mr-2" />
-                New Inspection
-              </Button>
-            </Link>
-          </CardHeader>
-          <CardContent>
-            {recentInspections && recentInspections.length > 0 ? (
-              <div className="space-y-4">
-                {recentInspections.map((inspection: any) => (
-                  <Link key={inspection.id} href={`/app/inspections/${inspection.id}`}>
-                    <div className="flex items-center justify-between border-b pb-4 last:border-0 hover:bg-gray-50 p-2 rounded-lg transition-colors cursor-pointer">
-                      <div>
-                        <p className="font-medium">{inspection.locations?.name || 'Unknown Location'}</p>
-                        <p className="text-sm text-gray-600">
-                          {formatDate(inspection.created_at)}
-                        </p>
-                      </div>
-                      <div className="text-right flex items-center gap-2">
-                        {inspection.total_score !== null ? (
-                          <p className="font-semibold">{inspection.total_score.toFixed(1)}%</p>
-                        ) : (
-                          <p className="text-sm text-gray-500">In Progress</p>
-                        )}
-                        <ArrowRight className="h-4 w-4 text-gray-400" />
-                      </div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-8">
-                <p className="text-gray-500 mb-4">No inspections yet</p>
-                <Link href="/app/inspections/start">
-                  <Button size="lg" className="h-14 text-lg">
-                    <Plus className="h-5 w-5 mr-2" />
-                    Start Your First Inspection
-                  </Button>
-                </Link>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+      {/* Quick Actions */}
+      <QuickActions />
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>Quick Actions</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <Link href="/app/locations/new">
-                <Button variant="outline" className="w-full justify-start h-14 text-base">
-                  <Plus className="h-5 w-5 mr-3" />
-                  Add New Location
-                </Button>
-              </Link>
-              <Link href="/app/inspections/start">
-                <Button variant="outline" className="w-full justify-start h-14 text-base">
-                  <ClipboardCheck className="h-5 w-5 mr-3" />
-                  Start Inspection
-                </Button>
-              </Link>
-              <Link href="/app/crews/new">
-                <Button variant="outline" className="w-full justify-start h-14 text-base">
-                  <Plus className="h-5 w-5 mr-3" />
-                  Create Crew
-                </Button>
-              </Link>
-              <Link href="/app/schedules/new">
-                <Button variant="outline" className="w-full justify-start h-14 text-base">
-                  <Plus className="h-5 w-5 mr-3" />
-                  Create Schedule
-                </Button>
-              </Link>
-              <Link href="/app/walkthroughs/new">
-                <Button variant="outline" className="w-full justify-start h-14 text-base">
-                  <Plus className="h-5 w-5 mr-3" />
-                  New Walkthrough
-                </Button>
-              </Link>
-              <Link href="/app/crm/clients/new">
-                <Button variant="outline" className="w-full justify-start h-14 text-base">
-                  <Plus className="h-5 w-5 mr-3" />
-                  Add Client
-                </Button>
-              </Link>
-            </div>
-          </CardContent>
-        </Card>
+      {/* Main Content Grid */}
+      <div className="grid gap-6 lg:grid-cols-3">
+        {/* Left Column - Charts */}
+        <div className="lg:col-span-2 space-y-6">
+          <InspectionChart data={chartData} />
+          
+          {/* Pipeline and Schedule Row */}
+          <div className="grid gap-6 md:grid-cols-2">
+            <PipelineWidget 
+              proposals={formattedProposals} 
+              totalValue={pipelineValue} 
+            />
+            <TodaysSchedule items={formattedSchedules} />
+          </div>
+        </div>
 
-        <RecentActivity activities={recentActivities} />
+        {/* Right Column - Activity */}
+        <div className="lg:col-span-1">
+          <RecentActivity activities={activities} />
+        </div>
       </div>
     </div>
   );

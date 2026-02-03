@@ -1,17 +1,20 @@
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { 
   AlertCircle, 
   MapPin, 
   ClipboardCheck, 
-  TrendingUp,
   CheckCircle2,
   Clock,
-  Users
+  Users,
+  TrendingUp,
+  TrendingDown,
+  DollarSign,
+  FileText
 } from 'lucide-react';
 import Link from 'next/link';
-import { formatCurrency } from '@/lib/utils';
+import { motion } from 'framer-motion';
 
 interface StatsCardsProps {
   stats: {
@@ -23,92 +26,135 @@ interface StatsCardsProps {
     totalCrews: number;
     avgScore?: number;
     totalIssues?: number;
+    pendingProposals?: number;
+    proposalValue?: number;
+    recentWalkthroughs?: number;
   };
 }
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: i * 0.1,
+      duration: 0.4,
+      ease: 'easeOut',
+    },
+  }),
+};
 
 export function StatsCards({ stats }: StatsCardsProps) {
   const cards = [
     {
-      title: 'Open Issues',
-      value: stats.openIssues,
-      icon: AlertCircle,
-      href: '/app/issues?status=open',
-      color: 'text-red-600',
-      bgColor: 'bg-red-50',
-      change: stats.totalIssues ? `${Math.round((stats.openIssues / stats.totalIssues) * 100)}% of total` : undefined,
-    },
-    {
-      title: 'Locations',
+      title: 'Active Locations',
       value: stats.totalLocations,
       icon: MapPin,
       href: '/app/locations',
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-50',
+      gradient: 'from-blue-500 to-blue-600',
+      lightBg: 'bg-blue-50',
+      trend: null,
     },
     {
-      title: 'Recent Inspections',
-      value: stats.recentInspections,
+      title: 'Inspections',
+      value: stats.completedInspections,
+      subtitle: stats.avgScore ? `${stats.avgScore.toFixed(0)}% avg score` : undefined,
       icon: ClipboardCheck,
       href: '/app/inspections',
-      color: 'text-green-600',
-      bgColor: 'bg-green-50',
+      gradient: 'from-emerald-500 to-emerald-600',
+      lightBg: 'bg-emerald-50',
+      trend: { value: 12, positive: true },
     },
     {
-      title: 'Completed',
-      value: stats.completedInspections,
-      icon: CheckCircle2,
-      href: '/app/inspections?status=completed',
-      color: 'text-emerald-600',
-      bgColor: 'bg-emerald-50',
-    },
-    {
-      title: 'Pending Tasks',
-      value: stats.pendingTasks,
-      icon: Clock,
-      href: '/app/tasks?status=pending',
-      color: 'text-amber-600',
-      bgColor: 'bg-amber-50',
+      title: 'Open Issues',
+      value: stats.openIssues,
+      subtitle: stats.totalIssues ? `of ${stats.totalIssues} total` : undefined,
+      icon: AlertCircle,
+      href: '/app/issues?status=open',
+      gradient: 'from-red-500 to-rose-600',
+      lightBg: 'bg-red-50',
+      trend: stats.openIssues > 0 ? { value: stats.openIssues, positive: false } : null,
     },
     {
       title: 'Crews',
       value: stats.totalCrews,
       icon: Users,
       href: '/app/crews',
-      color: 'text-purple-600',
-      bgColor: 'bg-purple-50',
+      gradient: 'from-violet-500 to-purple-600',
+      lightBg: 'bg-violet-50',
+      trend: null,
+    },
+    {
+      title: 'Pending Tasks',
+      value: stats.pendingTasks,
+      icon: Clock,
+      href: '/app/tasks',
+      gradient: 'from-amber-500 to-orange-600',
+      lightBg: 'bg-amber-50',
+      trend: null,
+    },
+    {
+      title: 'Proposals',
+      value: stats.pendingProposals || 0,
+      subtitle: stats.proposalValue ? `$${(stats.proposalValue / 1000).toFixed(0)}k pipeline` : 'No pending',
+      icon: FileText,
+      href: '/app/sales',
+      gradient: 'from-cyan-500 to-teal-600',
+      lightBg: 'bg-cyan-50',
+      trend: null,
     },
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {cards.map((card) => {
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+      {cards.map((card, index) => {
         const Icon = card.icon;
         return (
-          <Link key={card.title} href={card.href}>
-            <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-gray-600">
-                  {card.title}
-                </CardTitle>
-                <div className={`${card.bgColor} ${card.color} p-2 rounded-lg`}>
-                  <Icon className="h-5 w-5" />
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold text-gray-900">
-                  {card.value}
-                </div>
-                {card.change && (
-                  <p className="text-xs text-gray-500 mt-1">{card.change}</p>
-                )}
-                {card.title === 'Recent Inspections' && stats.avgScore && (
-                  <p className="text-xs text-gray-500 mt-1">
-                    Avg Score: {stats.avgScore.toFixed(1)}%
-                  </p>
-                )}
-              </CardContent>
-            </Card>
-          </Link>
+          <motion.div
+            key={card.title}
+            custom={index}
+            initial="hidden"
+            animate="visible"
+            variants={cardVariants}
+          >
+            <Link href={card.href}>
+              <Card className="group relative overflow-hidden border-0 shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer h-full bg-white">
+                {/* Gradient accent bar */}
+                <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${card.gradient}`} />
+                
+                <CardContent className="p-4 pt-5">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className={`p-2.5 rounded-xl bg-gradient-to-br ${card.gradient} shadow-lg`}>
+                      <Icon className="h-5 w-5 text-white" />
+                    </div>
+                    {card.trend && (
+                      <div className={`flex items-center gap-0.5 text-xs font-medium ${card.trend.positive ? 'text-emerald-600' : 'text-red-600'}`}>
+                        {card.trend.positive ? (
+                          <TrendingUp className="h-3 w-3" />
+                        ) : (
+                          <TrendingDown className="h-3 w-3" />
+                        )}
+                        <span>{card.trend.value}%</span>
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div className="space-y-1">
+                    <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                      {card.title}
+                    </p>
+                    <p className="text-2xl font-bold text-gray-900 group-hover:text-gray-700 transition-colors">
+                      {card.value.toLocaleString()}
+                    </p>
+                    {card.subtitle && (
+                      <p className="text-xs text-gray-500">{card.subtitle}</p>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+          </motion.div>
         );
       })}
     </div>

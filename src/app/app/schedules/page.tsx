@@ -3,7 +3,7 @@ import { requireOrg } from '@/lib/auth';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Plus, Calendar, MapPin, FileText, Users } from 'lucide-react';
+import { Plus, Calendar, MapPin, FileText, Users, Sparkles } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
 
 export default async function SchedulesPage() {
@@ -60,12 +60,20 @@ export default async function SchedulesPage() {
           <h1 className="text-3xl font-bold text-gray-900">Schedules</h1>
           <p className="text-gray-600 mt-1">Manage inspection schedules and assignments</p>
         </div>
-        <Link href="/app/schedules/new">
-          <Button>
-            <Plus className="h-4 w-4 mr-2" />
-            New Schedule
-          </Button>
-        </Link>
+        <div className="flex gap-2">
+          <Link href="/app/schedules/scanner">
+            <Button variant="outline" className="gap-2">
+              <Sparkles className="h-4 w-4" />
+              AI Scanner
+            </Button>
+          </Link>
+          <Link href="/app/schedules/new">
+            <Button>
+              <Plus className="h-4 w-4 mr-2" />
+              New Schedule
+            </Button>
+          </Link>
+        </div>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">

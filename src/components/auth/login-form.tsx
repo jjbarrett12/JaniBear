@@ -7,7 +7,6 @@ import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent } from '@/components/ui/card';
 import { Eye, EyeOff } from 'lucide-react';
 
 function GoogleIcon({ className }: { className?: string }) {
@@ -58,10 +57,8 @@ export function LoginForm() {
       setError(oauthError.message);
       setOauthLoading(null);
     }
-    // else: browser redirects to provider
   };
 
-  // Show session error if redirected from auth/continue (session could not be established)
   useEffect(() => {
     const sessionError = searchParams.get('error');
     if (sessionError === 'session') {
@@ -69,7 +66,6 @@ export function LoginForm() {
     }
   }, [searchParams]);
 
-  // Load saved credentials on mount
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const savedEmail = localStorage.getItem('janibear_saved_email');
@@ -109,7 +105,7 @@ export function LoginForm() {
     setResendSuccess(false);
 
     const supabase = createClient();
-    
+
     if (isMagicLink) {
       const { error } = await supabase.auth.signInWithOtp({
         email,
@@ -117,206 +113,209 @@ export function LoginForm() {
           emailRedirectTo: `${window.location.origin}/auth/callback`,
         },
       });
-      
       if (error) {
         setError(error.message);
       } else {
         setError(null);
         alert('Check your email for the magic link!');
       }
-    } else {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-      
-      if (error) {
-        console.error('Login error:', error);
-        const code = (error as { code?: string }).code ?? '';
-        setErrorCode(code);
-        // Use error.code for reliable detection (Supabase Auth API)
-        if (code === 'invalid_credentials' || error.message.includes('Invalid login credentials')) {
-          setError('Invalid email or password. Please check your credentials and try again.');
-        } else if (code === 'email_not_confirmed' || error.message.includes('Email not confirmed')) {
-          setError('Your email is not confirmed yet. Check your inbox (and spam) for the confirmation link, then try again.');
-        } else {
-          setError(error.message);
-        }
-      } else if (data.user) {
-        // Check if user needs to complete onboarding
-        const { data: membership } = await supabase
-          .from('org_members')
-          .select('org_id')
-          .eq('user_id', data.user.id)
-          .limit(1)
-          .single();
+      setIsLoading(false);
+      return;
+    }
 
-        // Save credentials if "Remember Me" is checked
-        if (rememberMe && typeof window !== 'undefined') {
-          localStorage.setItem('janibear_saved_email', email);
-          localStorage.setItem('janibear_remember_me', 'true');
-        } else if (typeof window !== 'undefined') {
-          localStorage.removeItem('janibear_saved_email');
-          localStorage.removeItem('janibear_remember_me');
-        }
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
-        const targetPath = membership ? '/app/dashboard' : '/onboarding';
-        // Give the browser time to write auth cookies before full-page redirect
-        await new Promise((r) => setTimeout(r, 1500));
-        window.location.href = targetPath;
-        return;
+    if (error) {
+      const code = (error as { code?: string }).code ?? '';
+      setErrorCode(code);
+      if (code === 'invalid_credentials' || error.message.includes('Invalid login credentials')) {
+        setError('Invalid email or password. Please try again.');
+      } else if (code === 'email_not_confirmed' || error.message.includes('Email not confirmed')) {
+        setError('Your email is not confirmed yet. Check your inbox (and spam) for the confirmation link.');
+      } else {
+        setError(error.message);
       }
+      setIsLoading(false);
+      return;
+    }
+
+    if (data.user) {
+      const { data: membership } = await supabase
+        .from('org_members')
+        .select('org_id')
+        .eq('user_id', data.user.id)
+        .limit(1)
+        .single();
+
+      if (rememberMe && typeof window !== 'undefined') {
+        localStorage.setItem('janibear_saved_email', email);
+        localStorage.setItem('janibear_remember_me', 'true');
+      } else if (typeof window !== 'undefined') {
+        localStorage.removeItem('janibear_saved_email');
+        localStorage.removeItem('janibear_remember_me');
+      }
+
+      const targetPath = membership ? '/app/dashboard' : '/onboarding';
+      await new Promise((r) => setTimeout(r, 1500));
+      window.location.href = targetPath;
+      return;
     }
     setIsLoading(false);
   };
 
   return (
-    <Card className="shadow-lg border border-zinc-200/80 rounded-2xl bg-white/95 backdrop-blur-sm overflow-hidden">
-      <CardContent className="pt-2 pb-4 px-4 sm:pt-3 sm:pb-5 sm:px-5">
-        <form onSubmit={handleEmailLogin} className="space-y-4">
-          <div className="space-y-1.5">
-            <Label htmlFor="email" className="text-sm font-medium text-zinc-700">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="you@company.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              disabled={isLoading}
-              className="h-11 rounded-lg border-zinc-200 bg-zinc-50/50 focus:bg-white placeholder:text-zinc-400"
-            />
-          </div>
+    <div className="rounded-2xl border border-zinc-200/90 bg-white shadow-xl shadow-zinc-200/20 p-6 sm:p-8">
+      {/* Social sign-in first */}
+      <div className="space-y-3">
+        <Button
+          type="button"
+          variant="outline"
+          className="w-full h-12 rounded-xl border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-800 font-medium text-[15px]"
+          onClick={() => handleOAuthSignIn('google')}
+          disabled={!!oauthLoading}
+        >
+          <GoogleIcon className="mr-3 h-5 w-5 shrink-0" />
+          {oauthLoading === 'google' ? 'Signing in…' : 'Continue with Google'}
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          className="w-full h-12 rounded-xl border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-800 font-medium text-[15px]"
+          onClick={() => handleOAuthSignIn('facebook')}
+          disabled={!!oauthLoading}
+        >
+          <FacebookIcon className="mr-3 h-5 w-5 shrink-0" />
+          {oauthLoading === 'facebook' ? 'Signing in…' : 'Continue with Facebook'}
+        </Button>
+      </div>
 
-          {!isMagicLink && (
-            <>
-              <div className="space-y-1.5">
-                <Label htmlFor="password" className="text-sm font-medium text-zinc-700">Password</Label>
-                <div className="relative">
-                  <Input
-                    id="password"
-                    type={showPassword ? 'text' : 'password'}
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    disabled={isLoading}
-                    className="h-11 rounded-lg border-zinc-200 bg-zinc-50/50 focus:bg-white pr-11"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword((p) => !p)}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 focus:outline-none rounded p-1"
-                    tabIndex={-1}
-                    aria-label={showPassword ? 'Hide password' : 'Show password'}
-                  >
-                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </button>
-                </div>
-              </div>
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    id="rememberMe"
-                    checked={rememberMe}
-                    onChange={(e) => setRememberMe(e.target.checked)}
-                    disabled={isLoading}
-                    className="w-4 h-4 rounded border-zinc-300 text-orange-500 focus:ring-orange-500/20 cursor-pointer"
-                  />
-                  <Label htmlFor="rememberMe" className="text-sm font-medium cursor-pointer text-zinc-600">
-                    Remember me
-                  </Label>
-                </div>
-                <Link href="/auth/forgot-password" className="text-sm text-orange-600 hover:text-orange-700 font-medium">
-                  Forgot password?
-                </Link>
-              </div>
-            </>
-          )}
+      <div className="relative my-6">
+        <span className="absolute inset-0 flex items-center">
+          <span className="w-full border-t border-zinc-200" />
+        </span>
+        <span className="relative flex justify-center bg-white">
+          <span className="text-xs font-medium text-zinc-400 px-3">or sign in with email</span>
+        </span>
+      </div>
 
-          {resendSuccess && (
-            <div className="text-sm text-emerald-700 bg-emerald-50 p-3 rounded-lg border border-emerald-200">
-              Confirmation email sent. Check your inbox (and spam), then try signing in again.
-            </div>
-          )}
-          {error && (
-            <div className="text-sm text-red-700 bg-red-50 p-3 rounded-lg border border-red-200 space-y-2">
-              <p>{error}</p>
-              {errorCode === 'email_not_confirmed' && email?.trim() && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={handleResendConfirmation}
-                  disabled={resending}
-                  className="mt-2 border-red-200 text-red-700 hover:bg-red-100"
-                >
-                  {resending ? 'Sending...' : 'Resend confirmation email'}
-                </Button>
-              )}
-            </div>
-          )}
-
-          <Button
-            type="submit"
-            className="w-full h-11 rounded-lg bg-orange-500 hover:bg-orange-600 text-white font-semibold shadow-sm"
+      <form onSubmit={handleEmailLogin} className="space-y-4">
+        <div className="space-y-2">
+          <Label htmlFor="login-email" className="text-sm font-medium text-zinc-700">
+            Email
+          </Label>
+          <Input
+            id="login-email"
+            type="email"
+            placeholder="you@company.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
             disabled={isLoading}
-            size="lg"
-          >
-            {isLoading ? 'Signing in...' : isMagicLink ? 'Send Magic Link' : 'Sign in'}
-          </Button>
+            autoComplete="email"
+            className="h-12 rounded-xl border-zinc-200 bg-zinc-50/50 focus:bg-white placeholder:text-zinc-400"
+          />
+        </div>
 
-          <div className="relative py-2">
-            <span className="absolute inset-0 flex items-center">
-              <span className="w-full border-t border-zinc-200" />
-            </span>
-            <span className="relative flex justify-center text-xs font-medium text-zinc-500 bg-white px-2">
-              or continue with
-            </span>
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              className="h-10 rounded-lg border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-700"
-              onClick={() => handleOAuthSignIn('google')}
-              disabled={!!oauthLoading}
-            >
-              <GoogleIcon className="mr-1.5 h-4 w-4 shrink-0" />
-              {oauthLoading === 'google' ? '…' : 'Google'}
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              className="h-10 rounded-lg border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-700"
-              onClick={() => handleOAuthSignIn('facebook')}
-              disabled={!!oauthLoading}
-            >
-              <FacebookIcon className="mr-1.5 h-4 w-4 shrink-0" />
-              {oauthLoading === 'facebook' ? '…' : 'Facebook'}
-            </Button>
-          </div>
-
-          <div className="text-center space-y-1.5 pt-1">
-            <button
-              type="button"
-              onClick={() => setIsMagicLink(!isMagicLink)}
-              className="text-sm text-orange-600 hover:text-orange-700 font-medium"
-            >
-              {isMagicLink ? 'Use password instead' : 'Use magic link instead'}
-            </button>
-            <p className="text-sm text-zinc-500">
-              Don&apos;t have an account?{' '}
-              <Link href="/auth/signup" className="font-medium text-orange-600 hover:text-orange-700">
-                Sign up
+        {!isMagicLink && (
+          <>
+            <div className="space-y-2">
+              <Label htmlFor="login-password" className="text-sm font-medium text-zinc-700">
+                Password
+              </Label>
+              <div className="relative">
+                <Input
+                  id="login-password"
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  disabled={isLoading}
+                  autoComplete="current-password"
+                  className="h-12 rounded-xl border-zinc-200 bg-zinc-50/50 focus:bg-white pr-12"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((p) => !p)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 rounded p-1.5 transition-colors"
+                  tabIndex={-1}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
+            </div>
+            <div className="flex items-center justify-between gap-2">
+              <label className="flex items-center gap-2 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  disabled={isLoading}
+                  className="w-4 h-4 rounded border-zinc-300 text-orange-500 focus:ring-2 focus:ring-orange-500/20"
+                />
+                <span className="text-sm font-medium text-zinc-600">Remember me</span>
+              </label>
+              <Link
+                href="/auth/forgot-password"
+                className="text-sm font-medium text-orange-600 hover:text-orange-700"
+              >
+                Forgot password?
               </Link>
-            </p>
+            </div>
+          </>
+        )}
+
+        {resendSuccess && (
+          <div className="text-sm text-emerald-700 bg-emerald-50 p-3 rounded-xl border border-emerald-200">
+            Confirmation email sent. Check your inbox (and spam), then sign in again.
           </div>
-        </form>
-      </CardContent>
-    </Card>
+        )}
+        {error && (
+          <div className="text-sm text-red-700 bg-red-50 p-3 rounded-xl border border-red-200 space-y-2">
+            <p>{error}</p>
+            {errorCode === 'email_not_confirmed' && email?.trim() && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={handleResendConfirmation}
+                disabled={resending}
+                className="border-red-200 text-red-700 hover:bg-red-100"
+              >
+                {resending ? 'Sending…' : 'Resend confirmation email'}
+              </Button>
+            )}
+          </div>
+        )}
+
+        <Button
+          type="submit"
+          className="w-full h-12 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-semibold text-[15px] shadow-sm"
+          disabled={isLoading}
+        >
+          {isLoading ? 'Signing in…' : isMagicLink ? 'Send magic link' : 'Sign in'}
+        </Button>
+      </form>
+
+      <div className="mt-6 pt-4 border-t border-zinc-100 space-y-3 text-center">
+        <button
+          type="button"
+          onClick={() => setIsMagicLink(!isMagicLink)}
+          className="text-sm text-zinc-500 hover:text-orange-600 font-medium block w-full"
+        >
+          {isMagicLink ? 'Use password instead' : 'Use magic link instead'}
+        </button>
+        <p className="text-sm text-zinc-500">
+          Don&apos;t have an account?{' '}
+          <Link href="/auth/signup" className="font-semibold text-orange-600 hover:text-orange-700">
+            Sign up
+          </Link>
+        </p>
+      </div>
+    </div>
   );
 }

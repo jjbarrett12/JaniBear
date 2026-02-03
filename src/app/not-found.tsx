@@ -30,7 +30,7 @@ export default function NotFound() {
           <Link href="/" className="inline-flex items-center gap-2 [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block">
             <Image
               src="/janibear-logo.png"
-              alt="Janibear"
+              alt="JANIBEAR"
               width={140}
               height={46}
               className="h-8 w-auto object-contain opacity-80"

@@ -84,7 +84,7 @@ export function MobileSidebar({ logoUrl }: MobileSidebarProps) {
           ) : (
             <Image
               src="/janibear-logo.png"
-              alt="Janibear Logo"
+              alt="JANIBEAR Logo"
               width={220}
               height={72}
               className="h-12 w-auto object-contain bg-transparent"
@@ -119,7 +119,7 @@ export function MobileSidebar({ logoUrl }: MobileSidebarProps) {
                   ) : (
                     <Image
                       src="/janibear-logo.png"
-                      alt="Janibear Logo"
+                      alt="JANIBEAR Logo"
                       width={220}
                       height={72}
                       className="h-12 w-auto object-contain bg-transparent"

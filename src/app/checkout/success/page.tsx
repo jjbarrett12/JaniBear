@@ -18,7 +18,7 @@ export default function CheckoutSuccessPage({
           </div>
           <CardTitle className="text-3xl">Payment Successful!</CardTitle>
           <CardDescription className="text-lg mt-2">
-            Thank you for subscribing to Janibear
+            Thank you for subscribing to JANIBEAR
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">

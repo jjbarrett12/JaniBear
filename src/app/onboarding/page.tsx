@@ -31,7 +31,7 @@ export default async function OnboardingPage() {
           <div className="flex justify-center mb-4 [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block">
             <Image
               src="/janibear-logo.png"
-              alt="Janibear Logo"
+              alt="JANIBEAR Logo"
               width={600}
               height={200}
               className="h-36 md:h-44 lg:h-56 w-auto object-contain bg-transparent"
@@ -40,7 +40,7 @@ export default async function OnboardingPage() {
             />
           </div>
           <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
-            Welcome to Janibear
+            Welcome to JANIBEAR
           </h1>
           <p className="text-gray-600 text-base">
             Create your organization to get started

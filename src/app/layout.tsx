@@ -15,13 +15,13 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Janibear - Janitorial Quality Inspection",
+  title: "JANIBEAR - Janitorial Quality Inspection",
   description: "Mobile-first janitorial quality inspection and task management SaaS",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Janibear",
+    title: "JANIBEAR",
   },
 };
 
@@ -41,7 +41,7 @@ export default function RootLayout({
         <meta name="theme-color" content="#3b82f6" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content="Janibear" />
+        <meta name="apple-mobile-web-app-title" content="JANIBEAR" />
       </head>
       <body className={inter.className}>
         {children}

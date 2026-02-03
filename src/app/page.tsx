@@ -9,13 +9,9 @@ import {
   Camera,
   CheckCircle2,
   Send,
-  Sparkles,
-  FileText,
   Users,
   Clock,
   Shield,
-  Lock,
-  Sliders,
   Check,
   Building2,
   UserCheck,
@@ -27,11 +23,7 @@ import {
   Plus,
   Bot,
   TrendingUp,
-  Mail,
-  Calendar,
-  BarChart3,
   DollarSign,
-  MessageSquare,
   Repeat,
   Brain,
   Wand2,
@@ -53,7 +45,7 @@ export default function Home() {
           <Link href="/" className="landing-logo-wrap flex items-center shrink-0 overflow-visible bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block [&>span]:overflow-visible">
             <Image
               src="/janibear-logo.png"
-              alt="Janibear"
+              alt="JANIBEAR"
               width={320}
               height={104}
               className="landing-logo w-auto object-contain object-center bg-transparent"
@@ -108,7 +100,7 @@ export default function Home() {
             className={`inline-flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-800/80 text-zinc-300 text-sm font-medium mb-6 transition-all duration-500 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'}`}
           >
             <Bot className="h-4 w-4 text-orange-400" />
-            <span>AI-Powered Bidding & Proposals for Janitorial Companies</span>
+            <span>Your AI Assistant for Janitorial Bids, Pricing & Inspections</span>
           </div>
 
           <h1
@@ -150,23 +142,6 @@ export default function Home() {
           >
             Trusted by janitorial companies nationwide. No more manual counting, spreadsheet errors, or missed follow-ups.
           </p>
-        </div>
-      </section>
-
-      {/* Built by / For - positioning */}
-      <section className="py-16 md:py-20 border-b border-zinc-800/80 bg-zinc-900/30">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-4 leading-tight">
-              Built by Janitorial Companies —{' '}
-              <span className="gradient-text bg-gradient-to-r from-orange-400 via-orange-500 to-cyan-400 bg-clip-text text-transparent">
-                For Janitorial Companies
-              </span>
-            </h2>
-            <p className="text-lg text-zinc-400 max-w-2xl mx-auto">
-              We get it. We know what companies want in a day-to-day sales and QC platform—because we&apos;ve lived it. JaniBear is built around the real workflows that win bids and keep quality high.
-            </p>
-          </div>
         </div>
       </section>
 
@@ -382,97 +357,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* AI Follow-Up Cadences - Detailed Section */}
-      <section className="py-24 border-b border-zinc-800/80 bg-zinc-900/20">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-12">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-medium mb-4">
-                <Repeat className="h-4 w-4" />
-                <span>AI Follow-Up Automation</span>
-              </div>
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
-                Never Lose a Lead Again
-              </h2>
-              <p className="text-lg text-zinc-400 max-w-2xl mx-auto">
-                AI-powered follow-up cadences ensure every proposal gets the attention it deserves—automatically.
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-6 mb-10">
-              {[
-                {
-                  icon: Clock,
-                  title: 'Smart Timing',
-                  desc: 'AI determines optimal follow-up times based on proposal sent date, industry benchmarks, and client engagement signals.',
-                },
-                {
-                  icon: MessageSquare,
-                  title: 'Personalized Messaging',
-                  desc: 'Each follow-up is customized with client name, proposal details, and relevant value propositions—never generic.',
-                },
-                {
-                  icon: BarChart3,
-                  title: 'Status Tracking',
-                  desc: 'Automatically tracks proposal status, opens, clicks, and responses—so you always know where each deal stands.',
-                },
-                {
-                  icon: TrendingUp,
-                  title: 'Engagement Optimization',
-                  desc: 'AI learns from response patterns and adjusts cadence timing and messaging to maximize engagement and close rates.',
-                },
-              ].map((item, index) => {
-                const Icon = item.icon;
-                return (
-                  <div
-                    key={index}
-                    className="p-6 rounded-xl bg-zinc-900/80 border border-zinc-800 hover:border-emerald-500/30 transition-colors"
-                  >
-                    <div className="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center mb-4">
-                      <Icon className="h-5 w-5" />
-                    </div>
-                    <h3 className="text-lg font-semibold text-white mb-2">{item.title}</h3>
-                    <p className="text-zinc-400 text-sm leading-relaxed">{item.desc}</p>
-                  </div>
-                );
-              })}
-            </div>
-
-            <div className="bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 border border-emerald-500/20 rounded-xl p-8">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
-                  <CheckCircle2 className="h-6 w-6" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-white mb-2">Automated Follow-Up Workflow</h3>
-                  <p className="text-zinc-300 mb-4">
-                    Set it and forget it. AI handles follow-ups at days 3, 7, 14, and 30 after proposal delivery—or customize your own cadence. Each message is personalized, tracked, and optimized for maximum response rates.
-                  </p>
-                  <ul className="space-y-2 text-zinc-400 text-sm">
-                    <li className="flex items-start gap-2">
-                      <Check className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
-                      <span>Automatic follow-up scheduling based on best practices</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <Check className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
-                      <span>Personalized email templates with proposal details</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <Check className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
-                      <span>Engagement tracking and response detection</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <Check className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
-                      <span>Pause automation when client responds or closes</span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* ROI & Results */}
       <section className="py-24 border-b border-zinc-800/80">
         <div className="container mx-auto px-4">
@@ -481,11 +365,11 @@ export default function Home() {
               Measurable Results for Janitorial Companies
             </h2>
             <p className="text-lg text-zinc-400 max-w-2xl mx-auto">
-              See why janitorial sales teams choose Janibear to win more bids.
+              See why janitorial sales teams choose JANIBEAR to win more bids.
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto mb-12">
+          <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto">
             {[
               { icon: Clock, stat: '75%', label: 'Time saved per proposal', sublabel: 'From 2 hours to 30 minutes' },
               { icon: Zap, stat: 'Same-day', label: 'Proposal delivery', sublabel: 'Before you leave the property' },
@@ -505,24 +389,6 @@ export default function Home() {
                 </div>
               );
             })}
-          </div>
-
-          <div className="max-w-3xl mx-auto">
-            <div className="grid md:grid-cols-3 gap-6">
-              {[
-                { icon: CheckCircle2, text: 'No more manual counting or spreadsheet errors' },
-                { icon: CheckCircle2, text: 'Consistent, professional proposals every time' },
-                { icon: CheckCircle2, text: 'Never miss a follow-up opportunity' },
-              ].map((item, index) => {
-                const Icon = item.icon;
-                return (
-                  <div key={index} className="flex items-start gap-3 p-4 rounded-xl bg-zinc-900/80 border border-zinc-800">
-                    <Icon className="h-5 w-5 text-emerald-500 shrink-0 mt-0.5" />
-                    <p className="text-zinc-400 font-medium text-sm leading-relaxed">{item.text}</p>
-                  </div>
-                );
-              })}
-            </div>
           </div>
         </div>
       </section>
@@ -610,39 +476,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Trust & Security */}
-      <section className="py-24 border-b border-zinc-800/80 bg-zinc-900/20">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
-              Enterprise-Grade Security & Control
-            </h2>
-            <p className="text-lg text-zinc-400 max-w-2xl mx-auto">
-              Your data, your pricing rules, your brand—you stay in complete control.
-            </p>
-          </div>
-
-          <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
-            {[
-              { icon: Shield, text: 'Enterprise security & encryption' },
-              { icon: Lock, text: 'Your data stays private & secure' },
-              { icon: Sliders, text: 'Customize pricing rules & templates' },
-              { icon: CheckCircle2, text: 'Full control over AI suggestions' },
-            ].map((item, index) => {
-              const Icon = item.icon;
-              return (
-                <div key={index} className="flex items-start gap-4 p-6 rounded-xl bg-zinc-900/80 border border-zinc-800">
-                  <div className="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center shrink-0">
-                    <Icon className="h-5 w-5" />
-                  </div>
-                  <p className="text-zinc-400 font-medium text-sm leading-relaxed">{item.text}</p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
       {/* Final CTA */}
       <section id="book-demo" className="py-24 border-b border-zinc-800/80">
         <div className="container mx-auto px-4 text-center">
@@ -680,7 +513,7 @@ export default function Home() {
             <div className="[&>span]:bg-transparent [&>span]:shadow-none [&>span]:block">
               <Image
                 src="/janibear-logo.png"
-                alt="Janibear"
+                alt="JANIBEAR"
                 width={220}
                 height={72}
                 className="h-14 md:h-16 w-auto mb-4 object-contain bg-transparent opacity-95"
@@ -718,7 +551,7 @@ export default function Home() {
             </div>
           </div>
           <div className="border-t border-zinc-800 mt-8 pt-8 text-center text-sm text-zinc-500">
-            <p>&copy; {new Date().getFullYear()} Janibear. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} JANIBEAR. All rights reserved.</p>
           </div>
         </div>
       </footer>

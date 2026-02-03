@@ -16,7 +16,7 @@ export default function ContactPage() {
           <Link href="/" className="flex items-center gap-2 bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block" style={{ minHeight: 56 }}>
             <Image
               src="/janibear-logo.png"
-              alt="Janibear"
+              alt="JANIBEAR"
               width={560}
               height={182}
               className="!h-20 md:!h-24 w-auto !max-h-none object-contain bg-transparent"
@@ -52,7 +52,7 @@ export default function ContactPage() {
               Get in Touch
             </h1>
             <p className="text-lg text-zinc-400 max-w-2xl mx-auto">
-              Have questions about Janibear? We&apos;d love to hear from you. Send us a message and we&apos;ll respond as soon as possible.
+              Have questions about JANIBEAR? We&apos;d love to hear from you. Send us a message and we&apos;ll respond as soon as possible.
             </p>
           </div>
 
@@ -133,7 +133,7 @@ export default function ContactPage() {
                     <div>
                       <h3 className="font-semibold text-white mb-1">Book a Demo</h3>
                       <p className="text-zinc-400 text-sm mb-2">
-                        Schedule a personalized demo to see Janibear in action
+                        Schedule a personalized demo to see JANIBEAR in action
                       </p>
                       <Link href="/demo">
                         <Button variant="outline" size="sm" className="border-zinc-700 text-zinc-300 hover:bg-zinc-800">
@@ -191,7 +191,7 @@ export default function ContactPage() {
             <div className="[&>span]:bg-transparent [&>span]:shadow-none [&>span]:block">
               <Image
                 src="/janibear-logo.png"
-                alt="Janibear"
+                alt="JANIBEAR"
                 width={220}
                 height={72}
                 className="h-14 md:h-16 w-auto mb-4 object-contain bg-transparent opacity-95"
@@ -229,7 +229,7 @@ export default function ContactPage() {
             </div>
           </div>
           <div className="border-t border-zinc-800 mt-8 pt-8 text-center text-sm text-zinc-500">
-            <p>&copy; {new Date().getFullYear()} Janibear. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} JANIBEAR. All rights reserved.</p>
           </div>
         </div>
       </footer>

@@ -1,6 +1,6 @@
 // Application constants
 
-export const APP_NAME = "Janibear";
+export const APP_NAME = "JANIBEAR";
 export const APP_DESCRIPTION = "Mobile-first janitorial quality inspection and task management SaaS";
 
 // User roles

@@ -68,7 +68,7 @@ export function PWAInstaller() {
     <Card className="fixed bottom-24 left-4 right-4 z-50 shadow-xl lg:hidden">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg">Install Janibear</CardTitle>
+          <CardTitle className="text-lg">Install JANIBEAR</CardTitle>
           <Button
             variant="ghost"
             size="icon"

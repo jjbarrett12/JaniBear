@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { createClient } from '@/lib/supabase/server';
 import { LoginForm } from '@/components/auth/login-form';
 
-export const metadata = { title: 'Sign in | JaniBear' };
+export const metadata = { title: 'Sign in | JANIBEAR' };
 
 export default async function LoginPage() {
   const supabase = await createClient();
@@ -18,29 +18,27 @@ export default async function LoginPage() {
       .single();
     redirect(membership ? '/app/dashboard' : '/onboarding');
   }
-  
+
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-zinc-50 via-white to-orange-50/30 px-4 py-8">
-      <div className="w-full max-w-md">
-        <div className="text-center">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-zinc-50 via-white to-orange-50/40 px-4 py-10 sm:py-12">
+      <div className="w-full max-w-[420px]">
+        <div className="text-center mb-8">
           <div className="flex justify-center [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block" style={{ lineHeight: 0 }}>
             <Image
               src="/janibear-logo.png"
-              alt="JaniBear"
+              alt="JANIBEAR"
               width={600}
               height={200}
               className="w-auto object-contain bg-transparent"
-              style={{ imageRendering: 'auto', height: '5rem' }}
+              style={{ imageRendering: 'auto', height: '5.5rem' }}
               priority
               unoptimized
             />
           </div>
-          <h1 className="text-xl font-bold text-zinc-900 mt-2 mb-0">Welcome back</h1>
-          <p className="text-zinc-500 text-sm mt-0.5 mb-0">Sign in with your email and password</p>
+          <h1 className="text-2xl font-bold text-zinc-900 mt-4 mb-1">Welcome back</h1>
+          <p className="text-zinc-500 text-sm">Sign in to your account to continue</p>
         </div>
-        <div className="mt-0">
-          <LoginForm />
-        </div>
+        <LoginForm />
       </div>
     </div>
   );

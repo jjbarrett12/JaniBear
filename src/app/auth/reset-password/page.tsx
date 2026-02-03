@@ -19,7 +19,7 @@ export default async function ResetPasswordPage() {
           <div className="flex justify-center mb-4 [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block">
             <Image
               src="/janibear-logo.png"
-              alt="Janibear Logo"
+              alt="JANIBEAR Logo"
               width={600}
               height={200}
               className="h-48 md:h-56 lg:h-72 w-auto object-contain bg-transparent"

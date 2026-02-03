@@ -20,7 +20,8 @@ import {
   X,
   Menu,
   TrendingUp,
-  ListChecks
+  ListChecks,
+  Package
 } from 'lucide-react';
 import { GlobalSearch } from '@/components/search/global-search';
 
@@ -39,6 +40,7 @@ export function MobileSidebar({ logoUrl }: MobileSidebarProps) {
   const navItems = [
     { href: '/app/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { href: '/app/sales', label: 'Sales', icon: TrendingUp },
+    { href: '/app/supplies', label: 'Supplies', icon: Package },
     { href: '/app/locations', label: 'Locations', icon: MapPin },
     { href: '/app/crews', label: 'Crews', icon: Users },
     { href: '/app/templates', label: 'Templates', icon: FileText },

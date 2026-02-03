@@ -21,7 +21,8 @@ import {
   TrendingUp,
   ListChecks,
   Building2,
-  FileSearch
+  FileSearch,
+  Package
 } from 'lucide-react';
 
 export async function AppSidebar() {
@@ -41,6 +42,7 @@ export async function AppSidebar() {
     { href: '/app/crm/clients', label: 'Clients', icon: Building2 },
     { href: '/app/sales', label: 'Sales', icon: TrendingUp },
     { href: '/app/walkthroughs', label: 'Walkthroughs', icon: FileSearch },
+    { href: '/app/supplies', label: 'Supplies', icon: Package },
     { href: '/app/locations', label: 'Locations', icon: MapPin },
     { href: '/app/crews', label: 'Crews', icon: Users },
     { href: '/app/templates', label: 'Templates', icon: FileText },

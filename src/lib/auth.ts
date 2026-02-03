@@ -3,6 +3,14 @@ import { redirect } from 'next/navigation';
 
 export async function getCurrentUser() {
   const supabase = await createClient();
+  
+  // Try getSession first (reads from cookies, faster)
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session?.user) {
+    return session.user;
+  }
+  
+  // Fallback to getUser (makes API call to validate)
   const { data: { user }, error } = await supabase.auth.getUser();
   
   if (error || !user) {
@@ -32,12 +40,17 @@ export async function getCurrentOrg() {
     .select('org_id, role, organizations(*)')
     .eq('user_id', user.id)
     .limit(1)
-    .single();
+    .maybeSingle();
   
   return membership;
 }
 
 export async function requireOrg() {
+  const user = await getCurrentUser();
+  if (!user) {
+    redirect('/auth/login');
+  }
+  
   const org = await getCurrentOrg();
   if (!org) {
     redirect('/onboarding');

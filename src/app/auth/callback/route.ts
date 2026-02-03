@@ -7,12 +7,6 @@ export async function GET(request: NextRequest) {
   const code = requestUrl.searchParams.get('code');
   const error = requestUrl.searchParams.get('error');
   const errorDescription = requestUrl.searchParams.get('error_description');
-  let next = requestUrl.searchParams.get('next') ?? '/app/dashboard';
-
-  const allowedPaths = ['/app/', '/auth/', '/onboarding', '/pricing', '/survey', '/checkout', '/demo', '/contact', '/'];
-  if (!allowedPaths.some((path) => next.startsWith(path))) {
-    next = '/app/dashboard';
-  }
 
   // Use origin for local dev, NEXT_PUBLIC_APP_URL for production
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') || requestUrl.origin;
@@ -27,12 +21,15 @@ export async function GET(request: NextRequest) {
   }
 
   if (!code) {
-    // No code provided, redirect to dashboard (might be already authenticated)
-    return NextResponse.redirect(new URL(next, baseUrl));
+    // No code provided, redirect to login
+    return NextResponse.redirect(new URL('/auth/login', baseUrl));
   }
 
-  // Exchange the code for a session
-  const response = NextResponse.redirect(new URL(next, baseUrl));
+  // We'll determine the final redirect URL after checking membership
+  let finalRedirectUrl = new URL('/app/dashboard', baseUrl);
+  
+  // Create response object - we'll set the URL later
+  const response = NextResponse.redirect(finalRedirectUrl);
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -73,12 +70,25 @@ export async function GET(request: NextRequest) {
       .maybeSingle();
 
     if (!membership?.org_id) {
-      // Redirect to onboarding if no org
-      return NextResponse.redirect(new URL('/onboarding', baseUrl), {
-        headers: response.headers,
+      // User needs onboarding - but we already have cookies set on response
+      // Create new redirect with same cookies
+      const onboardingUrl = new URL('/onboarding', baseUrl);
+      const onboardingResponse = NextResponse.redirect(onboardingUrl);
+      
+      // Copy all cookies from original response
+      response.cookies.getAll().forEach(cookie => {
+        onboardingResponse.cookies.set(cookie.name, cookie.value, {
+          path: '/',
+          httpOnly: true,
+          secure: baseUrl.startsWith('https'),
+          sameSite: 'lax',
+        });
       });
+      
+      return onboardingResponse;
     }
   }
 
+  // User has membership, go to dashboard
   return response;
 }

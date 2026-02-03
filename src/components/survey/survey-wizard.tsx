@@ -18,16 +18,16 @@ const questions = [
     id: 'focus',
     question: 'What do you need JaniBear for?',
     options: [
-      { value: 'sales-only', label: 'Strictly sales (leads, proposals, walk-throughs)', plan: 'sales-1' },
-      { value: 'sales-qc', label: 'Sales plus QC and admin (task lists, inspections, operations)', plan: 'sales-1-qc-1' },
+      { value: 'sales-only', label: 'Strictly sales (leads, proposals, outreach)', plan: 'cub' },
+      { value: 'sales-qc', label: 'Sales plus QC and ops (playbooks, deal QA, consistency)', plan: 'grizzly' },
     ],
   },
   {
     id: 'scale',
     question: 'What scale fits your business?',
     options: [
-      { value: 'small', label: 'Smaller: few locations, one or a few users', plan: 'sales-1' },
-      { value: 'large', label: 'Larger: many locations, team, bids & contracts', plan: 'sales-2' },
+      { value: 'small', label: 'One rep / one pipeline—I need someone selling now', plan: 'cub' },
+      { value: 'large', label: 'Team / multiple pipelines—we need throughput', plan: 'black-bear' },
     ],
   },
 ];
@@ -62,14 +62,14 @@ export function SurveyWizard({ dark }: SurveyWizardProps) {
   const calculateRecommendation = () => {
     const focus = answers['focus'];
     const scale = answers['scale'];
-    // Map focus + scale to the 4 plans: Sales 1, Sales 2, Sales 1 + QC 1, Sales 2 + QC 2
-    let recommended = 'sales-2';
-    if (focus === 'sales-only' && scale === 'small') recommended = 'sales-1';
-    else if (focus === 'sales-only' && scale === 'large') recommended = 'sales-2';
-    else if (focus === 'sales-qc' && scale === 'small') recommended = 'sales-1-qc-1';
-    else if (focus === 'sales-qc' && scale === 'large') recommended = 'sales-2-qc-2';
-    else if (focus === 'sales-only') recommended = scale === 'large' ? 'sales-2' : 'sales-1';
-    else if (focus === 'sales-qc') recommended = scale === 'large' ? 'sales-2-qc-2' : 'sales-1-qc-1';
+    // Map focus + scale to Cub, Black Bear, Grizzly, Kodiak
+    let recommended = 'black-bear';
+    if (focus === 'sales-only' && scale === 'small') recommended = 'cub';
+    else if (focus === 'sales-only' && scale === 'large') recommended = 'black-bear';
+    else if (focus === 'sales-qc' && scale === 'small') recommended = 'grizzly';
+    else if (focus === 'sales-qc' && scale === 'large') recommended = 'kodiak';
+    else if (focus === 'sales-only') recommended = scale === 'large' ? 'black-bear' : 'cub';
+    else if (focus === 'sales-qc') recommended = scale === 'large' ? 'kodiak' : 'grizzly';
     setRecommendedPlan(recommended);
   };
 
@@ -79,10 +79,10 @@ export function SurveyWizard({ dark }: SurveyWizardProps) {
 
   if (recommendedPlan) {
     const planNames: Record<string, string> = {
-      'sales-1': 'Sales 1',
-      'sales-2': 'Sales 2',
-      'sales-1-qc-1': 'Sales 1 + QC 1',
-      'sales-2-qc-2': 'Sales 2 + QC 2',
+      cub: 'Cub',
+      'black-bear': 'Black Bear',
+      grizzly: 'Grizzly',
+      kodiak: 'Kodiak',
     };
 
     return (

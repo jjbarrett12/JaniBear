@@ -7,21 +7,21 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 });
 
 const plans: Record<string, { priceId: string; name: string }> = {
-  'sales-1': {
-    priceId: process.env.STRIPE_SALES_1_PRICE_ID || 'price_sales_1',
-    name: 'Sales 1',
+  cub: {
+    priceId: process.env.STRIPE_CUB_PRICE_ID || 'price_cub',
+    name: 'Cub',
   },
-  'sales-2': {
-    priceId: process.env.STRIPE_SALES_2_PRICE_ID || 'price_sales_2',
-    name: 'Sales 2',
+  'black-bear': {
+    priceId: process.env.STRIPE_BLACK_BEAR_PRICE_ID || 'price_black_bear',
+    name: 'Black Bear',
   },
-  'sales-1-qc-1': {
-    priceId: process.env.STRIPE_SALES_1_QC_1_PRICE_ID || 'price_sales_1_qc_1',
-    name: 'Sales 1 + QC 1',
+  grizzly: {
+    priceId: process.env.STRIPE_GRIZZLY_PRICE_ID || 'price_grizzly',
+    name: 'Grizzly',
   },
-  'sales-2-qc-2': {
-    priceId: process.env.STRIPE_SALES_2_QC_2_PRICE_ID || 'price_sales_2_qc_2',
-    name: 'Sales 2 + QC 2',
+  kodiak: {
+    priceId: process.env.STRIPE_KODIAK_PRICE_ID || 'price_kodiak',
+    name: 'Kodiak',
   },
 };
 

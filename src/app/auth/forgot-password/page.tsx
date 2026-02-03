@@ -21,7 +21,7 @@ export default async function ForgotPasswordPage() {
               alt="Janibear Logo"
               width={600}
               height={200}
-              className="h-36 md:h-44 lg:h-56 w-auto object-contain bg-transparent"
+              className="h-48 md:h-56 lg:h-72 w-auto object-contain bg-transparent"
               priority
               unoptimized
               style={{ 

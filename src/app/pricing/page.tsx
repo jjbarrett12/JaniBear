@@ -10,7 +10,7 @@ export default function PricingPage() {
       <nav className="border-b border-zinc-800/80 bg-zinc-950/80 backdrop-blur-xl sticky top-0 z-50">
         <div className="container mx-auto px-4 py-1.5 flex items-center justify-between gap-4">
           <Link href="/" className="flex items-center shrink-0 bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block" style={{ minHeight: 40 }}>
-            <Image src="/janibear-logo.png" alt="Janibear" width={560} height={182} className="!h-8 md:!h-10 w-auto !max-h-none object-contain bg-transparent" unoptimized />
+            <Image src="/janibear-logo.png" alt="Janibear" width={560} height={182} className="!h-16 md:!h-20 w-auto !max-h-none object-contain bg-transparent" unoptimized />
           </Link>
           <div className="flex items-center justify-end gap-4 md:gap-6 flex-1 min-w-0">
             <Link href="/pricing"><Button variant="ghost" size="sm" className="text-zinc-300 hover:text-white hover:bg-zinc-800 shrink-0">Pricing</Button></Link>
@@ -24,12 +24,15 @@ export default function PricingPage() {
       </nav>
 
       <section className="container mx-auto px-4 py-16 md:py-20">
-        <div className="max-w-3xl mx-auto text-center mb-16">
+        <div className="max-w-3xl mx-auto text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 tracking-tight">
-            Simple, transparent pricing
+            Replace a salesperson. Replace a QC/ops person.
           </h1>
-          <p className="text-lg text-zinc-400">
-            Choose strictly sales (Sales 1 or Sales 2) or add QC and admin help (Sales 1 + QC 1 or Sales 2 + QC 2).
+          <p className="text-lg text-zinc-400 mb-6">
+            One platform does the work of both—so you can cut headcount without cutting quality. From one rep’s output to a full revenue engine.
+          </p>
+          <p className="text-sm text-zinc-500">
+            One FTE often costs $50k–$70k+/year. JaniBear starts at $59/mo—about 1% of that cost. All plans are <strong className="text-zinc-400">per company</strong>, not per seat.
           </p>
         </div>
 
@@ -41,6 +44,8 @@ export default function PricingPage() {
           <h2 className="text-2xl font-bold text-white text-center mb-10">Frequently asked questions</h2>
           <div className="space-y-4">
             {[
+              { q: 'How does JaniBear replace a salesperson?', a: 'AI turns walkthroughs and notes into proposals with crew, hours, and pricing—so you close more bids with less manual work. Pipeline, scheduling, and proposal tools replace the repetitive parts of the sales role.' },
+              { q: 'How does it replace a QC/operations person?', a: 'Task breakdown turns schedules into per-crew task lists, inspections and issue tracking keep quality visible, and compliance/SDS/PO tools handle the admin work that usually needs a dedicated ops person.' },
               { q: 'Can I change plans later?', a: 'Yes, you can upgrade or downgrade at any time. Changes take effect immediately.' },
               { q: 'What payment methods do you accept?', a: 'We accept all major credit cards through Stripe. All payments are secure and encrypted.' },
               { q: 'Is there a free trial?', a: 'Yes, all plans include a 14-day free trial. No credit card required to start.' },

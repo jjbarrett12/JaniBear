@@ -21,21 +21,21 @@
   color: #000 !important;
   background: #f3f4f6 !important;
 }
-/* Large logo within same header height (h-12 = 48px) */
+/* Header logo: 2x larger (~276px / ~288px), gap unchanged */
 .landing-logo-wrap {
-  max-height: 48px;
+  max-height: 288px;
   display: flex;
   align-items: center;
 }
 .landing-header .landing-logo {
-  max-height: 46px !important;
-  height: 46px !important;
+  max-height: 276px !important;
+  height: 276px !important;
   width: auto !important;
 }
 @media (min-width: 768px) {
   .landing-header .landing-logo {
-    max-height: 48px !important;
-    height: 48px !important;
+    max-height: 288px !important;
+    height: 288px !important;
   }
 }
 .landing-page .landing-cta {
@@ -234,6 +234,15 @@
     background-size: 200% 200%;
     animation: gradient-shift 3s ease infinite;
   }
+}
+
+/* Hide scrollbar for proposal sample scroll (keep functionality) */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
 }
 
 /* Proposal document: page breaks and print styling */

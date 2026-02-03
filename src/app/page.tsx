@@ -36,6 +36,7 @@ import {
   Brain,
   Wand2,
 } from 'lucide-react';
+import { ProposalSampleScroll } from '@/components/sales/proposal-sample-scroll';
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -47,7 +48,7 @@ export default function Home() {
   return (
     <div className="landing-page min-h-screen bg-zinc-950 text-zinc-100">
       {/* Nav - white header, black text, large logo */}
-      <nav className="landing-header border-b border-gray-200 bg-white sticky top-0 z-50 h-12">
+      <nav className="landing-header border-b border-gray-200 bg-white sticky top-0 z-50 min-h-[9rem] h-auto py-2 flex items-center">
         <div className="container mx-auto px-4 h-full flex items-center justify-between gap-4">
           <Link href="/" className="flex items-center shrink-0 bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block landing-logo-wrap">
             <Image
@@ -301,7 +302,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* What Your Client Receives - Professional Proposal Preview */}
+      {/* What Your Client Receives - 6–8 Page Proposal Sample (Auto-Scroll) */}
       <section className="py-24 border-b border-zinc-800/80 bg-zinc-900/20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
@@ -309,77 +310,11 @@ export default function Home() {
               What Your Client Receives
             </h2>
             <p className="text-lg text-zinc-400 max-w-2xl mx-auto">
-              A polished, branded proposal—the kind that wins bids.
+              A polished, 6–8 page proposal—the kind that wins bids. Use your own custom template; we merge in customer and job details for every bid.
             </p>
           </div>
 
-          <div className="max-w-2xl mx-auto">
-            {/* Proposal document mockup - professional layout */}
-            <div className="bg-white rounded-lg shadow-2xl shadow-black/20 overflow-hidden border border-zinc-700/50 text-left">
-              {/* Cover / Header */}
-              <div className="bg-zinc-100 border-b border-zinc-200 px-8 py-6">
-                <p className="text-xs font-medium text-zinc-500 uppercase tracking-widest mb-1">Proposal</p>
-                <h3 className="text-xl font-semibold text-zinc-900">Commercial Cleaning Services</h3>
-                <p className="text-sm text-zinc-600 mt-1">123 Main Street • Suite 400</p>
-                <p className="text-sm text-zinc-600">Prepared for: Acme Corporation</p>
-                <p className="text-xs text-zinc-500 mt-2">Valid through March 15, 2026</p>
-              </div>
-
-              {/* Scope of Work */}
-              <div className="px-8 py-5 border-b border-zinc-200">
-                <h4 className="text-sm font-semibold text-zinc-900 uppercase tracking-wide mb-3">Scope of Work</h4>
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-zinc-200 text-zinc-600 font-medium">
-                      <th className="text-left py-2">Area</th>
-                      <th className="text-left py-2">Sq Ft</th>
-                      <th className="text-left py-2">Floor Type</th>
-                      <th className="text-right py-2">Frequency</th>
-                    </tr>
-                  </thead>
-                  <tbody className="text-zinc-700">
-                    <tr className="border-b border-zinc-100"><td className="py-2">Lobby & corridors</td><td className="py-2">4,200</td><td className="py-2">Tile / LVT</td><td className="py-2 text-right">5x/week</td></tr>
-                    <tr className="border-b border-zinc-100"><td className="py-2">Restrooms (4)</td><td className="py-2">—</td><td className="py-2">Tile</td><td className="py-2 text-right">5x/week</td></tr>
-                    <tr className="border-b border-zinc-100"><td className="py-2">Office areas</td><td className="py-2">8,400</td><td className="py-2">Carpet</td><td className="py-2 text-right">2x/week</td></tr>
-                    <tr className="border-b border-zinc-100"><td className="py-2">Break room</td><td className="py-2">600</td><td className="py-2">Tile</td><td className="py-2 text-right">5x/week</td></tr>
-                    <tr><td className="py-2">Entry glass</td><td className="py-2">—</td><td className="py-2">Glass</td><td className="py-2 text-right">2x/week</td></tr>
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Services Included */}
-              <div className="px-8 py-5 border-b border-zinc-200">
-                <h4 className="text-sm font-semibold text-zinc-900 uppercase tracking-wide mb-3">Services Included</h4>
-                <ul className="text-sm text-zinc-700 space-y-1.5">
-                  <li>• Vacuuming and mopping per schedule</li>
-                  <li>• Restroom sanitization, refill dispensers</li>
-                  <li>• Trash removal and liner replacement</li>
-                  <li>• High dusting (monthly)</li>
-                  <li>• Entry glass cleaning</li>
-                </ul>
-              </div>
-
-              {/* Pricing */}
-              <div className="px-8 py-5 border-b border-zinc-200">
-                <h4 className="text-sm font-semibold text-zinc-900 uppercase tracking-wide mb-3">Monthly Investment</h4>
-                <div className="flex items-baseline justify-between">
-                  <span className="text-zinc-600 text-sm">Recurring monthly service</span>
-                  <span className="text-lg font-semibold text-zinc-900">$2,847.00</span>
-                </div>
-                <p className="text-xs text-zinc-500 mt-2">Billed monthly. No long-term contract required.</p>
-              </div>
-
-              {/* Footer */}
-              <div className="px-8 py-4 bg-zinc-50">
-                <p className="text-xs text-zinc-500">Assumptions: Square footage as provided; pricing based on standard frequencies. Exclusions: carpet extraction, strip & wax, window washing. Subject to site walk-through confirmation.</p>
-                <p className="text-xs font-medium text-zinc-700 mt-3">[Your Company Name] • (555) 123-4567 • contact@yourcompany.com</p>
-              </div>
-            </div>
-
-            <p className="text-center text-sm text-zinc-500 mt-6">
-              Branded to your company. Generated in minutes from your walkthrough.
-            </p>
-          </div>
+          <ProposalSampleScroll />
         </div>
       </section>
 

@@ -10,72 +10,92 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
 
 const plans = [
   {
-    id: 'sales-1',
-    name: 'Sales 1',
-    tagline: 'Strictly sales',
-    price: 49,
-    description: 'Everything you need to close more cleaning deals',
+    id: 'cub',
+    name: 'Cub',
+    tagline: "One rep's output, zero HR",
+    price: 59,
+    description: "I need someone selling now—without hiring.",
+    valueNote: 'Replaces ~$50k+ in first sales hire · ~1% of that cost',
+    priceLabel: 'per company',
+    seats: '1 user included',
     features: [
-      'Lead import (paste, voice, scan, email)',
-      'Sales pipeline & lead management',
-      'Walk-through scheduling',
-      '5-page customizable proposals',
-      'AI proposal suggestions (crew, hours, pricing)',
-      'Up to 5 active leads',
-      'Email support',
+      'AI sales copilot (email, SMS, follow-ups)',
+      'Prebuilt outreach sequences (inbound + outbound)',
+      'Lead intake & qualification',
+      'Call / meeting summaries',
+      'Proposal & quote assistance',
+      'CRM sync (HubSpot, Zoho, etc.)',
+      'Activity tracking & basic deal timeline',
+      '1 pipeline, 1 motion, 1 user',
     ],
     popular: false,
+    contactOnly: false,
   },
   {
-    id: 'sales-2',
-    name: 'Sales 2',
-    tagline: 'Sales, scaled',
-    price: 99,
-    description: 'More capacity and power for sales teams',
+    id: 'black-bear',
+    name: 'Black Bear',
+    tagline: 'Sales at scale, no new hires',
+    price: 149,
+    description: 'We have leads. We need throughput.',
+    valueNote: 'Sales team without salaries · ~1% of 2–3 reps',
+    priceLabel: 'per company',
+    seats: 'Up to 5 users',
     features: [
-      'Everything in Sales 1',
-      'Unlimited active leads',
-      'Multiple users / team',
-      'Locations & templates',
-      'Bids & estimates',
-      'Contracts upload',
-      'Priority support',
+      'Everything in Cub',
+      'Multi-pipeline support (2–5 pipelines)',
+      'Parallel outreach sequences & lead routing',
+      'Territory / segment logic',
+      'Shared inbox & task pool',
+      'AI objection handling & response suggestions',
+      'Rep benchmarking & pipeline health scoring',
+      'Follow-up SLA & stalled-deal detection',
     ],
     popular: true,
+    contactOnly: false,
   },
   {
-    id: 'sales-1-qc-1',
-    name: 'Sales 1 + QC 1',
-    tagline: 'Sales + QC & admin',
-    price: 79,
-    description: 'Sales plus task breakdown and basic operations',
+    id: 'grizzly',
+    name: 'Grizzly',
+    tagline: 'Sales + ops under control',
+    price: 249,
+    description: 'Sales is working—now keep it consistent.',
+    valueNote: 'Replaces sales ops & cleans up the mess',
+    priceLabel: 'per company',
+    seats: 'Up to 10 users',
     features: [
-      'Everything in Sales 1',
-      'QC Task Assign: split schedules into per-employee task lists',
-      'My Tasks for cleaners',
-      'Basic inspections',
-      'Up to 3 crews',
-      'Email support',
+      'Everything in Black Bear',
+      'Sales playbooks (enforced, not optional)',
+      'Deal QA before stage movement',
+      'Required artifacts per stage (notes, logs, docs)',
+      'AI deal audits (what’s missing / risky)',
+      'Handoff workflows (sales → ops)',
+      'Custom QC rules & exception alerts',
+      'Audit trail & ops dashboard',
     ],
     popular: false,
+    contactOnly: false,
   },
   {
-    id: 'sales-2-qc-2',
-    name: 'Sales 2 + QC 2',
-    tagline: 'Full sales + operations',
-    price: 149,
-    description: 'Complete sales and operations in one place',
+    id: 'kodiak',
+    name: 'Kodiak',
+    tagline: 'Full revenue engine',
+    price: 499,
+    description: 'Predictable revenue without babysitting.',
+    valueNote: 'Revenue department, not software',
+    priceLabel: 'per company',
+    seats: 'Unlimited users',
+    priceNote: 'or custom for enterprise',
     features: [
-      'Everything in Sales 2',
-      'Everything in QC 1, plus:',
-      'Unlimited crews & schedules',
-      'Inspections & issue tracking',
-      'Compliance & SDS management',
-      'Purchase orders & invoicing',
-      'Admin & employee management',
-      'Priority support',
+      'Everything in Grizzly',
+      'AI deal prioritization & forecast confidence',
+      'Pipeline rebalancing & multi-team orchestration',
+      'Continuous deal monitoring & revenue leakage detection',
+      'SLA auto-remediation across teams',
+      'Multi-org / multi-region & API access',
+      'Dedicated onboarding & priority support',
     ],
     popular: false,
+    contactOnly: false,
   },
 ];
 
@@ -144,11 +164,31 @@ export function PricingCards({ dark }: PricingCardsProps) {
             <CardDescription className={dark ? 'text-zinc-400 text-sm' : 'text-sm'}>
               {plan.description}
             </CardDescription>
+            {plan.valueNote && (
+              <p className={dark ? 'text-xs text-orange-400/90 font-medium mt-1' : 'text-xs text-primary font-medium mt-1'}>
+                {plan.valueNote}
+              </p>
+            )}
             <div className="mt-3">
               <span className={dark ? 'text-3xl font-bold text-white' : 'text-3xl font-bold'}>
                 ${plan.price}
               </span>
               <span className={dark ? 'text-zinc-500 text-sm' : 'text-gray-600 text-sm'}>/month</span>
+              {'priceLabel' in plan && plan.priceLabel && (
+                <span className={dark ? 'text-zinc-500 text-xs block mt-0.5' : 'text-gray-500 text-xs block mt-0.5'}>
+                  {plan.priceLabel}
+                </span>
+              )}
+              {'seats' in plan && plan.seats && (
+                <p className={dark ? 'text-xs text-orange-400/80 mt-1' : 'text-xs text-primary/80 mt-1'}>
+                  {plan.seats}
+                </p>
+              )}
+              {'priceNote' in plan && plan.priceNote && (
+                <p className={dark ? 'text-xs text-zinc-500 mt-0.5' : 'text-xs text-gray-500 mt-0.5'}>
+                  {plan.priceNote}
+                </p>
+              )}
             </div>
           </CardHeader>
           <CardContent className="flex-1 pt-0">

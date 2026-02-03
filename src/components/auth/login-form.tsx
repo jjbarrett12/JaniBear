@@ -170,9 +170,11 @@ export function LoginForm() {
         // Default to onboarding
       }
 
+      // Send user through /auth/continue so the next request sends cookies and server sees session
       const origin = typeof window !== 'undefined' ? window.location.origin : '';
-      await new Promise((r) => setTimeout(r, 800));
-      window.location.href = `${origin}${targetPath}`;
+      await new Promise((r) => setTimeout(r, 1200));
+      const continueUrl = `${origin}/auth/continue?next=${encodeURIComponent(targetPath)}`;
+      window.location.href = continueUrl;
       return;
     }
     setIsLoading(false);
@@ -289,6 +291,7 @@ export function LoginForm() {
         {error && (
           <div className="text-sm text-red-700 bg-red-50 p-3 rounded-xl border border-red-200 space-y-2">
             <p>{error}</p>
+            <p className="text-red-600/80 text-xs mt-1">If login keeps failing, try an incognito window or a different browser.</p>
             {errorCode === 'email_not_confirmed' && email?.trim() && (
               <Button
                 type="button"

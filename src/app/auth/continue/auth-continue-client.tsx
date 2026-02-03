@@ -3,8 +3,8 @@
 import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 
-const RETRY_DELAY_MS = 400;
-const MAX_ATTEMPTS = 15;
+const RETRY_DELAY_MS = 500;
+const MAX_ATTEMPTS = 25;
 
 export function AuthContinueClient({ defaultNext }: { defaultNext: string }) {
   const [status, setStatus] = useState<'redirecting' | 'error'>('redirecting');

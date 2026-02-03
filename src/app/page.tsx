@@ -48,7 +48,7 @@ export default function Home() {
   return (
     <div className="landing-page min-h-screen bg-zinc-950 text-zinc-100">
       {/* Nav - white header, black text, large logo */}
-      <nav className="landing-header border-b border-gray-200 bg-white sticky top-0 z-50 min-h-[5rem] h-auto py-2 flex items-center">
+      <nav className="landing-header border-b border-gray-200 bg-white sticky top-0 z-50 min-h-[4rem] h-auto py-1.5 flex items-center">
         <div className="container mx-auto px-4 h-full flex items-center justify-between gap-4">
           <Link href="/" className="flex items-center shrink-0 bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block landing-logo-wrap">
             <Image

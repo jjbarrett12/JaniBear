@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import Link from 'next/link';
-import { CheckCircle2 } from 'lucide-react';
+import { CheckCircle2, Loader2 } from 'lucide-react';
 
 export function ForgotPasswordForm() {
   const [email, setEmail] = useState('');
@@ -21,19 +21,22 @@ export function ForgotPasswordForm() {
     setError(null);
     setSuccess(false);
 
-    const supabase = createClient();
-    const redirectBase = (typeof window !== 'undefined' && process.env.NEXT_PUBLIC_APP_URL)
-      ? process.env.NEXT_PUBLIC_APP_URL.replace(/\/$/, '')
-      : (typeof window !== 'undefined' ? window.location.origin : '');
-    
-    const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${redirectBase}/auth/reset-password`,
-    });
-    
-    if (resetError) {
-      setError(resetError.message);
-    } else {
-      setSuccess(true);
+    try {
+      const supabase = createClient();
+      const redirectTo = `${window.location.origin}/auth/reset-password`;
+      
+      const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo,
+      });
+      
+      if (resetError) {
+        setError(resetError.message);
+      } else {
+        setSuccess(true);
+      }
+    } catch (err) {
+      console.error('Password reset error:', err);
+      setError('An unexpected error occurred. Please try again.');
     }
     
     setIsLoading(false);
@@ -49,7 +52,7 @@ export function ForgotPasswordForm() {
             </div>
             <h2 className="text-2xl font-bold text-gray-900">Check Your Email</h2>
             <p className="text-gray-600">
-              We've sent a password reset link to <strong>{email}</strong>
+              We&apos;ve sent a password reset link to <strong>{email}</strong>
             </p>
             <p className="text-sm text-gray-500">
               Click the link in the email to reset your password. The link will expire in 1 hour.
@@ -95,7 +98,14 @@ export function ForgotPasswordForm() {
             disabled={isLoading}
             size="lg"
           >
-            {isLoading ? 'Sending...' : 'Send Reset Link'}
+            {isLoading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Sending...
+              </>
+            ) : (
+              'Send Reset Link'
+            )}
           </Button>
           
           <div className="text-center pt-2">

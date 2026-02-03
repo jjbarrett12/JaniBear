@@ -1,13 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Loader2 } from 'lucide-react';
 
 function GoogleIcon({ className }: { className?: string }) {
   return (
@@ -30,6 +30,7 @@ function FacebookIcon({ className }: { className?: string }) {
 
 export function LoginForm() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -45,30 +46,46 @@ export function LoginForm() {
   const handleOAuthSignIn = async (provider: 'google' | 'facebook') => {
     setOauthLoading(provider);
     setError(null);
-    const supabase = createClient();
-    const redirectTo = typeof window !== 'undefined'
-      ? `${window.location.origin}/auth/callback`
-      : undefined;
-    const { data, error: oauthError } = await supabase.auth.signInWithOAuth({
-      provider,
-      options: redirectTo ? { redirectTo } : undefined,
-    });
-    if (oauthError) {
-      setError(oauthError.message);
+    
+    try {
+      const supabase = createClient();
+      const redirectTo = `${window.location.origin}/auth/callback`;
+      
+      const { data, error: oauthError } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo,
+        },
+      });
+      
+      if (oauthError) {
+        console.error('OAuth error:', oauthError);
+        setError(oauthError.message);
+        setOauthLoading(null);
+        return;
+      }
+      
+      if (data?.url) {
+        window.location.href = data.url;
+        return;
+      }
+      
       setOauthLoading(null);
-      return;
+    } catch (err) {
+      console.error('OAuth error:', err);
+      setError('Failed to start sign in. Please try again.');
+      setOauthLoading(null);
     }
-    if (data?.url) {
-      window.location.href = data.url;
-      return;
-    }
-    setOauthLoading(null);
   };
 
   useEffect(() => {
-    const sessionError = searchParams.get('error');
-    if (sessionError === 'session') {
+    const urlError = searchParams.get('error');
+    const urlMessage = searchParams.get('message');
+    
+    if (urlError === 'session') {
       setError('Session could not be established. Please sign in again.');
+    } else if (urlError === 'oauth') {
+      setError(urlMessage || 'OAuth sign in failed. Please try again.');
     }
   }, [searchParams]);
 
@@ -89,18 +106,25 @@ export function LoginForm() {
     setResendSuccess(false);
     setError(null);
     setErrorCode(null);
-    const supabase = createClient();
-    const { error: resendError } = await supabase.auth.resend({
-      type: 'signup',
-      email: email.trim(),
-    });
-    setResending(false);
-    if (resendError) {
-      setError(resendError.message);
-    } else {
-      setResendSuccess(true);
-      setError(null);
+    
+    try {
+      const supabase = createClient();
+      const { error: resendError } = await supabase.auth.resend({
+        type: 'signup',
+        email: email.trim(),
+      });
+      
+      if (resendError) {
+        setError(resendError.message);
+      } else {
+        setResendSuccess(true);
+        setError(null);
+      }
+    } catch {
+      setError('Failed to resend confirmation email.');
     }
+    
+    setResending(false);
   };
 
   const handleEmailLogin = async (e: React.FormEvent) => {
@@ -110,90 +134,84 @@ export function LoginForm() {
     setErrorCode(null);
     setResendSuccess(false);
 
-    const supabase = createClient();
+    try {
+      const supabase = createClient();
 
-    if (isMagicLink) {
-      const { error } = await supabase.auth.signInWithOtp({
-        email,
-        options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
-        },
-      });
-      if (error) {
-        setError(error.message);
-      } else {
-        setError(null);
-        alert('Check your email for the magic link!');
-      }
-      setIsLoading(false);
-      return;
-    }
-
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    if (error) {
-      const code = (error as { code?: string }).code ?? '';
-      setErrorCode(code);
-      if (code === 'invalid_credentials' || error.message.includes('Invalid login credentials')) {
-        setError('Invalid email or password. Please try again.');
-      } else if (code === 'email_not_confirmed' || error.message.includes('Email not confirmed')) {
-        setError('Your email is not confirmed yet. Check your inbox (and spam) for the confirmation link.');
-      } else {
-        setError(error.message);
-      }
-      setIsLoading(false);
-      return;
-    }
-
-    if (data.user) {
-      if (rememberMe && typeof window !== 'undefined') {
-        localStorage.setItem('janibear_saved_email', email);
-        localStorage.setItem('janibear_remember_me', 'true');
-      } else if (typeof window !== 'undefined') {
-        localStorage.removeItem('janibear_saved_email');
-        localStorage.removeItem('janibear_remember_me');
-      }
-
-      let targetPath = '/onboarding';
-      try {
-        const { data: membership } = await supabase
-          .from('org_members')
-          .select('org_id')
-          .eq('user_id', data.user.id)
-          .limit(1)
-          .maybeSingle();
-        if (membership?.org_id) targetPath = '/app/dashboard';
-      } catch {
-        // Default to onboarding
-      }
-
-      const origin = typeof window !== 'undefined' ? window.location.origin : '';
-      // Hard cap: after 3s always reset so user is never stuck
-      const safetyTimer = setTimeout(() => {
-        setError('Session could not be saved. Try incognito mode or a different browser.');
-        setIsLoading(false);
-      }, 3000);
-
-      const POLL_MS = 200;
-      const MAX_POLLS = 15; // 3s max
-      for (let i = 0; i < MAX_POLLS; i++) {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session) {
-          clearTimeout(safetyTimer);
-          window.location.href = `${origin}${targetPath}`;
-          return;
+      if (isMagicLink) {
+        const { error } = await supabase.auth.signInWithOtp({
+          email,
+          options: {
+            emailRedirectTo: `${window.location.origin}/auth/callback`,
+          },
+        });
+        
+        if (error) {
+          setError(error.message);
+        } else {
+          setError(null);
+          alert('Check your email for the magic link!');
         }
-        await new Promise((r) => setTimeout(r, POLL_MS));
+        setIsLoading(false);
+        return;
       }
 
-      clearTimeout(safetyTimer);
-      setError('Session could not be saved. Try incognito mode or a different browser.');
-      setIsLoading(false);
-      return;
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        const code = (error as { code?: string }).code ?? '';
+        setErrorCode(code);
+        
+        if (code === 'invalid_credentials' || error.message.includes('Invalid login credentials')) {
+          setError('Invalid email or password. Please try again.');
+        } else if (code === 'email_not_confirmed' || error.message.includes('Email not confirmed')) {
+          setError('Your email is not confirmed yet. Check your inbox (and spam) for the confirmation link.');
+        } else {
+          setError(error.message);
+        }
+        setIsLoading(false);
+        return;
+      }
+
+      if (data.user) {
+        // Save remember me preference
+        if (rememberMe && typeof window !== 'undefined') {
+          localStorage.setItem('janibear_saved_email', email);
+          localStorage.setItem('janibear_remember_me', 'true');
+        } else if (typeof window !== 'undefined') {
+          localStorage.removeItem('janibear_saved_email');
+          localStorage.removeItem('janibear_remember_me');
+        }
+
+        // Check if user has org membership
+        let targetPath = '/onboarding';
+        try {
+          const { data: membership } = await supabase
+            .from('org_members')
+            .select('org_id')
+            .eq('user_id', data.user.id)
+            .limit(1)
+            .maybeSingle();
+          
+          if (membership?.org_id) {
+            targetPath = '/app/dashboard';
+          }
+        } catch {
+          // Default to onboarding if check fails
+        }
+
+        // Use router.push for client-side navigation which preserves cookies
+        router.push(targetPath);
+        router.refresh();
+        return;
+      }
+    } catch (err) {
+      console.error('Login error:', err);
+      setError('An unexpected error occurred. Please try again.');
     }
+    
     setIsLoading(false);
   };
 
@@ -206,9 +224,13 @@ export function LoginForm() {
           variant="outline"
           className="w-full h-12 rounded-xl border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-800 font-medium text-[15px]"
           onClick={() => handleOAuthSignIn('google')}
-          disabled={!!oauthLoading}
+          disabled={!!oauthLoading || isLoading}
         >
-          <GoogleIcon className="mr-3 h-5 w-5 shrink-0" />
+          {oauthLoading === 'google' ? (
+            <Loader2 className="mr-3 h-5 w-5 animate-spin" />
+          ) : (
+            <GoogleIcon className="mr-3 h-5 w-5 shrink-0" />
+          )}
           {oauthLoading === 'google' ? 'Signing in…' : 'Continue with Google'}
         </Button>
         <Button
@@ -216,9 +238,13 @@ export function LoginForm() {
           variant="outline"
           className="w-full h-12 rounded-xl border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-800 font-medium text-[15px]"
           onClick={() => handleOAuthSignIn('facebook')}
-          disabled={!!oauthLoading}
+          disabled={!!oauthLoading || isLoading}
         >
-          <FacebookIcon className="mr-3 h-5 w-5 shrink-0" />
+          {oauthLoading === 'facebook' ? (
+            <Loader2 className="mr-3 h-5 w-5 animate-spin" />
+          ) : (
+            <FacebookIcon className="mr-3 h-5 w-5 shrink-0" />
+          )}
           {oauthLoading === 'facebook' ? 'Signing in…' : 'Continue with Facebook'}
         </Button>
       </div>
@@ -308,7 +334,6 @@ export function LoginForm() {
         {error && (
           <div className="text-sm text-red-700 bg-red-50 p-3 rounded-xl border border-red-200 space-y-2">
             <p>{error}</p>
-            <p className="text-red-600/80 text-xs mt-1">If login keeps failing, try an incognito window or a different browser.</p>
             {errorCode === 'email_not_confirmed' && email?.trim() && (
               <Button
                 type="button"
@@ -327,9 +352,18 @@ export function LoginForm() {
         <Button
           type="submit"
           className="w-full h-12 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-semibold text-[15px] shadow-sm"
-          disabled={isLoading}
+          disabled={isLoading || !!oauthLoading}
         >
-          {isLoading ? 'Signing in…' : isMagicLink ? 'Send magic link' : 'Sign in'}
+          {isLoading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Signing in…
+            </>
+          ) : isMagicLink ? (
+            'Send magic link'
+          ) : (
+            'Sign in'
+          )}
         </Button>
       </form>
 

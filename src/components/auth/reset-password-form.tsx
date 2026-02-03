@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -9,15 +9,45 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { PasswordStrengthMeter } from '@/components/auth/password-strength-meter';
 import Link from 'next/link';
-import { CheckCircle2 } from 'lucide-react';
+import { CheckCircle2, Loader2, AlertCircle } from 'lucide-react';
 
 export function ResetPasswordForm() {
   const router = useRouter();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isCheckingSession, setIsCheckingSession] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [hasSession, setHasSession] = useState(false);
+
+  // Check if there's a valid recovery session
+  useEffect(() => {
+    const checkSession = async () => {
+      const supabase = createClient();
+      
+      // Listen for auth state changes (like SIGNED_IN from recovery link)
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+        if (event === 'PASSWORD_RECOVERY' || (event === 'SIGNED_IN' && session)) {
+          setHasSession(true);
+          setIsCheckingSession(false);
+        }
+      });
+
+      // Also check current session
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        setHasSession(true);
+      }
+      setIsCheckingSession(false);
+
+      return () => {
+        subscription.unsubscribe();
+      };
+    };
+
+    checkSession();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,23 +67,69 @@ export function ResetPasswordForm() {
       return;
     }
 
-    const supabase = createClient();
-    
-    const { error: updateError } = await supabase.auth.updateUser({
-      password: password,
-    });
-    
-    if (updateError) {
-      setError(updateError.message);
+    try {
+      const supabase = createClient();
+      
+      const { error: updateError } = await supabase.auth.updateUser({
+        password: password,
+      });
+      
+      if (updateError) {
+        setError(updateError.message);
+        setIsLoading(false);
+      } else {
+        setSuccess(true);
+        // Sign out and redirect to login after 2 seconds
+        await supabase.auth.signOut();
+        setTimeout(() => {
+          router.push('/auth/login');
+        }, 2000);
+      }
+    } catch (err) {
+      console.error('Password update error:', err);
+      setError('An unexpected error occurred. Please try again.');
       setIsLoading(false);
-    } else {
-      setSuccess(true);
-      // Redirect to login after 2 seconds
-      setTimeout(() => {
-        router.push('/auth/login');
-      }, 2000);
     }
   };
+
+  if (isCheckingSession) {
+    return (
+      <Card className="shadow-xl border-0">
+        <CardContent className="p-6 md:p-8">
+          <div className="text-center space-y-4">
+            <Loader2 className="h-8 w-8 animate-spin mx-auto text-gray-400" />
+            <p className="text-gray-600">Verifying reset link...</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (!hasSession) {
+    return (
+      <Card className="shadow-xl border-0">
+        <CardContent className="p-6 md:p-8">
+          <div className="text-center space-y-4">
+            <div className="mx-auto w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
+              <AlertCircle className="h-8 w-8 text-red-600" />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900">Invalid or Expired Link</h2>
+            <p className="text-gray-600">
+              This password reset link is invalid or has expired. Please request a new one.
+            </p>
+            <div className="pt-4 space-y-2">
+              <Link href="/auth/forgot-password">
+                <Button className="w-full">Request New Reset Link</Button>
+              </Link>
+              <Link href="/auth/login">
+                <Button variant="outline" className="w-full">Back to Sign In</Button>
+              </Link>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   if (success) {
     return (
@@ -126,7 +202,14 @@ export function ResetPasswordForm() {
             disabled={isLoading}
             size="lg"
           >
-            {isLoading ? 'Updating Password...' : 'Update Password'}
+            {isLoading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Updating Password...
+              </>
+            ) : (
+              'Update Password'
+            )}
           </Button>
           
           <div className="text-center pt-2">

@@ -71,25 +71,25 @@ export async function AppSidebar() {
       {/* Desktop Sidebar */}
       <aside className="hidden lg:flex fixed left-0 top-0 z-40 h-screen w-64 border-r bg-white">
         <div className="flex h-full flex-col">
-          <div className="flex h-16 items-center border-b px-6">
+          <div className="flex h-20 items-center border-b px-4">
             <Link href="/app/dashboard" className="flex items-center gap-3 bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block">
               {organization?.logo_url ? (
-<Image
-                src={organization.logo_url}
-                alt="Company Logo"
-                width={180}
-                height={60}
-                className="h-12 md:h-14 w-auto object-contain bg-transparent"
-                priority
-                unoptimized
-              />
+                <Image
+                  src={organization.logo_url}
+                  alt="Company Logo"
+                  width={220}
+                  height={80}
+                  className="h-16 w-auto object-contain bg-transparent"
+                  priority
+                  unoptimized
+                />
               ) : (
                 <Image
                   src="/janibear-logo.png"
                   alt="JANIBEAR Logo"
-                  width={220}
-                  height={72}
-                  className="h-12 md:h-14 w-auto object-contain bg-transparent"
+                  width={240}
+                  height={80}
+                  className="h-16 w-auto object-contain bg-transparent"
                   priority
                   unoptimized
                 />

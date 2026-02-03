@@ -64,9 +64,9 @@ export function MobileSidebar({ logoUrl }: MobileSidebarProps) {
   return (
     <>
       {/* Mobile Header */}
-      <header className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b h-16 flex items-center justify-between px-4">
-<div className="flex items-center gap-3 [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block">
-            <Button
+      <header className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b h-20 flex items-center justify-between px-4">
+        <div className="flex items-center gap-3 [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block">
+          <Button
             variant="ghost"
             size="icon"
             onClick={() => setIsOpen(true)}
@@ -78,18 +78,19 @@ export function MobileSidebar({ logoUrl }: MobileSidebarProps) {
             <Image
               src={logoUrl}
               alt="Company Logo"
-              width={100}
-              height={30}
-              className="h-8 w-auto object-contain bg-transparent"
+              width={160}
+              height={60}
+              className="h-14 w-auto object-contain bg-transparent"
               priority
+              unoptimized
             />
           ) : (
             <Image
               src="/janibear-logo.png"
               alt="JANIBEAR Logo"
-              width={220}
+              width={200}
               height={72}
-              className="h-12 w-auto object-contain bg-transparent"
+              className="h-14 w-auto object-contain bg-transparent"
               priority
               unoptimized
             />
@@ -106,15 +107,15 @@ export function MobileSidebar({ logoUrl }: MobileSidebarProps) {
           />
           <aside className="fixed top-0 left-0 z-50 h-full w-80 bg-white shadow-xl lg:hidden transform transition-transform duration-300">
             <div className="flex h-full flex-col">
-              <div className="flex h-16 items-center justify-between border-b px-6">
+              <div className="flex h-20 items-center justify-between border-b px-4">
                 <Link href="/app/dashboard" className="flex items-center gap-3 bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block">
                   {logoUrl ? (
                     <Image
                       src={logoUrl}
                       alt="Company Logo"
-                      width={180}
-                      height={60}
-                      className="h-12 w-auto object-contain bg-transparent"
+                      width={200}
+                      height={70}
+                      className="h-16 w-auto object-contain bg-transparent"
                       priority
                       unoptimized
                     />
@@ -123,8 +124,8 @@ export function MobileSidebar({ logoUrl }: MobileSidebarProps) {
                       src="/janibear-logo.png"
                       alt="JANIBEAR Logo"
                       width={220}
-                      height={72}
-                      className="h-12 w-auto object-contain bg-transparent"
+                      height={80}
+                      className="h-16 w-auto object-contain bg-transparent"
                       priority
                       unoptimized
                     />

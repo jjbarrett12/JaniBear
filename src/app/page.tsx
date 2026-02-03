@@ -36,7 +36,7 @@ import {
   Brain,
   Wand2,
 } from 'lucide-react';
-import { ProposalSampleScroll } from '@/components/sales/proposal-sample-scroll';
+import { ProposalSampleStatic } from '@/components/sales/proposal-sample-static';
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -48,7 +48,7 @@ export default function Home() {
   return (
     <div className="landing-page min-h-screen bg-zinc-950 text-zinc-100">
       {/* Nav - fixed height ~25% shorter; logo full size and overflows */}
-      <nav className="landing-header border-b border-gray-200 bg-white sticky top-0 z-50 h-[105px] md:h-[120px] py-0 flex items-center overflow-visible">
+      <nav className="landing-header border-b border-gray-200 bg-white sticky top-0 z-50 h-16 md:h-20 py-0 flex items-center overflow-visible">
         <div className="container mx-auto px-4 h-full flex items-center justify-between gap-4 overflow-visible min-h-0">
           <Link href="/" className="landing-logo-wrap flex items-center shrink-0 overflow-visible bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block [&>span]:overflow-visible">
             <Image
@@ -121,10 +121,10 @@ export default function Home() {
           </h1>
 
           <p
-            className={`text-lg md:text-xl text-zinc-400 mb-8 max-w-3xl mx-auto leading-relaxed transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            className={`hero-punchline text-lg md:text-xl text-zinc-400 mb-8 max-w-3xl mx-auto leading-relaxed transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '100ms' }}
           >
-            AI-powered proposals, inspections, and quality control—built for modern commercial cleaning companies
+            An AI Platform Built by Janitorial Operators, for Janitorial Operators
           </p>
 
           <div
@@ -378,7 +378,7 @@ export default function Home() {
             </p>
           </div>
 
-          <ProposalSampleScroll />
+          <ProposalSampleStatic />
         </div>
       </section>
 

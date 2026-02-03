@@ -224,6 +224,19 @@
     }
   }
 
+  @keyframes pulsate {
+    0%, 100% {
+      opacity: 0.85;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+
+  .hero-punchline {
+    animation: pulsate 2.5s ease-in-out infinite;
+  }
+
   .animate-float {
     animation: float 6s ease-in-out infinite;
   }

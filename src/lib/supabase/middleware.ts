@@ -71,9 +71,13 @@ export async function updateSession(request: NextRequest) {
       }
     );
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    // Prefer getSession (cookie-only, no network) so we don't bounce users right after login
+    const { data: { session } } = await supabase.auth.getSession();
+    let user = session?.user;
+    if (!user) {
+      const u = await supabase.auth.getUser();
+      user = u.data.user ?? undefined;
+    }
 
     const pathname = request.nextUrl.pathname;
     const appRedirect = redirectToApp(pathname);

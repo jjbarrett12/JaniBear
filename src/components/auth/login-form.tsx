@@ -161,7 +161,8 @@ export function LoginForm() {
         }
 
         const targetPath = membership ? '/app/dashboard' : '/onboarding';
-        await new Promise((r) => setTimeout(r, 800));
+        // Give the browser time to write auth cookies before full-page redirect
+        await new Promise((r) => setTimeout(r, 1500));
         window.location.href = targetPath;
         return;
       }

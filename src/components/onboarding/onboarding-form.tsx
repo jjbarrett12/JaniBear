@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Loader2 } from 'lucide-react';
 
 function SignOutLink() {
   const [signingOut, setSigningOut] = useState(false);
@@ -31,7 +32,54 @@ export function OnboardingForm() {
   const [orgName, setOrgName] = useState('');
   const [fullName, setFullName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const [userId, setUserId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  // Check auth on mount and set up listener
+  useEffect(() => {
+    const supabase = createClient();
+    
+    const checkAuth = async () => {
+      // Try to get the session first
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        setUserId(session.user.id);
+        // Pre-fill name from OAuth if available
+        if (session.user.user_metadata?.full_name) {
+          setFullName(session.user.user_metadata.full_name);
+        }
+        setIsCheckingAuth(false);
+        return;
+      }
+      
+      // Fallback to getUser (makes API call)
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setUserId(user.id);
+        if (user.user_metadata?.full_name) {
+          setFullName(user.user_metadata.full_name);
+        }
+      }
+      setIsCheckingAuth(false);
+    };
+
+    // Listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session?.user) {
+        setUserId(session.user.id);
+        if (session.user.user_metadata?.full_name && !fullName) {
+          setFullName(session.user.user_metadata.full_name);
+        }
+      }
+    });
+
+    checkAuth();
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,11 +87,24 @@ export function OnboardingForm() {
     setError(null);
 
     const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
     
-    if (!user) {
-      setError('You must be logged in');
+    // Get fresh user data
+    let currentUserId = userId;
+    if (!currentUserId) {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        currentUserId = user.id;
+        setUserId(user.id);
+      }
+    }
+    
+    if (!currentUserId) {
+      setError('Session expired. Please sign in again.');
       setIsLoading(false);
+      // Redirect to login after a short delay
+      setTimeout(() => {
+        window.location.href = '/auth/login';
+      }, 2000);
       return;
     }
 
@@ -52,11 +113,14 @@ export function OnboardingForm() {
       const { error: profileError } = await supabase
         .from('profiles')
         .upsert({
-          id: user.id,
+          id: currentUserId,
           full_name: fullName || null,
         }, { onConflict: 'id' });
 
-      if (profileError) throw profileError;
+      if (profileError) {
+        console.error('Profile error:', profileError);
+        throw new Error(`Profile: ${profileError.message}`);
+      }
 
       // Create organization
       const { data: org, error: orgError } = await supabase
@@ -65,18 +129,24 @@ export function OnboardingForm() {
         .select()
         .single();
 
-      if (orgError) throw orgError;
+      if (orgError) {
+        console.error('Org error:', orgError);
+        throw new Error(`Organization: ${orgError.message}`);
+      }
 
       // Create org membership as owner (RLS allows insert own first membership)
       const { error: memberError } = await supabase
         .from('org_members')
         .insert({
           org_id: org.id,
-          user_id: user.id,
+          user_id: currentUserId,
           role: 'owner',
         });
 
-      if (memberError) throw memberError;
+      if (memberError) {
+        console.error('Member error:', memberError);
+        throw new Error(`Membership: ${memberError.message}`);
+      }
 
       // Full-page redirect so server sees new membership
       window.location.href = '/app/dashboard';
@@ -88,6 +158,19 @@ export function OnboardingForm() {
       setIsLoading(false);
     }
   };
+
+  if (isCheckingAuth) {
+    return (
+      <Card>
+        <CardContent className="p-8">
+          <div className="flex flex-col items-center justify-center space-y-4">
+            <Loader2 className="h-8 w-8 animate-spin text-orange-500" />
+            <p className="text-gray-600">Loading...</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card>
@@ -131,7 +214,14 @@ export function OnboardingForm() {
           )}
           
           <Button type="submit" className="w-full h-14 text-lg" disabled={isLoading} size="lg">
-            {isLoading ? 'Creating...' : 'Create Organization'}
+            {isLoading ? (
+              <>
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                Creating...
+              </>
+            ) : (
+              'Create Organization'
+            )}
           </Button>
 
           <p className="text-center text-sm text-zinc-500 pt-2">

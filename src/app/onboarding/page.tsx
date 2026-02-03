@@ -6,9 +6,10 @@ import { OnboardingForm } from '@/components/onboarding/onboarding-form';
 
 export default async function OnboardingPage() {
   const supabase = await createClient();
-  // Prefer getSession (cookie-only) so we see the session right after login
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? (await supabase.auth.getUser()).data.user;
+  
+  // Use getUser() for proper session validation
+  const { data: { user } } = await supabase.auth.getUser();
+  
   if (!user) {
     redirect('/auth/login');
   }
@@ -19,7 +20,7 @@ export default async function OnboardingPage() {
     .select('org_id')
     .eq('user_id', user.id)
     .limit(1)
-    .single();
+    .maybeSingle();
   
   if (membership) {
     redirect('/app/dashboard');

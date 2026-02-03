@@ -3,43 +3,44 @@ import Image from 'next/image';
 import { createClient } from '@/lib/supabase/server';
 import { SignupForm } from '@/components/auth/signup-form';
 
+export const metadata = { title: 'Sign up | JaniBear' };
+
 export default async function SignupPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  
+
   if (user) {
-    redirect('/app/dashboard');
+    const { data: membership } = await supabase
+      .from('org_members')
+      .select('org_id')
+      .eq('user_id', user.id)
+      .limit(1)
+      .single();
+    redirect(membership ? '/app/dashboard' : '/onboarding');
   }
-  
+
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 px-4 py-12">
-      <div className="w-full max-w-md space-y-8">
-        {/* Logo Section */}
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-zinc-50 via-white to-orange-50/30 px-4 py-8">
+      <div className="w-full max-w-md">
         <div className="text-center">
-          <div className="flex justify-center mb-4 [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block">
+          <div className="flex justify-center [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block" style={{ lineHeight: 0 }}>
             <Image
               src="/janibear-logo.png"
-              alt="Janibear Logo"
+              alt="JaniBear"
               width={600}
               height={200}
-              className="h-48 md:h-56 lg:h-72 w-auto object-contain bg-transparent"
+              className="w-auto object-contain bg-transparent"
+              style={{ imageRendering: 'auto', height: '5rem' }}
               priority
               unoptimized
-              style={{ 
-                imageRendering: 'auto',
-              }}
             />
           </div>
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
-            Create Your Account
-          </h1>
-          <p className="text-gray-600 text-base">
-            Sign up to get started with Janibear
-          </p>
+          <h1 className="text-xl font-bold text-zinc-900 mt-2 mb-0">Create your account</h1>
+          <p className="text-zinc-500 text-sm mt-0.5 mb-0">Get started with JaniBear in seconds</p>
         </div>
-
-        {/* Signup Form */}
-        <SignupForm />
+        <div className="mt-0">
+          <SignupForm />
+        </div>
       </div>
     </div>
   );

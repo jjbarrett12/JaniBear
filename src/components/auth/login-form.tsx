@@ -161,60 +161,17 @@ export function LoginForm() {
         }
 
         const targetPath = membership ? '/app/dashboard' : '/onboarding';
-        // Wait until session is in cookies (poll), then full-page redirect so the next request includes auth.
-        const maxWait = 5000;
-        const step = 200;
-        let elapsed = 0;
-        while (elapsed < maxWait) {
-          const { data } = await supabase.auth.getSession();
-          if (data.session) break;
-          await new Promise((r) => setTimeout(r, step));
-          elapsed += step;
-        }
-        await new Promise((r) => setTimeout(r, 2000));
+        await new Promise((r) => setTimeout(r, 800));
         window.location.href = targetPath;
         return;
       }
     }
-    
     setIsLoading(false);
   };
 
   return (
     <Card className="shadow-lg border border-zinc-200/80 rounded-2xl bg-white/95 backdrop-blur-sm overflow-hidden">
       <CardContent className="pt-2 pb-4 px-4 sm:pt-3 sm:pb-5 sm:px-5">
-        {/* Quick sign-in with Google / Facebook */}
-        <div className="space-y-3 mb-4">
-          <Button
-            type="button"
-            variant="outline"
-            className="w-full h-11 rounded-lg border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-700 font-medium"
-            onClick={() => handleOAuthSignIn('google')}
-            disabled={!!oauthLoading}
-          >
-            <GoogleIcon className="mr-2 shrink-0" />
-            {oauthLoading === 'google' ? 'Redirecting...' : 'Continue with Google'}
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            className="w-full h-11 rounded-lg border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-700 font-medium"
-            onClick={() => handleOAuthSignIn('facebook')}
-            disabled={!!oauthLoading}
-          >
-            <FacebookIcon className="mr-2 shrink-0" />
-            {oauthLoading === 'facebook' ? 'Redirecting...' : 'Continue with Facebook'}
-          </Button>
-          <div className="relative py-1">
-            <span className="absolute inset-0 flex items-center">
-              <span className="w-full border-t border-zinc-200" />
-            </span>
-            <span className="relative flex justify-center text-xs font-medium text-zinc-500 bg-white px-2">
-              or sign in with email
-            </span>
-          </div>
-        </div>
-
         <form onSubmit={handleEmailLogin} className="space-y-4">
           <div className="space-y-1.5">
             <Label htmlFor="email" className="text-sm font-medium text-zinc-700">Email</Label>
@@ -308,6 +265,39 @@ export function LoginForm() {
           >
             {isLoading ? 'Signing in...' : isMagicLink ? 'Send Magic Link' : 'Sign in'}
           </Button>
+
+          <div className="relative py-2">
+            <span className="absolute inset-0 flex items-center">
+              <span className="w-full border-t border-zinc-200" />
+            </span>
+            <span className="relative flex justify-center text-xs font-medium text-zinc-500 bg-white px-2">
+              or continue with
+            </span>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="h-10 rounded-lg border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-700"
+              onClick={() => handleOAuthSignIn('google')}
+              disabled={!!oauthLoading}
+            >
+              <GoogleIcon className="mr-1.5 h-4 w-4 shrink-0" />
+              {oauthLoading === 'google' ? '…' : 'Google'}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="h-10 rounded-lg border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-700"
+              onClick={() => handleOAuthSignIn('facebook')}
+              disabled={!!oauthLoading}
+            >
+              <FacebookIcon className="mr-1.5 h-4 w-4 shrink-0" />
+              {oauthLoading === 'facebook' ? '…' : 'Facebook'}
+            </Button>
+          </div>
 
           <div className="text-center space-y-1.5 pt-1">
             <button

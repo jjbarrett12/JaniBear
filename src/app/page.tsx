@@ -153,6 +153,23 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Built by / For - positioning */}
+      <section className="py-16 md:py-20 border-b border-zinc-800/80 bg-zinc-900/30">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-4 leading-tight">
+              Built by Janitorial Companies —{' '}
+              <span className="gradient-text bg-gradient-to-r from-orange-400 via-orange-500 to-cyan-400 bg-clip-text text-transparent">
+                For Janitorial Companies
+              </span>
+            </h2>
+            <p className="text-lg text-zinc-400 max-w-2xl mx-auto">
+              We get it. We know what companies want in a day-to-day sales and QC platform—because we&apos;ve lived it. JaniBear is built around the real workflows that win bids and keep quality high.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* AI Features - Three Core Capabilities */}
       <section id="features" className="py-24 border-b border-zinc-800/80 bg-zinc-900/20">
         <div className="container mx-auto px-4">
@@ -225,6 +242,54 @@ export default function Home() {
                 </div>
               );
             })}
+          </div>
+        </div>
+      </section>
+
+      {/* Inventory & Supply Orders */}
+      <section className="py-24 border-b border-zinc-800/80 bg-zinc-900/20">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-12">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-sm font-medium mb-4">
+                <Package className="h-4 w-4" />
+                <span>Inventory & Orders</span>
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
+                Organize Supplies—Stop the Paper Notes and Text Threads
+              </h2>
+              <p className="text-lg text-zinc-400 max-w-2xl mx-auto">
+                Most companies are still using paper notes, text messages, or Excel if they&apos;re lucky. JaniBear gives you one place to track inventory and build orders—then email them straight to your preferred vendor.
+              </p>
+            </div>
+
+            <div className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-xl p-8">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0">
+                  <Package className="h-6 w-6" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-white mb-2">Simple inventory, ready-to-send orders</h3>
+                  <p className="text-zinc-300 mb-4">
+                    Track what you need by location or job, build orders in one place, and send them to your vendor by email—no more scattered notes or digging through threads. Built for how janitorial companies actually work.
+                  </p>
+                  <ul className="space-y-2 text-zinc-400 text-sm">
+                    <li className="flex items-start gap-2">
+                      <Check className="h-4 w-4 text-amber-500 shrink-0 mt-0.5" />
+                      <span>One place to inventory supplies by site or job</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="h-4 w-4 text-amber-500 shrink-0 mt-0.5" />
+                      <span>Build orders and email them to your preferred vendor</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="h-4 w-4 text-amber-500 shrink-0 mt-0.5" />
+                      <span>Replace paper notes, texts, and spreadsheet chaos</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>

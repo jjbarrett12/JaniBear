@@ -15,22 +15,22 @@ export function PasswordStrengthMeter({ password }: PasswordStrengthMeterProps) 
   if (!password) return null;
 
   return (
-    <div className="space-y-2">
-      <div className="flex gap-1 h-2">
+    <div className="space-y-1.5">
+      <div className="flex gap-1 h-2 rounded-full overflow-hidden bg-zinc-200">
         {[0, 1, 2, 3].map((index) => (
           <div
             key={index}
             className={cn(
-              'flex-1 rounded-full transition-all',
+              'flex-1 rounded-full transition-all duration-300',
               index < strength.level
                 ? getStrengthColor(strength.level)
-                : 'bg-gray-200'
+                : 'bg-transparent'
             )}
           />
         ))}
       </div>
       <p className={cn('text-xs font-medium', getStrengthTextColor(strength.level))}>
-        {strength.label}
+        Password strength: {strength.label}
       </p>
     </div>
   );

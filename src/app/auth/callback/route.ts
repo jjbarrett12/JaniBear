@@ -4,8 +4,8 @@ import { NextResponse } from 'next/server';
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get('code');
-  // Default to continue page so OAuth/magic-link users get onboarding check
-  let next = requestUrl.searchParams.get('next') ?? '/auth/continue?next=%2Fapp%2Fdashboard';
+  // Send OAuth/magic-link users straight to app (session is in cookies after exchange)
+  let next = requestUrl.searchParams.get('next') ?? '/app/dashboard';
 
   // Validate redirect path to prevent open redirects and 404s
   // Only allow redirects to app routes or public routes

@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,7 +8,6 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 export function OnboardingForm() {
-  const router = useRouter();
   const [orgName, setOrgName] = useState('');
   const [fullName, setFullName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -30,6 +28,16 @@ export function OnboardingForm() {
     }
 
     try {
+      // Create profile first (required for org_members FK; RLS allows insert own profile)
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .upsert({
+          id: user.id,
+          full_name: fullName || null,
+        }, { onConflict: 'id' });
+
+      if (profileError) throw profileError;
+
       // Create organization
       const { data: org, error: orgError } = await supabase
         .from('organizations')
@@ -39,17 +47,7 @@ export function OnboardingForm() {
 
       if (orgError) throw orgError;
 
-      // Update profile
-      if (fullName) {
-        await supabase
-          .from('profiles')
-          .upsert({
-            id: user.id,
-            full_name: fullName,
-          });
-      }
-
-      // Create org membership as owner
+      // Create org membership as owner (RLS allows insert own first membership)
       const { error: memberError } = await supabase
         .from('org_members')
         .insert({
@@ -60,10 +58,12 @@ export function OnboardingForm() {
 
       if (memberError) throw memberError;
 
-      router.push('/app/dashboard');
-      router.refresh();
-    } catch (err: any) {
-      setError(err.message || 'Failed to create organization');
+      // Full-page redirect so server sees new membership
+      window.location.href = '/app/dashboard';
+      return;
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to create organization';
+      setError(message);
     } finally {
       setIsLoading(false);
     }

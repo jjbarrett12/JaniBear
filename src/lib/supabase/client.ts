@@ -1,9 +1,14 @@
 import { createBrowserClient } from '@supabase/ssr';
 
-// Use secure cookies on HTTPS (production) so auth cookies are sent correctly
-const isSecure =
-  typeof process.env.NEXT_PUBLIC_APP_URL === 'string' &&
-  process.env.NEXT_PUBLIC_APP_URL.startsWith('https');
+function getSecure(): boolean {
+  if (typeof window !== 'undefined') {
+    return window.location.protocol === 'https:';
+  }
+  return (
+    typeof process.env.NEXT_PUBLIC_APP_URL === 'string' &&
+    process.env.NEXT_PUBLIC_APP_URL.startsWith('https')
+  );
+}
 
 export function createClient() {
   return createBrowserClient(
@@ -13,7 +18,7 @@ export function createClient() {
       cookieOptions: {
         path: '/',
         sameSite: 'lax',
-        secure: isSecure,
+        secure: getSecure(),
       },
     }
   );

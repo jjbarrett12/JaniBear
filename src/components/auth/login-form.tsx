@@ -149,13 +149,6 @@ export function LoginForm() {
     }
 
     if (data.user) {
-      const { data: membership } = await supabase
-        .from('org_members')
-        .select('org_id')
-        .eq('user_id', data.user.id)
-        .limit(1)
-        .single();
-
       if (rememberMe && typeof window !== 'undefined') {
         localStorage.setItem('janibear_saved_email', email);
         localStorage.setItem('janibear_remember_me', 'true');
@@ -164,9 +157,22 @@ export function LoginForm() {
         localStorage.removeItem('janibear_remember_me');
       }
 
-      const targetPath = membership ? '/app/dashboard' : '/onboarding';
-      await new Promise((r) => setTimeout(r, 1500));
-      window.location.href = targetPath;
+      let targetPath = '/onboarding';
+      try {
+        const { data: membership } = await supabase
+          .from('org_members')
+          .select('org_id')
+          .eq('user_id', data.user.id)
+          .limit(1)
+          .maybeSingle();
+        if (membership?.org_id) targetPath = '/app/dashboard';
+      } catch {
+        // Default to onboarding
+      }
+
+      const origin = typeof window !== 'undefined' ? window.location.origin : '';
+      await new Promise((r) => setTimeout(r, 800));
+      window.location.href = `${origin}${targetPath}`;
       return;
     }
     setIsLoading(false);

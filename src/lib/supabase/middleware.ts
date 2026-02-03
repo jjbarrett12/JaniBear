@@ -48,8 +48,9 @@ export async function updateSession(request: NextRequest) {
   }
 
   try {
-    // Use secure cookies on HTTPS so session cookies are sent on next request
-    const isSecure = request.nextUrl.protocol === 'https:';
+    // Use secure cookies on HTTPS (check x-forwarded-proto for Vercel/proxy)
+    const forwardedProto = request.headers.get('x-forwarded-proto');
+    const isSecure = request.nextUrl.protocol === 'https:' || forwardedProto === 'https';
     const cookieOptions = { path: '/', sameSite: 'lax' as const, secure: isSecure };
 
     const supabase = createServerClient(

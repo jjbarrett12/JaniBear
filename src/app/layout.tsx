@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { PWAInstaller } from "@/components/app/pwa-installer";
+import { DarkModeProvider } from "@/components/app/dark-mode-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -31,7 +32,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
@@ -44,9 +45,11 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="JANIBEAR" />
       </head>
       <body className={inter.className}>
-        {children}
-        <Toaster />
-        <PWAInstaller />
+        <DarkModeProvider>
+          {children}
+          <Toaster />
+          <PWAInstaller />
+        </DarkModeProvider>
       </body>
     </html>
   );

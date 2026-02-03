@@ -37,17 +37,17 @@ export function TodaysSchedule({ items }: TodaysScheduleProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.5, duration: 0.4 }}
     >
-      <Card className="border-0 shadow-md hover:shadow-lg transition-shadow h-full">
+      <Card className="border-0 shadow-md hover:shadow-lg transition-shadow h-full dark:bg-gray-800">
         <CardHeader className="pb-2">
           <div className="flex items-center gap-2">
             <div className="p-2 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 shadow-md">
               <Calendar className="h-5 w-5 text-white" />
             </div>
             <div>
-              <CardTitle className="text-lg font-semibold text-gray-900">
+              <CardTitle className="text-lg font-semibold text-gray-900 dark:text-white">
                 Today&apos;s Schedule
               </CardTitle>
-              <p className="text-sm text-gray-500">{today}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">{today}</p>
             </div>
           </div>
         </CardHeader>
@@ -57,18 +57,18 @@ export function TodaysSchedule({ items }: TodaysScheduleProps) {
               const status = statusConfig[item.status];
               return (
                 <Link key={item.id} href={`/app/schedules`}>
-                  <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer group">
-                    <div className={`mt-0.5 w-2 h-2 rounded-full ${item.status === 'completed' ? 'bg-emerald-500' : item.status === 'in_progress' ? 'bg-blue-500' : 'bg-gray-300'}`} />
+                  <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer group">
+                    <div className={`mt-0.5 w-2 h-2 rounded-full ${item.status === 'completed' ? 'bg-emerald-500' : item.status === 'in_progress' ? 'bg-blue-500' : 'bg-gray-300 dark:bg-gray-500'}`} />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between gap-2">
-                        <p className="font-medium text-gray-900 truncate group-hover:text-indigo-600 transition-colors">
+                        <p className="font-medium text-gray-900 dark:text-white truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
                           {item.location_name}
                         </p>
                         <Badge variant="secondary" className={`${status.color} text-xs shrink-0`}>
                           {status.label}
                         </Badge>
                       </div>
-                      <div className="flex items-center gap-3 mt-1 text-xs text-gray-500">
+                      <div className="flex items-center gap-3 mt-1 text-xs text-gray-500 dark:text-gray-400">
                         {item.crew_name && (
                           <span className="flex items-center gap-1">
                             <Users className="h-3 w-3" />
@@ -89,11 +89,11 @@ export function TodaysSchedule({ items }: TodaysScheduleProps) {
             })
           ) : (
             <div className="text-center py-6">
-              <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-gray-100 flex items-center justify-center">
+              <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
                 <Calendar className="h-6 w-6 text-gray-400" />
               </div>
-              <p className="text-sm text-gray-500 mb-1">No services scheduled today</p>
-              <p className="text-xs text-gray-400">Add locations and create schedules</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">No services scheduled today</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500">Add locations and create schedules</p>
             </div>
           )}
         </CardContent>

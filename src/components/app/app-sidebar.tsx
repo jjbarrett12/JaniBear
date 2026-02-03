@@ -7,6 +7,7 @@ import { GlobalSearch } from '@/components/search/global-search';
 import { NotificationBell } from '@/components/notifications/notification-bell';
 import { MobileSidebar } from '@/components/app/mobile-sidebar';
 import { BottomNav } from '@/components/app/bottom-nav';
+import { DarkModeToggle } from '@/components/app/dark-mode-toggle';
 import { 
   LayoutDashboard, 
   MapPin, 
@@ -69,9 +70,9 @@ export async function AppSidebar() {
       <MobileSidebar logoUrl={organization?.logo_url} />
 
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex fixed left-0 top-0 z-40 h-screen w-64 border-r bg-white">
+      <aside className="hidden lg:flex fixed left-0 top-0 z-40 h-screen w-64 border-r bg-white dark:bg-gray-900 dark:border-gray-800">
         <div className="flex h-full flex-col">
-          <div className="flex h-20 items-center border-b px-4">
+          <div className="flex h-20 items-center border-b dark:border-gray-800 px-4">
             <Link href="/app/dashboard" className="flex items-center gap-3 bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block">
               {organization?.logo_url ? (
                 <Image
@@ -97,21 +98,22 @@ export async function AppSidebar() {
             </Link>
           </div>
           
-          <div className="p-4 border-b space-y-3">
+          <div className="p-4 border-b dark:border-gray-800 space-y-3">
             <GlobalSearch />
-            <div className="flex justify-end">
+            <div className="flex items-center justify-between">
+              <DarkModeToggle />
               <NotificationBell />
             </div>
           </div>
           
-          <nav className="flex-1 space-y-1 p-4">
+          <nav className="flex-1 space-y-1 p-4 overflow-y-auto">
             {navItems.map((item) => {
               const Icon = item.icon;
               return (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="flex items-center gap-3 rounded-lg px-4 py-3 text-base font-medium text-gray-700 hover:bg-gray-100 transition-colors min-h-[48px]"
+                  className="flex items-center gap-3 rounded-lg px-4 py-3 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors min-h-[48px]"
                 >
                   <Icon className="h-6 w-6" />
                   {item.label}
@@ -120,9 +122,9 @@ export async function AppSidebar() {
             })}
           </nav>
           
-          <div className="border-t p-4">
+          <div className="border-t dark:border-gray-800 p-4">
             {user && (
-              <div className="mb-4 px-3 text-sm text-gray-600">
+              <div className="mb-4 px-3 text-sm text-gray-600 dark:text-gray-400">
                 {user.email}
               </div>
             )}

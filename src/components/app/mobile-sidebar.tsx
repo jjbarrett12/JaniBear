@@ -24,6 +24,7 @@ import {
   Package
 } from 'lucide-react';
 import { GlobalSearch } from '@/components/search/global-search';
+import { DarkModeToggle } from '@/components/app/dark-mode-toggle';
 
 interface MobileSidebarProps {
   logoUrl?: string | null;
@@ -64,7 +65,7 @@ export function MobileSidebar({ logoUrl }: MobileSidebarProps) {
   return (
     <>
       {/* Mobile Header */}
-      <header className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b h-20 flex items-center justify-between px-4">
+      <header className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 border-b dark:border-gray-800 h-20 flex items-center justify-between px-4">
         <div className="flex items-center gap-3 [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block">
           <Button
             variant="ghost"
@@ -96,6 +97,7 @@ export function MobileSidebar({ logoUrl }: MobileSidebarProps) {
             />
           )}
         </div>
+        <DarkModeToggle />
       </header>
 
       {/* Mobile Sidebar Overlay */}
@@ -105,9 +107,9 @@ export function MobileSidebar({ logoUrl }: MobileSidebarProps) {
             className="fixed inset-0 bg-black/50 z-50 lg:hidden"
             onClick={() => setIsOpen(false)}
           />
-          <aside className="fixed top-0 left-0 z-50 h-full w-80 bg-white shadow-xl lg:hidden transform transition-transform duration-300">
+          <aside className="fixed top-0 left-0 z-50 h-full w-80 bg-white dark:bg-gray-900 shadow-xl lg:hidden transform transition-transform duration-300">
             <div className="flex h-full flex-col">
-              <div className="flex h-20 items-center justify-between border-b px-4">
+              <div className="flex h-20 items-center justify-between border-b dark:border-gray-800 px-4">
                 <Link href="/app/dashboard" className="flex items-center gap-3 bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block">
                   {logoUrl ? (
                     <Image
@@ -141,7 +143,7 @@ export function MobileSidebar({ logoUrl }: MobileSidebarProps) {
                 </Button>
               </div>
 
-              <div className="p-4 border-b space-y-3">
+              <div className="p-4 border-b dark:border-gray-800 space-y-3">
                 <GlobalSearch />
               </div>
 
@@ -156,7 +158,7 @@ export function MobileSidebar({ logoUrl }: MobileSidebarProps) {
                       className={`flex items-center gap-3 rounded-lg px-4 py-3 text-base font-medium transition-colors min-h-[52px] ${
                         isActive
                           ? 'bg-primary text-primary-foreground'
-                          : 'text-gray-700 hover:bg-gray-100'
+                          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
                       }`}
                     >
                       <Icon className="h-6 w-6" />
@@ -166,7 +168,7 @@ export function MobileSidebar({ logoUrl }: MobileSidebarProps) {
                 })}
               </nav>
 
-              <div className="border-t p-4">
+              <div className="border-t dark:border-gray-800 p-4">
                 <Button 
                   onClick={handleSignOut}
                   variant="outline" 

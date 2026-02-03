@@ -68,13 +68,13 @@ export function QuickActions() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2, duration: 0.4 }}
     >
-      <Card className="border-0 shadow-md hover:shadow-lg transition-shadow">
+      <Card className="border-0 shadow-md hover:shadow-lg transition-shadow dark:bg-gray-800">
         <CardHeader className="pb-3">
           <div className="flex items-center gap-2">
             <div className="p-2 rounded-lg bg-gradient-to-br from-orange-500 to-rose-500 shadow-md">
               <Zap className="h-5 w-5 text-white" />
             </div>
-            <CardTitle className="text-lg font-semibold text-gray-900">
+            <CardTitle className="text-lg font-semibold text-gray-900 dark:text-white">
               Quick Actions
             </CardTitle>
           </div>
@@ -93,7 +93,7 @@ export function QuickActions() {
                       relative group p-4 rounded-xl border transition-all duration-200 cursor-pointer
                       ${action.primary 
                         ? 'bg-gradient-to-br from-orange-500 to-rose-500 border-transparent text-white hover:shadow-lg hover:shadow-orange-500/25' 
-                        : 'bg-white border-gray-200 hover:border-gray-300 hover:shadow-md'
+                        : 'bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500 hover:shadow-md'
                       }
                     `}
                   >
@@ -106,10 +106,10 @@ export function QuickActions() {
                     `}>
                       <Icon className={`h-5 w-5 ${action.primary ? 'text-white' : 'text-white'}`} />
                     </div>
-                    <p className={`font-semibold text-sm ${action.primary ? 'text-white' : 'text-gray-900'}`}>
+                    <p className={`font-semibold text-sm ${action.primary ? 'text-white' : 'text-gray-900 dark:text-white'}`}>
                       {action.label}
                     </p>
-                    <p className={`text-xs mt-0.5 ${action.primary ? 'text-white/80' : 'text-gray-500'}`}>
+                    <p className={`text-xs mt-0.5 ${action.primary ? 'text-white/80' : 'text-gray-500 dark:text-gray-400'}`}>
                       {action.description}
                     </p>
                   </motion.div>

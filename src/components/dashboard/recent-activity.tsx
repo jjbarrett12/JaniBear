@@ -56,13 +56,13 @@ export function RecentActivity({ activities }: RecentActivityProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.6, duration: 0.4 }}
     >
-      <Card className="border-0 shadow-md hover:shadow-lg transition-shadow h-full">
+      <Card className="border-0 shadow-md hover:shadow-lg transition-shadow h-full dark:bg-gray-800">
         <CardHeader className="pb-2">
           <div className="flex items-center gap-2">
             <div className="p-2 rounded-lg bg-gradient-to-br from-gray-700 to-gray-900 shadow-md">
               <Activity className="h-5 w-5 text-white" />
             </div>
-            <CardTitle className="text-lg font-semibold text-gray-900">
+            <CardTitle className="text-lg font-semibold text-gray-900 dark:text-white">
               Recent Activity
             </CardTitle>
           </div>
@@ -84,14 +84,14 @@ export function RecentActivity({ activities }: RecentActivityProps) {
                   >
                     <Link
                       href={activity.href}
-                      className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors group"
+                      className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors group"
                     >
                       <div className={`p-2 rounded-lg ${config.color} shrink-0`}>
                         <Icon className="h-4 w-4" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <p className="text-sm font-medium text-gray-900 truncate group-hover:text-orange-600 transition-colors">
+                          <p className="text-sm font-medium text-gray-900 dark:text-white truncate group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
                             {activity.action}
                           </p>
                           {status && (
@@ -100,7 +100,7 @@ export function RecentActivity({ activities }: RecentActivityProps) {
                             </Badge>
                           )}
                         </div>
-                        <p className="text-xs text-gray-500 truncate">
+                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
                           {activity.description}
                         </p>
                       </div>
@@ -108,7 +108,7 @@ export function RecentActivity({ activities }: RecentActivityProps) {
                         <span className="text-xs text-gray-400 hidden sm:block">
                           {formatRelativeTime(activity.timestamp)}
                         </span>
-                        <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-orange-500 transition-colors" />
+                        <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-orange-500 dark:group-hover:text-orange-400 transition-colors" />
                       </div>
                     </Link>
                   </motion.div>
@@ -117,11 +117,11 @@ export function RecentActivity({ activities }: RecentActivityProps) {
             </div>
           ) : (
             <div className="text-center py-8">
-              <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-gray-100 flex items-center justify-center">
+              <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
                 <Activity className="h-6 w-6 text-gray-400" />
               </div>
-              <p className="text-sm text-gray-500 mb-1">No recent activity</p>
-              <p className="text-xs text-gray-400">Activity will appear here as you use JANIBEAR</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">No recent activity</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500">Activity will appear here as you use JANIBEAR</p>
             </div>
           )}
         </CardContent>

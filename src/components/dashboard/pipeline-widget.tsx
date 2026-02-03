@@ -38,13 +38,13 @@ export function PipelineWidget({ proposals, totalValue }: PipelineWidgetProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.4, duration: 0.4 }}
     >
-      <Card className="border-0 shadow-md hover:shadow-lg transition-shadow h-full">
+      <Card className="border-0 shadow-md hover:shadow-lg transition-shadow h-full dark:bg-gray-800">
         <CardHeader className="flex flex-row items-center justify-between pb-2">
           <div>
-            <CardTitle className="text-lg font-semibold text-gray-900">
+            <CardTitle className="text-lg font-semibold text-gray-900 dark:text-white">
               Sales Pipeline
             </CardTitle>
-            <p className="text-sm text-gray-500">Active proposals</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Active proposals</p>
           </div>
           <Link href="/app/sales/leads/new">
             <Button size="sm" className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white shadow-md">
@@ -55,14 +55,14 @@ export function PipelineWidget({ proposals, totalValue }: PipelineWidgetProps) {
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Pipeline Value */}
-          <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl p-4 border border-emerald-100">
+          <div className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/30 dark:to-teal-900/30 rounded-xl p-4 border border-emerald-100 dark:border-emerald-800">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-lg bg-emerald-500 shadow-md">
                 <DollarSign className="h-5 w-5 text-white" />
               </div>
               <div>
-                <p className="text-xs font-medium text-emerald-600 uppercase tracking-wide">Pipeline Value</p>
-                <p className="text-2xl font-bold text-emerald-700">{formatCurrency(totalValue)}</p>
+                <p className="text-xs font-medium text-emerald-600 dark:text-emerald-400 uppercase tracking-wide">Pipeline Value</p>
+                <p className="text-2xl font-bold text-emerald-700 dark:text-emerald-300">{formatCurrency(totalValue)}</p>
               </div>
             </div>
           </div>
@@ -74,18 +74,18 @@ export function PipelineWidget({ proposals, totalValue }: PipelineWidgetProps) {
                 const status = statusConfig[proposal.status];
                 return (
                   <Link key={proposal.id} href={`/app/sales/proposals/${proposal.id}`}>
-                    <div className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer group">
+                    <div className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer group">
                       <div className="flex-1 min-w-0">
-                        <p className="font-medium text-gray-900 truncate group-hover:text-orange-600 transition-colors">
+                        <p className="font-medium text-gray-900 dark:text-white truncate group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
                           {proposal.company_name || proposal.lead_name}
                         </p>
-                        <p className="text-sm text-gray-500">{formatCurrency(proposal.total_amount)}</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">{formatCurrency(proposal.total_amount)}</p>
                       </div>
                       <div className="flex items-center gap-2">
                         <Badge variant="secondary" className={status.color}>
                           {status.label}
                         </Badge>
-                        <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-orange-500 transition-colors" />
+                        <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-orange-500 dark:group-hover:text-orange-400 transition-colors" />
                       </div>
                     </div>
                   </Link>
@@ -93,10 +93,10 @@ export function PipelineWidget({ proposals, totalValue }: PipelineWidgetProps) {
               })
             ) : (
               <div className="text-center py-6">
-                <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-gray-100 flex items-center justify-center">
+                <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
                   <FileText className="h-6 w-6 text-gray-400" />
                 </div>
-                <p className="text-sm text-gray-500 mb-3">No pending proposals</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">No pending proposals</p>
                 <Link href="/app/walkthroughs/new">
                   <Button variant="outline" size="sm">
                     Start a Walkthrough
@@ -108,7 +108,7 @@ export function PipelineWidget({ proposals, totalValue }: PipelineWidgetProps) {
 
           {pendingProposals.length > 4 && (
             <Link href="/app/sales" className="block">
-              <Button variant="ghost" className="w-full text-orange-600 hover:text-orange-700 hover:bg-orange-50">
+              <Button variant="ghost" className="w-full text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 hover:bg-orange-50 dark:hover:bg-orange-900/20">
                 View All Proposals
                 <ArrowRight className="h-4 w-4 ml-2" />
               </Button>

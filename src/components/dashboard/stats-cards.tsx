@@ -119,7 +119,7 @@ export function StatsCards({ stats }: StatsCardsProps) {
             variants={cardVariants}
           >
             <Link href={card.href}>
-              <Card className="group relative overflow-hidden border-0 shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer h-full bg-white">
+              <Card className="group relative overflow-hidden border-0 shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer h-full bg-white dark:bg-gray-800">
                 {/* Gradient accent bar */}
                 <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${card.gradient}`} />
                 
@@ -129,7 +129,7 @@ export function StatsCards({ stats }: StatsCardsProps) {
                       <Icon className="h-5 w-5 text-white" />
                     </div>
                     {card.trend && (
-                      <div className={`flex items-center gap-0.5 text-xs font-medium ${card.trend.positive ? 'text-emerald-600' : 'text-red-600'}`}>
+                      <div className={`flex items-center gap-0.5 text-xs font-medium ${card.trend.positive ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
                         {card.trend.positive ? (
                           <TrendingUp className="h-3 w-3" />
                         ) : (
@@ -141,14 +141,14 @@ export function StatsCards({ stats }: StatsCardsProps) {
                   </div>
                   
                   <div className="space-y-1">
-                    <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                    <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
                       {card.title}
                     </p>
-                    <p className="text-2xl font-bold text-gray-900 group-hover:text-gray-700 transition-colors">
+                    <p className="text-2xl font-bold text-gray-900 dark:text-white group-hover:text-gray-700 dark:group-hover:text-gray-200 transition-colors">
                       {card.value.toLocaleString()}
                     </p>
                     {card.subtitle && (
-                      <p className="text-xs text-gray-500">{card.subtitle}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">{card.subtitle}</p>
                     )}
                   </div>
                 </CardContent>

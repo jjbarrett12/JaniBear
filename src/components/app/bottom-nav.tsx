@@ -22,7 +22,7 @@ export function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t shadow-lg">
+    <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 border-t dark:border-gray-800 shadow-lg">
       <div className="flex items-center justify-around h-16">
         {bottomNavItems.map((item) => {
           const Icon = item.icon;
@@ -35,10 +35,10 @@ export function BottomNav() {
               className={`flex flex-col items-center justify-center flex-1 h-full min-w-0 px-2 transition-colors ${
                 isActive
                   ? 'text-primary'
-                  : 'text-gray-500'
+                  : 'text-gray-500 dark:text-gray-400'
               }`}
             >
-              <Icon className={`h-6 w-6 mb-1 ${isActive ? 'text-primary' : 'text-gray-500'}`} />
+              <Icon className={`h-6 w-6 mb-1 ${isActive ? 'text-primary' : 'text-gray-500 dark:text-gray-400'}`} />
               <span className="text-xs font-medium truncate w-full text-center">
                 {item.label}
               </span>

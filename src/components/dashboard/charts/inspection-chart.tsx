@@ -28,12 +28,12 @@ export function InspectionChart({ data }: InspectionChartProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.3, duration: 0.4 }}
     >
-      <Card className="border-0 shadow-md hover:shadow-lg transition-shadow">
+      <Card className="border-0 shadow-md hover:shadow-lg transition-shadow dark:bg-gray-800">
         <CardHeader className="pb-2">
-          <CardTitle className="text-lg font-semibold text-gray-900">
+          <CardTitle className="text-lg font-semibold text-gray-900 dark:text-white">
             Inspection Performance
           </CardTitle>
-          <p className="text-sm text-gray-500">Average scores over time</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">Average scores over time</p>
         </CardHeader>
         <CardContent>
           <div className="h-[200px] w-full">
@@ -46,23 +46,25 @@ export function InspectionChart({ data }: InspectionChartProps) {
                       <stop offset="95%" stopColor="#10B981" stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" vertical={false} />
+                  <CartesianGrid strokeDasharray="3 3" className="stroke-gray-200 dark:stroke-gray-700" vertical={false} />
                   <XAxis 
                     dataKey="date" 
                     axisLine={false} 
                     tickLine={false} 
-                    tick={{ fontSize: 12, fill: '#6B7280' }}
+                    tick={{ fontSize: 12 }}
+                    className="fill-gray-500 dark:fill-gray-400"
                   />
                   <YAxis 
                     axisLine={false} 
                     tickLine={false} 
-                    tick={{ fontSize: 12, fill: '#6B7280' }}
+                    tick={{ fontSize: 12 }}
+                    className="fill-gray-500 dark:fill-gray-400"
                     domain={[0, 100]}
                     ticks={[0, 25, 50, 75, 100]}
                   />
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: 'white',
+                      backgroundColor: 'var(--tooltip-bg, white)',
                       border: 'none',
                       borderRadius: '8px',
                       boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
@@ -81,13 +83,13 @@ export function InspectionChart({ data }: InspectionChartProps) {
             ) : (
               <div className="h-full flex items-center justify-center">
                 <div className="text-center">
-                  <div className="w-16 h-16 mx-auto mb-3 rounded-full bg-gray-100 flex items-center justify-center">
+                  <div className="w-16 h-16 mx-auto mb-3 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
                     <svg className="w-8 h-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                     </svg>
                   </div>
-                  <p className="text-sm text-gray-500">No inspection data yet</p>
-                  <p className="text-xs text-gray-400 mt-1">Complete inspections to see trends</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">No inspection data yet</p>
+                  <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Complete inspections to see trends</p>
                 </div>
               </div>
             )}

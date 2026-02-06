@@ -79,7 +79,7 @@ export function SurveyWizard({ dark }: SurveyWizardProps) {
     const step = steps[currentStep];
     if (step.id === 'orgType') {
       setAnswers((prev) => {
-        const next = { ...prev, orgType: value };
+        const next: Record<string, string> = { ...prev, orgType: value };
         if (value !== 'franchise-based') delete next.franchiseRole;
         return next;
       });

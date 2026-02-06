@@ -27,7 +27,7 @@ export async function GET(request: Request) {
       margin: 2,
       color: { dark: '#0a0a0a', light: '#ffffff' },
     });
-    return new NextResponse(png, {
+    return new NextResponse(new Uint8Array(png), {
       headers: {
         'Content-Type': 'image/png',
         'Cache-Control': 'public, max-age=3600',

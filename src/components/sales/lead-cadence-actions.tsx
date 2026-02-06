@@ -190,13 +190,15 @@ export function LeadCadenceActions({
         {/* Top 10 */}
         <div>
           {isInTop10 ? (
-            <p className="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-2">
-              <Target className="h-4 w-4 text-primary" />
-              In your Top 10 targets {topTargetRank != null && `(#${topTargetRank})`}
-            </p>
-            <Link href="/app/sales/top-targets">
-              <Button variant="ghost" size="sm">Manage Top 10</Button>
-            </Link>
+            <>
+              <p className="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-2">
+                <Target className="h-4 w-4 text-primary" />
+                In your Top 10 targets {topTargetRank != null && `(#${topTargetRank})`}
+              </p>
+              <Link href="/app/sales/top-targets">
+                <Button variant="ghost" size="sm">Manage Top 10</Button>
+              </Link>
+            </>
           ) : (
             <Link href="/app/sales/top-targets">
               <Button size="sm" variant="outline">

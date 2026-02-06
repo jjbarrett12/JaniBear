@@ -30,15 +30,26 @@ import {
 } from 'lucide-react';
 export default function Home() {
   const [mounted, setMounted] = useState(false);
+  const [navScrolled, setNavScrolled] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  useEffect(() => {
+    const onScroll = () => setNavScrolled(window.scrollY > 24);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   return (
     <div className="landing-page min-h-screen bg-zinc-950 text-zinc-100">
-      {/* Nav - fixed height ~25% shorter; logo full size and overflows */}
-      <nav className="landing-header border-b border-gray-200 bg-white sticky top-0 z-50 h-16 md:h-20 py-0 flex items-center overflow-visible">
+      {/* Nav: blur on scroll, Plans, Get Started taller */}
+      <nav
+        className={`landing-header border-b border-gray-200 sticky top-0 z-50 h-16 md:h-20 py-0 flex items-center overflow-visible transition-all duration-300 ${
+          navScrolled ? 'landing-header-scrolled shadow-sm' : ''
+        }`}
+      >
         <div className="container mx-auto px-4 h-full flex items-center justify-between gap-4 overflow-visible min-h-0">
           <Link href="/" className="landing-logo-wrap flex items-center shrink-0 overflow-visible bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block [&>span]:overflow-visible">
             <Image
@@ -51,34 +62,34 @@ export default function Home() {
               unoptimized
             />
           </Link>
-          <div className="flex items-center justify-end gap-4 md:gap-6 flex-1 min-w-0">
+          <div className="flex items-center justify-end gap-3 md:gap-5 flex-1 min-w-0">
             <Link href="/pricing">
-              <Button variant="ghost" size="sm" className="landing-nav-link shrink-0">
+              <Button variant="ghost" size="sm" className="landing-nav-link shrink-0 h-9">
                 Pricing
               </Button>
             </Link>
             <Link href="/survey">
-              <Button variant="ghost" size="sm" className="landing-nav-link shrink-0">
-                Find Your Plan
+              <Button variant="ghost" size="sm" className="landing-nav-link shrink-0 h-9">
+                Plans
               </Button>
             </Link>
             <Link href="/#features">
-              <Button variant="ghost" size="sm" className="landing-nav-link shrink-0">
+              <Button variant="ghost" size="sm" className="landing-nav-link shrink-0 h-9">
                 Features
               </Button>
             </Link>
             <Link href="/contact">
-              <Button variant="ghost" size="sm" className="landing-nav-link shrink-0">
+              <Button variant="ghost" size="sm" className="landing-nav-link shrink-0 h-9">
                 Contact
               </Button>
             </Link>
             <Link href="/auth/login">
-              <Button variant="ghost" size="sm" className="landing-nav-link shrink-0">
+              <Button variant="ghost" size="sm" className="landing-nav-link shrink-0 h-9">
                 Sign In
               </Button>
             </Link>
             <Link href="/auth/signup">
-              <Button size="sm" className="landing-cta shrink-0">
+              <Button size="sm" className="landing-cta shrink-0 h-10 px-5 font-semibold">
                 Get Started
               </Button>
             </Link>
@@ -86,7 +97,7 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Hero - negative top margin reclaims space from logo overflow */}
+      {/* Hero: 3-line headline, gradient underline, product tease, 3 CTAs, trust up */}
       <section className="relative container mx-auto px-4 pt-12 md:pt-14 pb-16 md:pb-24 overflow-hidden -mt-4">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-3xl" />
@@ -101,36 +112,63 @@ export default function Home() {
             <span>Your AI Assistant for Janitorial Bids, Pricing & Quality Assurance</span>
           </div>
 
+          {/* Headline: 3-line hierarchy — Line 1 biggest, Line 2 smaller, Line 3 accent + gradient underline */}
           <h1
-            className={`text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight tracking-tight transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            className={`hero-headline transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
           >
-            Win More Cleaning Contracts. Run Better Operations -{' '}
-            <span className="gradient-text bg-gradient-to-r from-orange-400 via-orange-500 to-cyan-400 bg-clip-text text-transparent">
-              Automatically
+            <span className="block text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-white tracking-tight leading-[1.1]">
+              Win More Cleaning Contracts
+            </span>
+            <span className="block text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white/95 tracking-tight leading-[1.15] mt-2">
+              Run Smarter Operations
+            </span>
+            <span className="hero-word-automatically block mt-3 text-2xl md:text-3xl lg:text-4xl font-bold text-orange-400">
+              Automatically.
             </span>
           </h1>
 
           <p
-            className={`hero-punchline text-lg md:text-xl text-zinc-400 mb-8 max-w-3xl mx-auto leading-relaxed transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            className={`hero-subhead text-lg md:text-xl text-zinc-400 max-w-3xl mx-auto mt-8 leading-[1.65] transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '100ms' }}
           >
             AI-powered sales and operations software for janitorial companies. Win more bids, execute with confidence, and improve performance at scale.
           </p>
+
+          {/* Product tease: AI quote card — above the fold, answers "What does the AI do?" */}
+          <div
+            className={`hero-product-tease mt-8 max-w-xl mx-auto transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            style={{ transitionDelay: '120ms' }}
+          >
+            <div className="text-left rounded-xl border border-zinc-700/80 bg-zinc-900/60 px-5 py-4 shadow-lg">
+              <p className="text-xs font-medium text-orange-400/90 uppercase tracking-wider mb-2">AI bid suggestion</p>
+              <p className="text-zinc-200 text-sm md:text-base leading-relaxed">
+                &ldquo;Based on 12,400 sq ft, 3 restrooms, and 5 nights/week, your optimal bid is <span className="font-semibold text-white">$2,840/month</span>.&rdquo;
+              </p>
+            </div>
+          </div>
+
+          {/* Trust: move up — built by operators + stat */}
           <p
-            className={`text-base md:text-lg text-zinc-500 mb-8 max-w-2xl mx-auto transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
-            style={{ transitionDelay: '150ms' }}
+            className={`hero-meta text-sm text-zinc-500 max-w-2xl mx-auto mt-6 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            style={{ transitionDelay: '140ms' }}
           >
             Built by janitorial operators, for janitorial operators.
           </p>
 
+          {/* CTA stack: Primary + Middle path + Secondary */}
           <div
-            className={`flex flex-col sm:flex-row gap-4 justify-center transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            className={`flex flex-col sm:flex-row flex-wrap gap-3 justify-center items-center mt-8 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '200ms' }}
           >
             <Link href="/auth/signup">
               <Button size="lg" className="landing-cta landing-cta-lg text-lg px-8 h-14">
                 Get Started
                 <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+            <Link href="/#features">
+              <Button size="lg" variant="outline" className="landing-outline text-base px-6 h-12 border-zinc-600 text-zinc-300 hover:text-white hover:border-zinc-500">
+                See How It Works
               </Button>
             </Link>
             <Link href="/pricing">
@@ -140,12 +178,19 @@ export default function Home() {
             </Link>
           </div>
 
-          <p
-            className={`mt-6 text-sm text-zinc-500 max-w-xl mx-auto transition-all duration-700 ${mounted ? 'opacity-100' : 'opacity-0'}`}
+          {/* Trust signals: stars, count, stat — right under CTAs */}
+          <div
+            className={`mt-8 flex flex-col sm:flex-row flex-wrap items-center justify-center gap-4 sm:gap-6 text-sm transition-all duration-700 ${mounted ? 'opacity-100' : 'opacity-0'}`}
             style={{ transitionDelay: '300ms' }}
           >
-            Trusted by janitorial companies nationwide. No more manual counting, spreadsheet errors, or missed follow-ups.
-          </p>
+            <div className="flex items-center gap-2 text-zinc-400">
+              <span className="text-amber-400">★★★★★</span>
+              <span>Trusted by 500+ cleaning companies</span>
+            </div>
+            <div className="flex items-center gap-2 text-zinc-400">
+              <span className="font-semibold text-white">Reduce bid errors by 32%</span>
+            </div>
+          </div>
         </div>
       </section>
 

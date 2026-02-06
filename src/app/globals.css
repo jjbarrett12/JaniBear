@@ -7,10 +7,15 @@
   background-color: #09090b !important;
   color: #f4f4f5;
 }
-/* Landing header: white background, black text */
+/* Landing header: white background, black text; blur on scroll */
 .landing-header {
   background: #fff !important;
   border-color: #e5e7eb !important;
+}
+.landing-header.landing-header-scrolled {
+  background: rgba(255, 255, 255, 0.92) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 .landing-header .landing-nav-link {
   color: #111 !important;
@@ -78,6 +83,28 @@
 .landing-page span:not(.gradient-text) {
   color: #a1a1aa;
 }
+
+/* Hero: gradient underline on "Automatically" (Stripe-style, one accent per screen) */
+.landing-page .hero-word-automatically {
+  display: inline-block;
+  padding-bottom: 0.12em;
+  border-bottom: 3px solid;
+  border-image: linear-gradient(90deg, #fb923c, #22d3ee) 1;
+}
+
+/* Hero font hierarchy: headline heavier, subhead lighter + spacing, meta smaller + muted */
+.landing-page .hero-headline {
+  letter-spacing: -0.02em;
+}
+.landing-page .hero-subhead {
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+.landing-page .hero-meta {
+  font-weight: 400;
+  color: #71717a !important;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

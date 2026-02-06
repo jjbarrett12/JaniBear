@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import { PricingCards } from '@/components/pricing/pricing-cards';
+import { DeviceDemo } from '@/components/marketing/device-demo';
 
 export default function PricingPage() {
   return (
@@ -35,6 +36,8 @@ export default function PricingPage() {
             One FTE often costs $50k–$70k+/year. JaniBear starts at $59/mo—about 1% of that cost. All plans are <strong className="text-zinc-400">per company</strong>, not per seat.
           </p>
         </div>
+
+        <DeviceDemo />
 
         <PricingCards dark />
       </section>

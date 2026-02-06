@@ -3,13 +3,14 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { formatRelativeTime } from '@/lib/utils';
+import { useLanguage } from '@/contexts/language-context';
+import { getAppT } from '@/lib/app-translations';
 import { 
   ClipboardCheck, 
   AlertCircle, 
   MapPin, 
   Users,
   FileText,
-  CheckCircle2,
   Activity,
   ArrowRight
 } from 'lucide-react';
@@ -40,15 +41,34 @@ const activityConfig = {
   walkthrough: { icon: MapPin, color: 'bg-orange-100 text-orange-600' },
 };
 
-const statusConfig = {
-  completed: { label: 'Done', color: 'bg-emerald-100 text-emerald-700' },
-  open: { label: 'Open', color: 'bg-red-100 text-red-700' },
-  pending: { label: 'Pending', color: 'bg-amber-100 text-amber-700' },
-  closed: { label: 'Closed', color: 'bg-gray-100 text-gray-700' },
-  in_progress: { label: 'Active', color: 'bg-blue-100 text-blue-700' },
+const statusColor: Record<string, string> = {
+  completed: 'bg-emerald-100 text-emerald-700',
+  open: 'bg-red-100 text-red-700',
+  pending: 'bg-amber-100 text-amber-700',
+  closed: 'bg-gray-100 text-gray-700',
+  in_progress: 'bg-blue-100 text-blue-700',
 };
 
+function translateAction(action: string, t: (k: import('@/lib/app-translations').AppTranslationKey) => string): string {
+  if (action === 'Inspection completed') return t('inspectionCompleted');
+  if (action === 'Inspection started') return t('inspectionStarted');
+  if (action === 'Issue reported') return t('issueReported');
+  return action;
+}
+
 export function RecentActivity({ activities }: RecentActivityProps) {
+  const { locale } = useLanguage();
+  const t = getAppT(locale);
+
+  const getStatusLabel = (status: string) => {
+    if (status === 'completed') return t('statusDone');
+    if (status === 'open') return t('statusOpen');
+    if (status === 'pending') return t('statusPending');
+    if (status === 'closed') return t('statusClosed');
+    if (status === 'in_progress') return t('statusActive');
+    return status;
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -62,7 +82,7 @@ export function RecentActivity({ activities }: RecentActivityProps) {
               <Activity className="h-5 w-5 text-white" />
             </div>
             <CardTitle className="text-lg font-semibold text-gray-900 dark:text-white">
-              Recent Activity
+              {t('recentActivity')}
             </CardTitle>
           </div>
         </CardHeader>
@@ -72,7 +92,7 @@ export function RecentActivity({ activities }: RecentActivityProps) {
               {activities.slice(0, 6).map((activity, index) => {
                 const config = activityConfig[activity.type] || activityConfig.task;
                 const Icon = config.icon;
-                const status = activity.status ? statusConfig[activity.status as keyof typeof statusConfig] : null;
+                const status = activity.status ? { label: getStatusLabel(activity.status), color: statusColor[activity.status] ?? 'bg-gray-100 text-gray-700' } : null;
                 
                 return (
                   <motion.div
@@ -91,7 +111,7 @@ export function RecentActivity({ activities }: RecentActivityProps) {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
                           <p className="text-sm font-medium text-gray-900 dark:text-white truncate group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
-                            {activity.action}
+                            {translateAction(activity.action, t)}
                           </p>
                           {status && (
                             <Badge variant="secondary" className={`${status.color} text-[10px] px-1.5 py-0`}>
@@ -119,8 +139,8 @@ export function RecentActivity({ activities }: RecentActivityProps) {
               <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
                 <Activity className="h-6 w-6 text-gray-400" />
               </div>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">No recent activity</p>
-              <p className="text-xs text-gray-400 dark:text-gray-500">Activity will appear here as you use JANIBEAR</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">{t('noRecentActivity')}</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500">{t('noRecentActivitySub')}</p>
             </div>
           )}
         </CardContent>

@@ -48,7 +48,7 @@ export default function Home() {
     <div className="landing-page min-h-screen bg-zinc-950 text-zinc-100">
       {/* Nav: blur on scroll, Plans, Get Started taller */}
       <nav
-        className={`landing-header border-b border-gray-200 sticky top-0 z-50 h-16 md:h-20 py-0 flex items-center overflow-visible transition-all duration-300 ${
+        className={`landing-header border-b border-gray-200 sticky top-0 z-50 h-14 md:h-16 py-0 flex items-center overflow-visible transition-all duration-300 ${
           navScrolled ? 'landing-header-scrolled shadow-sm' : ''
         }`}
       >
@@ -100,7 +100,7 @@ export default function Home() {
       </nav>
 
       {/* Hero: 3-line headline, gradient underline, product tease, 3 CTAs, trust up */}
-      <section className="relative container mx-auto px-4 pt-12 md:pt-14 pb-16 md:pb-24 overflow-hidden -mt-4">
+      <section className="relative container mx-auto px-4 pt-4 md:pt-6 pb-16 md:pb-24 overflow-hidden -mt-2">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-3xl" />
           <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-cyan-500/5 rounded-full blur-3xl" />
@@ -108,10 +108,10 @@ export default function Home() {
 
         <div className="relative max-w-5xl mx-auto text-center">
           <div
-            className={`inline-flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-800/80 text-zinc-300 text-sm font-medium mb-6 transition-all duration-500 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'}`}
+            className={`inline-flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-800/80 text-zinc-300 text-sm font-medium mb-4 transition-all duration-500 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'}`}
           >
             <Bot className="h-4 w-4 text-orange-400" />
-            <span>Your AI Assistant for Janitorial Bids, Pricing & Quality Assurance</span>
+            <span>Jani — your AI assistant for Janitorial Bids, Pricing & Quality Assurance</span>
           </div>
 
           {/* Headline: 3-line hierarchy — Line 1 biggest, Line 2 smaller, Line 3 accent + gradient underline */}
@@ -130,7 +130,7 @@ export default function Home() {
           </h1>
 
           <p
-            className={`hero-subhead text-lg md:text-xl text-zinc-400 max-w-3xl mx-auto mt-8 leading-[1.65] transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            className={`hero-subhead text-lg md:text-xl text-zinc-400 max-w-3xl mx-auto mt-5 leading-[1.65] transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '100ms' }}
           >
             AI-powered sales and operations software for janitorial companies. Win more bids, execute with confidence, and improve performance at scale.
@@ -138,7 +138,7 @@ export default function Home() {
 
           {/* Product tease: AI quote card — above the fold, answers "What does the AI do?" */}
           <div
-            className={`hero-product-tease mt-8 max-w-xl mx-auto transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            className={`hero-product-tease mt-5 max-w-xl mx-auto transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '120ms' }}
           >
             <div className="text-left rounded-xl border border-zinc-700/80 bg-zinc-900/60 px-5 py-4 shadow-lg">
@@ -151,7 +151,7 @@ export default function Home() {
 
           {/* Trust: move up — built by operators + stat */}
           <p
-            className={`hero-meta text-sm text-zinc-500 max-w-2xl mx-auto mt-6 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            className={`hero-meta text-sm text-zinc-500 max-w-2xl mx-auto mt-4 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '140ms' }}
           >
             Built by janitorial operators, for janitorial operators.
@@ -159,7 +159,7 @@ export default function Home() {
 
           {/* CTA stack: Primary + Middle path + Secondary */}
           <div
-            className={`flex flex-col sm:flex-row flex-wrap gap-3 justify-center items-center mt-8 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            className={`flex flex-col sm:flex-row flex-wrap gap-3 justify-center items-center mt-5 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '200ms' }}
           >
             <Link href="/auth/signup">
@@ -180,11 +180,15 @@ export default function Home() {
             </Link>
           </div>
 
-          {/* Trust signals: stars, count, stat — right under CTAs */}
+          {/* Trust signals: pricing hint, stars, stat — right under CTAs */}
           <div
-            className={`mt-8 flex flex-col sm:flex-row flex-wrap items-center justify-center gap-4 sm:gap-6 text-sm transition-all duration-700 ${mounted ? 'opacity-100' : 'opacity-0'}`}
+            className={`mt-5 flex flex-col sm:flex-row flex-wrap items-center justify-center gap-4 sm:gap-6 text-sm transition-all duration-700 ${mounted ? 'opacity-100' : 'opacity-0'}`}
             style={{ transitionDelay: '300ms' }}
           >
+            <Link href="/pricing" className="flex items-center gap-2 text-zinc-400 hover:text-orange-400 transition-colors">
+              <span className="font-semibold text-white">Starting at $59/mo</span>
+              <span>· per company</span>
+            </Link>
             <div className="flex items-center gap-2 text-zinc-400">
               <span className="text-amber-400">★★★★★</span>
               <span>Trusted by 500+ cleaning companies</span>

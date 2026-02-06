@@ -23,43 +23,57 @@ import {
   ListChecks,
   Package,
   GraduationCap,
-  Ticket
+  Ticket,
+  Repeat,
+  KeyRound,
+  Award,
+  FileSearch,
+  MessageCircle
 } from 'lucide-react';
 import { GlobalSearch } from '@/components/search/global-search';
 import { DarkModeToggle } from '@/components/app/dark-mode-toggle';
 import { LanguageSwitcher } from '@/components/app/language-switcher';
+import { useLanguage } from '@/contexts/language-context';
+import { getAppT } from '@/lib/app-translations';
+import type { AppTranslationKey } from '@/lib/app-translations';
 
 interface MobileSidebarProps {
   logoUrl?: string | null;
 }
 
+const salesItemKeys: { href: string; labelKey: AppTranslationKey; icon: React.ComponentType<{ className?: string }> }[] = [
+  { href: '/app/sales', labelKey: 'navLeads', icon: TrendingUp },
+  { href: '/app/walkthroughs', labelKey: 'navSalesAppointment', icon: FileSearch },
+  { href: '/app/bids', labelKey: 'navProposalBuilding', icon: Calculator },
+  { href: '/app/bids', labelKey: 'navProposalDraftReview', icon: FileText },
+  { href: '/app/sales/cadence', labelKey: 'navFollowUp', icon: Repeat },
+  { href: '/app/sales', labelKey: 'navPipelineManagement', icon: TrendingUp },
+];
+const operationsItemKeys: { href: string; labelKey: AppTranslationKey; icon: React.ComponentType<{ className?: string }> }[] = [
+  { href: '/app/locations', labelKey: 'navSiteHandover', icon: KeyRound },
+  { href: '/app/crews', labelKey: 'navCrewManagement', icon: Users },
+  { href: '/app/templates', labelKey: 'navBrandStandards', icon: Award },
+  { href: '/app/schedules', labelKey: 'navSchedules', icon: Calendar },
+  { href: '/app/inspections', labelKey: 'navInspections', icon: ClipboardCheck },
+  { href: '/app/issues', labelKey: 'navIssues', icon: AlertCircle },
+  { href: '/app/tasks', labelKey: 'navMyTasks', icon: ClipboardCheck },
+  { href: '/app/supplies', labelKey: 'navSupplies', icon: Package },
+  { href: '/app/contracts', labelKey: 'navContracts', icon: FileUp },
+  { href: '/app/tickets', labelKey: 'navServiceTickets', icon: Ticket },
+  { href: '/app/messages', labelKey: 'navMessages', icon: MessageCircle },
+  { href: '/app/qc-assign', labelKey: 'navQcTaskAssign', icon: ListChecks },
+  { href: '/app/admin', labelKey: 'navAdmin', icon: Settings },
+];
+
 export function MobileSidebar({ logoUrl }: MobileSidebarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  const { locale } = useLanguage();
+  const t = getAppT(locale);
 
   useEffect(() => {
     setIsOpen(false);
   }, [pathname]);
-
-  const navItems = [
-    { href: '/app/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { href: '/app/university', label: 'Jani-Bear University', icon: GraduationCap },
-    { href: '/app/sales', label: 'Sales', icon: TrendingUp },
-    { href: '/app/supplies', label: 'Supplies', icon: Package },
-    { href: '/app/locations', label: 'Locations', icon: MapPin },
-    { href: '/app/crews', label: 'Crews', icon: Users },
-    { href: '/app/templates', label: 'Templates', icon: FileText },
-    { href: '/app/schedules', label: 'Schedules', icon: Calendar },
-    { href: '/app/inspections', label: 'Inspections', icon: ClipboardCheck },
-    { href: '/app/tasks', label: 'My Tasks', icon: ClipboardCheck },
-    { href: '/app/issues', label: 'Issues', icon: AlertCircle },
-    { href: '/app/tickets', label: 'Service Tickets', icon: Ticket },
-    { href: '/app/bids', label: 'Bids & Estimates', icon: Calculator },
-    { href: '/app/contracts', label: 'Contracts', icon: FileUp },
-    { href: '/app/qc-assign', label: 'QC Task Assign', icon: ListChecks },
-    { href: '/app/admin', label: 'Admin', icon: Settings },
-    { href: '/app/settings', label: 'Settings', icon: Settings },
-  ];
 
   const handleSignOut = async () => {
     const supabase = createClient();
@@ -155,25 +169,91 @@ export function MobileSidebar({ logoUrl }: MobileSidebarProps) {
                 <GlobalSearch />
               </div>
 
-              <nav className="flex-1 space-y-1 p-4 overflow-y-auto">
-                {navItems.map((item) => {
-                  const Icon = item.icon;
-                  const isActive = pathname === item.href;
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className={`flex items-center gap-3 rounded-lg px-4 py-3 text-base font-medium transition-colors min-h-[52px] ${
-                        isActive
-                          ? 'bg-primary text-primary-foreground'
-                          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
-                      }`}
-                    >
-                      <Icon className="h-6 w-6" />
-                      {item.label}
-                    </Link>
-                  );
-                })}
+              <nav className="flex-1 space-y-4 p-4 overflow-y-auto">
+                <Link
+                  href="/app/dashboard"
+                  className={`flex items-center gap-3 rounded-lg px-4 py-3 text-base font-medium transition-colors min-h-[48px] ${
+                    pathname === '/app/dashboard'
+                      ? 'bg-primary text-primary-foreground'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                  }`}
+                >
+                  <LayoutDashboard className="h-5 w-5 shrink-0" />
+                  {t('navDashboard')}
+                </Link>
+                <Link
+                  href="/app/university"
+                  className={`flex items-center gap-3 rounded-lg px-4 py-3 text-base font-medium transition-colors min-h-[48px] ${
+                    pathname.startsWith('/app/university')
+                      ? 'bg-primary text-primary-foreground'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                  }`}
+                >
+                  <GraduationCap className="h-5 w-5 shrink-0" />
+                  {t('navUniversity')}
+                </Link>
+
+                <div className="space-y-1">
+                  <p className="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                    {t('navSales')}
+                  </p>
+                  {salesItemKeys.map((item) => {
+                    const Icon = item.icon;
+                    const isActive = pathname.startsWith(item.href);
+                    return (
+                      <Link
+                        key={`${item.href}-${item.labelKey}`}
+                        href={item.href}
+                        className={`flex items-center gap-3 rounded-lg px-4 py-3 text-base font-medium transition-colors min-h-[44px] ${
+                          isActive
+                            ? 'bg-primary text-primary-foreground'
+                            : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                        }`}
+                      >
+                        <Icon className="h-5 w-5 shrink-0" />
+                        {t(item.labelKey)}
+                      </Link>
+                    );
+                  })}
+                </div>
+
+                <div className="space-y-1">
+                  <p className="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                    {t('navOperations')}
+                  </p>
+                  {operationsItemKeys.map((item) => {
+                    const Icon = item.icon;
+                    const isActive = pathname.startsWith(item.href);
+                    return (
+                      <Link
+                        key={`${item.href}-${item.labelKey}`}
+                        href={item.href}
+                        className={`flex items-center gap-3 rounded-lg px-4 py-3 text-base font-medium transition-colors min-h-[44px] ${
+                          isActive
+                            ? 'bg-primary text-primary-foreground'
+                            : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                        }`}
+                      >
+                        <Icon className="h-5 w-5 shrink-0" />
+                        {t(item.labelKey)}
+                      </Link>
+                    );
+                  })}
+                </div>
+
+                <div className="pt-2 border-t dark:border-gray-800">
+                  <Link
+                    href="/app/settings"
+                    className={`flex items-center gap-3 rounded-lg px-4 py-3 text-base font-medium transition-colors min-h-[44px] ${
+                      pathname.startsWith('/app/settings')
+                        ? 'bg-primary text-primary-foreground'
+                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                    }`}
+                  >
+                    <Settings className="h-5 w-5 shrink-0" />
+                    {t('navSettings')}
+                  </Link>
+                </div>
               </nav>
 
               <div className="border-t dark:border-gray-800 p-4">
@@ -182,7 +262,7 @@ export function MobileSidebar({ logoUrl }: MobileSidebarProps) {
                   variant="outline" 
                   className="w-full h-12 text-base"
                 >
-                  Sign Out
+                  {t('signOut')}
                 </Button>
               </div>
             </div>

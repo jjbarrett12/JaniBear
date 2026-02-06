@@ -1,6 +1,8 @@
 'use client';
 
 import { Card, CardContent } from '@/components/ui/card';
+import { useLanguage } from '@/contexts/language-context';
+import { getAppT } from '@/lib/app-translations';
 import { 
   AlertCircle, 
   MapPin, 
@@ -42,20 +44,24 @@ const cardVariants = {
 };
 
 export function StatsCards({ stats }: StatsCardsProps) {
+  const { locale } = useLanguage();
+  const t = getAppT(locale);
+
   const cards = [
     {
-      title: 'Active Locations',
+      title: t('statsActiveLocations'),
       value: stats.totalLocations,
       icon: MapPin,
       href: '/app/locations',
       gradient: 'from-blue-500 to-blue-600',
       lightBg: 'bg-blue-50',
       trend: null,
+      subtitle: undefined as string | undefined,
     },
     {
-      title: 'Inspections',
+      title: t('statsInspections'),
       value: stats.completedInspections,
-      subtitle: stats.avgScore ? `${stats.avgScore.toFixed(0)}% avg score` : undefined,
+      subtitle: stats.avgScore ? `${stats.avgScore.toFixed(0)}% ${t('statsAvgScore')}` : undefined,
       icon: ClipboardCheck,
       href: '/app/inspections',
       gradient: 'from-emerald-500 to-emerald-600',
@@ -63,9 +69,9 @@ export function StatsCards({ stats }: StatsCardsProps) {
       trend: { value: 12, positive: true },
     },
     {
-      title: 'Open Issues',
+      title: t('statsOpenIssues'),
       value: stats.openIssues,
-      subtitle: stats.totalIssues ? `of ${stats.totalIssues} total` : undefined,
+      subtitle: stats.totalIssues != null ? t('statsOfTotal').replace('{{total}}', String(stats.totalIssues)) : undefined,
       icon: AlertCircle,
       href: '/app/issues?status=open',
       gradient: 'from-red-500 to-rose-600',
@@ -73,22 +79,24 @@ export function StatsCards({ stats }: StatsCardsProps) {
       trend: stats.openIssues > 0 ? { value: stats.openIssues, positive: false } : null,
     },
     {
-      title: 'Crews',
+      title: t('statsCrews'),
       value: stats.totalCrews,
       icon: Users,
       href: '/app/crews',
       gradient: 'from-violet-500 to-purple-600',
       lightBg: 'bg-violet-50',
       trend: null,
+      subtitle: undefined as string | undefined,
     },
     {
-      title: 'Pending Tasks',
+      title: t('statsPendingTasks'),
       value: stats.pendingTasks,
       icon: Clock,
       href: '/app/tasks',
       gradient: 'from-amber-500 to-orange-600',
       lightBg: 'bg-amber-50',
       trend: null,
+      subtitle: undefined as string | undefined,
     },
   ];
 

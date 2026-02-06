@@ -34,15 +34,15 @@
   flex-shrink: 0;
 }
 .landing-header .landing-logo {
-  max-height: 140px !important;
-  height: 140px !important;
+  max-height: 96px !important;
+  height: 96px !important;
   width: auto !important;
   flex-shrink: 0;
 }
 @media (min-width: 768px) {
   .landing-header .landing-logo {
-    max-height: 160px !important;
-    height: 160px !important;
+    max-height: 108px !important;
+    height: 108px !important;
   }
 }
 .landing-page .landing-cta {

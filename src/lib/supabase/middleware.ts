@@ -11,7 +11,6 @@ const PUBLIC_PATHS = [
   '/demo',
   '/contact',
   '/api',
-  '/proposals/',
 ];
 
 function isPublicPath(pathname: string): boolean {

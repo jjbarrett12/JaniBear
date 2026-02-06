@@ -37,7 +37,6 @@ export async function AppSidebarNew() {
     { href: '/crm/clients', label: 'Clients', icon: Building2 },
     { href: '/crm/opportunities', label: 'Opportunities', icon: TrendingUp },
     { href: '/walkthroughs', label: 'Walkthroughs', icon: FileSearch },
-    { href: '/proposals', label: 'Proposals', icon: FileText },
     { href: '/qc/inspections', label: 'Inspections', icon: ClipboardCheck },
     { href: '/qc/issues', label: 'Issues', icon: AlertCircle },
     { href: '/ops/workload', label: 'Workload', icon: Users },

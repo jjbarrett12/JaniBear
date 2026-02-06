@@ -18,7 +18,7 @@ import { motion } from 'framer-motion';
 
 interface ActivityItem {
   id: string;
-  type: 'inspection' | 'issue' | 'location' | 'crew' | 'task' | 'template' | 'proposal' | 'walkthrough';
+  type: 'inspection' | 'issue' | 'location' | 'crew' | 'task' | 'template' | 'walkthrough';
   action: string;
   description: string;
   timestamp: string;
@@ -37,7 +37,6 @@ const activityConfig = {
   crew: { icon: Users, color: 'bg-violet-100 text-violet-600' },
   task: { icon: ClipboardCheck, color: 'bg-amber-100 text-amber-600' },
   template: { icon: FileText, color: 'bg-gray-100 text-gray-600' },
-  proposal: { icon: FileText, color: 'bg-cyan-100 text-cyan-600' },
   walkthrough: { icon: MapPin, color: 'bg-orange-100 text-orange-600' },
 };
 

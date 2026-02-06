@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Calendar, FileText, Plus, Loader2 } from 'lucide-react';
+import { Calendar, Plus, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { formatDate } from '@/lib/utils';
 
@@ -30,25 +30,16 @@ interface Appointment {
   status: string;
 }
 
-interface Proposal {
-  id: string;
-  status: string;
-  total_amount: number | null;
-  created_at: string;
-}
-
 interface LeadDetailClientProps {
   leadId: string;
   leadStatus: string;
   appointments: Appointment[];
-  proposals: Proposal[];
 }
 
 export function LeadDetailClient({
   leadId,
   leadStatus,
   appointments,
-  proposals,
 }: LeadDetailClientProps) {
   const router = useRouter();
   const [status, setStatus] = useState(leadStatus);
@@ -195,38 +186,6 @@ export function LeadDetailClient({
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle className="flex items-center gap-2">
-            <FileText className="h-5 w-5" />
-            Proposals
-          </CardTitle>
-          <Link href={`/app/sales/leads/${leadId}/proposal/new`}>
-            <Button size="sm">
-              <Plus className="h-4 w-4 mr-2" />
-              Generate proposal
-            </Button>
-          </Link>
-        </CardHeader>
-        <CardContent>
-          {proposals.length > 0 ? (
-            <ul className="space-y-2">
-              {proposals.map((p) => (
-                <li key={p.id}>
-                  <Link href={`/app/sales/proposals/${p.id}`} className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50">
-                    <span className="font-medium">Proposal</span>
-                    <span className="text-sm text-gray-600">
-                      {p.total_amount != null ? `$${Number(p.total_amount).toLocaleString()}` : 'Draft'} • {p.status}
-                    </span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-sm text-gray-500">No proposals yet. Generate one using square footage, flooring, and AI.</p>
-          )}
-        </CardContent>
-      </Card>
     </div>
   );
 }

@@ -83,44 +83,8 @@ export function WalkthroughForm({ orgId, userId, userName }: WalkthroughFormProp
 
   const getAISuggestions = async () => {
     if (!formData.squareFootage) return;
-    
+    // AI suggestions endpoint removed with proposal section; manual entry only
     setIsGettingAISuggestions(true);
-    try {
-      const response = await fetch('/api/ai/proposal-suggestions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          square_footage: parseInt(formData.squareFootage) || 0,
-          flooring_breakdown: {
-            hard_surface: parseInt(formData.flooringHardSurface) || 0,
-            carpet: parseInt(formData.flooringCarpet) || 0,
-            tile: parseInt(formData.flooringTile) || 0,
-          },
-          cleaning_frequency: `${formData.daysPerWeek}x per week`,
-          restrooms: parseInt(formData.restroomCount) || 0,
-          notes: formData.specialRequirements,
-        }),
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        setAiSuggestions({
-          crew_size: data.suggested_crew_size,
-          hours_per_visit: data.estimated_hours_per_visit,
-          monthly_estimate: data.labor_estimate,
-        });
-        
-        // Auto-fill the suggestions
-        if (data.suggested_crew_size) {
-          updateField('estimatedCrewSize', data.suggested_crew_size.toString());
-        }
-        if (data.estimated_hours_per_visit) {
-          updateField('estimatedHours', data.estimated_hours_per_visit.toString());
-        }
-      }
-    } catch (err) {
-      console.error('Failed to get AI suggestions:', err);
-    }
     setIsGettingAISuggestions(false);
   };
 

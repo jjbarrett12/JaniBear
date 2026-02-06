@@ -26,14 +26,12 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
 
   const [
     { data: appointments },
-    { data: proposals },
     { data: enrollment },
     { count: touchLogCount },
     { data: topTarget },
     { data: defaultTemplate },
   ] = await Promise.all([
     supabase.from('walkthrough_appointments').select('*').eq('lead_id', id).order('scheduled_at', { ascending: true }),
-    supabase.from('proposals').select('*').eq('lead_id', id).order('created_at', { ascending: false }),
     supabase.from('lead_cadence_enrollments').select('id, current_step, next_touch_at, status, template_id').eq('lead_id', id).maybeSingle(),
     supabase.from('lead_touch_log').select('*', { count: 'exact', head: true }).eq('lead_id', id),
     user ? supabase.from('top_targets').select('id, rank').eq('lead_id', id).eq('user_id', user.id).maybeSingle() : { data: null },
@@ -113,7 +111,6 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
           leadId={lead.id}
           leadStatus={lead.status}
           appointments={appointments || []}
-          proposals={proposals || []}
         />
       </div>
 

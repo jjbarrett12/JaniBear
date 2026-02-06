@@ -1,11 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Check, Clock, MapPin, Calendar } from 'lucide-react';
+import { Check, MapPin, Calendar } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
+import { useLanguage } from '@/contexts/language-context';
+import { getAppT } from '@/lib/app-translations';
 
 interface TaskListProps {
   tasks: any[];
@@ -13,6 +15,8 @@ interface TaskListProps {
 }
 
 export function TaskList({ tasks, completedTasks }: TaskListProps) {
+  const { locale } = useLanguage();
+  const t = useMemo(() => getAppT(locale), [locale]);
   const [completingTaskId, setCompletingTaskId] = useState<string | null>(null);
 
   const handleCompleteTask = async (taskId: string) => {
@@ -46,7 +50,7 @@ export function TaskList({ tasks, completedTasks }: TaskListProps) {
       // Refresh page
       window.location.reload();
     } catch (err: any) {
-      alert('Failed to complete task: ' + err.message);
+      alert(t('failedToCompleteTask') + ': ' + err.message);
     } finally {
       setCompletingTaskId(null);
     }
@@ -55,13 +59,13 @@ export function TaskList({ tasks, completedTasks }: TaskListProps) {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">My Tasks</h1>
-        <p className="text-gray-600 mt-1">Your assigned cleaning tasks</p>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{t('myTasks')}</h1>
+        <p className="text-gray-600 dark:text-gray-400 mt-1">{t('yourAssignedCleaningTasks')}</p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Upcoming Tasks</CardTitle>
+          <CardTitle>{t('upcomingTasks')}</CardTitle>
         </CardHeader>
         <CardContent>
           {tasks.length > 0 ? (
@@ -81,9 +85,9 @@ export function TaskList({ tasks, completedTasks }: TaskListProps) {
                     <p className="text-sm text-gray-600 mb-1">
                       {task.template_items?.label}
                     </p>
-                    <div className="flex items-center gap-2 text-xs text-gray-500">
+                    <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
                       <Calendar className="h-3 w-3" />
-                      Due: {formatDate(task.due_date)}
+                      {t('due')}: {formatDate(task.due_date)}
                     </div>
                   </div>
                   <Button
@@ -92,13 +96,13 @@ export function TaskList({ tasks, completedTasks }: TaskListProps) {
                     size="sm"
                   >
                     <Check className="h-4 w-4 mr-2" />
-                    Complete
+                    {t('complete')}
                   </Button>
                 </div>
               ))}
             </div>
           ) : (
-            <p className="text-gray-500 text-center py-8">No upcoming tasks</p>
+            <p className="text-gray-500 dark:text-gray-400 text-center py-8">{t('noUpcomingTasks')}</p>
           )}
         </CardContent>
       </Card>
@@ -106,7 +110,7 @@ export function TaskList({ tasks, completedTasks }: TaskListProps) {
       {completedTasks.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle>Recently Completed</CardTitle>
+            <CardTitle>{t('recentlyCompleted')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">

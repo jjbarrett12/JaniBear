@@ -6,15 +6,14 @@ export type Role = 'owner' | 'admin' | 'sales' | 'ops' | 'inspector' | 'cleaner'
 export type Permission = 
   | 'manage_users'
   | 'view_kpis'
-  | 'create_proposals'
   | 'run_inspections'
   | 'manage_ops'
   | 'view_client_portal';
 
 const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
-  owner: ['manage_users', 'view_kpis', 'create_proposals', 'run_inspections', 'manage_ops'],
-  admin: ['manage_users', 'view_kpis', 'create_proposals', 'run_inspections', 'manage_ops'],
-  sales: ['view_kpis', 'create_proposals'],
+  owner: ['manage_users', 'view_kpis', 'run_inspections', 'manage_ops'],
+  admin: ['manage_users', 'view_kpis', 'run_inspections', 'manage_ops'],
+  sales: ['view_kpis'],
   ops: ['manage_ops', 'run_inspections'],
   inspector: ['run_inspections'],
   cleaner: [],

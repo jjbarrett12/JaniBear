@@ -3,7 +3,6 @@ import { requireOrg, getCurrentUser } from '@/lib/auth';
 import { StatsCards } from '@/components/dashboard/stats-cards';
 import { QuickActions } from '@/components/dashboard/quick-actions';
 import { RecentActivity } from '@/components/dashboard/recent-activity';
-import { PipelineWidget } from '@/components/dashboard/pipeline-widget';
 import { TodaysSchedule } from '@/components/dashboard/todays-schedule';
 import { InspectionChart } from '@/components/dashboard/charts/inspection-chart';
 
@@ -18,7 +17,6 @@ export default async function DashboardPage() {
     issuesResult,
     locationsResult,
     crewsResult,
-    proposalsResult,
     walkthroughsResult,
     schedulesResult,
     recentIssuesResult,
@@ -50,15 +48,6 @@ export default async function DashboardPage() {
       .from('crews')
       .select('*', { count: 'exact', head: true })
       .eq('org_id', org.org_id),
-    
-    // Proposals
-    supabase
-      .from('proposals')
-      .select('id, total_amount, status, created_at, leads(full_name, company_name)')
-      .eq('org_id', org.org_id)
-      .in('status', ['draft', 'sent'])
-      .order('created_at', { ascending: false })
-      .limit(10),
     
     // Recent walkthroughs
     supabase
@@ -100,7 +89,6 @@ export default async function DashboardPage() {
     .eq('org_id', org.org_id)).count || 0;
   const locationsCount = locationsResult.count || 0;
   const crewsCount = crewsResult.count || 0;
-  const proposals = proposalsResult.data || [];
   const walkthroughsCount = walkthroughsResult.count || 0;
   const todaysSchedules = schedulesResult.data || [];
   const recentIssues = recentIssuesResult.data || [];
@@ -117,19 +105,6 @@ export default async function DashboardPage() {
   const avgScore = inspectionScores.length > 0
     ? inspectionScores.reduce((sum, i) => sum + (i.total_score || 0), 0) / inspectionScores.length
     : undefined;
-
-  // Calculate pipeline value
-  const pipelineValue = proposals.reduce((sum, p) => sum + (p.total_amount || 0), 0);
-
-  // Format proposals for widget
-  const formattedProposals = proposals.map((p: any) => ({
-    id: p.id,
-    lead_name: p.leads?.full_name || 'Unknown',
-    company_name: p.leads?.company_name,
-    total_amount: p.total_amount || 0,
-    status: p.status,
-    created_at: p.created_at,
-  }));
 
   // Format today's schedules
   const formattedSchedules = todaysSchedules.map((s: any) => ({
@@ -226,8 +201,6 @@ export default async function DashboardPage() {
           totalCrews: crewsCount,
           avgScore,
           totalIssues: totalIssuesCount,
-          pendingProposals: proposals.length,
-          proposalValue: pipelineValue,
           recentWalkthroughs: walkthroughsCount,
         }}
       />
@@ -243,10 +216,6 @@ export default async function DashboardPage() {
           
           {/* Pipeline and Schedule Row */}
           <div className="grid gap-6 md:grid-cols-2">
-            <PipelineWidget 
-              proposals={formattedProposals} 
-              totalValue={pipelineValue} 
-            />
             <TodaysSchedule items={formattedSchedules} />
           </div>
         </div>

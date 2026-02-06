@@ -9,9 +9,7 @@ import {
   Clock,
   Users,
   TrendingUp,
-  TrendingDown,
-  DollarSign,
-  FileText
+  TrendingDown
 } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
@@ -26,8 +24,6 @@ interface StatsCardsProps {
     totalCrews: number;
     avgScore?: number;
     totalIssues?: number;
-    pendingProposals?: number;
-    proposalValue?: number;
     recentWalkthroughs?: number;
   };
 }
@@ -92,16 +88,6 @@ export function StatsCards({ stats }: StatsCardsProps) {
       href: '/app/tasks',
       gradient: 'from-amber-500 to-orange-600',
       lightBg: 'bg-amber-50',
-      trend: null,
-    },
-    {
-      title: 'Proposals',
-      value: stats.pendingProposals || 0,
-      subtitle: stats.proposalValue ? `$${(stats.proposalValue / 1000).toFixed(0)}k pipeline` : 'No pending',
-      icon: FileText,
-      href: '/app/sales',
-      gradient: 'from-cyan-500 to-teal-600',
-      lightBg: 'bg-cyan-50',
       trend: null,
     },
   ];

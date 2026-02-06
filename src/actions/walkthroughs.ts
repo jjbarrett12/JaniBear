@@ -15,7 +15,7 @@ const createWalkthroughSchema = z.object({
 });
 
 export async function createWalkthrough(formData: FormData) {
-  await requirePermission('create_proposals');
+  await requirePermission('view_kpis');
   const org = await requireOrg();
   const supabase = await createClient();
   
@@ -49,7 +49,7 @@ export async function createWalkthrough(formData: FormData) {
 }
 
 export async function updateWalkthroughStatus(id: string, status: string) {
-  await requirePermission('create_proposals');
+  await requirePermission('view_kpis');
   const supabase = await createClient();
   
   const { error } = await supabase

@@ -27,6 +27,7 @@ import {
 } from 'lucide-react';
 import { GlobalSearch } from '@/components/search/global-search';
 import { DarkModeToggle } from '@/components/app/dark-mode-toggle';
+import { LanguageSwitcher } from '@/components/app/language-switcher';
 
 interface MobileSidebarProps {
   logoUrl?: string | null;
@@ -101,7 +102,10 @@ export function MobileSidebar({ logoUrl }: MobileSidebarProps) {
             />
           )}
         </div>
-        <DarkModeToggle />
+        <div className="flex items-center gap-2">
+          <LanguageSwitcher />
+          <DarkModeToggle />
+        </div>
       </header>
 
       {/* Mobile Sidebar Overlay */}

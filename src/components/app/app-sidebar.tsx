@@ -10,6 +10,7 @@ import { NotificationBell } from '@/components/notifications/notification-bell';
 import { MobileSidebar } from '@/components/app/mobile-sidebar';
 import { BottomNav } from '@/components/app/bottom-nav';
 import { DarkModeToggle } from '@/components/app/dark-mode-toggle';
+import { LanguageSwitcher } from '@/components/app/language-switcher';
 import { 
   LayoutDashboard, 
   MapPin, 
@@ -106,7 +107,8 @@ export async function AppSidebar() {
           
           <div className="p-4 border-b dark:border-gray-800 space-y-3">
             <GlobalSearch />
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between gap-2">
+              <LanguageSwitcher />
               <DarkModeToggle />
               <NotificationBell />
             </div>

@@ -28,8 +28,6 @@ import {
   Brain,
   Wand2,
 } from 'lucide-react';
-import { ProposalSampleStatic } from '@/components/sales/proposal-sample-static';
-
 export default function Home() {
   const [mounted, setMounted] = useState(false);
 
@@ -100,7 +98,7 @@ export default function Home() {
             className={`inline-flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-800/80 text-zinc-300 text-sm font-medium mb-6 transition-all duration-500 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'}`}
           >
             <Bot className="h-4 w-4 text-orange-400" />
-            <span>Your AI Assistant for Janitorial Bids, Pricing & Inspections</span>
+            <span>Your AI Assistant for Janitorial Bids, Pricing & Quality Assurance</span>
           </div>
 
           <h1
@@ -116,7 +114,13 @@ export default function Home() {
             className={`hero-punchline text-lg md:text-xl text-zinc-400 mb-8 max-w-3xl mx-auto leading-relaxed transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '100ms' }}
           >
-            An AI Platform Built by Janitorial Operators, for Janitorial Operators
+            AI-powered sales and operations software for janitorial companies. Win more bids, execute with confidence, and improve performance at scale.
+          </p>
+          <p
+            className={`text-base md:text-lg text-zinc-500 mb-8 max-w-2xl mx-auto transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            style={{ transitionDelay: '150ms' }}
+          >
+            Built by janitorial operators, for janitorial operators.
           </p>
 
           <div
@@ -269,91 +273,19 @@ export default function Home() {
         </div>
       </section>
 
-      {/* How It Works - Streamlined Process */}
-      <section className="py-24 border-b border-zinc-800/80">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
-              From Walkthrough to Closed Deal
+      {/* Won the job — keep it: back-end focus */}
+      <section className="relative py-24 border-b border-zinc-800/80 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-orange-500/15 via-amber-500/10 to-cyan-500/15" />
+        <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/40 via-transparent to-zinc-950/40" />
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="max-w-3xl mx-auto text-center">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">
+              You&apos;ve won the job—now let&apos;s keep it.
             </h2>
-            <p className="text-lg text-zinc-400 max-w-2xl mx-auto">
-              Your complete sales workflow, automated with AI.
+            <p className="text-lg md:text-xl text-zinc-300 leading-relaxed">
+              Companies focus so much on the front end of their business that they often lose focus on the back end of their operation. This is where JaniBear shines.
             </p>
           </div>
-
-          <div className="max-w-4xl mx-auto">
-            <div className="space-y-8">
-              {[
-                {
-                  step: '1',
-                  icon: Camera,
-                  title: 'Capture Building Details',
-                  desc: 'Walk through the property with your phone. AI captures flooring types, fixture counts, square footage, and special requirements—all automatically.',
-                  detail: 'Works offline during walkthrough, syncs when connected',
-                },
-                {
-                  step: '2',
-                  icon: Wand2,
-                  title: 'AI Generates Proposal',
-                  desc: 'Within minutes, AI creates a complete, branded proposal with scope of work, frequency schedules, pricing, and all necessary documentation.',
-                  detail: 'Customizable pricing rules, branded templates, professional formatting',
-                },
-                {
-                  step: '3',
-                  icon: Send,
-                  title: 'Send & Track',
-                  desc: 'Send the proposal via email or PDF. AI automatically tracks delivery, opens, and engagement—so you know exactly when to follow up.',
-                  detail: 'Delivery tracking, open rates, engagement metrics',
-                },
-                {
-                  step: '4',
-                  icon: Repeat,
-                  title: 'Automated Follow-Up Cadences',
-                  desc: 'AI sends personalized follow-ups at optimal times based on proposal status, client engagement, and best practices—keeping you top-of-mind until the deal closes.',
-                  detail: 'Smart timing, personalized messaging, status-aware automation',
-                },
-              ].map((item, index) => {
-                const Icon = item.icon;
-                return (
-                  <div
-                    key={index}
-                    className={`flex gap-6 p-6 rounded-xl bg-zinc-900/80 border border-zinc-800 hover:border-zinc-700 transition-all ${mounted ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'}`}
-                    style={{ transitionDelay: `${index * 100}ms`, transitionDuration: '500ms' }}
-                  >
-                    <div className="flex-shrink-0">
-                      <div className="w-12 h-12 rounded-xl bg-orange-500/10 text-orange-400 flex items-center justify-center font-bold text-lg">
-                        {item.step}
-                      </div>
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <Icon className="h-5 w-5 text-orange-400" />
-                        <h3 className="text-xl font-semibold text-white">{item.title}</h3>
-                      </div>
-                      <p className="text-zinc-400 mb-2 leading-relaxed">{item.desc}</p>
-                      <p className="text-sm text-zinc-500">{item.detail}</p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Proposal sample section - hero subhead as section title */}
-      <section className="py-24 border-b border-zinc-800/80 bg-zinc-900/20">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
-              AI-powered proposals, inspections, and quality control
-            </h2>
-            <p className="text-lg text-zinc-400 max-w-2xl mx-auto">
-              Built for modern commercial cleaning companies. A polished, 6–8 page proposal—the kind that wins bids. Use your own custom template; we merge in customer and job details for every bid.
-            </p>
-          </div>
-
-          <ProposalSampleStatic />
         </div>
       </section>
 

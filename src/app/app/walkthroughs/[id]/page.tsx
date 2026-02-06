@@ -12,13 +12,11 @@ import {
   Calendar, 
   User, 
   DollarSign,
-  FileText,
   CheckCircle2,
   Clock,
   Sparkles
 } from 'lucide-react';
 import { updateWalkthroughStatus } from '@/actions/walkthroughs';
-import { GenerateProposalButton } from '@/components/walkthroughs/generate-proposal-button';
 import { formatCurrency } from '@/lib/utils';
 
 export default async function WalkthroughDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -59,13 +57,6 @@ export default async function WalkthroughDetailPage({ params }: { params: Promis
     .select('*')
     .eq('walkthrough_id', id)
     .eq('org_id', org.org_id)
-    .single();
-
-  // Check if proposal already exists
-  const { data: existingProposal } = await supabase
-    .from('proposals')
-    .select('id, status')
-    .eq('opportunity_id', walkthrough.opportunity_id)
     .single();
 
   const scope = scopeModel?.extracted_json as {
@@ -145,21 +136,6 @@ export default async function WalkthroughDetailPage({ params }: { params: Promis
                 Mark Complete
               </Button>
             </form>
-          )}
-          {existingProposal ? (
-            <Link href={`/app/sales/proposals/${existingProposal.id}`}>
-              <Button>
-                <FileText className="h-4 w-4 mr-2" />
-                View Proposal
-              </Button>
-            </Link>
-          ) : (
-            <GenerateProposalButton 
-              walkthroughId={walkthrough.id}
-              opportunityId={walkthrough.opportunity_id}
-              scopeData={scope}
-              orgId={org.org_id}
-            />
           )}
         </div>
       </div>

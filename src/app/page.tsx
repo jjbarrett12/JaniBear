@@ -111,7 +111,7 @@ export default function Home() {
             className={`inline-flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-800/80 text-zinc-300 text-sm font-medium mb-4 transition-all duration-500 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'}`}
           >
             <Bot className="h-4 w-4 text-orange-400" />
-            <span>Jani — your AI assistant for Janitorial Bids, Pricing & Quality Assurance</span>
+            <span>Jani — Your AI Assistant</span>
           </div>
 
           {/* Headline: 3-line hierarchy — Line 1 biggest, Line 2 smaller, Line 3 accent + gradient underline */}
@@ -130,7 +130,7 @@ export default function Home() {
           </h1>
 
           <p
-            className={`hero-subhead text-lg md:text-xl text-zinc-400 max-w-3xl mx-auto mt-5 leading-[1.65] transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            className={`hero-subhead text-lg md:text-xl text-zinc-300 max-w-3xl mx-auto mt-5 leading-[1.7] transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '100ms' }}
           >
             AI-powered sales and operations software for janitorial companies. Win more bids, execute with confidence, and improve performance at scale.
@@ -151,7 +151,7 @@ export default function Home() {
 
           {/* Trust: move up — built by operators + stat */}
           <p
-            className={`hero-meta text-sm text-zinc-500 max-w-2xl mx-auto mt-4 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            className={`hero-meta text-sm text-zinc-400 max-w-2xl mx-auto mt-4 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '140ms' }}
           >
             Built by janitorial operators, for janitorial operators.

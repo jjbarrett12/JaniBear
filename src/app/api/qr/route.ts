@@ -1,0 +1,42 @@
+import QRCode from 'qrcode';
+import { NextResponse } from 'next/server';
+
+/**
+ * GET /api/qr?location=UUID
+ * Returns a PNG QR code that links to the public ticket form for this location.
+ * Used on location detail page so companies can print/display the QR.
+ */
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const locationId = searchParams.get('location');
+  if (!locationId) {
+    return NextResponse.json({ error: 'Missing location' }, { status: 400 });
+  }
+
+  const baseUrl =
+    process.env.NEXT_PUBLIC_APP_URL ||
+    (request.headers.get('x-forwarded-proto') && request.headers.get('host')
+      ? `${request.headers.get('x-forwarded-proto')}://${request.headers.get('host')}`
+      : 'https://janibear.com');
+  const ticketUrl = `${baseUrl.replace(/\/$/, '')}/ticket/${locationId}`;
+
+  try {
+    const png = await QRCode.toBuffer(ticketUrl, {
+      type: 'png',
+      width: 280,
+      margin: 2,
+      color: { dark: '#0a0a0a', light: '#ffffff' },
+    });
+    return new NextResponse(png, {
+      headers: {
+        'Content-Type': 'image/png',
+        'Cache-Control': 'public, max-age=3600',
+      },
+    });
+  } catch (e) {
+    return NextResponse.json(
+      { error: e instanceof Error ? e.message : 'Failed to generate QR' },
+      { status: 500 }
+    );
+  }
+}

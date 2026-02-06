@@ -4,6 +4,7 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { PWAInstaller } from "@/components/app/pwa-installer";
 import { DarkModeProvider } from "@/components/app/dark-mode-provider";
+import { LanguageProvider } from "@/contexts/language-context";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -45,11 +46,13 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="JANIBEAR" />
       </head>
       <body className={inter.className}>
-        <DarkModeProvider>
-          {children}
-          <Toaster />
-          <PWAInstaller />
-        </DarkModeProvider>
+        <LanguageProvider>
+          <DarkModeProvider>
+            {children}
+            <Toaster />
+            <PWAInstaller />
+          </DarkModeProvider>
+        </LanguageProvider>
       </body>
     </html>
   );

@@ -21,7 +21,9 @@ import {
   Menu,
   TrendingUp,
   ListChecks,
-  Package
+  Package,
+  GraduationCap,
+  Ticket
 } from 'lucide-react';
 import { GlobalSearch } from '@/components/search/global-search';
 import { DarkModeToggle } from '@/components/app/dark-mode-toggle';
@@ -40,6 +42,7 @@ export function MobileSidebar({ logoUrl }: MobileSidebarProps) {
 
   const navItems = [
     { href: '/app/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { href: '/app/university', label: 'Jani-Bear University', icon: GraduationCap },
     { href: '/app/sales', label: 'Sales', icon: TrendingUp },
     { href: '/app/supplies', label: 'Supplies', icon: Package },
     { href: '/app/locations', label: 'Locations', icon: MapPin },
@@ -49,6 +52,7 @@ export function MobileSidebar({ logoUrl }: MobileSidebarProps) {
     { href: '/app/inspections', label: 'Inspections', icon: ClipboardCheck },
     { href: '/app/tasks', label: 'My Tasks', icon: ClipboardCheck },
     { href: '/app/issues', label: 'Issues', icon: AlertCircle },
+    { href: '/app/tickets', label: 'Service Tickets', icon: Ticket },
     { href: '/app/bids', label: 'Bids & Estimates', icon: Calculator },
     { href: '/app/contracts', label: 'Contracts', icon: FileUp },
     { href: '/app/qc-assign', label: 'QC Task Assign', icon: ListChecks },

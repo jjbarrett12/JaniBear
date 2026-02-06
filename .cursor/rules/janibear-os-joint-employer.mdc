@@ -1,0 +1,22 @@
+---
+description: JaniBear OS — joint-employer separation and RBAC (NON-NEGOTIABLE)
+alwaysApply: true
+---
+
+# JaniBear OS — Legal & RBAC Constraints
+
+**Full brief:** See project root `JANIBEAR_OS_SYSTEM.md`. All architecture, schema, API, and UI must respect the following.
+
+## Rule
+
+- **Franchisors** may define standards and review outcomes only. They must **never** control labor, assign tasks, see worker PII, or see real-time execution.
+- **Operators/Franchisees** control labor, crews, schedules, and execution. Adoption of franchisor standards is **opt-in**, **pull-based**, and **revocable**.
+
+## When Changing Code
+
+1. **Schema/RLS:** Use `org_type` (operator | franchisor) and helpers `is_franchisor_org(org_id)` / `is_operator_org(org_id)`. Restrict labor/crew/PII so franchisor orgs never get row access.
+2. **API:** Gate labor-control and worker-data endpoints by org type and role; block franchisors from assign/schedule/message/worker views.
+3. **UI:** Franchisor-facing copy uses "Recommended", "Optional", "Suggested Standard", "Self-Reported", "Outcome Review" — never "Required", "Must", "Assign", "Enforce", "Discipline".
+4. **AI:** Analyze outcomes/patterns only; never recommend staffing, discipline, or individual worker performance.
+
+New features that could imply labor control must be operator-only or optional and franchisee-initiated.

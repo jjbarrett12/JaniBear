@@ -1,16 +1,18 @@
 import { createClient } from '@/lib/supabase/server';
-import { requireOrg } from '@/lib/auth';
+import { requireOrg, getCurrentUser } from '@/lib/auth';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, Calendar, FileText, Mail, Phone, MapPin, Building2, User } from 'lucide-react';
+import { ArrowLeft, Mail, Phone, MapPin, Building2, User } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
 import { LeadDetailClient } from '@/components/sales/lead-detail-client';
+import { LeadCadenceActions } from '@/components/sales/lead-cadence-actions';
 
 export default async function LeadDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const org = await requireOrg();
+  const user = await getCurrentUser();
   const supabase = await createClient();
 
   const { data: lead } = await supabase
@@ -22,17 +24,27 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
 
   if (!lead) notFound();
 
-  const { data: appointments } = await supabase
-    .from('walkthrough_appointments')
-    .select('*')
-    .eq('lead_id', id)
-    .order('scheduled_at', { ascending: true });
+  const [
+    { data: appointments },
+    { data: proposals },
+    { data: enrollment },
+    { count: touchLogCount },
+    { data: topTarget },
+    { data: defaultTemplate },
+  ] = await Promise.all([
+    supabase.from('walkthrough_appointments').select('*').eq('lead_id', id).order('scheduled_at', { ascending: true }),
+    supabase.from('proposals').select('*').eq('lead_id', id).order('created_at', { ascending: false }),
+    supabase.from('lead_cadence_enrollments').select('id, current_step, next_touch_at, status, template_id').eq('lead_id', id).maybeSingle(),
+    supabase.from('lead_touch_log').select('*', { count: 'exact', head: true }).eq('lead_id', id),
+    user ? supabase.from('top_targets').select('id, rank').eq('lead_id', id).eq('user_id', user.id).maybeSingle() : { data: null },
+    supabase.from('sales_cadence_templates').select('id').eq('org_id', org.org_id).eq('is_default', true).limit(1).maybeSingle(),
+  ]);
 
-  const { data: proposals } = await supabase
-    .from('proposals')
-    .select('*')
-    .eq('lead_id', id)
-    .order('created_at', { ascending: false });
+  const enrollmentRow = enrollment ?? null;
+  const touchCount = touchLogCount ?? 0;
+  const isInTop10 = !!topTarget;
+  const topTargetRank = topTarget?.rank ?? null;
+  const defaultTemplateId = defaultTemplate?.id ?? null;
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
@@ -104,6 +116,15 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
           proposals={proposals || []}
         />
       </div>
+
+      <LeadCadenceActions
+        leadId={lead.id}
+        enrollment={enrollmentRow}
+        touchLogCount={touchCount}
+        isInTop10={isInTop10}
+        topTargetRank={topTargetRank}
+        defaultTemplateId={defaultTemplateId}
+      />
     </div>
   );
 }

@@ -13,16 +13,19 @@ export interface Database {
         Row: {
           id: string;
           name: string;
+          org_type: 'operator' | 'franchisor';
           created_at: string;
         };
         Insert: {
           id?: string;
           name: string;
+          org_type?: 'operator' | 'franchisor';
           created_at?: string;
         };
         Update: {
           id?: string;
           name?: string;
+          org_type?: 'operator' | 'franchisor';
           created_at?: string;
         };
       };
@@ -247,6 +250,56 @@ export interface Database {
           assignee_user_id?: string | null;
           due_at?: string | null;
           created_at?: string;
+          resolved_at?: string | null;
+        };
+      };
+      service_tickets: {
+        Row: {
+          id: string;
+          org_id: string;
+          location_id: string;
+          title: string;
+          description: string | null;
+          status: 'open' | 'in_progress' | 'resolved';
+          priority: 'low' | 'medium' | 'high';
+          source: 'qr' | 'manual';
+          contact_name: string | null;
+          contact_phone: string | null;
+          assignee_user_id: string | null;
+          created_at: string;
+          updated_at: string;
+          resolved_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          org_id: string;
+          location_id: string;
+          title: string;
+          description?: string | null;
+          status?: 'open' | 'in_progress' | 'resolved';
+          priority?: 'low' | 'medium' | 'high';
+          source?: 'qr' | 'manual';
+          contact_name?: string | null;
+          contact_phone?: string | null;
+          assignee_user_id?: string | null;
+          created_at?: string;
+          updated_at?: string;
+          resolved_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          org_id?: string;
+          location_id?: string;
+          title?: string;
+          description?: string | null;
+          status?: 'open' | 'in_progress' | 'resolved';
+          priority?: 'low' | 'medium' | 'high';
+          source?: 'qr' | 'manual';
+          contact_name?: string | null;
+          contact_phone?: string | null;
+          assignee_user_id?: string | null;
+          created_at?: string;
+          updated_at?: string;
           resolved_at?: string | null;
         };
       };

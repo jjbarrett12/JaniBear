@@ -1,53 +1,96 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { ArrowRight, ArrowLeft, CheckCircle2 } from 'lucide-react';
 import Link from 'next/link';
-
-interface SurveyAnswer {
-  question: string;
-  answer: string;
-}
-
-const questions = [
-  {
-    id: 'focus',
-    question: 'What do you need JaniBear for?',
-    options: [
-      { value: 'sales-only', label: 'Strictly sales (leads, proposals, outreach)', plan: 'cub' },
-      { value: 'sales-qc', label: 'Sales plus QC and ops (playbooks, deal QA, consistency)', plan: 'grizzly' },
-    ],
-  },
-  {
-    id: 'scale',
-    question: 'What scale fits your business?',
-    options: [
-      { value: 'small', label: 'One rep / one pipeline—I need someone selling now', plan: 'cub' },
-      { value: 'large', label: 'Team / multiple pipelines—we need throughput', plan: 'black-bear' },
-    ],
-  },
-];
+import { useLanguage } from '@/contexts/language-context';
+import { getSurveyT } from '@/lib/survey-translations';
 
 interface SurveyWizardProps {
   dark?: boolean;
 }
 
 export function SurveyWizard({ dark }: SurveyWizardProps) {
+  const { locale } = useLanguage();
+  const t = useMemo(() => getSurveyT(locale), [locale]);
+
   const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [recommendedPlan, setRecommendedPlan] = useState<string | null>(null);
 
+  const steps = useMemo(() => {
+    const list: Array<{
+      id: string;
+      question: string;
+      options: Array<{ value: string; label: string; plan?: string }>;
+    }> = [
+      {
+        id: 'orgType',
+        question: t('orgTypeQuestion'),
+        options: [
+          { value: 'employee-based', label: t('employeeBased') },
+          { value: 'franchise-based', label: t('franchiseBased') },
+        ],
+      },
+    ];
+    if (answers.orgType === 'franchise-based') {
+      list.push({
+        id: 'franchiseRole',
+        question: t('franchiseRoleQuestion'),
+        options: [
+          { value: 'area-franchisor', label: t('areaFranchisor') },
+          { value: 'unit-franchisee', label: t('unitFranchisee') },
+        ],
+      });
+    }
+    list.push(
+      {
+        id: 'focus',
+        question: t('focusQuestion'),
+        options: [
+          { value: 'sales-only', label: t('focusSalesOnly'), plan: 'cub' },
+          { value: 'sales-qc', label: t('focusSalesQc'), plan: 'grizzly' },
+        ],
+      },
+      {
+        id: 'scale',
+        question: t('scaleQuestion'),
+        options: [
+          { value: 'small', label: t('scaleSmall'), plan: 'cub' },
+          { value: 'large', label: t('scaleLarge'), plan: 'black-bear' },
+        ],
+      }
+    );
+    return list;
+  }, [answers.orgType, t]);
+
+  // When steps shrink (e.g. user switches from franchise to employee), keep step index in range
+  useEffect(() => {
+    if (currentStep >= steps.length) {
+      setCurrentStep(Math.max(0, steps.length - 1));
+    }
+  }, [steps.length, currentStep]);
+
   const handleAnswer = (value: string) => {
-    setAnswers({ ...answers, [questions[currentStep].id]: value });
+    const step = steps[currentStep];
+    if (step.id === 'orgType') {
+      setAnswers((prev) => {
+        const next = { ...prev, orgType: value };
+        if (value !== 'franchise-based') delete next.franchiseRole;
+        return next;
+      });
+    } else {
+      setAnswers((prev) => ({ ...prev, [step.id]: value }));
+    }
   };
 
   const handleNext = () => {
-    if (currentStep < questions.length - 1) {
-      setCurrentStep(currentStep + 1);
+    if (currentStep < steps.length - 1) {
+      setCurrentStep((s) => s + 1);
     } else {
       calculateRecommendation();
     }
@@ -55,14 +98,13 @@ export function SurveyWizard({ dark }: SurveyWizardProps) {
 
   const handleBack = () => {
     if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
+      setCurrentStep((s) => s - 1);
     }
   };
 
   const calculateRecommendation = () => {
     const focus = answers['focus'];
     const scale = answers['scale'];
-    // Map focus + scale to Cub, Black Bear, Grizzly, Kodiak
     let recommended = 'black-bear';
     if (focus === 'sales-only' && scale === 'small') recommended = 'cub';
     else if (focus === 'sales-only' && scale === 'large') recommended = 'black-bear';
@@ -73,41 +115,61 @@ export function SurveyWizard({ dark }: SurveyWizardProps) {
     setRecommendedPlan(recommended);
   };
 
-  const currentQuestion = questions[currentStep];
+  const currentQuestion = steps[currentStep];
   const currentAnswer = answers[currentQuestion.id];
   const canProceed = !!currentAnswer;
 
-  if (recommendedPlan) {
-    const planNames: Record<string, string> = {
-      cub: 'Cub',
-      'black-bear': 'Black Bear',
-      grizzly: 'Grizzly',
-      kodiak: 'Kodiak',
-    };
+  const planNames: Record<string, string> = {
+    cub: t('planCub'),
+    'black-bear': t('planBlackBear'),
+    grizzly: t('planGrizzly'),
+    kodiak: t('planKodiak'),
+  };
 
+  if (recommendedPlan) {
     return (
       <Card className={dark ? 'bg-zinc-900/80 border-zinc-800 shadow-lg' : 'shadow-lg'}>
         <CardHeader className="text-center">
-          <div className={`mx-auto w-16 h-16 rounded-full flex items-center justify-center mb-4 ${dark ? 'bg-orange-500/10' : 'bg-primary/10'}`}>
+          <div
+            className={`mx-auto w-16 h-16 rounded-full flex items-center justify-center mb-4 ${dark ? 'bg-orange-500/10' : 'bg-primary/10'}`}
+          >
             <CheckCircle2 className={dark ? 'h-8 w-8 text-orange-400' : 'h-8 w-8 text-primary'} />
           </div>
-          <CardTitle className={dark ? 'text-3xl text-white' : 'text-3xl'}>We Recommend</CardTitle>
+          <CardTitle className={dark ? 'text-3xl text-white' : 'text-3xl'}>
+            {t('weRecommend')}
+          </CardTitle>
           <CardDescription className={dark ? 'text-xl mt-2 text-zinc-400' : 'text-xl mt-2'}>
-            Based on your answers, the <strong className={dark ? 'text-white' : ''}>{planNames[recommendedPlan]}</strong> plan is perfect for you!
+            {t('basedOnAnswers')} <strong className={dark ? 'text-white' : ''}>{planNames[recommendedPlan]}</strong>{' '}
+            {t('planPerfectForYou')}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="text-center">
             <Link href={`/pricing#${recommendedPlan}`}>
-              <Button size="lg" className={dark ? 'text-lg px-8 bg-orange-500 text-white hover:bg-orange-400 border-0' : 'text-lg px-8'}>
-                View {planNames[recommendedPlan]} Plan
+              <Button
+                size="lg"
+                className={
+                  dark ? 'text-lg px-8 bg-orange-500 text-white hover:bg-orange-400 border-0' : 'text-lg px-8'
+                }
+              >
+                {t('viewPlan')} {planNames[recommendedPlan]} {t('plan')}
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
           </div>
           <div className={dark ? 'pt-6 border-t border-zinc-800' : 'pt-6 border-t'}>
-            <p className={dark ? 'text-sm text-zinc-400 text-center' : 'text-sm text-gray-600 text-center'}>
-              Want to see all plans? <Link href="/pricing" className={dark ? 'text-cyan-400 hover:underline' : 'text-primary hover:underline'}>View all pricing</Link>
+            <p
+              className={
+                dark ? 'text-sm text-zinc-400 text-center' : 'text-sm text-gray-600 text-center'
+              }
+            >
+              {t('viewAllPricing')}{' '}
+              <Link
+                href="/pricing"
+                className={dark ? 'text-cyan-400 hover:underline' : 'text-primary hover:underline'}
+              >
+                {t('viewAllPricingLink')}
+              </Link>
             </p>
           </div>
         </CardContent>
@@ -119,15 +181,19 @@ export function SurveyWizard({ dark }: SurveyWizardProps) {
     <Card className={dark ? 'bg-zinc-900/80 border-zinc-800 shadow-lg' : 'shadow-lg'}>
       <CardHeader>
         <div className="flex items-center justify-between mb-4">
-          <CardTitle className={dark ? 'text-2xl text-white' : 'text-2xl'}>{currentQuestion.question}</CardTitle>
+          <CardTitle className={dark ? 'text-2xl text-white' : 'text-2xl'}>
+            {currentQuestion.question}
+          </CardTitle>
           <span className={dark ? 'text-sm text-zinc-500' : 'text-sm text-gray-500'}>
-            {currentStep + 1} of {questions.length}
+            {currentStep + 1} of {steps.length}
           </span>
         </div>
         <div className={dark ? 'w-full bg-zinc-800 rounded-full h-2' : 'w-full bg-gray-200 rounded-full h-2'}>
           <div
-            className={dark ? 'bg-orange-500 h-2 rounded-full transition-all' : 'bg-primary h-2 rounded-full transition-all'}
-            style={{ width: `${((currentStep + 1) / questions.length) * 100}%` }}
+            className={
+              dark ? 'bg-orange-500 h-2 rounded-full transition-all' : 'bg-primary h-2 rounded-full transition-all'
+            }
+            style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
           />
         </div>
       </CardHeader>
@@ -143,7 +209,10 @@ export function SurveyWizard({ dark }: SurveyWizardProps) {
               }
             >
               <RadioGroupItem value={option.value} id={option.value} />
-              <Label htmlFor={option.value} className={`flex-1 cursor-pointer ${dark ? 'text-zinc-200' : ''}`}>
+              <Label
+                htmlFor={option.value}
+                className={`flex-1 cursor-pointer ${dark ? 'text-zinc-200' : ''}`}
+              >
                 {option.label}
               </Label>
             </div>
@@ -158,14 +227,14 @@ export function SurveyWizard({ dark }: SurveyWizardProps) {
             className={dark ? 'border-zinc-600 text-zinc-200 hover:bg-zinc-800' : ''}
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Back
+            {t('back')}
           </Button>
           <Button
             onClick={handleNext}
             disabled={!canProceed}
             className={dark ? 'bg-orange-500 text-white hover:bg-orange-400 border-0' : ''}
           >
-            {currentStep === questions.length - 1 ? 'Get Recommendation' : 'Next'}
+            {currentStep === steps.length - 1 ? t('getRecommendation') : t('next')}
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         </div>

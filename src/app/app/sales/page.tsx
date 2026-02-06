@@ -3,7 +3,7 @@ import { requireOrg } from '@/lib/auth';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Plus, UserPlus, Calendar, FileText, ArrowRight, Phone, Mail } from 'lucide-react';
+import { Plus, UserPlus, Calendar, FileText, ArrowRight, Phone, Mail, Target, ListOrdered } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
 
 const STAGES = [
@@ -33,17 +33,31 @@ export default async function SalesDashboardPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Sales</h1>
-          <p className="text-gray-600 mt-1">Lead → Walk-through → Proposal</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Sales</h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">Lead → Walk-through → Proposal</p>
         </div>
-        <Link href="/app/sales/leads/new">
-          <Button className="gap-2">
-            <Plus className="h-4 w-4" />
-            Add Lead
-          </Button>
-        </Link>
+        <div className="flex flex-wrap gap-2">
+          <Link href="/app/sales/cadence">
+            <Button variant="outline" className="gap-2">
+              <ListOrdered className="h-4 w-4" />
+              10-Touch Cadence
+            </Button>
+          </Link>
+          <Link href="/app/sales/top-targets">
+            <Button variant="outline" className="gap-2">
+              <Target className="h-4 w-4" />
+              My Top 10
+            </Button>
+          </Link>
+          <Link href="/app/sales/leads/new">
+            <Button className="gap-2">
+              <Plus className="h-4 w-4" />
+              Add Lead
+            </Button>
+          </Link>
+        </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">

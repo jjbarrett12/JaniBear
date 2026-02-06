@@ -27,6 +27,8 @@ import {
   Repeat,
   Brain,
   Wand2,
+  CalendarDays,
+  AlertCircle,
 } from 'lucide-react';
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -270,6 +272,82 @@ export default function Home() {
         </div>
       </section>
 
+      {/* AI Operations & Quality Assurance - same section structure */}
+      <section id="operations-qa" className="py-24 border-b border-zinc-800/80 bg-zinc-900/20">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-medium mb-4">
+              <ClipboardCheck className="h-4 w-4" />
+              <span>Operations & QA</span>
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
+              Three AI Capabilities for Operations & Quality Assurance
+            </h2>
+            <p className="text-lg text-zinc-400 max-w-2xl mx-auto">
+              Deliver consistently, catch issues before the customer does, and keep every location on track—automatically.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {[
+              {
+                icon: ClipboardCheck,
+                badge: 'AI Quality',
+                title: 'Consistent Inspections & Scoring',
+                desc: 'Run quality checks that actually get completed. AI supports consistent scoring, photo documentation, and trend tracking so you catch issues before the customer does.',
+                features: ['Consistent scoring', 'Issue detection', 'Photo documentation', 'Trend tracking'],
+                color: 'orange',
+              },
+              {
+                icon: CalendarDays,
+                badge: 'AI Scheduling',
+                title: 'Smarter Crews & Coverage',
+                desc: 'Put the right crew on the right job. AI helps match crews to locations, surface coverage gaps, and reduce missed cleans so service stays reliable.',
+                features: ['Crew-to-location matching', 'Coverage visibility', 'Schedule optimization', 'Missed-clean alerts'],
+                color: 'cyan',
+              },
+              {
+                icon: AlertCircle,
+                badge: 'AI Issue Resolution',
+                title: 'Fast Response & Resolution',
+                desc: 'When something goes wrong, fix it before it becomes a complaint. AI tracks work orders, prioritizes by urgency, and keeps resolution and communication in one place.',
+                features: ['Priority routing', 'Status tracking', 'Quick resolution', 'Customer communication'],
+                color: 'emerald',
+              },
+            ].map((item, index) => {
+              const Icon = item.icon;
+              const colorClasses = {
+                orange: 'bg-orange-500/10 text-orange-400 border-orange-500/20',
+                cyan: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20',
+                emerald: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+              };
+              return (
+                <div
+                  key={index}
+                  className={`relative p-8 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-zinc-700 transition-all ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+                  style={{ transitionDelay: `${index * 100}ms`, transitionDuration: '500ms' }}
+                >
+                  <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full ${colorClasses[item.color as keyof typeof colorClasses]} text-xs font-semibold mb-4`}>
+                    <Icon className="h-3.5 w-3.5" />
+                    <span>{item.badge}</span>
+                  </div>
+                  <h3 className="text-xl font-semibold text-white mb-3">{item.title}</h3>
+                  <p className="text-zinc-400 leading-relaxed text-sm mb-4">{item.desc}</p>
+                  <ul className="space-y-2">
+                    {item.features.map((feature, i) => (
+                      <li key={i} className="flex items-start gap-2 text-zinc-400 text-sm">
+                        <Check className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
       {/* Inventory & Supply Orders */}
       <section className="py-24 border-b border-zinc-800/80 bg-zinc-900/20">
         <div className="container mx-auto px-4">
@@ -314,22 +392,6 @@ export default function Home() {
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Won the job — keep it: back-end focus */}
-      <section className="relative py-24 border-b border-zinc-800/80 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-orange-500/15 via-amber-500/10 to-cyan-500/15" />
-        <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/40 via-transparent to-zinc-950/40" />
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">
-              You&apos;ve won the job—now let&apos;s keep it.
-            </h2>
-            <p className="text-lg md:text-xl text-zinc-300 leading-relaxed">
-              Companies focus so much on the front end of their business that they often lose focus on the back end of their operation. This is where JaniBear shines.
-            </p>
           </div>
         </div>
       </section>

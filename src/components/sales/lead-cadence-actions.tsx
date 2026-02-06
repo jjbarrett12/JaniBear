@@ -112,7 +112,7 @@ export function LeadCadenceActions({
   return (
     <Card className="dark:bg-gray-800">
       <CardHeader>
-        <CardTitle className="text-base dark:text-white">Cadence & Top 10</CardTitle>
+        <CardTitle className="text-base dark:text-white">{'Cadence & Top 10'}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Cadence */}

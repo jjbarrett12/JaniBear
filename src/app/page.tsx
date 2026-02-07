@@ -168,15 +168,15 @@ export default function Home() {
         </Link>
       </div>
 
-      <section className="relative container mx-auto px-4 pt-12 md:pt-16 pb-20 md:pb-28 overflow-hidden">
+      <section className="relative container mx-auto px-4 pt-12 md:pt-16 pb-20 md:pb-28 overflow-hidden bg-gradient-to-b from-indigo-950/90 via-indigo-950/50 to-zinc-950">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-3xl" />
-          <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-cyan-500/5 rounded-full blur-3xl" />
+          <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-3xl" />
+          <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-indigo-400/5 rounded-full blur-3xl" />
         </div>
 
         <div className="relative max-w-3xl mx-auto text-center">
           <div
-            className={`inline-flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-800/80 text-zinc-300 text-sm font-medium mb-8 transition-all duration-500 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}`}
+            className={`inline-flex items-center gap-2 px-4 py-2 rounded-full bg-transparent border-2 border-indigo-400/80 text-zinc-200 text-sm font-medium mb-8 transition-all duration-500 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}`}
           >
             <Bot className="h-4 w-4 text-orange-400" />
             <span>Powered by Jani</span>
@@ -186,7 +186,15 @@ export default function Home() {
             className={`hero-headline text-3xl sm:text-4xl md:text-5xl lg:text-[2.75rem] font-extrabold text-white tracking-tight leading-[1.2] max-w-3xl mx-auto transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
           >
             See how top janitorial companies win bids, prove quality, and scale —{' '}
-            <span className="bg-gradient-to-r from-indigo-400 via-orange-400 to-green-400 bg-clip-text text-transparent">
+            <span
+              className="hero-gradient-text inline-block"
+              style={{
+                background: 'linear-gradient(to right, #818cf8, #fb923c, #4ade80)',
+                WebkitBackgroundClip: 'text',
+                backgroundClip: 'text',
+                color: 'transparent',
+              }}
+            >
               all in one system.
             </span>
           </h1>

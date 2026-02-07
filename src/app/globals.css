@@ -96,6 +96,11 @@
 .landing-page .hero-headline {
   letter-spacing: -0.02em;
 }
+/* Gradient text in hero (indigo → orange → green) — webkit for Safari */
+.landing-page .hero-gradient-text {
+  -webkit-background-clip: text;
+  background-clip: text;
+}
 .landing-page .hero-subhead {
   font-weight: 400;
   letter-spacing: 0.01em;

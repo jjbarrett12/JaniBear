@@ -84,7 +84,7 @@ function getStrengthColor(level: number): string {
     case 1:
       return 'bg-red-500';
     case 2:
-      return 'bg-orange-500';
+      return 'bg-amber-500';
     case 3:
       return 'bg-yellow-500';
     case 4:
@@ -99,7 +99,7 @@ function getStrengthTextColor(level: number): string {
     case 1:
       return 'text-red-600';
     case 2:
-      return 'text-orange-600';
+      return 'text-amber-600';
     case 3:
       return 'text-yellow-600';
     case 4:

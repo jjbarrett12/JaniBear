@@ -65,8 +65,8 @@ export default async function AdminPage() {
       href: '/app/admin/sds',
       icon: FileText,
       count: sdsCount.count || 0,
-      color: 'text-orange-600',
-      bgColor: 'bg-orange-50',
+      color: 'text-amber-600',
+      bgColor: 'bg-amber-50',
     },
     {
       title: 'Purchase Orders',

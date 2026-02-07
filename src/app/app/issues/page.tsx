@@ -39,7 +39,7 @@ export default async function IssuesPage({
 
   const severityColors: Record<string, string> = {
     low: 'bg-gray-100 text-gray-800',
-    med: 'bg-orange-100 text-orange-800',
+    med: 'bg-amber-100 text-amber-800',
     high: 'bg-red-100 text-red-800',
   };
 

@@ -139,7 +139,7 @@ export function PricingCards({ dark }: PricingCardsProps) {
           id={plan.id}
           className={
             dark
-              ? `bg-zinc-900/80 border-zinc-800 hover:border-zinc-700 transition-colors relative flex flex-col ${plan.popular ? 'border-orange-500/50 ring-1 ring-orange-500/20' : ''}`
+              ? `bg-zinc-900/80 border-zinc-800 hover:border-zinc-700 transition-colors relative flex flex-col ${plan.popular ? 'border-amber-500/50 ring-1 ring-amber-500/20' : ''}`
               : `flex flex-col ${plan.popular ? 'border-primary border-2 shadow-lg relative' : ''}`
           }
         >
@@ -148,7 +148,7 @@ export function PricingCards({ dark }: PricingCardsProps) {
               <span
                 className={
                   dark
-                    ? 'bg-orange-500/20 text-orange-400 px-4 py-1 rounded-full text-sm font-semibold border border-orange-500/30'
+                    ? 'bg-amber-500/20 text-amber-400 px-4 py-1 rounded-full text-sm font-semibold border border-amber-500/30'
                     : 'bg-primary text-primary-foreground px-4 py-1 rounded-full text-sm font-semibold'
                 }
               >
@@ -157,7 +157,7 @@ export function PricingCards({ dark }: PricingCardsProps) {
             </div>
           )}
           <CardHeader className="pb-3">
-            <p className={dark ? 'text-xs font-medium text-orange-400 uppercase tracking-wider' : 'text-xs font-medium text-primary uppercase tracking-wider'}>
+            <p className={dark ? 'text-xs font-medium text-amber-400 uppercase tracking-wider' : 'text-xs font-medium text-primary uppercase tracking-wider'}>
               {plan.tagline}
             </p>
             <CardTitle className={dark ? 'text-xl text-white' : 'text-xl'}>{plan.name}</CardTitle>
@@ -165,7 +165,7 @@ export function PricingCards({ dark }: PricingCardsProps) {
               {plan.description}
             </CardDescription>
             {plan.valueNote && (
-              <p className={dark ? 'text-xs text-orange-400/90 font-medium mt-1' : 'text-xs text-primary font-medium mt-1'}>
+              <p className={dark ? 'text-xs text-amber-400/90 font-medium mt-1' : 'text-xs text-primary font-medium mt-1'}>
                 {plan.valueNote}
               </p>
             )}
@@ -180,7 +180,7 @@ export function PricingCards({ dark }: PricingCardsProps) {
                 </span>
               )}
               {'seats' in plan && plan.seats && (
-                <p className={dark ? 'text-xs text-orange-400/80 mt-1' : 'text-xs text-primary/80 mt-1'}>
+                <p className={dark ? 'text-xs text-amber-400/80 mt-1' : 'text-xs text-primary/80 mt-1'}>
                   {plan.seats}
                 </p>
               )}
@@ -195,7 +195,7 @@ export function PricingCards({ dark }: PricingCardsProps) {
             <ul className="space-y-2.5">
               {plan.features.map((feature, index) => (
                 <li key={index} className="flex items-start gap-2">
-                  <Check className={`h-4 w-4 flex-shrink-0 mt-0.5 ${dark ? 'text-orange-400' : 'text-primary'}`} />
+                  <Check className={`h-4 w-4 flex-shrink-0 mt-0.5 ${dark ? 'text-amber-400' : 'text-primary'}`} />
                   <span className={dark ? 'text-zinc-400 text-sm leading-snug' : 'text-gray-700 text-sm leading-snug'}>
                     {feature}
                   </span>
@@ -205,7 +205,7 @@ export function PricingCards({ dark }: PricingCardsProps) {
           </CardContent>
           <CardFooter className="pt-4">
             <Button
-              className={dark ? 'w-full bg-orange-500 text-white hover:bg-orange-400 border-0' : 'w-full'}
+              className={dark ? 'w-full bg-amber-500 text-white hover:bg-amber-400 border-0' : 'w-full'}
               variant={dark ? undefined : plan.popular ? 'default' : 'outline'}
               onClick={() => handleCheckout(plan.id)}
               disabled={!!loading}

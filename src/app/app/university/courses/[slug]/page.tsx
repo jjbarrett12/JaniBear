@@ -73,7 +73,7 @@ export default async function UniversityCoursePage({
       </div>
 
       <div className="flex items-center gap-4 mb-6">
-        <div className="p-4 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 shadow-lg">
+        <div className="p-4 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 shadow-lg">
           <Icon className="h-10 w-10 text-white" />
         </div>
         <div>
@@ -87,7 +87,7 @@ export default async function UniversityCoursePage({
       <div className="space-y-6">
         {course.lessons.map((lesson, index) => (
           <Card key={lesson.id} className="relative dark:bg-gray-800 overflow-hidden">
-            <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-amber-500 to-orange-600" />
+            <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-amber-500 to-amber-600" />
             <CardHeader className="pb-3">
               <div className="flex items-center gap-2">
                 <span className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300 text-sm font-semibold">

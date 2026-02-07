@@ -39,7 +39,7 @@ export function AuthContinueClient({ defaultNext }: { defaultNext: string }) {
   if (status === 'error') return null;
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-zinc-50 via-white to-orange-50/30">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-zinc-50 via-white to-amber-50/30">
       <p className="text-zinc-600">Signing you in...</p>
     </div>
   );

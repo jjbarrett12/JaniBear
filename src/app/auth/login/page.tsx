@@ -20,7 +20,7 @@ export default async function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-zinc-50 via-white to-orange-50/40 px-4 py-10 sm:py-12">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-zinc-50 via-white to-amber-50/40 px-4 py-10 sm:py-12">
       <div className="w-full max-w-[420px]">
         <div className="text-center mb-8">
           <div className="flex justify-center [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block" style={{ lineHeight: 0 }}>

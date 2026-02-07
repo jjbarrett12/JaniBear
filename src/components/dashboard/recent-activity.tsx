@@ -38,7 +38,7 @@ const activityConfig = {
   crew: { icon: Users, color: 'bg-violet-100 text-violet-600' },
   task: { icon: ClipboardCheck, color: 'bg-amber-100 text-amber-600' },
   template: { icon: FileText, color: 'bg-gray-100 text-gray-600' },
-  walkthrough: { icon: MapPin, color: 'bg-orange-100 text-orange-600' },
+  walkthrough: { icon: MapPin, color: 'bg-amber-100 text-amber-600' },
 };
 
 const statusColor: Record<string, string> = {
@@ -110,7 +110,7 @@ export function RecentActivity({ activities }: RecentActivityProps) {
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <p className="text-sm font-medium text-gray-900 dark:text-white truncate group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
+                          <p className="text-sm font-medium text-gray-900 dark:text-white truncate group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
                             {translateAction(activity.action, t)}
                           </p>
                           {status && (
@@ -127,7 +127,7 @@ export function RecentActivity({ activities }: RecentActivityProps) {
                         <span className="text-xs text-gray-400 hidden sm:block">
                           {formatRelativeTime(activity.timestamp)}
                         </span>
-                        <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-orange-500 dark:group-hover:text-orange-400 transition-colors" />
+                        <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-amber-500 dark:group-hover:text-amber-400 transition-colors" />
                       </div>
                     </Link>
                   </motion.div>

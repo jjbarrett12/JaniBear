@@ -11,7 +11,7 @@ const STAGES = [
   { key: 'contacted', label: 'Contacted', color: 'bg-blue-100 text-blue-800' },
   { key: 'walkthrough_scheduled', label: 'Walk-through Scheduled', color: 'bg-amber-100 text-amber-800' },
   { key: 'walkthrough_done', label: 'Walk-through Done', color: 'bg-violet-100 text-violet-800' },
-  { key: 'proposal_sent', label: 'Proposal Sent', color: 'bg-orange-100 text-orange-800' },
+  { key: 'proposal_sent', label: 'Proposal Sent', color: 'bg-amber-100 text-amber-800' },
   { key: 'won', label: 'Won', color: 'bg-green-100 text-green-800' },
   { key: 'lost', label: 'Lost', color: 'bg-gray-100 text-gray-600' },
 ];

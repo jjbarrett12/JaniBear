@@ -24,7 +24,7 @@ export default function SurveyPage() {
               <button
                 type="button"
                 onClick={() => setLocale('en')}
-                className={`px-2 py-1 text-sm rounded-md transition-colors ${locale === 'en' ? 'bg-orange-500 text-white' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'}`}
+                className={`px-2 py-1 text-sm rounded-md transition-colors ${locale === 'en' ? 'bg-amber-500 text-white' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'}`}
                 aria-label="English"
               >
                 EN
@@ -32,7 +32,7 @@ export default function SurveyPage() {
               <button
                 type="button"
                 onClick={() => setLocale('es')}
-                className={`px-2 py-1 text-sm rounded-md transition-colors ${locale === 'es' ? 'bg-orange-500 text-white' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'}`}
+                className={`px-2 py-1 text-sm rounded-md transition-colors ${locale === 'es' ? 'bg-amber-500 text-white' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'}`}
                 aria-label="Español"
               >
                 ES
@@ -43,7 +43,7 @@ export default function SurveyPage() {
             <Link href="/#features"><Button variant="ghost" size="sm" className="text-zinc-300 hover:text-white hover:bg-zinc-800 shrink-0">{t('features')}</Button></Link>
             <Link href="/contact"><Button variant="ghost" size="sm" className="text-zinc-300 hover:text-white hover:bg-zinc-800 shrink-0">{t('contact')}</Button></Link>
             <Link href="/auth/login"><Button variant="ghost" size="sm" className="text-zinc-300 hover:text-white hover:bg-zinc-800 shrink-0">{t('signIn')}</Button></Link>
-            <Link href="/auth/signup"><Button size="sm" className="bg-orange-500 text-white hover:bg-orange-400 border-0 shrink-0">{t('getStarted')}</Button></Link>
+            <Link href="/auth/signup"><Button size="sm" className="bg-amber-500 text-white hover:bg-amber-400 border-0 shrink-0">{t('getStarted')}</Button></Link>
           </div>
         </div>
       </nav>

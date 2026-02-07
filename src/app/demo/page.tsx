@@ -46,7 +46,7 @@ export default function DemoPage() {
               <Link href="/#features"><Button variant="ghost" size="sm" className="text-zinc-300 hover:text-white hover:bg-zinc-800 shrink-0">Features</Button></Link>
               <Link href="/contact"><Button variant="ghost" size="sm" className="text-zinc-300 hover:text-white hover:bg-zinc-800 shrink-0">Contact</Button></Link>
               <Link href="/auth/login"><Button variant="ghost" size="sm" className="text-zinc-300 hover:text-white hover:bg-zinc-800 shrink-0">Sign In</Button></Link>
-              <Link href="/auth/signup"><Button size="sm" className="bg-orange-500 text-white hover:bg-orange-400 border-0 shrink-0">Get Started</Button></Link>
+              <Link href="/auth/signup"><Button size="sm" className="bg-amber-500 text-white hover:bg-amber-400 border-0 shrink-0">Get Started</Button></Link>
             </div>
           </div>
         </nav>
@@ -60,7 +60,7 @@ export default function DemoPage() {
               Thanks for your interest. We&apos;ll reach out within one business day to schedule your demo or get you on the early access list.
             </p>
             <Link href="/">
-              <Button className="bg-orange-500 text-white hover:bg-orange-400 border-0">Back to home</Button>
+              <Button className="bg-amber-500 text-white hover:bg-amber-400 border-0">Back to home</Button>
             </Link>
           </div>
         </section>
@@ -81,7 +81,7 @@ export default function DemoPage() {
             <Link href="/#features"><Button variant="ghost" size="sm" className="text-zinc-300 hover:text-white hover:bg-zinc-800 shrink-0">Features</Button></Link>
             <Link href="/contact"><Button variant="ghost" size="sm" className="text-zinc-300 hover:text-white hover:bg-zinc-800 shrink-0">Contact</Button></Link>
             <Link href="/auth/login"><Button variant="ghost" size="sm" className="text-zinc-300 hover:text-white hover:bg-zinc-800 shrink-0">Sign In</Button></Link>
-            <Link href="/auth/signup"><Button size="sm" className="bg-orange-500 text-white hover:bg-orange-400 border-0 shrink-0">Get Started</Button></Link>
+            <Link href="/auth/signup"><Button size="sm" className="bg-amber-500 text-white hover:bg-amber-400 border-0 shrink-0">Get Started</Button></Link>
           </div>
         </div>
       </nav>
@@ -103,7 +103,7 @@ export default function DemoPage() {
               onClick={() => setInterest('demo')}
               className={`flex-1 flex items-center justify-center gap-2 py-4 px-4 rounded-xl border text-sm font-medium transition-colors ${
                 interest === 'demo'
-                  ? 'border-orange-500 bg-orange-500/10 text-orange-400'
+                  ? 'border-amber-500 bg-amber-500/10 text-amber-400'
                   : 'border-zinc-700 bg-zinc-900/80 text-zinc-400 hover:border-zinc-600 hover:text-zinc-300'
               }`}
             >
@@ -181,7 +181,7 @@ export default function DemoPage() {
             <Button
               type="submit"
               disabled={!interest || loading}
-              className="w-full h-12 bg-orange-500 text-white hover:bg-orange-400 border-0 disabled:opacity-50"
+              className="w-full h-12 bg-amber-500 text-white hover:bg-amber-400 border-0 disabled:opacity-50"
             >
               {loading ? 'Sending...' : interest === 'demo' ? 'Request demo' : 'Join early access'}
               <ArrowRight className="ml-2 h-4 w-4" />

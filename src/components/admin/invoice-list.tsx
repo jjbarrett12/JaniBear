@@ -52,7 +52,7 @@ export function InvoiceList({ invoices: initialInvoices }: InvoiceListProps) {
       case 'cancelled':
         return 'bg-gray-100 text-gray-800';
       case 'refunded':
-        return 'bg-orange-100 text-orange-800';
+        return 'bg-amber-100 text-amber-800';
       default:
         return 'bg-yellow-100 text-yellow-800';
     }

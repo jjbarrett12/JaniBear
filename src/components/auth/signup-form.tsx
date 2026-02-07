@@ -220,7 +220,7 @@ export function SignupForm() {
 
           <Button
             type="submit"
-            className="w-full h-11 rounded-lg bg-orange-500 hover:bg-orange-600 text-white font-semibold shadow-sm"
+            className="w-full h-11 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-semibold shadow-sm"
             disabled={isLoading}
             size="lg"
           >
@@ -229,7 +229,7 @@ export function SignupForm() {
 
           <p className="text-center text-sm text-zinc-500 pt-1">
             Already have an account?{' '}
-            <Link href="/auth/login" className="font-medium text-orange-600 hover:text-orange-700">
+            <Link href="/auth/login" className="font-medium text-amber-600 hover:text-amber-700">
               Sign in
             </Link>
           </p>

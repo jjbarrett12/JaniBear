@@ -21,7 +21,7 @@ function SignOutLink() {
       type="button"
       onClick={handleSignOut}
       disabled={signingOut}
-      className="font-medium text-orange-600 hover:text-orange-700 disabled:opacity-50"
+      className="font-medium text-amber-600 hover:text-amber-700 disabled:opacity-50"
     >
       {signingOut ? 'Signing out…' : 'Sign out and go to sign in'}
     </button>
@@ -164,7 +164,7 @@ export function OnboardingForm() {
       <Card>
         <CardContent className="p-8">
           <div className="flex flex-col items-center justify-center space-y-4">
-            <Loader2 className="h-8 w-8 animate-spin text-orange-500" />
+            <Loader2 className="h-8 w-8 animate-spin text-amber-500" />
             <p className="text-gray-600">Loading...</p>
           </div>
         </CardContent>

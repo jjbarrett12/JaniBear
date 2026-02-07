@@ -131,9 +131,9 @@ export function SurveyWizard({ dark }: SurveyWizardProps) {
       <Card className={dark ? 'bg-zinc-900/80 border-zinc-800 shadow-lg' : 'shadow-lg'}>
         <CardHeader className="text-center">
           <div
-            className={`mx-auto w-16 h-16 rounded-full flex items-center justify-center mb-4 ${dark ? 'bg-orange-500/10' : 'bg-primary/10'}`}
+            className={`mx-auto w-16 h-16 rounded-full flex items-center justify-center mb-4 ${dark ? 'bg-amber-500/10' : 'bg-primary/10'}`}
           >
-            <CheckCircle2 className={dark ? 'h-8 w-8 text-orange-400' : 'h-8 w-8 text-primary'} />
+            <CheckCircle2 className={dark ? 'h-8 w-8 text-amber-400' : 'h-8 w-8 text-primary'} />
           </div>
           <CardTitle className={dark ? 'text-3xl text-white' : 'text-3xl'}>
             {t('weRecommend')}
@@ -149,7 +149,7 @@ export function SurveyWizard({ dark }: SurveyWizardProps) {
               <Button
                 size="lg"
                 className={
-                  dark ? 'text-lg px-8 bg-orange-500 text-white hover:bg-orange-400 border-0' : 'text-lg px-8'
+                  dark ? 'text-lg px-8 bg-amber-500 text-white hover:bg-amber-400 border-0' : 'text-lg px-8'
                 }
               >
                 {t('viewPlan')} {planNames[recommendedPlan]} {t('plan')}
@@ -191,7 +191,7 @@ export function SurveyWizard({ dark }: SurveyWizardProps) {
         <div className={dark ? 'w-full bg-zinc-800 rounded-full h-2' : 'w-full bg-gray-200 rounded-full h-2'}>
           <div
             className={
-              dark ? 'bg-orange-500 h-2 rounded-full transition-all' : 'bg-primary h-2 rounded-full transition-all'
+              dark ? 'bg-amber-500 h-2 rounded-full transition-all' : 'bg-primary h-2 rounded-full transition-all'
             }
             style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
           />
@@ -232,7 +232,7 @@ export function SurveyWizard({ dark }: SurveyWizardProps) {
           <Button
             onClick={handleNext}
             disabled={!canProceed}
-            className={dark ? 'bg-orange-500 text-white hover:bg-orange-400 border-0' : ''}
+            className={dark ? 'bg-amber-500 text-white hover:bg-amber-400 border-0' : ''}
           >
             {currentStep === steps.length - 1 ? t('getRecommendation') : t('next')}
             <ArrowRight className="ml-2 h-4 w-4" />

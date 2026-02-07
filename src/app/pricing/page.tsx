@@ -20,7 +20,7 @@ export default function PricingPage() {
             <Link href="/#features"><Button variant="ghost" size="sm" className="text-zinc-300 hover:text-white hover:bg-zinc-800 shrink-0">Features</Button></Link>
             <Link href="/contact"><Button variant="ghost" size="sm" className="text-zinc-300 hover:text-white hover:bg-zinc-800 shrink-0">Contact</Button></Link>
             <Link href="/auth/login"><Button variant="ghost" size="sm" className="text-zinc-300 hover:text-white hover:bg-zinc-800 shrink-0">Sign In</Button></Link>
-            <Link href="/auth/signup"><Button size="sm" className="bg-orange-500 text-white hover:bg-orange-400 border-0 shrink-0">Get Started</Button></Link>
+            <Link href="/auth/signup"><Button size="sm" className="bg-amber-500 text-white hover:bg-amber-400 border-0 shrink-0">Get Started</Button></Link>
           </div>
         </div>
       </nav>
@@ -73,13 +73,13 @@ export default function PricingPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/survey">
-              <Button size="lg" className="bg-orange-500 text-white hover:bg-orange-400 border-0">
+              <Button size="lg" className="bg-amber-500 text-white hover:bg-amber-400 border-0">
                 Take our survey
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
             <Link href="/demo">
-              <Button size="lg" className="bg-orange-500 text-white hover:bg-orange-400 border-0">
+              <Button size="lg" className="bg-amber-500 text-white hover:bg-amber-400 border-0">
                 Book a demo
               </Button>
             </Link>

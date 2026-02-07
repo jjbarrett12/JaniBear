@@ -40,7 +40,7 @@ export default function ScheduleScannerPage() {
         </Link>
         <div>
           <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-            <Sparkles className="h-6 w-6 text-orange-500" />
+            <Sparkles className="h-6 w-6 text-amber-500" />
             AI Schedule Scanner
           </h1>
           <p className="text-gray-500">
@@ -85,9 +85,9 @@ export default function ScheduleScannerPage() {
       )}
 
       {/* Tips */}
-      <div className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl p-6 border border-orange-100">
-        <h3 className="font-semibold text-orange-900 mb-2">Tips for Best Results</h3>
-        <ul className="text-sm text-orange-800 space-y-1">
+      <div className="bg-gradient-to-r from-amber-50 to-amber-50 rounded-xl p-6 border border-amber-100">
+        <h3 className="font-semibold text-amber-900 mb-2">Tips for Best Results</h3>
+        <ul className="text-sm text-amber-800 space-y-1">
           <li>• Include location names, addresses, and square footage when possible</li>
           <li>• Specify service days (e.g., &quot;Mon/Wed/Fri&quot; or &quot;3x per week&quot;)</li>
           <li>• Include any special requirements or notes for each location</li>

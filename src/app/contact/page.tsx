@@ -36,7 +36,7 @@ export default function ContactPage() {
               </Button>
             </Link>
             <Link href="/demo">
-              <Button className="bg-orange-500 text-white hover:bg-orange-400 border-0 shadow-lg hover:shadow-orange-500/25">
+              <Button className="bg-amber-500 text-white hover:bg-amber-400 border-0 shadow-lg hover:shadow-amber-500/25">
                 Book a Demo
               </Button>
             </Link>
@@ -96,7 +96,7 @@ export default function ContactPage() {
                   </div>
                   <Button
                     type="submit"
-                    className="w-full bg-orange-500 text-white hover:bg-orange-400"
+                    className="w-full bg-amber-500 text-white hover:bg-amber-400"
                   >
                     Send Message
                     <ArrowRight className="ml-2 h-4 w-4" />
@@ -113,13 +113,13 @@ export default function ContactPage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-lg bg-orange-500/10 text-orange-400 flex items-center justify-center shrink-0">
+                    <div className="w-10 h-10 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center shrink-0">
                       <Mail className="h-5 w-5" />
                     </div>
                     <div>
                       <h3 className="font-semibold text-white mb-1">Email</h3>
                       <p className="text-zinc-400 text-sm">
-                        <a href="mailto:support@janibear.com" className="hover:text-orange-400 transition-colors">
+                        <a href="mailto:support@janibear.com" className="hover:text-amber-400 transition-colors">
                           support@janibear.com
                         </a>
                       </p>
@@ -127,7 +127,7 @@ export default function ContactPage() {
                   </div>
 
                   <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-lg bg-orange-500/10 text-orange-400 flex items-center justify-center shrink-0">
+                    <div className="w-10 h-10 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center shrink-0">
                       <MessageSquare className="h-5 w-5" />
                     </div>
                     <div>
@@ -144,7 +144,7 @@ export default function ContactPage() {
                   </div>
 
                   <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-lg bg-orange-500/10 text-orange-400 flex items-center justify-center shrink-0">
+                    <div className="w-10 h-10 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center shrink-0">
                       <Phone className="h-5 w-5" />
                     </div>
                     <div>
@@ -164,16 +164,16 @@ export default function ContactPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">
-                    <Link href="/pricing" className="block text-zinc-400 hover:text-orange-400 transition-colors text-sm">
+                    <Link href="/pricing" className="block text-zinc-400 hover:text-amber-400 transition-colors text-sm">
                       View Pricing Plans
                     </Link>
-                    <Link href="/survey" className="block text-zinc-400 hover:text-orange-400 transition-colors text-sm">
+                    <Link href="/survey" className="block text-zinc-400 hover:text-amber-400 transition-colors text-sm">
                       Find Your Plan
                     </Link>
-                    <Link href="/demo" className="block text-zinc-400 hover:text-orange-400 transition-colors text-sm">
+                    <Link href="/demo" className="block text-zinc-400 hover:text-amber-400 transition-colors text-sm">
                       Book a Demo
                     </Link>
-                    <Link href="/auth/signup" className="block text-zinc-400 hover:text-orange-400 transition-colors text-sm">
+                    <Link href="/auth/signup" className="block text-zinc-400 hover:text-amber-400 transition-colors text-sm">
                       Sign Up
                     </Link>
                   </div>

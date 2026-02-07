@@ -243,12 +243,12 @@ export function WalkthroughForm({ orgId, userId, userName }: WalkthroughFormProp
           <div key={s} className="flex items-center">
             <div className={`
               w-10 h-10 rounded-full flex items-center justify-center font-semibold
-              ${step >= s ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-500'}
+              ${step >= s ? 'bg-amber-500 text-white' : 'bg-gray-200 text-gray-500'}
             `}>
               {step > s ? <CheckCircle2 className="h-5 w-5" /> : s}
             </div>
             {s < 3 && (
-              <div className={`w-24 h-1 mx-2 ${step > s ? 'bg-orange-500' : 'bg-gray-200'}`} />
+              <div className={`w-24 h-1 mx-2 ${step > s ? 'bg-amber-500' : 'bg-gray-200'}`} />
             )}
           </div>
         ))}
@@ -260,7 +260,7 @@ export function WalkthroughForm({ orgId, userId, userName }: WalkthroughFormProp
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Building2 className="h-5 w-5 text-orange-500" />
+                <Building2 className="h-5 w-5 text-amber-500" />
                 Customer Information
               </CardTitle>
               <CardDescription>Enter the prospective client details</CardDescription>
@@ -519,21 +519,21 @@ export function WalkthroughForm({ orgId, userId, userName }: WalkthroughFormProp
         <div className="space-y-6">
           {/* AI Suggestions Banner */}
           {(isGettingAISuggestions || aiSuggestions) && (
-            <Card className="border-orange-200 bg-gradient-to-r from-orange-50 to-amber-50">
+            <Card className="border-amber-200 bg-gradient-to-r from-amber-50 to-amber-50">
               <CardContent className="p-4">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-orange-500 text-white">
+                  <div className="p-2 rounded-lg bg-amber-500 text-white">
                     <Sparkles className="h-5 w-5" />
                   </div>
                   <div className="flex-1">
-                    <p className="font-medium text-orange-900">AI Recommendations</p>
+                    <p className="font-medium text-amber-900">AI Recommendations</p>
                     {isGettingAISuggestions ? (
-                      <p className="text-sm text-orange-700 flex items-center gap-2">
+                      <p className="text-sm text-amber-700 flex items-center gap-2">
                         <Loader2 className="h-4 w-4 animate-spin" />
                         Analyzing site details...
                       </p>
                     ) : aiSuggestions ? (
-                      <p className="text-sm text-orange-700">
+                      <p className="text-sm text-amber-700">
                         Based on {formData.squareFootage} sq ft: {aiSuggestions.crew_size} crew members, ~{aiSuggestions.hours_per_visit?.toFixed(1)} hours/visit
                       </p>
                     ) : null}

@@ -29,7 +29,7 @@ export default async function OnboardingPage() {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-50 to-gray-100">
       <div className="flex justify-end px-4 py-3 border-b border-gray-200 bg-white/80">
-        <Link href="/auth/logout" className="text-sm font-medium text-orange-600 hover:text-orange-700">
+        <Link href="/auth/logout" className="text-sm font-medium text-amber-600 hover:text-amber-700">
           Sign out
         </Link>
       </div>

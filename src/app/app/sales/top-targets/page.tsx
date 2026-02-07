@@ -12,7 +12,7 @@ const STAGES = [
   { key: 'contacted', label: 'Contacted', color: 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-200' },
   { key: 'walkthrough_scheduled', label: 'Walk-through Scheduled', color: 'bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-200' },
   { key: 'walkthrough_done', label: 'Walk-through Done', color: 'bg-violet-100 text-violet-800 dark:bg-violet-900/50 dark:text-violet-200' },
-  { key: 'proposal_sent', label: 'Proposal Sent', color: 'bg-orange-100 text-orange-800 dark:bg-orange-900/50 dark:text-orange-200' },
+  { key: 'proposal_sent', label: 'Proposal Sent', color: 'bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-200' },
   { key: 'won', label: 'Won', color: 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-200' },
   { key: 'lost', label: 'Lost', color: 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300' },
 ];

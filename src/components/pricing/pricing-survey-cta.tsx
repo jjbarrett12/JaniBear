@@ -32,20 +32,20 @@ export function PricingSurveyCta() {
   return (
     <div className="max-w-6xl mx-auto mb-8 space-y-4">
       {recommendedPlan ? (
-        <div className="rounded-xl border border-orange-500/30 bg-orange-500/10 px-6 py-4 flex flex-wrap items-center justify-between gap-4">
+        <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 px-6 py-4 flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-orange-500/20 flex items-center justify-center">
-              <Sparkles className="h-5 w-5 text-orange-400" />
+            <div className="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center">
+              <Sparkles className="h-5 w-5 text-amber-400" />
             </div>
             <div>
               <p className="font-semibold text-white">Your recommended plan</p>
               <p className="text-zinc-400 text-sm">
-                Based on your survey: <span className="text-orange-400 font-medium">{PLAN_NAMES[recommendedPlan]}</span>
+                Based on your survey: <span className="text-amber-400 font-medium">{PLAN_NAMES[recommendedPlan]}</span>
               </p>
             </div>
           </div>
           <a href={`#${recommendedPlan}`}>
-            <Button size="sm" className="bg-orange-500 text-white hover:bg-orange-400 border-0">
+            <Button size="sm" className="bg-amber-500 text-white hover:bg-amber-400 border-0">
               View plan
             </Button>
           </a>

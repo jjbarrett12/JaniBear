@@ -55,8 +55,9 @@ export default function Home() {
           navScrolled ? 'landing-header-scrolled shadow-sm' : ''
         }`}
       >
-        <div className="container mx-auto px-4 h-full flex items-center justify-between gap-3 md:gap-6 overflow-visible min-h-0">
-          <Link href="/" className="landing-logo-wrap flex items-center shrink-0 overflow-visible bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block [&>span]:overflow-visible">
+        <div className="container mx-auto px-4 h-full flex md:grid md:grid-cols-[1fr_auto_1fr] items-center gap-3 md:gap-4 overflow-visible min-h-0">
+          {/* Logo: left */}
+          <Link href="/" className="landing-logo-wrap flex items-center shrink-0 overflow-visible bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block [&>span]:overflow-visible md:justify-self-start">
             <Image
               src="/janibear-logo.png"
               alt="JANIBEAR"
@@ -67,8 +68,8 @@ export default function Home() {
               unoptimized
             />
           </Link>
-          {/* Desktop: full links + Sign in + Get a Demo */}
-          <div className="hidden md:flex items-center justify-end gap-1 lg:gap-2 flex-1 min-w-0">
+          {/* Desktop: center nav categories */}
+          <div className="hidden md:flex items-center justify-center gap-1 lg:gap-2">
             <Link href="/pricing">
               <Button variant="ghost" size="sm" className="landing-nav-link shrink-0 h-9 px-3">
                 Pricing
@@ -89,6 +90,9 @@ export default function Home() {
                 Contact
               </Button>
             </Link>
+          </div>
+          {/* Desktop: Sign in + Get a Demo on the right */}
+          <div className="hidden md:flex items-center justify-end gap-1 lg:gap-2 shrink-0 md:justify-self-end">
             <Link href="/auth/login" className="landing-nav-link landing-nav-link-text text-sm font-medium shrink-0 h-9 flex items-center px-3 hover:underline">
               Sign in
             </Link>
@@ -98,7 +102,7 @@ export default function Home() {
               </Button>
             </Link>
           </div>
-          {/* Mobile: logo + hamburger only; Get a Demo is in sticky bottom */}
+          {/* Mobile: hamburger (grid leaves empty center/right; we override with flex on mobile) */}
           <div className="flex md:hidden items-center justify-end flex-1 min-w-0">
             <button
               type="button"
@@ -178,7 +182,7 @@ export default function Home() {
           <div
             className={`inline-flex items-center gap-2 px-4 py-2 rounded-full bg-transparent border-2 border-indigo-400/80 text-zinc-200 text-sm font-medium mb-8 transition-all duration-500 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}`}
           >
-            <Bot className="h-4 w-4 text-orange-400" />
+            <Bot className="h-4 w-4 text-amber-400" />
             <span>Powered by Jani</span>
           </div>
 
@@ -189,7 +193,7 @@ export default function Home() {
             <span
               className="hero-gradient-text inline-block"
               style={{
-                background: 'linear-gradient(to right, #fdba74, #fb923c, #ea580c)',
+                background: 'linear-gradient(to right, #818cf8, #fbbf24, #4ade80)',
                 WebkitBackgroundClip: 'text',
                 backgroundClip: 'text',
                 color: 'transparent',
@@ -203,7 +207,7 @@ export default function Home() {
             className={`hero-subhead text-lg text-zinc-400 max-w-2xl mx-auto mt-6 leading-relaxed transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '80ms' }}
           >
-            JANIBEAR replaces spreadsheets, PDFs, and guesswork with a single platform for bidding, inspections, reporting, and accountability.
+            JANIBEAR AI replaces spreadsheets, PDFs, and guesswork with a single platform for bidding, inspections, reporting, and accountability.
           </p>
 
           <div
@@ -214,11 +218,6 @@ export default function Home() {
               <Button size="lg" className="landing-cta landing-cta-lg text-base px-8 h-12">
                 Get a Demo
                 <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
-            <Link href="/pricing">
-              <Button size="lg" variant="outline" className="landing-outline text-base px-6 h-12">
-                View Pricing
               </Button>
             </Link>
           </div>
@@ -235,7 +234,7 @@ export default function Home() {
       <section id="features" className="py-24 border-b border-zinc-800/80 bg-zinc-900/20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-sm font-medium mb-4">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-sm font-medium mb-4">
               <Brain className="h-4 w-4" />
               <span>Powered by AI</span>
             </div>
@@ -249,12 +248,12 @@ export default function Home() {
 
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {[
-              { icon: Camera, badge: 'AI Bidding', title: 'Intelligent Building Capture', desc: 'Point your phone camera at rooms, floors, and fixtures. AI automatically detects flooring types, counts fixtures, measures square footage, and identifies special requirements—all in real-time.', features: ['Floor type detection', 'Fixture counting', 'Square footage calculation', 'Special area identification'], color: 'orange' },
+              { icon: Camera, badge: 'AI Bidding', title: 'Intelligent Building Capture', desc: 'Point your phone camera at rooms, floors, and fixtures. AI automatically detects flooring types, counts fixtures, measures square footage, and identifies special requirements—all in real-time.', features: ['Floor type detection', 'Fixture counting', 'Square footage calculation', 'Special area identification'], color: 'gold' },
               { icon: Wand2, badge: 'AI Proposals', title: 'Instant Professional Proposals', desc: 'AI generates complete, branded proposals with scope of work, frequency schedules, pricing tables, and assumptions—ready to send in minutes, not hours.', features: ['Branded PDF generation', 'Automated pricing', 'Scope documentation', 'Professional formatting'], color: 'cyan' },
               { icon: Repeat, badge: 'AI Follow-Ups', title: 'Automated Follow-Up Cadences', desc: 'Never lose a lead. AI tracks proposal status, sends personalized follow-ups at optimal times, and maintains engagement until the deal closes—all automatically.', features: ['Smart timing', 'Personalized messaging', 'Status tracking', 'Engagement optimization'], color: 'emerald' },
             ].map((item, index) => {
               const Icon = item.icon;
-              const colorClasses = { orange: 'bg-orange-500/10 text-orange-400 border-orange-500/20', cyan: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20', emerald: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' };
+              const colorClasses = { gold: 'bg-amber-500/10 text-amber-400 border-amber-500/20', cyan: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20', emerald: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' };
               return (
                 <div key={index} className={`relative p-8 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-zinc-700 transition-all ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`} style={{ transitionDelay: `${index * 100}ms`, transitionDuration: '500ms' }}>
                   <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full ${colorClasses[item.color as keyof typeof colorClasses]} text-xs font-semibold mb-4`}>
@@ -295,12 +294,12 @@ export default function Home() {
 
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {[
-              { icon: ClipboardCheck, badge: 'AI Quality', title: 'Consistent Inspections & Scoring', desc: 'Run quality checks that actually get completed. AI supports consistent scoring, photo documentation, and trend tracking so you catch issues before the customer does.', features: ['Consistent scoring', 'Issue detection', 'Photo documentation', 'Trend tracking'], color: 'orange' },
+              { icon: ClipboardCheck, badge: 'AI Quality', title: 'Consistent Inspections & Scoring', desc: 'Run quality checks that actually get completed. AI supports consistent scoring, photo documentation, and trend tracking so you catch issues before the customer does.', features: ['Consistent scoring', 'Issue detection', 'Photo documentation', 'Trend tracking'], color: 'gold' },
               { icon: CalendarDays, badge: 'AI Scheduling', title: 'Smarter Crews & Coverage', desc: 'Put the right crew on the right job. AI helps match crews to locations, surface coverage gaps, and reduce missed cleans so service stays reliable.', features: ['Crew-to-location matching', 'Coverage visibility', 'Schedule optimization', 'Missed-clean alerts'], color: 'cyan' },
               { icon: AlertCircle, badge: 'AI Issue Resolution', title: 'Fast Response & Resolution', desc: 'When something goes wrong, fix it before it becomes a complaint. AI tracks work orders, prioritizes by urgency, and keeps resolution and communication in one place.', features: ['Priority routing', 'Status tracking', 'Quick resolution', 'Customer communication'], color: 'emerald' },
             ].map((item, index) => {
               const Icon = item.icon;
-              const colorClasses = { orange: 'bg-orange-500/10 text-orange-400 border-orange-500/20', cyan: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20', emerald: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' };
+              const colorClasses = { gold: 'bg-amber-500/10 text-amber-400 border-amber-500/20', cyan: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20', emerald: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' };
               return (
                 <div key={index} className={`relative p-8 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-zinc-700 transition-all ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`} style={{ transitionDelay: `${index * 100}ms`, transitionDuration: '500ms' }}>
                   <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full ${colorClasses[item.color as keyof typeof colorClasses]} text-xs font-semibold mb-4`}>
@@ -339,7 +338,7 @@ export default function Home() {
                 Most companies are still using paper notes, text messages, or Excel if they&apos;re lucky. JANIBEAR gives you one place to track inventory and build orders—then email them straight to your preferred vendor.
               </p>
             </div>
-            <div className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-xl p-8">
+            <div className="bg-gradient-to-r from-amber-500/10 to-amber-600/10 border border-amber-500/20 rounded-xl p-8">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0">
                   <Package className="h-6 w-6" />
@@ -381,7 +380,7 @@ export default function Home() {
               const Icon = item.icon;
               return (
                 <div key={index} className="bg-zinc-900/80 rounded-xl p-6 border border-zinc-800 text-center hover:border-zinc-700 transition-colors">
-                  <Icon className="h-8 w-8 mx-auto mb-3 text-orange-400/80" />
+                  <Icon className="h-8 w-8 mx-auto mb-3 text-amber-400/80" />
                   <div className="text-3xl font-bold text-white mb-1">{item.stat}</div>
                   <div className="text-zinc-300 font-medium text-sm mb-1">{item.label}</div>
                   <div className="text-zinc-500 text-xs">{item.sublabel}</div>
@@ -476,7 +475,7 @@ export default function Home() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/demo">
-                <Button size="lg" className="text-lg px-8 h-14 bg-orange-500 text-white hover:bg-orange-400 border-0 shadow-lg hover:shadow-xl hover:shadow-orange-500/25 transition-all w-full sm:w-auto">
+                <Button size="lg" className="text-lg px-8 h-14 bg-amber-500 text-white hover:bg-amber-400 border-0 shadow-lg hover:shadow-xl hover:shadow-amber-500/25 transition-all w-full sm:w-auto">
                   Get a Demo
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>

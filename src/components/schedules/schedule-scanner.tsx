@@ -84,7 +84,7 @@ export function ScheduleScanner({ onDataExtracted }: ScheduleScannerProps) {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <FileText className="h-5 w-5 text-orange-500" />
+            <FileText className="h-5 w-5 text-amber-500" />
             Service Schedule Scanner
           </CardTitle>
           <CardDescription>

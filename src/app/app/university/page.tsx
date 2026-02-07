@@ -21,7 +21,7 @@ export default async function UniversityPage() {
     <div className="space-y-8">
       <div>
         <div className="flex items-center gap-3 mb-2">
-          <div className="p-3 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 shadow-lg">
+          <div className="p-3 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 shadow-lg">
             <GraduationCap className="h-8 w-8 text-white" />
           </div>
           <div>
@@ -73,10 +73,10 @@ export default async function UniversityPage() {
               return (
                 <Link key={course.slug} href={`/app/university/courses/${course.slug}`}>
                   <Card className="relative h-full border-0 shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer group dark:bg-gray-800">
-                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 to-orange-600 rounded-t-lg" />
+                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 to-amber-600 rounded-t-lg" />
                     <CardHeader>
                       <div className="flex items-start justify-between">
-                        <div className="p-3 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 shadow-md">
+                        <div className="p-3 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 shadow-md">
                           <Icon className="h-6 w-6 text-white" />
                         </div>
                         <Badge variant="secondary" className="text-xs">

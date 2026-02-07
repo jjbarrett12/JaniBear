@@ -93,7 +93,7 @@ export function StatsCards({ stats }: StatsCardsProps) {
       value: stats.pendingTasks,
       icon: Clock,
       href: '/app/tasks',
-      gradient: 'from-amber-500 to-orange-600',
+      gradient: 'from-amber-500 to-amber-600',
       lightBg: 'bg-amber-50',
       trend: null,
       subtitle: undefined as string | undefined,

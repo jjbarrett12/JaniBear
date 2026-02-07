@@ -28,7 +28,7 @@ export function DeviceDemo() {
                 {/* Placeholder app UI: sidebar + main */}
                 <div className="h-full flex">
                   <div className="w-16 bg-zinc-800/80 border-r border-zinc-700 flex flex-col items-center py-3 gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-orange-500/20" />
+                    <div className="w-8 h-8 rounded-lg bg-amber-500/20" />
                     <div className="w-8 h-8 rounded-lg bg-zinc-700" />
                     <div className="w-8 h-8 rounded-lg bg-zinc-700" />
                     <div className="w-8 h-8 rounded-lg bg-zinc-700" />
@@ -83,7 +83,7 @@ export function DeviceDemo() {
         </div>
 
         <p className="text-center text-sm text-zinc-500 mt-8">
-          Dashboard and task lists in real time—<Link href="/auth/signup" className="text-orange-400 hover:underline">try it free</Link>
+          Dashboard and task lists in real time—<Link href="/auth/signup" className="text-amber-400 hover:underline">try it free</Link>
         </p>
       </div>
     </section>

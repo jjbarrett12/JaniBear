@@ -95,7 +95,7 @@ export function SDSList({ sdsSheets: initialSheets }: SDSListProps) {
                       {sheet.ai_key_hazards && sheet.ai_key_hazards.length > 0 && (
                         <div className="flex flex-wrap gap-2 mb-3">
                           {sheet.ai_key_hazards.slice(0, 3).map((hazard, idx) => (
-                            <Badge key={idx} variant="outline" className="bg-orange-50 text-orange-800">
+                            <Badge key={idx} variant="outline" className="bg-amber-50 text-amber-800">
                               {hazard}
                             </Badge>
                           ))}

@@ -312,13 +312,13 @@ export function LoginForm() {
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
                   disabled={isLoading}
-                  className="w-4 h-4 rounded border-zinc-300 text-orange-500 focus:ring-2 focus:ring-orange-500/20"
+                  className="w-4 h-4 rounded border-zinc-300 text-amber-500 focus:ring-2 focus:ring-amber-500/20"
                 />
                 <span className="text-sm font-medium text-zinc-600">Remember me</span>
               </label>
               <Link
                 href="/auth/forgot-password"
-                className="text-sm font-medium text-orange-600 hover:text-orange-700"
+                className="text-sm font-medium text-amber-600 hover:text-amber-700"
               >
                 Forgot password?
               </Link>
@@ -351,7 +351,7 @@ export function LoginForm() {
 
         <Button
           type="submit"
-          className="w-full h-12 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-semibold text-[15px] shadow-sm"
+          className="w-full h-12 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-semibold text-[15px] shadow-sm"
           disabled={isLoading || !!oauthLoading}
         >
           {isLoading ? (
@@ -371,13 +371,13 @@ export function LoginForm() {
         <button
           type="button"
           onClick={() => setIsMagicLink(!isMagicLink)}
-          className="text-sm text-zinc-500 hover:text-orange-600 font-medium block w-full"
+          className="text-sm text-zinc-500 hover:text-amber-600 font-medium block w-full"
         >
           {isMagicLink ? 'Use password instead' : 'Use magic link instead'}
         </button>
         <p className="text-sm text-zinc-500">
           Don&apos;t have an account?{' '}
-          <Link href="/auth/signup" className="font-semibold text-orange-600 hover:text-orange-700">
+          <Link href="/auth/signup" className="font-semibold text-amber-600 hover:text-amber-700">
             Sign up
           </Link>
         </p>

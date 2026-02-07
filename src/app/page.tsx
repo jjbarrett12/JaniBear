@@ -21,7 +21,6 @@ import {
   Package,
   FileSpreadsheet,
   Plus,
-  Bot,
   TrendingUp,
   DollarSign,
   Repeat,
@@ -99,98 +98,70 @@ export default function Home() {
         </div>
       </nav>
 
-      <section className="relative container mx-auto px-4 pt-4 md:pt-6 pb-16 md:pb-24 overflow-hidden -mt-2">
+      <section className="relative container mx-auto px-4 pt-12 md:pt-16 pb-20 md:pb-28 overflow-hidden">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-3xl" />
           <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-cyan-500/5 rounded-full blur-3xl" />
         </div>
 
-        <div className="relative max-w-5xl mx-auto text-center">
-          <div
-            className={`inline-flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-800/80 text-zinc-300 text-sm font-medium mb-4 transition-all duration-500 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'}`}
+        <div className="relative max-w-3xl mx-auto text-center">
+          <p
+            className={`text-xs font-medium text-zinc-500 uppercase tracking-widest mb-8 transition-all duration-500 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}`}
           >
-            <Bot className="h-4 w-4 text-orange-400" />
-            <span>Jani — Your AI Assistant</span>
-          </div>
+            Powered by Jani
+          </p>
 
           <h1
             className={`hero-headline transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
           >
-            <span className="block text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-white tracking-tight leading-[1.1]">
+            <span className="block text-4xl md:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.12]">
               Win More Cleaning Contracts
             </span>
-            <span className="block text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white/95 tracking-tight leading-[1.15] mt-2">
+            <span className="block text-3xl md:text-4xl lg:text-5xl font-bold text-white/95 tracking-tight leading-[1.15] mt-3">
               Run Smarter Operations
             </span>
-            <span className="hero-word-automatically block mt-3 text-2xl md:text-3xl lg:text-4xl font-bold text-orange-400">
+            <span className="hero-word-automatically block mt-4 text-2xl md:text-3xl font-bold text-orange-400">
               Automatically.
             </span>
           </h1>
 
           <p
-            className={`hero-subhead text-lg md:text-xl text-zinc-300 max-w-3xl mx-auto mt-5 leading-[1.7] transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
-            style={{ transitionDelay: '100ms' }}
+            className={`hero-subhead text-lg text-zinc-400 max-w-xl mx-auto mt-8 leading-relaxed transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            style={{ transitionDelay: '80ms' }}
           >
-            AI-powered sales and operations software for janitorial companies. Win more bids, execute with confidence, and improve performance at scale.
+            AI-powered sales and operations for janitorial companies. Win more bids, execute with confidence.
           </p>
-
-          <div
-            className={`hero-product-tease mt-5 max-w-xl mx-auto transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
-            style={{ transitionDelay: '120ms' }}
-          >
-            <div className="text-left rounded-xl border border-zinc-700/80 bg-zinc-900/60 px-5 py-4 shadow-lg">
-              <p className="text-xs font-medium text-orange-400/90 uppercase tracking-wider mb-2">AI bid suggestion</p>
-              <p className="text-zinc-200 text-sm md:text-base leading-relaxed">
-                &ldquo;Based on 12,400 sq ft, 3 restrooms, and 5 nights/week, your optimal bid is <span className="font-semibold text-white">$2,840/month</span>.&rdquo;
-              </p>
-            </div>
-          </div>
 
           <p
-            className={`hero-meta text-sm text-zinc-400 max-w-2xl mx-auto mt-4 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
-            style={{ transitionDelay: '140ms' }}
+            className={`mt-4 text-sm text-zinc-500 italic transition-all duration-700 ${mounted ? 'opacity-100' : 'opacity-0'}`}
+            style={{ transitionDelay: '120ms' }}
           >
-            Built by janitorial operators, for janitorial operators.
+            e.g. 12,400 sq ft, 3 restrooms → $2,840/mo bid in one tap
           </p>
 
           <div
-            className={`flex flex-col sm:flex-row flex-wrap gap-3 justify-center items-center mt-5 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
-            style={{ transitionDelay: '200ms' }}
+            className={`flex flex-col sm:flex-row gap-3 justify-center items-center mt-10 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            style={{ transitionDelay: '160ms' }}
           >
             <Link href="/auth/signup">
-              <Button size="lg" className="landing-cta landing-cta-lg text-lg px-8 h-14">
+              <Button size="lg" className="landing-cta landing-cta-lg text-base px-8 h-12">
                 Get Started
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
-            <Link href="/#features">
-              <Button size="lg" variant="outline" className="landing-outline text-base px-6 h-12 border-zinc-600 text-zinc-300 hover:text-white hover:border-zinc-500">
-                See How It Works
+                <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
             <Link href="/pricing">
-              <Button size="lg" variant="outline" className="landing-outline text-lg px-8 h-14 border-zinc-700 text-zinc-300 hover:text-white hover:border-zinc-600">
+              <Button size="lg" variant="outline" className="landing-outline text-base px-6 h-12">
                 View Pricing
               </Button>
             </Link>
           </div>
 
-          <div
-            className={`mt-5 flex flex-col sm:flex-row flex-wrap items-center justify-center gap-4 sm:gap-6 text-sm transition-all duration-700 ${mounted ? 'opacity-100' : 'opacity-0'}`}
-            style={{ transitionDelay: '300ms' }}
+          <p
+            className={`mt-10 text-sm text-zinc-500 transition-all duration-700 ${mounted ? 'opacity-100' : 'opacity-0'}`}
+            style={{ transitionDelay: '200ms' }}
           >
-            <Link href="/pricing" className="flex items-center gap-2 text-zinc-400 hover:text-orange-400 transition-colors">
-              <span className="font-semibold text-white">Starting at $59/mo</span>
-              <span>· per company</span>
-            </Link>
-            <div className="flex items-center gap-2 text-zinc-400">
-              <span className="text-amber-400">★★★★★</span>
-              <span>Trusted by 500+ cleaning companies</span>
-            </div>
-            <div className="flex items-center gap-2 text-zinc-400">
-              <span className="font-semibold text-white">Reduce bid errors by 32%</span>
-            </div>
-          </div>
+            Trusted by 500+ cleaning companies · Starting at $59/mo
+          </p>
         </div>
       </section>
 

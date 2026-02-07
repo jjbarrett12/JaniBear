@@ -55,9 +55,8 @@ export default function Home() {
           navScrolled ? 'landing-header-scrolled shadow-sm' : ''
         }`}
       >
-        <div className="container mx-auto px-4 h-full flex md:grid md:grid-cols-[1fr_auto_1fr] items-center gap-3 md:gap-4 overflow-visible min-h-0">
-          {/* Logo: left */}
-          <Link href="/" className="landing-logo-wrap flex items-center shrink-0 overflow-visible bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block [&>span]:overflow-visible md:justify-self-start">
+        <div className="container mx-auto px-4 h-full flex items-center justify-between gap-4 min-h-0">
+          <Link href="/" className="landing-logo-wrap flex items-center shrink-0 overflow-visible bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block [&>span]:overflow-visible">
             <Image
               src="/janibear-logo.png"
               alt="JANIBEAR"
@@ -68,8 +67,8 @@ export default function Home() {
               unoptimized
             />
           </Link>
-          {/* Desktop: center nav categories */}
-          <div className="hidden md:flex items-center justify-center gap-1 lg:gap-2">
+          {/* Desktop: nav categories (Pricing, Plans, Features, Contact) - centered */}
+          <div className="hidden md:flex items-center gap-1 lg:gap-2 flex-1 justify-center">
             <Link href="/pricing">
               <Button variant="ghost" size="sm" className="landing-nav-link shrink-0 h-9 px-3">
                 Pricing
@@ -91,8 +90,8 @@ export default function Home() {
               </Button>
             </Link>
           </div>
-          {/* Desktop: Sign in + Get a Demo on the right */}
-          <div className="hidden md:flex items-center justify-end gap-1 lg:gap-2 shrink-0 md:justify-self-end">
+          {/* Desktop: Sign in + Get a Demo */}
+          <div className="hidden md:flex items-center gap-1 lg:gap-2 shrink-0">
             <Link href="/auth/login" className="landing-nav-link landing-nav-link-text text-sm font-medium shrink-0 h-9 flex items-center px-3 hover:underline">
               Sign in
             </Link>
@@ -102,17 +101,15 @@ export default function Home() {
               </Button>
             </Link>
           </div>
-          {/* Mobile: hamburger (grid leaves empty center/right; we override with flex on mobile) */}
-          <div className="flex md:hidden items-center justify-end flex-1 min-w-0">
-            <button
-              type="button"
-              onClick={() => setMenuOpen(true)}
-              className="landing-nav-link p-2 rounded-md -mr-2 text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100"
-              aria-label="Open menu"
-            >
-              <Menu className="h-6 w-6" />
-            </button>
-          </div>
+          {/* Mobile: hamburger */}
+          <button
+            type="button"
+            onClick={() => setMenuOpen(true)}
+            className="md:hidden landing-nav-link p-2 rounded-md -mr-2 text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100"
+            aria-label="Open menu"
+          >
+            <Menu className="h-6 w-6" />
+          </button>
         </div>
       </nav>
 
@@ -218,6 +215,11 @@ export default function Home() {
               <Button size="lg" className="landing-cta landing-cta-lg text-base px-8 h-12">
                 Get a Demo
                 <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
+            <Link href="/pricing">
+              <Button size="lg" variant="outline" className="landing-outline text-base px-6 h-12">
+                View Pricing
               </Button>
             </Link>
           </div>

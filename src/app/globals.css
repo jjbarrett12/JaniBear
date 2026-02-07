@@ -7,30 +7,30 @@
   background-color: #09090b !important;
   color: #f4f4f5;
 }
-/* Nav: indigo to match hero; light text; blur on scroll */
+/* Nav: white background, dark text; blur on scroll */
 .landing-header {
-  background: rgb(30, 27, 75) !important; /* indigo-950 */
-  border-color: rgba(67, 56, 202, 0.4) !important; /* indigo-800 */
+  background: #fff !important;
+  border-color: #e5e7eb !important;
 }
 .landing-header.landing-header-scrolled {
-  background: rgba(30, 27, 75, 0.95) !important;
+  background: rgba(255, 255, 255, 0.92) !important;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
 .landing-header .landing-nav-link {
-  color: #e0e7ff !important; /* indigo-200 - legible on indigo */
+  color: #111 !important;
   background: transparent !important;
   border: none !important;
 }
 .landing-header .landing-nav-link:hover {
-  color: #fff !important;
-  background: rgba(99, 102, 241, 0.25) !important; /* indigo-500 */
+  color: #000 !important;
+  background: #f3f4f6 !important;
 }
 .landing-header .landing-nav-link-text {
-  color: #c7d2fe !important; /* indigo-200 */
+  color: #111 !important;
 }
 .landing-header .landing-nav-link-text:hover {
-  color: #fff !important;
+  color: #000 !important;
   background: transparent !important;
 }
 .landing-logo-wrap {
@@ -40,15 +40,15 @@
   flex-shrink: 0;
 }
 .landing-header .landing-logo {
-  max-height: 120px !important;
-  height: 120px !important;
+  max-height: 40px !important;
+  height: 40px !important;
   width: auto !important;
   flex-shrink: 0;
 }
 @media (min-width: 768px) {
   .landing-header .landing-logo {
-    max-height: 140px !important;
-    height: 140px !important;
+    max-height: 48px !important;
+    height: 48px !important;
   }
 }
 .landing-page .landing-cta {
@@ -122,8 +122,8 @@
     --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 38 92% 50%;
+    --primary-foreground: 0 0% 100%;
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
     --muted: 210 40% 96.1%;
@@ -134,7 +134,7 @@
     --destructive-foreground: 210 40% 98%;
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
+    --ring: 38 92% 50%;
     --radius: 0.5rem;
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
@@ -150,8 +150,8 @@
     --card-foreground: 210 40% 98%;
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 38 92% 50%;
+    --primary-foreground: 0 0% 100%;
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
     --muted: 217.2 32.6% 17.5%;
@@ -162,7 +162,7 @@
     --destructive-foreground: 210 40% 98%;
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 48%;
+    --ring: 38 92% 50%;
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;

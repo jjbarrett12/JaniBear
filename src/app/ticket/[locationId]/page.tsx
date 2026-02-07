@@ -173,6 +173,7 @@ export default function PublicTicketPage() {
                 'Submit request'
               )}
             </Button>
+            <p className="text-center text-xs text-gray-500 pt-2">Powered by HelpHubQR</p>
           </form>
         </CardContent>
       </Card>

@@ -46,7 +46,7 @@ const operationsItems = [
   { href: '/app/tasks', labelKey: 'navMyTasks' as const, icon: ClipboardCheck },
   { href: '/app/supplies', labelKey: 'navSupplies' as const, icon: Package },
   { href: '/app/contracts', labelKey: 'navContracts' as const, icon: FileUp },
-  { href: '/app/tickets', labelKey: 'navServiceTickets' as const, icon: Ticket },
+  { href: '/app/helphub', labelKey: 'navHelpHubQR' as const, icon: Ticket },
   { href: '/app/messages', labelKey: 'navMessages' as const, icon: MessageCircle },
   { href: '/app/qc-assign', labelKey: 'navQcTaskAssign' as const, icon: ListChecks },
   { href: '/app/admin', labelKey: 'navAdmin' as const, icon: Settings },

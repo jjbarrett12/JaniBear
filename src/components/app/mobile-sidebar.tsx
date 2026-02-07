@@ -59,7 +59,7 @@ const operationsItemKeys: { href: string; labelKey: AppTranslationKey; icon: Rea
   { href: '/app/tasks', labelKey: 'navMyTasks', icon: ClipboardCheck },
   { href: '/app/supplies', labelKey: 'navSupplies', icon: Package },
   { href: '/app/contracts', labelKey: 'navContracts', icon: FileUp },
-  { href: '/app/tickets', labelKey: 'navServiceTickets', icon: Ticket },
+  { href: '/app/helphub', labelKey: 'navHelpHubQR', icon: Ticket },
   { href: '/app/messages', labelKey: 'navMessages', icon: MessageCircle },
   { href: '/app/qc-assign', labelKey: 'navQcTaskAssign', icon: ListChecks },
   { href: '/app/admin', labelKey: 'navAdmin', icon: Settings },

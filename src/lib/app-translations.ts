@@ -48,7 +48,7 @@ export const appTranslations = {
 
     // Sidebar
     navDashboard: 'Dashboard',
-    navUniversity: 'JaniBear University',
+    navUniversity: 'JANIBEAR University',
     navSales: 'Sales',
     navOperations: 'Operations',
     navSettings: 'Settings',
@@ -150,7 +150,7 @@ export const appTranslations = {
     today: 'Hoy',
 
     navDashboard: 'Panel',
-    navUniversity: 'JaniBear University',
+    navUniversity: 'JANIBEAR University',
     navSales: 'Ventas',
     navOperations: 'Operaciones',
     navSettings: 'Configuración',

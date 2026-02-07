@@ -1,5 +1,5 @@
 /**
- * JaniBear OS: Org type helpers for joint-employer separation.
+ * JANIBEAR OS: Org type helpers for joint-employer separation.
  * See JANIBEAR_OS_SYSTEM.md. Use these to gate labor-control and worker-data features.
  */
 

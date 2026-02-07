@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { createClient } from '@/lib/supabase/server';
 import { SignupForm } from '@/components/auth/signup-form';
 
-export const metadata = { title: 'Sign up | JaniBear' };
+export const metadata = { title: 'Sign up | JANIBEAR' };
 
 export default async function SignupPage() {
   const supabase = await createClient();
@@ -26,7 +26,7 @@ export default async function SignupPage() {
           <div className="flex justify-center [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block" style={{ lineHeight: 0 }}>
             <Image
               src="/janibear-logo.png"
-              alt="JaniBear"
+              alt="JANIBEAR"
               width={600}
               height={200}
               className="w-auto object-contain bg-transparent"
@@ -36,7 +36,7 @@ export default async function SignupPage() {
             />
           </div>
           <h1 className="text-xl font-bold text-zinc-900 mt-2 mb-0">Create your account</h1>
-          <p className="text-zinc-500 text-sm mt-0.5 mb-0">Get started with JaniBear in seconds</p>
+          <p className="text-zinc-500 text-sm mt-0.5 mb-0">Get started with JANIBEAR in seconds</p>
         </div>
         <div className="mt-0">
           <SignupForm />

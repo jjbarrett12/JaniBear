@@ -25,9 +25,9 @@
 - You still need onboarding help (calls/setup).
 - Value isn’t obvious in &lt;10 minutes.
 - You sell to owners who want reassurance.
-- The product spans many workflows (JaniBear does).
+- The product spans many workflows (JANIBEAR does).
 
-**That’s JaniBear right now — stay demo-led.**
+**That’s JANIBEAR right now — stay demo-led.**
 
 ---
 

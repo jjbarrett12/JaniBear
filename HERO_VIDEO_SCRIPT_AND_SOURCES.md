@@ -22,7 +22,7 @@ Use this for the homepage hero video. **I can’t generate video files**—use t
 
 ## Short script (30–45 seconds): “Commercial cleaning crews in large accounts”
 
-**Concept:** Show professional cleaning crews working inside a large commercial building (office, hospital, school, or retail). Clean, calm, competent—the kind of accounts JaniBear serves.
+**Concept:** Show professional cleaning crews working inside a large commercial building (office, hospital, school, or retail). Clean, calm, competent—the kind of accounts JANIBEAR serves.
 
 **Suggested shots (pick 4–6):**
 

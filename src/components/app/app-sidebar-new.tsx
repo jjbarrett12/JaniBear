@@ -70,7 +70,7 @@ export async function AppSidebarNew() {
                   unoptimized
                 />
               ) : (
-                <span className="font-bold text-xl">JaniBear</span>
+                <span className="font-bold text-xl">JANIBEAR</span>
               )}
             </Link>
           </div>

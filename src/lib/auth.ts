@@ -46,7 +46,7 @@ export async function getCurrentOrg() {
 }
 
 /**
- * Returns current user's org membership and org details (includes org_type for JaniBear OS gating).
+ * Returns current user's org membership and org details (includes org_type for JANIBEAR OS gating).
  * Shape: { org_id, role, organizations: { name, org_type: 'operator' | 'franchisor', ... } }
  */
 export async function requireOrg() {

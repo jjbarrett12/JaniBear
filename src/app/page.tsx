@@ -186,7 +186,7 @@ export default function Home() {
             className={`hero-headline text-3xl sm:text-4xl md:text-5xl lg:text-[2.75rem] font-extrabold text-white tracking-tight leading-[1.2] max-w-3xl mx-auto transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
           >
             See how top janitorial companies win bids, prove quality, and scale —{' '}
-            <span className="bg-gradient-to-r from-indigo-400 to-orange-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-indigo-400 via-orange-400 to-green-400 bg-clip-text text-transparent">
               all in one system.
             </span>
           </h1>
@@ -195,7 +195,7 @@ export default function Home() {
             className={`hero-subhead text-lg text-zinc-400 max-w-2xl mx-auto mt-6 leading-relaxed transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '80ms' }}
           >
-            JaniBear replaces spreadsheets, PDFs, and guesswork with a single platform for bidding, inspections, reporting, and accountability.
+            JANIBEAR replaces spreadsheets, PDFs, and guesswork with a single platform for bidding, inspections, reporting, and accountability.
           </p>
 
           <div
@@ -328,7 +328,7 @@ export default function Home() {
                 Organize Supplies—Stop the Paper Notes and Text Threads
               </h2>
               <p className="text-lg text-zinc-400 max-w-2xl mx-auto">
-                Most companies are still using paper notes, text messages, or Excel if they&apos;re lucky. JaniBear gives you one place to track inventory and build orders—then email them straight to your preferred vendor.
+                Most companies are still using paper notes, text messages, or Excel if they&apos;re lucky. JANIBEAR gives you one place to track inventory and build orders—then email them straight to your preferred vendor.
               </p>
             </div>
             <div className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-xl p-8">
@@ -464,7 +464,7 @@ export default function Home() {
               Ready to See It in Action?
             </h2>
             <p className="text-lg text-zinc-400 mb-8">
-              Get a personalized demo. We&apos;ll show you how JaniBear handles bids, proposals, and operations—and configure pricing for your team.
+              Get a personalized demo. We&apos;ll show you how JANIBEAR handles bids, proposals, and operations—and configure pricing for your team.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/demo">

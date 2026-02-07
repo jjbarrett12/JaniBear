@@ -27,7 +27,7 @@ export const surveyTranslations = {
     unitFranchisee: 'Unit Franchisee (I operate a single franchise location)',
 
     // Existing questions
-    focusQuestion: 'What do you need JaniBear for?',
+    focusQuestion: 'What do you need JANIBEAR for?',
     focusSalesOnly: 'Strictly sales (leads, proposals, outreach)',
     focusSalesQc: 'Sales plus QC and ops (playbooks, deal QA, consistency)',
 
@@ -71,7 +71,7 @@ export const surveyTranslations = {
     areaFranchisor: 'Franquiciador de Área (desarrollo/apoyo múltiples unidades)',
     unitFranchisee: 'Franquiciado de Unidad (opero una sola ubicación)',
 
-    focusQuestion: '¿Para qué necesita JaniBear?',
+    focusQuestion: '¿Para qué necesita JANIBEAR?',
     focusSalesOnly: 'Solo ventas (prospectos, propuestas, outreach)',
     focusSalesQc: 'Ventas más QC y operaciones (playbooks, QA de tratos, consistencia)',
 

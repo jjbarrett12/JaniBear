@@ -266,7 +266,7 @@ Return valid JSON only, no markdown.`;
       invoicing: 'You are a professional business writer creating clear, professional invoice notes for janitorial services.',
       phone: 'You are a customer service analyst. Analyze phone calls and extract key information, sentiment, and action items.',
       proposal: 'You are a janitorial bidding expert. Suggest crew size, hours per visit, cleaning speeds (sq ft per hour), and labor estimates. Return only valid JSON.',
-      general: 'You are Jani, the AI assistant for JaniBear—a janitorial quality inspection and operations platform. Help users clearly and concisely.',
+      general: 'You are Jani, the AI assistant for JANIBEAR—a janitorial quality inspection and operations platform. Help users clearly and concisely.',
     };
 
     return prompts[feature] || prompts.general;

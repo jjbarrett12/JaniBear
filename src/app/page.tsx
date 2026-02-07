@@ -30,6 +30,7 @@ import {
   AlertCircle,
   Menu,
   X,
+  Bot,
 } from 'lucide-react';
 
 export default function Home() {
@@ -174,16 +175,20 @@ export default function Home() {
         </div>
 
         <div className="relative max-w-3xl mx-auto text-center">
-          <p
-            className={`text-xs font-medium text-zinc-500 uppercase tracking-widest mb-8 transition-all duration-500 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}`}
+          <div
+            className={`inline-flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-800/80 text-zinc-300 text-sm font-medium mb-8 transition-all duration-500 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}`}
           >
-            Powered by Jani
-          </p>
+            <Bot className="h-4 w-4 text-orange-400" />
+            <span>Powered by Jani</span>
+          </div>
 
           <h1
             className={`hero-headline text-3xl sm:text-4xl md:text-5xl lg:text-[2.75rem] font-extrabold text-white tracking-tight leading-[1.2] max-w-3xl mx-auto transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
           >
-            See how top janitorial companies win bids, prove quality, and scale — all in one system.
+            See how top janitorial companies win bids, prove quality, and scale —{' '}
+            <span className="bg-gradient-to-r from-indigo-400 to-orange-400 bg-clip-text text-transparent">
+              all in one system.
+            </span>
           </h1>
 
           <p

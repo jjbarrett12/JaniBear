@@ -28,11 +28,14 @@ import {
   Wand2,
   CalendarDays,
   AlertCircle,
+  Menu,
+  X,
 } from 'lucide-react';
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
   const [navScrolled, setNavScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -45,13 +48,13 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="landing-page min-h-screen bg-zinc-950 text-zinc-100">
+    <div className="landing-page min-h-screen bg-zinc-950 text-zinc-100 pb-20 md:pb-0">
       <nav
         className={`landing-header border-b sticky top-0 z-50 h-14 md:h-16 py-0 flex items-center overflow-visible transition-all duration-300 ${
           navScrolled ? 'landing-header-scrolled shadow-sm' : ''
         }`}
       >
-        <div className="container mx-auto px-4 h-full flex items-center justify-between gap-4 overflow-visible min-h-0">
+        <div className="container mx-auto px-4 h-full flex items-center justify-between gap-3 md:gap-6 overflow-visible min-h-0">
           <Link href="/" className="landing-logo-wrap flex items-center shrink-0 overflow-visible bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block [&>span]:overflow-visible">
             <Image
               src="/janibear-logo.png"
@@ -63,40 +66,106 @@ export default function Home() {
               unoptimized
             />
           </Link>
-          <div className="flex items-center justify-end gap-3 md:gap-5 flex-1 min-w-0">
+          {/* Desktop: full links + Sign in + Get a Demo */}
+          <div className="hidden md:flex items-center justify-end gap-1 lg:gap-2 flex-1 min-w-0">
             <Link href="/pricing">
-              <Button variant="ghost" size="sm" className="landing-nav-link shrink-0 h-9">
+              <Button variant="ghost" size="sm" className="landing-nav-link shrink-0 h-9 px-3">
                 Pricing
               </Button>
             </Link>
             <Link href="/survey">
-              <Button variant="ghost" size="sm" className="landing-nav-link shrink-0 h-9">
+              <Button variant="ghost" size="sm" className="landing-nav-link shrink-0 h-9 px-3">
                 Plans
               </Button>
             </Link>
             <Link href="/#features">
-              <Button variant="ghost" size="sm" className="landing-nav-link shrink-0 h-9">
+              <Button variant="ghost" size="sm" className="landing-nav-link shrink-0 h-9 px-3">
                 Features
               </Button>
             </Link>
             <Link href="/contact">
-              <Button variant="ghost" size="sm" className="landing-nav-link shrink-0 h-9">
+              <Button variant="ghost" size="sm" className="landing-nav-link shrink-0 h-9 px-3">
                 Contact
               </Button>
             </Link>
-            <Link href="/auth/login">
-              <Button variant="ghost" size="sm" className="landing-nav-link shrink-0 h-9">
-                Sign In
-              </Button>
+            <Link href="/auth/login" className="landing-nav-link landing-nav-link-text text-sm font-medium shrink-0 h-9 flex items-center px-3 hover:underline">
+              Sign in
             </Link>
-            <Link href="/auth/signup">
-              <Button size="sm" className="landing-cta shrink-0 h-10 px-5 font-semibold">
-                Get Started
+            <Link href="/demo">
+              <Button size="sm" className="landing-cta shrink-0 h-10 px-4 md:px-5 font-semibold">
+                Get a Demo
               </Button>
             </Link>
           </div>
+          {/* Mobile: logo + hamburger only; Get a Demo is in sticky bottom */}
+          <div className="flex md:hidden items-center justify-end flex-1 min-w-0">
+            <button
+              type="button"
+              onClick={() => setMenuOpen(true)}
+              className="landing-nav-link p-2 rounded-md -mr-2 text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100"
+              aria-label="Open menu"
+            >
+              <Menu className="h-6 w-6" />
+            </button>
+          </div>
         </div>
       </nav>
+
+      {/* Mobile hamburger overlay */}
+      {menuOpen && (
+        <div
+          className="fixed inset-0 z-[100] md:hidden"
+          aria-modal="true"
+          role="dialog"
+          aria-label="Navigation menu"
+        >
+          <div
+            className="absolute inset-0 bg-zinc-950/80 backdrop-blur-sm"
+            onClick={() => setMenuOpen(false)}
+            aria-hidden
+          />
+          <div className="absolute top-0 right-0 bottom-0 w-full max-w-sm bg-zinc-900 border-l border-zinc-800 shadow-xl flex flex-col">
+            <div className="flex items-center justify-between p-4 border-b border-zinc-800">
+              <span className="text-sm font-medium text-zinc-400">Menu</span>
+              <button
+                type="button"
+                onClick={() => setMenuOpen(false)}
+                className="p-2 rounded-md text-zinc-400 hover:text-white hover:bg-zinc-800"
+                aria-label="Close menu"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <nav className="flex flex-col p-4 gap-1">
+              <Link href="/#features" onClick={() => setMenuOpen(false)} className="px-3 py-3 text-white font-medium rounded-lg hover:bg-zinc-800">
+                Features
+              </Link>
+              <Link href="/pricing" onClick={() => setMenuOpen(false)} className="px-3 py-3 text-white font-medium rounded-lg hover:bg-zinc-800">
+                Pricing
+              </Link>
+              <Link href="/#features" onClick={() => setMenuOpen(false)} className="px-3 py-3 text-white font-medium rounded-lg hover:bg-zinc-800">
+                How it works
+              </Link>
+              <Link href="/contact" onClick={() => setMenuOpen(false)} className="px-3 py-3 text-white font-medium rounded-lg hover:bg-zinc-800">
+                Contact
+              </Link>
+              <Link href="/auth/login" onClick={() => setMenuOpen(false)} className="px-3 py-3 text-zinc-400 text-sm hover:text-white hover:bg-zinc-800 rounded-lg mt-2">
+                Sign in
+              </Link>
+            </nav>
+          </div>
+        </div>
+      )}
+
+      {/* Sticky bottom CTA — mobile only: persistent Get a Demo */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 p-3 safe-bottom bg-zinc-950/95 border-t border-zinc-800 backdrop-blur md:hidden">
+        <Link href="/demo" className="block w-full">
+          <Button className="landing-cta w-full h-12 text-base font-semibold rounded-lg">
+            Get a Demo
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </Button>
+        </Link>
+      </div>
 
       <section className="relative container mx-auto px-4 pt-12 md:pt-16 pb-20 md:pb-28 overflow-hidden">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -112,40 +181,25 @@ export default function Home() {
           </p>
 
           <h1
-            className={`hero-headline transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            className={`hero-headline text-3xl sm:text-4xl md:text-5xl lg:text-[2.75rem] font-extrabold text-white tracking-tight leading-[1.2] max-w-3xl mx-auto transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
           >
-            <span className="block text-4xl md:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.12]">
-              Win More Cleaning Contracts
-            </span>
-            <span className="block text-3xl md:text-4xl lg:text-5xl font-bold text-white/95 tracking-tight leading-[1.15] mt-3">
-              Run Smarter Operations
-            </span>
-            <span className="hero-word-automatically block mt-4 text-2xl md:text-3xl font-bold text-orange-400">
-              Automatically.
-            </span>
+            See how top janitorial companies win bids, prove quality, and scale — all in one system.
           </h1>
 
           <p
-            className={`hero-subhead text-lg text-zinc-400 max-w-xl mx-auto mt-8 leading-relaxed transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            className={`hero-subhead text-lg text-zinc-400 max-w-2xl mx-auto mt-6 leading-relaxed transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '80ms' }}
           >
-            AI-powered sales and operations for janitorial companies. Win more bids, execute with confidence.
-          </p>
-
-          <p
-            className={`mt-4 text-sm text-zinc-500 italic transition-all duration-700 ${mounted ? 'opacity-100' : 'opacity-0'}`}
-            style={{ transitionDelay: '120ms' }}
-          >
-            e.g. 12,400 sq ft, 3 restrooms → $2,840/mo bid in one tap
+            JaniBear replaces spreadsheets, PDFs, and guesswork with a single platform for bidding, inspections, reporting, and accountability.
           </p>
 
           <div
             className={`flex flex-col sm:flex-row gap-3 justify-center items-center mt-10 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '160ms' }}
           >
-            <Link href="/auth/signup">
+            <Link href="/demo">
               <Button size="lg" className="landing-cta landing-cta-lg text-base px-8 h-12">
-                Get Started
+                Get a Demo
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
@@ -402,15 +456,15 @@ export default function Home() {
         <div className="container mx-auto px-4 text-center">
           <div className="max-w-2xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">
-              Ready to Win More Bids?
+              Ready to See It in Action?
             </h2>
             <p className="text-lg text-zinc-400 mb-8">
-              Sign up free and see how AI-powered bidding, proposals, and follow-ups can transform your janitorial sales process. No credit card required.
+              Get a personalized demo. We&apos;ll show you how JaniBear handles bids, proposals, and operations—and configure pricing for your team.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/auth/signup">
+              <Link href="/demo">
                 <Button size="lg" className="text-lg px-8 h-14 bg-orange-500 text-white hover:bg-orange-400 border-0 shadow-lg hover:shadow-xl hover:shadow-orange-500/25 transition-all w-full sm:w-auto">
-                  Get Started
+                  Get a Demo
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
@@ -421,7 +475,7 @@ export default function Home() {
               </Link>
             </div>
             <p className="text-sm text-zinc-500 mt-6">
-              Free 14-day trial • No credit card required • We&apos;ll configure your pricing
+              We&apos;ll reach out within one business day • Bring your pricing sheet—we&apos;ll configure it
             </p>
           </div>
         </div>
@@ -439,7 +493,7 @@ export default function Home() {
             <div>
               <h4 className="text-white font-semibold mb-4 text-sm">Product</h4>
               <ul className="space-y-2 text-sm">
-                <li><Link href="/auth/signup" className="hover:text-white transition-colors">Get Started</Link></li>
+                <li><Link href="/demo" className="hover:text-white transition-colors">Get a Demo</Link></li>
                 <li><Link href="/pricing" className="hover:text-white transition-colors">Pricing</Link></li>
                 <li><Link href="/survey" className="hover:text-white transition-colors">Find Your Plan</Link></li>
                 <li><Link href="/#features" className="hover:text-white transition-colors">Features</Link></li>

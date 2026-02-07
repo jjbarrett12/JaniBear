@@ -26,6 +26,9 @@
   color: #000 !important;
   background: #f3f4f6 !important;
 }
+.landing-header .landing-nav-link-text:hover {
+  background: transparent !important;
+}
 .landing-logo-wrap {
   display: flex;
   align-items: center;

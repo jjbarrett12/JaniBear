@@ -7,11 +7,12 @@ import { Button } from '@/components/ui/button';
 import {
   ArrowRight,
   Camera,
-  Check,
+  CheckCircle2,
   Send,
   Users,
   Clock,
   Shield,
+  Check,
   Building2,
   UserCheck,
   Zap,
@@ -19,11 +20,15 @@ import {
   ClipboardCheck,
   Package,
   FileSpreadsheet,
+  Plus,
+  Bot,
+  TrendingUp,
+  DollarSign,
+  Repeat,
   Brain,
   Wand2,
   CalendarDays,
   AlertCircle,
-  Quote,
 } from 'lucide-react';
 
 export default function Home() {
@@ -41,398 +46,454 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="landing-page min-h-screen bg-neutral-50 text-neutral-900">
-      {/* Nav */}
+    <div className="landing-page min-h-screen bg-zinc-950 text-zinc-100">
       <nav
-        className={`landing-header border-b sticky top-0 z-50 h-16 flex items-center transition-all duration-300 ${
-          navScrolled ? 'landing-header-scrolled' : ''
+        className={`landing-header border-b sticky top-0 z-50 h-14 md:h-16 py-0 flex items-center overflow-visible transition-all duration-300 ${
+          navScrolled ? 'landing-header-scrolled shadow-sm' : ''
         }`}
       >
-        <div className="container mx-auto px-4 md:px-6 lg:px-8 h-full flex items-center justify-between max-w-6xl">
-          <Link href="/" className="landing-logo-wrap">
+        <div className="container mx-auto px-4 h-full flex items-center justify-between gap-4 overflow-visible min-h-0">
+          <Link href="/" className="landing-logo-wrap flex items-center shrink-0 overflow-visible bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block [&>span]:overflow-visible">
             <Image
               src="/janibear-logo.png"
-              alt="JaniBear"
-              width={160}
-              height={40}
-              className="landing-logo w-auto object-contain object-left"
+              alt="JANIBEAR"
+              width={320}
+              height={104}
+              className="landing-logo w-auto object-contain object-center bg-transparent"
               priority
               unoptimized
             />
           </Link>
-          <div className="flex items-center gap-1 md:gap-2">
+          <div className="flex items-center justify-end gap-3 md:gap-5 flex-1 min-w-0">
             <Link href="/pricing">
-              <Button variant="ghost" size="sm" className="landing-nav-link h-9 px-3">
+              <Button variant="ghost" size="sm" className="landing-nav-link shrink-0 h-9">
                 Pricing
               </Button>
             </Link>
             <Link href="/survey">
-              <Button variant="ghost" size="sm" className="landing-nav-link h-9 px-3">
+              <Button variant="ghost" size="sm" className="landing-nav-link shrink-0 h-9">
                 Plans
               </Button>
             </Link>
             <Link href="/#features">
-              <Button variant="ghost" size="sm" className="landing-nav-link h-9 px-3">
+              <Button variant="ghost" size="sm" className="landing-nav-link shrink-0 h-9">
                 Features
               </Button>
             </Link>
             <Link href="/contact">
-              <Button variant="ghost" size="sm" className="landing-nav-link h-9 px-3">
+              <Button variant="ghost" size="sm" className="landing-nav-link shrink-0 h-9">
                 Contact
               </Button>
             </Link>
             <Link href="/auth/login">
-              <Button variant="ghost" size="sm" className="landing-nav-link h-9 px-3">
-                Sign in
+              <Button variant="ghost" size="sm" className="landing-nav-link shrink-0 h-9">
+                Sign In
               </Button>
             </Link>
             <Link href="/auth/signup">
-              <Button size="sm" className="landing-cta h-9 px-4">
-                Get started
+              <Button size="sm" className="landing-cta shrink-0 h-10 px-5 font-semibold">
+                Get Started
               </Button>
             </Link>
           </div>
         </div>
       </nav>
 
-      {/* Hero */}
-      <section className="relative pt-20 pb-24 md:pt-28 md:pb-32 overflow-hidden">
-        <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-4xl">
+      <section className="relative container mx-auto px-4 pt-4 md:pt-6 pb-16 md:pb-24 overflow-hidden -mt-2">
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-3xl" />
+          <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-cyan-500/5 rounded-full blur-3xl" />
+        </div>
+
+        <div className="relative max-w-5xl mx-auto text-center">
           <div
-            className={`text-center transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            className={`inline-flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-800/80 text-zinc-300 text-sm font-medium mb-4 transition-all duration-500 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'}`}
           >
-            <p className="section-label mb-4">Jani — AI for janitorial operations</p>
-            <h1 className="hero-headline text-4xl sm:text-5xl md:text-6xl lg:text-[3.25rem] text-neutral-900 tracking-tight leading-[1.15] text-balance">
-              Win more contracts.<br />Run operations at scale.
-            </h1>
-            <p className="hero-subhead mt-6 text-lg md:text-xl text-neutral-600 max-w-2xl mx-auto leading-relaxed">
-              AI-powered sales and operations for cleaning companies. Proposals, follow-ups, inspections, and supply management in one platform.
-            </p>
-            <div className="mt-10 flex flex-col sm:flex-row gap-3 justify-center items-center">
-              <Link href="/auth/signup">
-                <Button size="lg" className="landing-cta landing-cta-lg">
-                  Get started
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </Link>
-              <Link href="/pricing">
-                <Button size="lg" variant="outline" className="landing-outline">
-                  View pricing
-                </Button>
-              </Link>
-            </div>
-            <p className="mt-6 text-sm text-neutral-500">
-              Trusted by 500+ cleaning companies · Starting at $59/mo
-            </p>
+            <Bot className="h-4 w-4 text-orange-400" />
+            <span>Jani — Your AI Assistant</span>
           </div>
-        </div>
-      </section>
 
-      {/* Social proof strip */}
-      <section className="py-12 border-y border-neutral-200/80 bg-white">
-        <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-5xl">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 text-center">
-            <div>
-              <div className="text-2xl md:text-3xl font-semibold text-neutral-900">500+</div>
-              <div className="text-sm text-neutral-500 mt-0.5">Cleaning companies</div>
-            </div>
-            <div>
-              <div className="text-2xl md:text-3xl font-semibold text-neutral-900">75%</div>
-              <div className="text-sm text-neutral-500 mt-0.5">Less time per proposal</div>
-            </div>
-            <div>
-              <div className="text-2xl md:text-3xl font-semibold text-neutral-900">32%</div>
-              <div className="text-sm text-neutral-500 mt-0.5">Fewer bid errors</div>
-            </div>
-            <div>
-              <div className="text-2xl md:text-3xl font-semibold text-neutral-900">Same day</div>
-              <div className="text-sm text-neutral-500 mt-0.5">Proposal delivery</div>
-            </div>
-          </div>
-        </div>
-      </section>
+          <h1
+            className={`hero-headline transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+          >
+            <span className="block text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-white tracking-tight leading-[1.1]">
+              Win More Cleaning Contracts
+            </span>
+            <span className="block text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white/95 tracking-tight leading-[1.15] mt-2">
+              Run Smarter Operations
+            </span>
+            <span className="hero-word-automatically block mt-3 text-2xl md:text-3xl lg:text-4xl font-bold text-orange-400">
+              Automatically.
+            </span>
+          </h1>
 
-      {/* Features — Sales */}
-      <section id="features" className="py-20 md:py-28">
-        <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-6xl">
-          <div className="text-center mb-16">
-            <p className="section-label mb-3">Sales</p>
-            <h2 className="section-title text-3xl md:text-4xl mb-4">
-              From walkthrough to closed deal
-            </h2>
-            <p className="section-desc text-lg max-w-2xl mx-auto">
-              AI handles capture, proposals, and follow-ups so your team can focus on relationships.
-            </p>
-          </div>
-          <div className="grid md:grid-cols-3 gap-8 md:gap-10">
-            {[
-              {
-                icon: Camera,
-                title: 'Intelligent capture',
-                desc: 'Point your phone at the building. AI detects flooring, fixtures, and square footage in real time.',
-              },
-              {
-                icon: Wand2,
-                title: 'Proposals in minutes',
-                desc: 'Branded proposals with scope, pricing, and assumptions—ready to send without the manual work.',
-              },
-              {
-                icon: Send,
-                title: 'Follow-up cadences',
-                desc: 'Automated follow-ups at the right time so leads stay warm until the deal closes.',
-              },
-            ].map((item, i) => {
-              const Icon = item.icon;
-              return (
-                <div
-                  key={i}
-                  className={`rounded-2xl border border-neutral-200/80 bg-white p-8 shadow-sm transition-all duration-500 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
-                  style={{ transitionDelay: `${i * 80}ms` }}
-                >
-                  <div className="w-11 h-11 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center mb-5">
-                    <Icon className="h-5 w-5" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-neutral-900 mb-2">{item.title}</h3>
-                  <p className="text-neutral-600 text-sm leading-relaxed">{item.desc}</p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* Features — Operations & QA */}
-      <section className="py-20 md:py-28 bg-white border-y border-neutral-200/80">
-        <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-6xl">
-          <div className="text-center mb-16">
-            <p className="section-label mb-3">Operations & quality</p>
-            <h2 className="section-title text-3xl md:text-4xl mb-4">
-              Deliver consistently, at scale
-            </h2>
-            <p className="section-desc text-lg max-w-2xl mx-auto">
-              Inspections, scheduling, and issue resolution in one place—so quality doesn&apos;t slip as you grow.
-            </p>
-          </div>
-          <div className="grid md:grid-cols-3 gap-8 md:gap-10">
-            {[
-              {
-                icon: ClipboardCheck,
-                title: 'Inspections & scoring',
-                desc: 'Consistent quality checks with photo documentation and trend tracking.',
-              },
-              {
-                icon: CalendarDays,
-                title: 'Crews & scheduling',
-                desc: 'Match crews to locations, see coverage gaps, and reduce missed cleans.',
-              },
-              {
-                icon: AlertCircle,
-                title: 'Issue resolution',
-                desc: 'Track work orders, prioritize by urgency, and keep resolution in one place.',
-              },
-            ].map((item, i) => {
-              const Icon = item.icon;
-              return (
-                <div
-                  key={i}
-                  className={`rounded-2xl border border-neutral-200/80 bg-neutral-50/50 p-8 transition-all duration-500 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
-                  style={{ transitionDelay: `${(3 + i) * 80}ms` }}
-                >
-                  <div className="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center mb-5">
-                    <Icon className="h-5 w-5" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-neutral-900 mb-2">{item.title}</h3>
-                  <p className="text-neutral-600 text-sm leading-relaxed">{item.desc}</p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* Inventory */}
-      <section className="py-20 md:py-28">
-        <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-4xl">
-          <div className="rounded-2xl border border-neutral-200/80 bg-white p-8 md:p-10 shadow-sm">
-            <div className="flex flex-col md:flex-row md:items-start gap-6">
-              <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center shrink-0">
-                <Package className="h-6 w-6" />
-              </div>
-              <div>
-                <p className="section-label mb-2">Inventory & orders</p>
-                <h2 className="section-title text-2xl md:text-3xl mb-3">
-                  One place for supplies and orders
-                </h2>
-                <p className="section-desc text-neutral-600 mb-6">
-                  Track inventory by site or job, build orders in one place, and email them to your vendor. No more paper notes or scattered threads.
-                </p>
-                <ul className="space-y-2 text-sm text-neutral-600">
-                  {['Inventory by location or job', 'Build and email orders to your vendor', 'Replace spreadsheets and sticky notes'].map((line, i) => (
-                    <li key={i} className="flex items-center gap-2">
-                      <Check className="h-4 w-4 text-emerald-600 shrink-0" />
-                      {line}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonial */}
-      <section className="py-20 md:py-28 bg-white border-y border-neutral-200/80">
-        <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-3xl text-center">
-          <Quote className="h-10 w-10 text-neutral-300 mx-auto mb-6" />
-          <blockquote className="text-xl md:text-2xl font-medium text-neutral-800 leading-relaxed">
-            &ldquo;We went from 2 hours per proposal to under 30 minutes. Same-day bids are the norm now, and our close rate went up.&rdquo;
-          </blockquote>
-          <p className="mt-6 text-sm text-neutral-500">
-            Janitorial operator, multi-location franchise
+          <p
+            className={`hero-subhead text-lg md:text-xl text-zinc-300 max-w-3xl mx-auto mt-5 leading-[1.7] transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            style={{ transitionDelay: '100ms' }}
+          >
+            AI-powered sales and operations software for janitorial companies. Win more bids, execute with confidence, and improve performance at scale.
           </p>
-        </div>
-      </section>
 
-      {/* Who it&apos;s for */}
-      <section className="py-20 md:py-28">
-        <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-6xl">
-          <div className="text-center mb-12">
-            <p className="section-label mb-3">Built for the industry</p>
-            <h2 className="section-title text-3xl md:text-4xl mb-4">
-              From owner-operators to enterprise
-            </h2>
+          <div
+            className={`hero-product-tease mt-5 max-w-xl mx-auto transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            style={{ transitionDelay: '120ms' }}
+          >
+            <div className="text-left rounded-xl border border-zinc-700/80 bg-zinc-900/60 px-5 py-4 shadow-lg">
+              <p className="text-xs font-medium text-orange-400/90 uppercase tracking-wider mb-2">AI bid suggestion</p>
+              <p className="text-zinc-200 text-sm md:text-base leading-relaxed">
+                &ldquo;Based on 12,400 sq ft, 3 restrooms, and 5 nights/week, your optimal bid is <span className="font-semibold text-white">$2,840/month</span>.&rdquo;
+              </p>
+            </div>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {[
-              { icon: UserCheck, label: 'Sales reps' },
-              { icon: Building2, label: 'Owner-operators' },
-              { icon: Users, label: 'Franchise operators' },
-              { icon: Target, label: 'Facility services' },
-            ].map((item, i) => {
-              const Icon = item.icon;
-              return (
-                <div
-                  key={i}
-                  className="flex flex-col items-center p-6 rounded-xl border border-neutral-200/80 bg-white text-center"
-                >
-                  <div className="w-10 h-10 rounded-lg bg-neutral-100 text-neutral-600 flex items-center justify-center mb-3">
-                    <Icon className="h-5 w-5" />
-                  </div>
-                  <span className="font-medium text-neutral-800 text-sm">{item.label}</span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
 
-      {/* Full platform */}
-      <section className="py-20 md:py-28 bg-neutral-100/80 border-y border-neutral-200/80">
-        <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-4xl text-center">
-          <p className="section-label mb-3">Platform</p>
-          <h2 className="section-title text-3xl md:text-4xl mb-4">
-            Sales and operations in one place
-          </h2>
-          <p className="section-desc text-lg mb-10 max-w-2xl mx-auto">
-            After you win the bid: inspections, crews, compliance, purchase orders, and invoicing—all in JaniBear.
+          <p
+            className={`hero-meta text-sm text-zinc-400 max-w-2xl mx-auto mt-4 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            style={{ transitionDelay: '140ms' }}
+          >
+            Built by janitorial operators, for janitorial operators.
           </p>
-          <div className="flex flex-wrap justify-center gap-3">
-            {[
-              { icon: ClipboardCheck, label: 'Inspections' },
-              { icon: Users, label: 'Crews' },
-              { icon: Shield, label: 'Compliance' },
-              { icon: Package, label: 'Purchase orders' },
-              { icon: FileSpreadsheet, label: 'Invoicing' },
-            ].map((item, i) => {
-              const Icon = item.icon;
-              return (
-                <div
-                  key={i}
-                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white border border-neutral-200/80 text-neutral-700 text-sm font-medium"
-                >
-                  <Icon className="h-4 w-4 text-neutral-500" />
-                  {item.label}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
 
-      {/* Final CTA */}
-      <section className="py-20 md:py-28">
-        <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-2xl text-center">
-          <h2 className="section-title text-3xl md:text-4xl mb-4">
-            Ready to win more bids?
-          </h2>
-          <p className="section-desc text-lg mb-8">
-            Start free. No credit card required. We&apos;ll help you configure pricing and get your first proposal out.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <div
+            className={`flex flex-col sm:flex-row flex-wrap gap-3 justify-center items-center mt-5 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            style={{ transitionDelay: '200ms' }}
+          >
             <Link href="/auth/signup">
-              <Button size="lg" className="landing-cta landing-cta-lg w-full sm:w-auto">
-                Get started
-                <ArrowRight className="ml-2 h-4 w-4" />
+              <Button size="lg" className="landing-cta landing-cta-lg text-lg px-8 h-14">
+                Get Started
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+            <Link href="/#features">
+              <Button size="lg" variant="outline" className="landing-outline text-base px-6 h-12 border-zinc-600 text-zinc-300 hover:text-white hover:border-zinc-500">
+                See How It Works
               </Button>
             </Link>
             <Link href="/pricing">
-              <Button size="lg" variant="outline" className="landing-outline w-full sm:w-auto">
-                View pricing
+              <Button size="lg" variant="outline" className="landing-outline text-lg px-8 h-14 border-zinc-700 text-zinc-300 hover:text-white hover:border-zinc-600">
+                View Pricing
               </Button>
             </Link>
           </div>
-          <p className="text-sm text-neutral-500 mt-6">
-            14-day free trial · Starting at $59/mo per company
-          </p>
+
+          <div
+            className={`mt-5 flex flex-col sm:flex-row flex-wrap items-center justify-center gap-4 sm:gap-6 text-sm transition-all duration-700 ${mounted ? 'opacity-100' : 'opacity-0'}`}
+            style={{ transitionDelay: '300ms' }}
+          >
+            <Link href="/pricing" className="flex items-center gap-2 text-zinc-400 hover:text-orange-400 transition-colors">
+              <span className="font-semibold text-white">Starting at $59/mo</span>
+              <span>· per company</span>
+            </Link>
+            <div className="flex items-center gap-2 text-zinc-400">
+              <span className="text-amber-400">★★★★★</span>
+              <span>Trusted by 500+ cleaning companies</span>
+            </div>
+            <div className="flex items-center gap-2 text-zinc-400">
+              <span className="font-semibold text-white">Reduce bid errors by 32%</span>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-neutral-200 bg-white py-12 md:py-16">
-        <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-6xl">
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-8 md:gap-12">
-            <div className="col-span-2 md:col-span-1 [&>span]:block">
-              <Image
-                src="/janibear-logo.png"
-                alt="JaniBear"
-                width={120}
-                height={32}
-                className="h-8 w-auto object-contain object-left mb-4 opacity-90"
-                unoptimized
-              />
-              <p className="text-sm text-neutral-500 leading-relaxed">
-                AI-powered sales and operations for janitorial companies.
+      <section id="features" className="py-24 border-b border-zinc-800/80 bg-zinc-900/20">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-sm font-medium mb-4">
+              <Brain className="h-4 w-4" />
+              <span>Powered by AI</span>
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
+              Three AI Capabilities That Win More Bids
+            </h2>
+            <p className="text-lg text-zinc-400 max-w-2xl mx-auto">
+              From walkthrough to closed deal—AI handles the heavy lifting so you can focus on relationships.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {[
+              { icon: Camera, badge: 'AI Bidding', title: 'Intelligent Building Capture', desc: 'Point your phone camera at rooms, floors, and fixtures. AI automatically detects flooring types, counts fixtures, measures square footage, and identifies special requirements—all in real-time.', features: ['Floor type detection', 'Fixture counting', 'Square footage calculation', 'Special area identification'], color: 'orange' },
+              { icon: Wand2, badge: 'AI Proposals', title: 'Instant Professional Proposals', desc: 'AI generates complete, branded proposals with scope of work, frequency schedules, pricing tables, and assumptions—ready to send in minutes, not hours.', features: ['Branded PDF generation', 'Automated pricing', 'Scope documentation', 'Professional formatting'], color: 'cyan' },
+              { icon: Repeat, badge: 'AI Follow-Ups', title: 'Automated Follow-Up Cadences', desc: 'Never lose a lead. AI tracks proposal status, sends personalized follow-ups at optimal times, and maintains engagement until the deal closes—all automatically.', features: ['Smart timing', 'Personalized messaging', 'Status tracking', 'Engagement optimization'], color: 'emerald' },
+            ].map((item, index) => {
+              const Icon = item.icon;
+              const colorClasses = { orange: 'bg-orange-500/10 text-orange-400 border-orange-500/20', cyan: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20', emerald: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' };
+              return (
+                <div key={index} className={`relative p-8 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-zinc-700 transition-all ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`} style={{ transitionDelay: `${index * 100}ms`, transitionDuration: '500ms' }}>
+                  <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full ${colorClasses[item.color as keyof typeof colorClasses]} text-xs font-semibold mb-4`}>
+                    <Icon className="h-3.5 w-3.5" />
+                    <span>{item.badge}</span>
+                  </div>
+                  <h3 className="text-xl font-semibold text-white mb-3">{item.title}</h3>
+                  <p className="text-zinc-400 leading-relaxed text-sm mb-4">{item.desc}</p>
+                  <ul className="space-y-2">
+                    {item.features.map((feature, i) => (
+                      <li key={i} className="flex items-start gap-2 text-zinc-400 text-sm">
+                        <Check className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      <section id="operations-qa" className="py-24 border-b border-zinc-800/80 bg-zinc-900/20">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-medium mb-4">
+              <ClipboardCheck className="h-4 w-4" />
+              <span>Operations & QA</span>
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
+              Three AI Capabilities for Operations & Quality Assurance
+            </h2>
+            <p className="text-lg text-zinc-400 max-w-2xl mx-auto">
+              Deliver consistently, catch issues before the customer does, and keep every location on track—automatically.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {[
+              { icon: ClipboardCheck, badge: 'AI Quality', title: 'Consistent Inspections & Scoring', desc: 'Run quality checks that actually get completed. AI supports consistent scoring, photo documentation, and trend tracking so you catch issues before the customer does.', features: ['Consistent scoring', 'Issue detection', 'Photo documentation', 'Trend tracking'], color: 'orange' },
+              { icon: CalendarDays, badge: 'AI Scheduling', title: 'Smarter Crews & Coverage', desc: 'Put the right crew on the right job. AI helps match crews to locations, surface coverage gaps, and reduce missed cleans so service stays reliable.', features: ['Crew-to-location matching', 'Coverage visibility', 'Schedule optimization', 'Missed-clean alerts'], color: 'cyan' },
+              { icon: AlertCircle, badge: 'AI Issue Resolution', title: 'Fast Response & Resolution', desc: 'When something goes wrong, fix it before it becomes a complaint. AI tracks work orders, prioritizes by urgency, and keeps resolution and communication in one place.', features: ['Priority routing', 'Status tracking', 'Quick resolution', 'Customer communication'], color: 'emerald' },
+            ].map((item, index) => {
+              const Icon = item.icon;
+              const colorClasses = { orange: 'bg-orange-500/10 text-orange-400 border-orange-500/20', cyan: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20', emerald: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' };
+              return (
+                <div key={index} className={`relative p-8 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-zinc-700 transition-all ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`} style={{ transitionDelay: `${index * 100}ms`, transitionDuration: '500ms' }}>
+                  <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full ${colorClasses[item.color as keyof typeof colorClasses]} text-xs font-semibold mb-4`}>
+                    <Icon className="h-3.5 w-3.5" />
+                    <span>{item.badge}</span>
+                  </div>
+                  <h3 className="text-xl font-semibold text-white mb-3">{item.title}</h3>
+                  <p className="text-zinc-400 leading-relaxed text-sm mb-4">{item.desc}</p>
+                  <ul className="space-y-2">
+                    {item.features.map((feature, i) => (
+                      <li key={i} className="flex items-start gap-2 text-zinc-400 text-sm">
+                        <Check className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-24 border-b border-zinc-800/80 bg-zinc-900/20">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-12">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-sm font-medium mb-4">
+                <Package className="h-4 w-4" />
+                <span>Inventory & Orders</span>
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
+                Organize Supplies—Stop the Paper Notes and Text Threads
+              </h2>
+              <p className="text-lg text-zinc-400 max-w-2xl mx-auto">
+                Most companies are still using paper notes, text messages, or Excel if they&apos;re lucky. JaniBear gives you one place to track inventory and build orders—then email them straight to your preferred vendor.
+              </p>
+            </div>
+            <div className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-xl p-8">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0">
+                  <Package className="h-6 w-6" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-white mb-2">Simple inventory, ready-to-send orders</h3>
+                  <p className="text-zinc-300 mb-4">
+                    Track what you need by location or job, build orders in one place, and send them to your vendor by email—no more scattered notes or digging through threads. Built for how janitorial companies actually work.
+                  </p>
+                  <ul className="space-y-2 text-zinc-400 text-sm">
+                    <li className="flex items-start gap-2"><Check className="h-4 w-4 text-amber-500 shrink-0 mt-0.5" /><span>One place to inventory supplies by site or job</span></li>
+                    <li className="flex items-start gap-2"><Check className="h-4 w-4 text-amber-500 shrink-0 mt-0.5" /><span>Build orders and email them to your preferred vendor</span></li>
+                    <li className="flex items-start gap-2"><Check className="h-4 w-4 text-amber-500 shrink-0 mt-0.5" /><span>Replace paper notes, texts, and spreadsheet chaos</span></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-24 border-b border-zinc-800/80">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
+              Measurable Results for Janitorial Companies
+            </h2>
+            <p className="text-lg text-zinc-400 max-w-2xl mx-auto">
+              See why janitorial sales teams choose JANIBEAR to win more bids.
+            </p>
+          </div>
+          <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto">
+            {[
+              { icon: Clock, stat: '75%', label: 'Time saved per proposal', sublabel: 'From 2 hours to 30 minutes' },
+              { icon: Zap, stat: 'Same-day', label: 'Proposal delivery', sublabel: 'Before you leave the property' },
+              { icon: TrendingUp, stat: '40%', label: 'Higher close rate', sublabel: 'With automated follow-ups' },
+              { icon: DollarSign, stat: '3x', label: 'More proposals sent', sublabel: 'Same team, more opportunities' },
+            ].map((item, index) => {
+              const Icon = item.icon;
+              return (
+                <div key={index} className="bg-zinc-900/80 rounded-xl p-6 border border-zinc-800 text-center hover:border-zinc-700 transition-colors">
+                  <Icon className="h-8 w-8 mx-auto mb-3 text-orange-400/80" />
+                  <div className="text-3xl font-bold text-white mb-1">{item.stat}</div>
+                  <div className="text-zinc-300 font-medium text-sm mb-1">{item.label}</div>
+                  <div className="text-zinc-500 text-xs">{item.sublabel}</div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-24 border-b border-zinc-800/80 bg-zinc-900/20">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
+              Built Specifically for Janitorial Companies
+            </h2>
+            <p className="text-lg text-zinc-400 max-w-xl mx-auto">
+              Designed by janitorial industry experts, for janitorial sales teams.
+            </p>
+          </div>
+          <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+            {[
+              { icon: UserCheck, label: 'Janitorial Sales Reps', desc: 'Close more deals faster' },
+              { icon: Building2, label: 'Owner-Operators', desc: 'Scale without hiring' },
+              { icon: Users, label: 'Franchise Operators', desc: 'Standardize across locations' },
+              { icon: Target, label: 'Facility Services', desc: 'Expand into janitorial' },
+            ].map((item, index) => {
+              const Icon = item.icon;
+              return (
+                <div key={index} className="flex flex-col items-center p-6 rounded-xl bg-zinc-900/80 border border-zinc-800 hover:border-zinc-700 transition-colors text-center">
+                  <div className="w-12 h-12 rounded-xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center mb-3">
+                    <Icon className="h-6 w-6" />
+                  </div>
+                  <span className="font-semibold text-white text-sm mb-1">{item.label}</span>
+                  <span className="text-zinc-500 text-xs">{item.desc}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-24 border-b border-zinc-800/80">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex items-center gap-2 mb-6">
+              <div className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5">
+                <Plus className="h-3.5 w-3.5" />
+                Operations Module
+              </div>
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
+              Complete Operations Management
+            </h2>
+            <p className="text-lg text-zinc-400 mb-12 max-w-2xl">
+              After you win the bid, manage inspections, crews, compliance, purchase orders, and invoicing—all in one platform.
+            </p>
+            <div className="grid sm:grid-cols-2 md:grid-cols-5 gap-6">
+              {[
+                { icon: ClipboardCheck, label: 'Inspections' },
+                { icon: Users, label: 'Crews' },
+                { icon: Shield, label: 'Compliance' },
+                { icon: Package, label: 'Purchase Orders' },
+                { icon: FileSpreadsheet, label: 'Invoicing' },
+              ].map((item, index) => {
+                const Icon = item.icon;
+                return (
+                  <div key={index} className="flex flex-col items-center gap-3 p-4 rounded-xl bg-zinc-900/80 border border-zinc-800 hover:border-emerald-500/30 transition-colors">
+                    <div className="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+                      <Icon className="h-5 w-5" />
+                    </div>
+                    <span className="font-medium text-white text-sm text-center">{item.label}</span>
+                  </div>
+                );
+              })}
+            </div>
+            <p className="mt-8 text-sm text-zinc-500 text-center">
+              Add the Operations module to your plan for complete janitorial business management—from sales to delivery.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section id="book-demo" className="py-24 border-b border-zinc-800/80">
+        <div className="container mx-auto px-4 text-center">
+          <div className="max-w-2xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">
+              Ready to Win More Bids?
+            </h2>
+            <p className="text-lg text-zinc-400 mb-8">
+              Sign up free and see how AI-powered bidding, proposals, and follow-ups can transform your janitorial sales process. No credit card required.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/auth/signup">
+                <Button size="lg" className="text-lg px-8 h-14 bg-orange-500 text-white hover:bg-orange-400 border-0 shadow-lg hover:shadow-xl hover:shadow-orange-500/25 transition-all w-full sm:w-auto">
+                  Get Started
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
+              <Link href="/pricing">
+                <Button size="lg" variant="outline" className="text-lg px-8 h-14 border-zinc-700 text-zinc-300 hover:text-white hover:border-zinc-600 w-full sm:w-auto">
+                  View Pricing
+                </Button>
+              </Link>
+            </div>
+            <p className="text-sm text-zinc-500 mt-6">
+              Free 14-day trial • No credit card required • We&apos;ll configure your pricing
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <footer className="bg-zinc-950 border-t border-zinc-800/80 text-zinc-400 py-12">
+        <div className="container mx-auto px-4">
+          <div className="grid md:grid-cols-4 gap-8">
+            <div className="[&>span]:bg-transparent [&>span]:shadow-none [&>span]:block">
+              <Image src="/janibear-logo.png" alt="JANIBEAR" width={220} height={72} className="h-14 md:h-16 w-auto mb-4 object-contain bg-transparent opacity-95" unoptimized />
+              <p className="text-sm text-zinc-500">
+                AI-powered bidding, proposals, and follow-up automation for janitorial companies. Win more bids, close more deals.
               </p>
             </div>
             <div>
-              <h4 className="text-sm font-semibold text-neutral-900 mb-4">Product</h4>
-              <ul className="space-y-3 text-sm text-neutral-600">
-                <li><Link href="/auth/signup" className="hover:text-neutral-900">Get started</Link></li>
-                <li><Link href="/pricing" className="hover:text-neutral-900">Pricing</Link></li>
-                <li><Link href="/survey" className="hover:text-neutral-900">Find your plan</Link></li>
-                <li><Link href="/#features" className="hover:text-neutral-900">Features</Link></li>
-                <li><Link href="/contact" className="hover:text-neutral-900">Contact</Link></li>
-                <li><Link href="/auth/login" className="hover:text-neutral-900">Sign in</Link></li>
+              <h4 className="text-white font-semibold mb-4 text-sm">Product</h4>
+              <ul className="space-y-2 text-sm">
+                <li><Link href="/auth/signup" className="hover:text-white transition-colors">Get Started</Link></li>
+                <li><Link href="/pricing" className="hover:text-white transition-colors">Pricing</Link></li>
+                <li><Link href="/survey" className="hover:text-white transition-colors">Find Your Plan</Link></li>
+                <li><Link href="/#features" className="hover:text-white transition-colors">Features</Link></li>
+                <li><Link href="/contact" className="hover:text-white transition-colors">Contact</Link></li>
+                <li><Link href="/auth/login" className="hover:text-white transition-colors">Sign In</Link></li>
               </ul>
             </div>
             <div>
-              <h4 className="text-sm font-semibold text-neutral-900 mb-4">Company</h4>
-              <ul className="space-y-3 text-sm text-neutral-600">
-                <li><a href="#" className="hover:text-neutral-900">About</a></li>
-                <li><a href="#" className="hover:text-neutral-900">Contact</a></li>
-                <li><a href="#" className="hover:text-neutral-900">Support</a></li>
+              <h4 className="text-white font-semibold mb-4 text-sm">Company</h4>
+              <ul className="space-y-2 text-sm">
+                <li><a href="#" className="hover:text-white transition-colors">About</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Contact</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Support</a></li>
               </ul>
             </div>
             <div>
-              <h4 className="text-sm font-semibold text-neutral-900 mb-4">Legal</h4>
-              <ul className="space-y-3 text-sm text-neutral-600">
-                <li><a href="#" className="hover:text-neutral-900">Privacy</a></li>
-                <li><a href="#" className="hover:text-neutral-900">Terms</a></li>
+              <h4 className="text-white font-semibold mb-4 text-sm">Legal</h4>
+              <ul className="space-y-2 text-sm">
+                <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Terms of Service</a></li>
               </ul>
             </div>
           </div>
-          <div className="mt-12 pt-8 border-t border-neutral-200 text-center text-sm text-neutral-500">
-            &copy; {new Date().getFullYear()} JaniBear. All rights reserved.
+          <div className="border-t border-zinc-800 mt-8 pt-8 text-center text-sm text-zinc-500">
+            <p>&copy; {new Date().getFullYear()} JANIBEAR. All rights reserved.</p>
           </div>
         </div>
       </footer>

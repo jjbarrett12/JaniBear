@@ -45,6 +45,7 @@ if ($LASTEXITCODE -ne 0) {
 
 Write-Host ""
 Write-Host "  Done. Vercel will build and deploy in 1-2 minutes." -ForegroundColor Green
+Write-Host "  Live site: https://janibear.com" -ForegroundColor Cyan
 Write-Host ""
 
 # Optional: open live URL if .deploy-url exists
@@ -57,10 +58,10 @@ if (Test-Path $urlFile) {
         Start-Process $url
     }
 } else {
-    Write-Host "  Tip: Create a file named  .deploy-url  with your live URL (e.g. https://janibear.vercel.app)" -ForegroundColor Gray
-    Write-Host "  on one line. Next time you deploy, this script will open it for you." -ForegroundColor Gray
+    Write-Host "  Tip: Create  .deploy-url  with  https://janibear.com  on one line to open it after deploy." -ForegroundColor Gray
 }
 
 Write-Host ""
-Write-Host "  To see changes locally right now:  npm run dev  then open http://localhost:3001" -ForegroundColor Gray
+Write-Host "  Local:  npm run dev  then open http://localhost:3001" -ForegroundColor Gray
+Write-Host "  Live:   https://janibear.com  (after build finishes)" -ForegroundColor Gray
 Write-Host ""

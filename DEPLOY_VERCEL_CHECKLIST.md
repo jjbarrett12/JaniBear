@@ -4,6 +4,7 @@ After pushing code, if you don't see changes on janibear.com:
 
 1. **Environment variables**  
    In Vercel: Project → Settings → Environment Variables, set:
+   - `NEXT_PUBLIC_APP_URL` = `https://janibear.com` (for auth redirects and links)
    - `NEXT_PUBLIC_SUPABASE_URL` = your Supabase project URL  
    - `NEXT_PUBLIC_SUPABASE_ANON_KEY` = your Supabase anon key  
 

@@ -31,7 +31,6 @@ import {
   Menu,
   X,
   Bot,
-  Play,
 } from 'lucide-react';
 
 export default function Home() {
@@ -51,7 +50,6 @@ export default function Home() {
 
   return (
     <div className="landing-page min-h-screen bg-zinc-950 text-zinc-100 pb-20 md:pb-0">
-      <div className="hero-dark-wrap">
       <nav
         className={`landing-header border-b sticky top-0 z-50 h-14 md:h-16 py-0 flex items-center overflow-visible transition-all duration-300 ${
           navScrolled ? 'landing-header-scrolled shadow-sm' : ''
@@ -162,7 +160,7 @@ export default function Home() {
       )}
 
       {/* Sticky bottom CTA — mobile only */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 p-3 safe-bottom bg-[#121B3A]/95 border-t border-[#3B4FA3] backdrop-blur md:hidden">
+      <div className="fixed bottom-0 left-0 right-0 z-50 p-3 safe-bottom bg-zinc-950/95 border-t border-zinc-800 backdrop-blur md:hidden">
         <Link href="/demo" className="block w-full">
           <Button className="landing-cta w-full h-12 text-base font-semibold rounded-lg">
             Get a Demo
@@ -171,38 +169,37 @@ export default function Home() {
         </Link>
       </div>
 
-      {/* Hero: dark theme #121B3A, grid, headline, CTAs, floating cards, logos */}
-      <section className="hero-bg-pattern relative min-h-[90vh] overflow-hidden pt-12 md:pt-20 pb-24 md:pb-32">
-        {/* Decorative data / grid overlay */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-[15%] left-[10%] text-[#3B4FA3]/40 text-sm font-mono">8,620.06</div>
-          <div className="absolute top-[25%] right-[15%] text-[#3B4FA3]/40 text-sm font-mono">78.53%</div>
-          <div className="absolute bottom-[35%] left-[20%] text-[#3B4FA3]/40 text-sm font-mono">47%</div>
-          <div className="absolute top-[40%] right-[8%] w-16 h-10 border border-[#3B4FA3]/30 rounded opacity-50" />
-          <div className="absolute bottom-[45%] left-[12%] w-20 h-12 border border-[#3B4FA3]/30 rounded opacity-50" />
-        </div>
-
+      <section className="relative w-full overflow-hidden bg-gradient-to-b from-indigo-950/90 via-indigo-950/50 to-zinc-950 pt-12 md:pt-16 pb-20 md:pb-28">
         <div className="relative container mx-auto px-4 text-center">
           <div
-            className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 border border-[#3B4FA3]/50 text-[#F3F4F6] text-sm font-medium mb-8 transition-all duration-500 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}`}
+            className={`inline-flex items-center gap-2 px-4 py-2 rounded-full bg-transparent border-2 border-indigo-400/80 text-zinc-200 text-sm font-medium mb-8 transition-all duration-500 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}`}
           >
-            <Play className="h-4 w-4 text-[#F28C28]" />
+            <Bot className="h-4 w-4 text-amber-400" />
             <span>Powered by Jani</span>
           </div>
 
           <h1
-            className={`hero-headline text-3xl sm:text-4xl md:text-5xl lg:text-[2.75rem] font-extrabold text-[#F3F4F6] tracking-tight leading-[1.2] max-w-4xl mx-auto transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            className={`hero-headline text-3xl sm:text-4xl md:text-5xl lg:text-[2.75rem] font-extrabold text-white tracking-tight leading-[1.2] max-w-3xl mx-auto transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
           >
-            Win more bids.{' '}
-            <span className="text-[#F28C28]">Prove your quality.</span>{' '}
-            Scale with confidence.
+            See how top janitorial companies win bids, prove quality, and scale —{' '}
+            <span
+              className="hero-gradient-text inline-block"
+              style={{
+                background: 'linear-gradient(to right, #d97706, #fbbf24, #fcd34d)',
+                WebkitBackgroundClip: 'text',
+                backgroundClip: 'text',
+                color: 'transparent',
+              }}
+            >
+              all in one system.
+            </span>
           </h1>
 
           <p
-            className={`text-lg text-[#F3F4F6]/90 max-w-2xl mx-auto mt-6 leading-relaxed transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            className={`hero-subhead text-lg text-zinc-400 max-w-2xl mx-auto mt-6 leading-relaxed transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '80ms' }}
           >
-            All in <span className="text-[#F28C28] font-semibold">one system</span> to bid smarter, ensure quality, and operate with ease.
+            JANIBEAR AI replaces spreadsheets, PDFs, and guesswork with a single platform for <span className="hero-gradient-text inline-block" style={{ background: 'linear-gradient(to right, #d97706, #fbbf24, #fcd34d)', WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' }}>bidding</span>, inspections, reporting, and accountability.
           </p>
 
           <div
@@ -223,53 +220,13 @@ export default function Home() {
           </div>
 
           <p
-            className={`mt-8 text-sm text-[#F3F4F6]/70 transition-all duration-700 ${mounted ? 'opacity-100' : 'opacity-0'}`}
+            className={`mt-10 text-sm text-zinc-500 transition-all duration-700 ${mounted ? 'opacity-100' : 'opacity-0'}`}
             style={{ transitionDelay: '200ms' }}
           >
-            Used daily by 500+ janitorial companies · Plans start at $59/month
+            Trusted by 500+ cleaning companies · Starting at $59/mo
           </p>
         </div>
-
-        {/* Floating document cards */}
-        <div className="absolute inset-0 pointer-events-none hidden lg:block">
-          <div className={`absolute left-[5%] top-[45%] w-64 bg-white rounded-lg shadow-2xl p-4 -rotate-6 transition-all duration-700 ${mounted ? 'opacity-95 translate-y-0' : 'opacity-0 translate-y-4'}`} style={{ transitionDelay: '300ms' }}>
-            <div className="flex items-center gap-2 mb-2">
-              <Image src="/janibear-logo.png" alt="" width={80} height={26} className="h-5 w-auto object-contain" unoptimized />
-            </div>
-            <p className="text-xs font-semibold text-zinc-800 mb-2">Bid Proposal</p>
-            <div className="text-[10px] text-zinc-600 space-y-1">
-              <p>JANIBEAR Cleaning Services</p>
-              <p>Daily Cleaning · Monthly Refills · Deep Clean</p>
-            </div>
-            <div className="mt-2 pt-2 border-t border-zinc-200 flex items-center justify-between">
-              <span className="text-[10px] text-zinc-500">David Simon</span>
-              <span className="text-[10px] font-medium text-emerald-600">APPROVED</span>
-            </div>
-          </div>
-          <div className={`absolute right-[5%] top-[40%] w-64 bg-white rounded-lg shadow-2xl p-4 rotate-6 transition-all duration-700 ${mounted ? 'opacity-95 translate-y-0' : 'opacity-0 translate-y-4'}`} style={{ transitionDelay: '350ms' }}>
-            <p className="text-[10px] text-zinc-500 mb-1">Pinnacle Properties</p>
-            <p className="text-xs font-semibold text-zinc-800 mb-2">Inspection Report</p>
-            <p className="text-[10px] text-zinc-600 mb-2">Apr 22, 2024 · Scott H.</p>
-            <ul className="text-[10px] text-zinc-600 space-y-1">
-              <li className="flex items-center gap-1"><Check className="h-3 w-3 text-emerald-500" /> Restrooms sanitized</li>
-              <li className="flex items-center gap-1"><Check className="h-3 w-3 text-emerald-500" /> Floors inspected</li>
-              <li className="flex items-center gap-1"><Check className="h-3 w-3 text-emerald-500" /> Supplies restocked</li>
-            </ul>
-            <p className="mt-2 text-[10px] font-medium text-emerald-600">All tasks completed successfully</p>
-          </div>
-        </div>
-
-        {/* Partner logos */}
-        <div className={`relative container mx-auto px-4 mt-16 md:mt-24 transition-all duration-700 ${mounted ? 'opacity-100' : 'opacity-0'}`} style={{ transitionDelay: '400ms' }}>
-          <p className="text-xs text-[#F3F4F6]/50 uppercase tracking-wider mb-4">Trusted by industry leaders</p>
-          <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12">
-            {['JIT', 'SUPERCLEAN', 'Vanygard', 'BSC'].map((name) => (
-              <span key={name} className="text-[#F3F4F6]/60 font-semibold text-sm tracking-wide">{name}</span>
-            ))}
-          </div>
-        </div>
       </section>
-      </div>
 
       <section id="features" className="py-24 border-b border-zinc-800/80 bg-zinc-900/20">
         <div className="container mx-auto px-4">

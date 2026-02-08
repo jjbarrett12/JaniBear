@@ -114,56 +114,6 @@
   color: #71717a !important;
 }
 
-/* Dark hero block: nav + hero use #121B3A, #F3F4F6, #F28C28, #3B4FA3 */
-.landing-page .hero-dark-wrap .landing-header {
-  background: #121B3A !important;
-  border-color: #3B4FA3 !important;
-}
-.landing-page .hero-dark-wrap .landing-header.landing-header-scrolled {
-  background: rgba(18, 27, 58, 0.95) !important;
-}
-.landing-page .hero-dark-wrap .landing-header .landing-nav-link,
-.landing-page .hero-dark-wrap .landing-header .landing-nav-link-text {
-  color: #F3F4F6 !important;
-}
-.landing-page .hero-dark-wrap .landing-header .landing-nav-link:hover {
-  color: #fff !important;
-  background: rgba(59, 79, 163, 0.3) !important;
-}
-.landing-page .hero-dark-wrap .landing-cta {
-  background: #F28C28 !important;
-  color: #fff !important;
-  border: none !important;
-  box-shadow: 0 4px 14px rgba(242, 140, 40, 0.35);
-}
-.landing-page .hero-dark-wrap .landing-cta:hover {
-  background: #f59e3a !important;
-}
-.landing-page .hero-dark-wrap .landing-outline {
-  border-color: #3B4FA3 !important;
-  color: #F3F4F6 !important;
-  background: transparent !important;
-}
-.landing-page .hero-dark-wrap .landing-outline:hover {
-  border-color: #5b6fc7 !important;
-  background: rgba(59, 79, 163, 0.2) !important;
-  color: #fff !important;
-}
-.landing-page .hero-dark-wrap .landing-header button.landing-nav-link {
-  color: #F3F4F6 !important;
-}
-.landing-page .hero-dark-wrap .landing-header button.landing-nav-link:hover {
-  color: #fff !important;
-  background: rgba(59, 79, 163, 0.3) !important;
-}
-.landing-page .hero-dark-wrap .hero-bg-pattern {
-  background-color: #121B3A;
-  background-image:
-    linear-gradient(rgba(59, 79, 163, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(59, 79, 163, 0.08) 1px, transparent 1px);
-  background-size: 48px 48px;
-}
-
 @layer base {
   :root {
     --background: 0 0% 100%;

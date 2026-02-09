@@ -51,17 +51,18 @@ export default function Home() {
   return (
     <div className="landing-page min-h-screen bg-black text-white pb-20 md:pb-0">
       <nav
-        className={`landing-header border-b sticky top-0 z-50 h-14 md:h-16 py-0 flex items-center overflow-visible transition-all duration-300 ${
+        className={`landing-header border-b border-white/10 sticky top-0 z-50 h-16 md:h-20 py-0 flex items-center overflow-visible transition-all duration-300 ${
           navScrolled ? 'landing-header-scrolled shadow-sm' : ''
         }`}
+        style={{ backgroundColor: '#000' }}
       >
         <div className="container relative mx-auto px-4 h-full flex items-center justify-between gap-4 min-h-0">
-          <Link href="/" className="landing-logo-wrap flex items-center shrink-0 overflow-visible bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block [&>span]:overflow-visible">
+          <Link href="/" className="landing-logo-wrap flex items-center shrink-0 bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block">
             <Image
               src="/janibear-logo.png"
               alt="JANIBEAR"
-              width={320}
-              height={104}
+              width={280}
+              height={91}
               className="landing-logo w-auto object-contain object-left bg-transparent"
               priority
               unoptimized
@@ -196,7 +197,7 @@ export default function Home() {
           </h1>
 
           <p
-            className={`hero-subhead text-lg text-zinc-300 max-w-2xl mx-auto mt-6 leading-relaxed transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            className={`hero-subhead text-lg text-zinc-300 max-w-2xl mx-auto mt-9 leading-relaxed transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '80ms' }}
           >
             JANIBEAR AI replaces spreadsheets, PDFs, and guesswork with a single platform for <span className="hero-gradient-text inline-block" style={{ background: 'linear-gradient(to right, #fbbf24, #fcd34d)', WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' }}>bidding</span>, inspections, reporting, and accountability.
@@ -228,17 +229,17 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="features" className="py-24 border-b border-zinc-800/80 bg-zinc-900/20">
+      <section id="features" className="py-24 border-b border-white/10 bg-black">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-sm font-medium mb-4">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-400/30 text-amber-300 text-sm font-medium mb-4">
               <Brain className="h-4 w-4" />
               <span>Powered by AI</span>
             </div>
             <h2 className="font-heading text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
               Three AI Capabilities That Win More Bids
             </h2>
-            <p className="text-lg text-zinc-400 max-w-2xl mx-auto">
+            <p className="text-lg text-zinc-300 max-w-2xl mx-auto">
               From walkthrough to closed deal—AI handles the heavy lifting so you can focus on relationships.
             </p>
           </div>
@@ -252,17 +253,17 @@ export default function Home() {
               const Icon = item.icon;
               const colorClasses = { gold: 'bg-amber-500/10 text-amber-400 border-amber-500/20', cyan: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20', emerald: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' };
               return (
-                <div key={index} className={`relative p-8 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-zinc-700 transition-all ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`} style={{ transitionDelay: `${index * 100}ms`, transitionDuration: '500ms' }}>
+                <div key={index} className={`relative p-8 rounded-2xl bg-white/5 border border-white/10 hover:border-amber-400/20 transition-all ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`} style={{ transitionDelay: `${index * 100}ms`, transitionDuration: '500ms' }}>
                   <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full ${colorClasses[item.color as keyof typeof colorClasses]} text-xs font-semibold mb-4`}>
                     <Icon className="h-3.5 w-3.5" />
                     <span>{item.badge}</span>
                   </div>
                   <h3 className="text-xl font-semibold text-white mb-3">{item.title}</h3>
-                  <p className="text-zinc-400 leading-relaxed text-sm mb-4">{item.desc}</p>
+                  <p className="text-zinc-300 leading-relaxed text-sm mb-4">{item.desc}</p>
                   <ul className="space-y-2">
                     {item.features.map((feature, i) => (
                       <li key={i} className="flex items-start gap-2 text-zinc-400 text-sm">
-                        <Check className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
+                        <Check className="h-4 w-4 text-amber-400 shrink-0 mt-0.5" />
                         <span>{feature}</span>
                       </li>
                     ))}
@@ -274,17 +275,17 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="operations-qa" className="py-24 border-b border-zinc-800/80 bg-zinc-900/20">
+      <section id="operations-qa" className="py-24 border-b border-white/10 bg-black">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-medium mb-4">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-400/30 text-emerald-300 text-sm font-medium mb-4">
               <ClipboardCheck className="h-4 w-4" />
               <span>Operations & QA</span>
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
               Three AI Capabilities for Operations & Quality Assurance
             </h2>
-            <p className="text-lg text-zinc-400 max-w-2xl mx-auto">
+            <p className="text-lg text-zinc-300 max-w-2xl mx-auto">
               Deliver consistently, catch issues before the customer does, and keep every location on track—automatically.
             </p>
           </div>
@@ -298,17 +299,17 @@ export default function Home() {
               const Icon = item.icon;
               const colorClasses = { gold: 'bg-amber-500/10 text-amber-400 border-amber-500/20', cyan: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20', emerald: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' };
               return (
-                <div key={index} className={`relative p-8 rounded-2xl bg-zinc-900/80 border border-zinc-800 hover:border-zinc-700 transition-all ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`} style={{ transitionDelay: `${index * 100}ms`, transitionDuration: '500ms' }}>
+                <div key={index} className={`relative p-8 rounded-2xl bg-white/5 border border-white/10 hover:border-amber-400/20 transition-all ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`} style={{ transitionDelay: `${index * 100}ms`, transitionDuration: '500ms' }}>
                   <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full ${colorClasses[item.color as keyof typeof colorClasses]} text-xs font-semibold mb-4`}>
                     <Icon className="h-3.5 w-3.5" />
                     <span>{item.badge}</span>
                   </div>
                   <h3 className="text-xl font-semibold text-white mb-3">{item.title}</h3>
-                  <p className="text-zinc-400 leading-relaxed text-sm mb-4">{item.desc}</p>
+                  <p className="text-zinc-300 leading-relaxed text-sm mb-4">{item.desc}</p>
                   <ul className="space-y-2">
                     {item.features.map((feature, i) => (
                       <li key={i} className="flex items-start gap-2 text-zinc-400 text-sm">
-                        <Check className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
+                        <Check className="h-4 w-4 text-amber-400 shrink-0 mt-0.5" />
                         <span>{feature}</span>
                       </li>
                     ))}
@@ -320,24 +321,24 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-24 border-b border-zinc-800/80 bg-zinc-900/20">
+      <section className="py-24 border-b border-white/10 bg-black">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-sm font-medium mb-4">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-400/30 text-amber-300 text-sm font-medium mb-4">
                 <Package className="h-4 w-4" />
                 <span>Inventory & Orders</span>
               </div>
               <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
                 Organize Supplies—Stop the Paper Notes and Text Threads
               </h2>
-              <p className="text-lg text-zinc-400 max-w-2xl mx-auto">
+              <p className="text-lg text-zinc-300 max-w-2xl mx-auto">
                 Most companies are still using paper notes, text messages, or Excel if they&apos;re lucky. JANIBEAR gives you one place to track inventory and build orders—then email them straight to your preferred vendor.
               </p>
             </div>
-            <div className="bg-gradient-to-r from-amber-500/10 to-amber-600/10 border border-amber-500/20 rounded-xl p-8">
+            <div className="bg-white/5 border border-white/10 rounded-xl p-8">
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0">
+                <div className="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-300 flex items-center justify-center shrink-0">
                   <Package className="h-6 w-6" />
                 </div>
                 <div>
@@ -346,9 +347,9 @@ export default function Home() {
                     Track what you need by location or job, build orders in one place, and send them to your vendor by email—no more scattered notes or digging through threads. Built for how janitorial companies actually work.
                   </p>
                   <ul className="space-y-2 text-zinc-400 text-sm">
-                    <li className="flex items-start gap-2"><Check className="h-4 w-4 text-amber-500 shrink-0 mt-0.5" /><span>One place to inventory supplies by site or job</span></li>
-                    <li className="flex items-start gap-2"><Check className="h-4 w-4 text-amber-500 shrink-0 mt-0.5" /><span>Build orders and email them to your preferred vendor</span></li>
-                    <li className="flex items-start gap-2"><Check className="h-4 w-4 text-amber-500 shrink-0 mt-0.5" /><span>Replace paper notes, texts, and spreadsheet chaos</span></li>
+                    <li className="flex items-start gap-2"><Check className="h-4 w-4 text-amber-400 shrink-0 mt-0.5" /><span>One place to inventory supplies by site or job</span></li>
+                    <li className="flex items-start gap-2"><Check className="h-4 w-4 text-amber-400 shrink-0 mt-0.5" /><span>Build orders and email them to your preferred vendor</span></li>
+                    <li className="flex items-start gap-2"><Check className="h-4 w-4 text-amber-400 shrink-0 mt-0.5" /><span>Replace paper notes, texts, and spreadsheet chaos</span></li>
                   </ul>
                 </div>
               </div>
@@ -357,13 +358,13 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-24 border-b border-zinc-800/80">
+      <section className="py-24 border-b border-white/10">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
               Measurable Results for Janitorial Companies
             </h2>
-            <p className="text-lg text-zinc-400 max-w-2xl mx-auto">
+            <p className="text-lg text-zinc-300 max-w-2xl mx-auto">
               See why janitorial sales teams choose JANIBEAR to win more bids.
             </p>
           </div>
@@ -376,11 +377,11 @@ export default function Home() {
             ].map((item, index) => {
               const Icon = item.icon;
               return (
-                <div key={index} className="bg-zinc-900/80 rounded-xl p-6 border border-zinc-800 text-center hover:border-zinc-700 transition-colors">
+                <div key={index} className="bg-white/5 rounded-xl p-6 border border-white/10 text-center hover:border-amber-400/20 transition-colors">
                   <Icon className="h-8 w-8 mx-auto mb-3 text-amber-400/80" />
                   <div className="text-3xl font-bold text-white mb-1">{item.stat}</div>
                   <div className="text-zinc-300 font-medium text-sm mb-1">{item.label}</div>
-                  <div className="text-zinc-500 text-xs">{item.sublabel}</div>
+                  <div className="text-zinc-400 text-xs">{item.sublabel}</div>
                 </div>
               );
             })}
@@ -388,13 +389,13 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-24 border-b border-zinc-800/80 bg-zinc-900/20">
+      <section className="py-24 border-b border-white/10 bg-black">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
               Built Specifically for Janitorial Companies
             </h2>
-            <p className="text-lg text-zinc-400 max-w-xl mx-auto">
+            <p className="text-lg text-zinc-300 max-w-xl mx-auto">
               Designed by janitorial industry experts, for janitorial sales teams.
             </p>
           </div>
@@ -407,12 +408,12 @@ export default function Home() {
             ].map((item, index) => {
               const Icon = item.icon;
               return (
-                <div key={index} className="flex flex-col items-center p-6 rounded-xl bg-zinc-900/80 border border-zinc-800 hover:border-zinc-700 transition-colors text-center">
-                  <div className="w-12 h-12 rounded-xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center mb-3">
+                <div key={index} className="flex flex-col items-center p-6 rounded-xl bg-white/5 border border-white/10 hover:border-amber-400/20 transition-colors text-center">
+                  <div className="w-12 h-12 rounded-xl bg-cyan-500/10 text-cyan-300 flex items-center justify-center mb-3">
                     <Icon className="h-6 w-6" />
                   </div>
                   <span className="font-semibold text-white text-sm mb-1">{item.label}</span>
-                  <span className="text-zinc-500 text-xs">{item.desc}</span>
+                  <span className="text-zinc-400 text-xs">{item.desc}</span>
                 </div>
               );
             })}
@@ -420,11 +421,11 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-24 border-b border-zinc-800/80">
+      <section className="py-24 border-b border-white/10">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
             <div className="flex items-center justify-center gap-2 mb-6">
-              <div className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5">
+              <div className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-400/30 text-emerald-300 text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5">
                 <Plus className="h-3.5 w-3.5" />
                 Operations Module
               </div>
@@ -432,7 +433,7 @@ export default function Home() {
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
               Complete Operations Management
             </h2>
-            <p className="text-lg text-zinc-400 mb-12 max-w-2xl mx-auto">
+            <p className="text-lg text-zinc-300 mb-12 max-w-2xl mx-auto">
               After you win the bid, manage inspections, crews, compliance, purchase orders, and invoicing—all in one platform.
             </p>
             <div className="grid sm:grid-cols-2 md:grid-cols-5 gap-6">
@@ -445,8 +446,8 @@ export default function Home() {
               ].map((item, index) => {
                 const Icon = item.icon;
                 return (
-                  <div key={index} className="flex flex-col items-center gap-3 p-4 rounded-xl bg-zinc-900/80 border border-zinc-800 hover:border-emerald-500/30 transition-colors">
-                    <div className="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+                  <div key={index} className="flex flex-col items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/10 hover:border-amber-400/20 transition-colors">
+                    <div className="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-300 flex items-center justify-center">
                       <Icon className="h-5 w-5" />
                     </div>
                     <span className="font-medium text-white text-sm text-center">{item.label}</span>
@@ -454,20 +455,20 @@ export default function Home() {
                 );
               })}
             </div>
-            <p className="mt-8 text-sm text-zinc-500 text-center">
+            <p className="mt-8 text-sm text-zinc-400 text-center">
               Add the Operations module to your plan for complete janitorial business management—from sales to delivery.
             </p>
           </div>
         </div>
       </section>
 
-      <section id="book-demo" className="py-24 border-b border-zinc-800/80">
+      <section id="book-demo" className="py-24 border-b border-white/10">
         <div className="container mx-auto px-4 text-center">
           <div className="max-w-2xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">
               Ready to See It in Action?
             </h2>
-            <p className="text-lg text-zinc-400 mb-8">
+            <p className="text-lg text-zinc-300 mb-8">
               Get a personalized demo. We&apos;ll show you how JANIBEAR handles bids, proposals, and operations—and configure pricing for your team.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -478,12 +479,12 @@ export default function Home() {
                 </Button>
               </Link>
               <Link href="/pricing">
-                <Button size="lg" variant="outline" className="text-lg px-8 h-14 border-zinc-700 text-zinc-300 hover:text-white hover:border-zinc-600 w-full sm:w-auto">
+                <Button size="lg" variant="outline" className="text-lg px-8 h-14 border-white/30 text-zinc-200 hover:text-white hover:border-white/50 w-full sm:w-auto">
                   View Pricing
                 </Button>
               </Link>
             </div>
-            <p className="text-sm text-zinc-500 mt-6">
+            <p className="text-sm text-zinc-400 mt-6">
               We&apos;ll reach out within one business day • Bring your pricing sheet—we&apos;ll configure it
             </p>
           </div>

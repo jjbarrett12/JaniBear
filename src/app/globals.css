@@ -36,30 +36,23 @@
 .landing-logo-wrap {
   display: flex;
   align-items: center;
-  overflow: visible;
+  overflow: hidden;
   flex-shrink: 0;
   justify-content: flex-start;
-  /* Reserve space for 2x-wider logo so layout doesn't shift */
-  width: 160px;
-}
-@media (min-width: 768px) {
-  .landing-logo-wrap {
-    width: 200px;
-  }
 }
 .landing-header .landing-logo {
-  max-height: 40px !important;
-  height: 40px !important;
   width: auto !important;
   flex-shrink: 0;
-  /* 2x wider, same height so header height stays fixed */
-  transform: scaleX(2) scaleY(1);
-  transform-origin: left center;
+  object-fit: contain;
+  object-position: left center;
+  /* Larger logo: 48px mobile, 72px desktop (header is h-16 md:h-20) */
+  height: 3rem !important;
+  max-height: 3rem !important;
 }
 @media (min-width: 768px) {
   .landing-header .landing-logo {
-    max-height: 48px !important;
-    height: 48px !important;
+    height: 4.5rem !important;
+    max-height: 4.5rem !important;
   }
 }
 .landing-page .landing-cta {
@@ -116,6 +109,8 @@
 .landing-page .hero-gradient-text {
   -webkit-background-clip: text;
   background-clip: text;
+  padding-bottom: 0.15em; /* prevent descenders (y, g) from being clipped */
+  display: inline-block;
 }
 .landing-page .hero-subhead {
   font-weight: 400;
@@ -337,4 +332,36 @@
   .print\:hidden {
     display: none !important;
   }
+}
+
+/* ===== Landing: ensure these win over Tailwind/theme (load last) ===== */
+.landing-page .landing-header {
+  background: #000 !important;
+  border-color: #27272a !important;
+}
+.landing-page .landing-header.landing-header-scrolled {
+  background: rgba(0, 0, 0, 0.95) !important;
+}
+.landing-page .landing-header .landing-logo {
+  height: 3rem !important;
+  max-height: 3rem !important;
+  width: auto !important;
+  object-fit: contain;
+  object-position: left center;
+}
+@media (min-width: 768px) {
+  .landing-page .landing-header .landing-logo {
+    height: 4.5rem !important;
+    max-height: 4.5rem !important;
+  }
+}
+.landing-page .landing-header button.landing-nav-link,
+.landing-page .landing-header a.landing-nav-link {
+  color: #fafafa !important;
+  background: transparent !important;
+}
+.landing-page .landing-header button.landing-nav-link:hover,
+.landing-page .landing-header a.landing-nav-link:hover {
+  color: #fff !important;
+  background: rgba(255, 255, 255, 0.1) !important;
 }

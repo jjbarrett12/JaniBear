@@ -29,7 +29,6 @@ import {
   FileSpreadsheet,
   Plus,
   Shield,
-  Quote,
 } from 'lucide-react';
 
 export default function Home() {
@@ -172,31 +171,13 @@ export default function Home() {
       <section className="relative w-full overflow-hidden bg-black pt-12 md:pt-16 pb-20 md:pb-28">
         <div className="relative container mx-auto px-4 text-center">
           <h1
-            className={`hero-headline font-heading text-3xl sm:text-4xl md:text-5xl lg:text-[2.75rem] font-extrabold text-white tracking-tight leading-[1.2] max-w-3xl mx-auto transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            className={`hero-headline font-heading text-3xl sm:text-4xl md:text-5xl lg:text-[2.75rem] font-extrabold text-white tracking-tight leading-[1.25] max-w-3xl mx-auto transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
           >
-            Win more janitorial bids. Prove your{' '}
-            <span
-              className="hero-gradient-text inline-block"
-              style={{
-                background: 'linear-gradient(to right, #fde047, #fef08a)',
-                WebkitBackgroundClip: 'text',
-                backgroundClip: 'text',
-                color: 'transparent',
-              }}
-            >
-              quality.
-            </span>{' '}
-            <span
-              className="hero-gradient-text inline-block"
-              style={{
-                background: 'linear-gradient(to right, #fde047, #fef08a)',
-                WebkitBackgroundClip: 'text',
-                backgroundClip: 'text',
-                color: 'transparent',
-              }}
-            >
-              Never guess again.
-            </span>
+            Win more janitorial bids.
+            <br />
+            Keep customers longer.
+            <br />
+            Scale without adding headcount.
           </h1>
 
           <p
@@ -207,7 +188,21 @@ export default function Home() {
           </p>
 
           <div
-            className={`flex flex-col sm:flex-row gap-3 justify-center items-center mt-10 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            className={`mt-10 flex justify-center transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            style={{ transitionDelay: '100ms' }}
+          >
+            <Image
+              src="/hero-review.png"
+              alt="Customer testimonial: Once we could prove our quality, price stopped being the main objection. — Chris K. - Owner, Regional Janitorial Company"
+              width={640}
+              height={280}
+              className="w-full max-w-2xl rounded-2xl object-contain"
+              unoptimized
+            />
+          </div>
+
+          <div
+            className={`flex flex-col sm:flex-row gap-3 justify-center items-center mt-6 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '120ms' }}
           >
             <Link href="/demo">
@@ -243,51 +238,35 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Testimonial - border more yellow than gold */}
-      <section className="py-16 md:py-24 bg-black">
-        <div className="container mx-auto px-4">
-          <div
-            className="max-w-3xl mx-auto rounded-2xl p-8 md:p-10 bg-white/5 border-2 text-center"
-            style={{
-              borderColor: '#fde047',
-              boxShadow: '0 0 24px rgba(253, 224, 71, 0.25)',
-            }}
-          >
-            <Quote className="h-12 w-12 text-white/20 mx-auto mb-4" aria-hidden />
-            <blockquote className="text-xl md:text-2xl font-bold text-white leading-snug mb-4">
-              &ldquo;Once we could prove our quality, price stopped being the main objection.&rdquo;
-            </blockquote>
-            <p className="text-zinc-400">
-              — Owner, Regional Janitorial Company
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Scrolling companies serviced */}
+      {/* Scrolling company logos */}
       <section className="py-12 md:py-16 bg-black border-y border-white/10 overflow-hidden">
-        <p className="text-center text-zinc-400 text-sm mb-8">
+        <p className="text-center text-white text-sm mb-8">
           Trusted by 500+ cleaning companies across the U.S.
         </p>
         <div className="relative">
-          <div className="flex animate-landing-marquee gap-12 md:gap-16 whitespace-nowrap will-change-transform">
+          <div className="flex animate-landing-marquee gap-12 md:gap-16 items-center will-change-transform">
             {[
-              'TWO MAIDS',
-              'ABM',
-              'JAN-PRO',
-              'ServiceMASTER',
-              'TWO MAIDS',
-              'ABM',
-              'JAN-PRO',
-              'ServiceMASTER',
-            ].map((name, i) => (
-              <span
-                key={i}
-                className="text-lg md:text-xl font-semibold text-zinc-500 tracking-wider"
-              >
-                {name}
-              </span>
-            ))}
+              { src: '/logos/placeholder.svg', alt: 'Partner company' },
+              { src: '/logos/placeholder.svg', alt: 'Partner company' },
+              { src: '/logos/placeholder.svg', alt: 'Partner company' },
+              { src: '/logos/placeholder.svg', alt: 'Partner company' },
+            ]
+              .flatMap((set) => [set, set])
+              .map((logo, i) => (
+                <div
+                  key={i}
+                  className="flex items-center justify-center shrink-0 h-10 md:h-12 w-28 md:w-36 px-4"
+                >
+                  <Image
+                    src={logo.src}
+                    alt={logo.alt}
+                    width={144}
+                    height={48}
+                    className="max-h-full w-auto object-contain opacity-80 hover:opacity-100 transition-opacity"
+                    unoptimized
+                  />
+                </div>
+              ))}
           </div>
         </div>
       </section>

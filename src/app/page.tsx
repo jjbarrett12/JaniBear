@@ -29,6 +29,7 @@ import {
   FileSpreadsheet,
   Plus,
   Shield,
+  Quote,
 } from 'lucide-react';
 
 export default function Home() {
@@ -170,40 +171,44 @@ export default function Home() {
 
       <section className="relative w-full overflow-hidden bg-black pt-12 md:pt-16 pb-20 md:pb-28">
         <div className="relative container mx-auto px-4 text-center">
-          <div
-            className={`inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/20 text-zinc-300 text-sm font-medium mb-8 transition-all duration-500 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}`}
-          >
-            <Bot className="h-4 w-4 text-amber-400" />
-            <span>Powered by Jani</span>
-          </div>
-
           <h1
             className={`hero-headline font-heading text-3xl sm:text-4xl md:text-5xl lg:text-[2.75rem] font-extrabold text-white tracking-tight leading-[1.2] max-w-3xl mx-auto transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
           >
-            See how top janitorial companies win bids, prove quality, and scale —{' '}
+            Win more janitorial bids. Prove your{' '}
             <span
               className="hero-gradient-text inline-block"
               style={{
-                background: 'linear-gradient(to right, #fbbf24, #fcd34d)',
+                background: 'linear-gradient(to right, #fde047, #fef08a)',
                 WebkitBackgroundClip: 'text',
                 backgroundClip: 'text',
                 color: 'transparent',
               }}
             >
-              all in one system.
+              quality.
+            </span>{' '}
+            <span
+              className="hero-gradient-text inline-block"
+              style={{
+                background: 'linear-gradient(to right, #fde047, #fef08a)',
+                WebkitBackgroundClip: 'text',
+                backgroundClip: 'text',
+                color: 'transparent',
+              }}
+            >
+              Never guess again.
             </span>
           </h1>
 
           <p
-            className={`hero-subhead text-lg text-zinc-300 max-w-2xl mx-auto mt-9 leading-relaxed transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            className={`hero-subhead text-lg text-zinc-300 max-w-2xl mx-auto mt-6 leading-relaxed transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '80ms' }}
           >
-            JANIBEAR AI replaces spreadsheets, PDFs, and guesswork with a single platform for <span className="hero-gradient-text inline-block" style={{ background: 'linear-gradient(to right, #fbbf24, #fcd34d)', WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' }}>bidding</span>, inspections, reporting, and accountability.
+            Stop managing bids, inspections, and quality in spreadsheets and PDFs. JANIBEAR gives you one system to win contracts, prove performance.
           </p>
 
           <div
             className={`flex flex-col sm:flex-row gap-3 justify-center items-center mt-10 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
-            style={{ transitionDelay: '160ms' }}
+            style={{ transitionDelay: '120ms' }}
           >
             <Link href="/demo">
               <Button size="lg" className="landing-cta landing-cta-lg text-base px-8 h-12">
@@ -218,12 +223,72 @@ export default function Home() {
             </Link>
           </div>
 
-          <p
-            className={`mt-10 text-sm text-zinc-400 transition-all duration-700 ${mounted ? 'opacity-100' : 'opacity-0'}`}
-            style={{ transitionDelay: '200ms' }}
+          <ul
+            className={`flex flex-wrap justify-center gap-x-6 gap-y-2 mt-8 text-sm text-zinc-300 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            style={{ transitionDelay: '160ms' }}
           >
-            Trusted by 500+ cleaning companies · Starting at $59/mo
-          </p>
+            <li className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-amber-400 shrink-0" />
+              <span>15-minute walkthrough</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-amber-400 shrink-0" />
+              <span>No contracts</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-amber-400 shrink-0" />
+              <span>Built for commercial janitorial teams</span>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      {/* Testimonial - border more yellow than gold */}
+      <section className="py-16 md:py-24 bg-black">
+        <div className="container mx-auto px-4">
+          <div
+            className="max-w-3xl mx-auto rounded-2xl p-8 md:p-10 bg-white/5 border-2 text-center"
+            style={{
+              borderColor: '#fde047',
+              boxShadow: '0 0 24px rgba(253, 224, 71, 0.25)',
+            }}
+          >
+            <Quote className="h-12 w-12 text-white/20 mx-auto mb-4" aria-hidden />
+            <blockquote className="text-xl md:text-2xl font-bold text-white leading-snug mb-4">
+              &ldquo;Once we could prove our quality, price stopped being the main objection.&rdquo;
+            </blockquote>
+            <p className="text-zinc-400">
+              — Owner, Regional Janitorial Company
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Scrolling companies serviced */}
+      <section className="py-12 md:py-16 bg-black border-y border-white/10 overflow-hidden">
+        <p className="text-center text-zinc-400 text-sm mb-8">
+          Trusted by 500+ cleaning companies across the U.S.
+        </p>
+        <div className="relative">
+          <div className="flex animate-landing-marquee gap-12 md:gap-16 whitespace-nowrap will-change-transform">
+            {[
+              'TWO MAIDS',
+              'ABM',
+              'JAN-PRO',
+              'ServiceMASTER',
+              'TWO MAIDS',
+              'ABM',
+              'JAN-PRO',
+              'ServiceMASTER',
+            ].map((name, i) => (
+              <span
+                key={i}
+                className="text-lg md:text-xl font-semibold text-zinc-500 tracking-wider"
+              >
+                {name}
+              </span>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -364,7 +429,7 @@ export default function Home() {
             {[
               { icon: UserCheck, label: 'Janitorial Sales Reps', desc: 'Close more deals faster' },
               { icon: Building2, label: 'Owner-Operators', desc: 'Scale without hiring' },
-              { icon: Users, label: 'Franchise Operators', desc: 'Standardize across locations', note: 'We cater to both Area Franchisors and Unit Franchisees' },
+              { icon: Users, label: 'Franchise Operators', desc: '', note: 'We cater to both Area Franchisors and Unit Franchisees' },
               { icon: Target, label: 'Facility Services', desc: 'Expand into janitorial' },
             ].map((item, index) => {
               const Icon = item.icon;
@@ -374,7 +439,7 @@ export default function Home() {
                     <Icon className="h-6 w-6" />
                   </div>
                   <span className="font-semibold text-white text-sm mb-1">{item.label}</span>
-                  <span className="text-zinc-400 text-xs">{item.desc}</span>
+                  {item.desc ? <span className="text-zinc-400 text-xs">{item.desc}</span> : null}
                   {'note' in item && item.note && (
                     <span className="text-zinc-500 text-xs mt-2">{item.note}</span>
                   )}

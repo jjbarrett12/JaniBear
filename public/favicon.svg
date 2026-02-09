@@ -1,23 +1,31 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <!-- Geometric bear from new JANIBEAR logo - yellow & white, favicon size -->
+  <!-- Geometric bear head from JANIBEAR logo: angular, faceted, yellow-gold gradient top to bottom -->
   <defs>
-    <linearGradient id="bear-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="bear-grad" x1="0%" y1="0%" x2="0%" y2="100%">
       <stop offset="0%" stop-color="#fef3c7"/>
-      <stop offset="50%" stop-color="#fbbf24"/>
+      <stop offset="35%" stop-color="#fcd34d"/>
+      <stop offset="70%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="snout-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fcd34d"/>
       <stop offset="100%" stop-color="#d97706"/>
     </linearGradient>
   </defs>
-  <!-- Left ear -->
-  <polygon points="4,6 12,9 10,16 4,14" fill="url(#bear-grad)" stroke="#fcd34d" stroke-width="0.8"/>
+  <!-- Left ear (pointed, angular) -->
+  <polygon points="5,4 12,8 10,14 4,12" fill="url(#bear-grad)"/>
   <!-- Right ear -->
-  <polygon points="28,6 20,9 22,16 28,14" fill="url(#bear-grad)" stroke="#fcd34d" stroke-width="0.8"/>
-  <!-- Main head (hexagon) -->
-  <polygon points="16,2 30,10 28,24 16,30 4,24 2,10" fill="url(#bear-grad)" stroke="#fcd34d" stroke-width="0.8"/>
-  <!-- Snout (lighter) -->
-  <polygon points="12,14 20,14 18,22 16,26 14,22" fill="#fef3c7" stroke="#fbbf24" stroke-width="0.6"/>
-  <!-- Nose -->
-  <polygon points="14,17 18,17 16,20" fill="#92400e"/>
-  <!-- Eye accents -->
-  <polygon points="8,12 10,14 8,16 6,14" fill="#fef3c7"/>
-  <polygon points="22,12 24,14 22,16 20,14" fill="#fef3c7"/>
+  <polygon points="27,4 20,8 22,14 28,12" fill="url(#bear-grad)"/>
+  <!-- Forehead / top of head (trapezoid, light yellow) -->
+  <polygon points="10,8 22,8 26,14 6,14" fill="url(#bear-grad)"/>
+  <!-- Left cheek / face (angular) -->
+  <polygon points="6,14 10,8 10,22 6,26 4,22" fill="url(#bear-grad)"/>
+  <!-- Right cheek -->
+  <polygon points="22,14 26,14 28,22 26,26 22,22 22,8" fill="url(#bear-grad)"/>
+  <!-- Center face (trapezoid down to snout) -->
+  <polygon points="10,14 22,14 20,24 12,24" fill="url(#bear-grad)"/>
+  <!-- Snout (darker gold, angular) -->
+  <polygon points="11,20 21,20 19,27 13,27" fill="url(#snout-grad)"/>
+  <!-- Nose (dark) -->
+  <polygon points="14,22 18,22 16,25" fill="#92400e"/>
 </svg>

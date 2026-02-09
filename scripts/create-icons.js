@@ -44,6 +44,9 @@ async function generateIcons(logoPath) {
 
     const publicDir = path.join(process.cwd(), 'public');
     const sizes = [
+      { size: 16, name: 'favicon-16.png' },
+      { size: 32, name: 'favicon.png' },
+      { size: 180, name: 'apple-touch-icon.png' },
       { size: 192, name: 'icon-192.png' },
       { size: 512, name: 'icon-512.png' },
     ];
@@ -78,5 +81,5 @@ async function generateIcons(logoPath) {
 }
 
 // Get logo path from command line or use default
-const logoPath = process.argv[2] || 'public/janibear-logo.png';
+const logoPath = process.argv[2] || 'public/yellow.png';
 generateIcons(logoPath);

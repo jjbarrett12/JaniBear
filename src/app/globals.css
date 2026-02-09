@@ -7,10 +7,10 @@
   background-color: #000 !important;
   color: #fff;
 }
-/* Nav: black background, white text; blur on scroll */
+/* Nav: black background, white text; no border so it blends with hero */
 .landing-header {
   background: #000 !important;
-  border-color: #27272a !important;
+  border: none !important;
 }
 .landing-header.landing-header-scrolled {
   background: rgba(0, 0, 0, 0.95) !important;

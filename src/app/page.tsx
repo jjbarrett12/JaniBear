@@ -49,7 +49,7 @@ export default function Home() {
   return (
     <div className="landing-page min-h-screen bg-black text-white pb-20 md:pb-0">
       <nav
-        className={`landing-header border-b border-amber-400/30 sticky top-0 z-50 h-14 md:h-16 py-0 flex items-center overflow-visible transition-all duration-300 ${
+        className={`landing-header sticky top-0 z-50 h-14 md:h-16 py-0 flex items-center overflow-visible transition-all duration-300 ${
           navScrolled ? 'landing-header-scrolled shadow-sm' : ''
         }`}
         style={{ backgroundColor: '#000' }}
@@ -235,7 +235,7 @@ export default function Home() {
               <span>Powered by AI</span>
             </div>
             <h2 className="font-heading text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
-              Three AI Capabilities That Win More Bids
+              JANIBEAR Wins More Bids
             </h2>
             <p className="text-lg text-zinc-300 max-w-2xl mx-auto">
               From walkthrough to closed deal—AI handles the heavy lifting so you can focus on relationships.
@@ -281,7 +281,7 @@ export default function Home() {
               <span>Operations & QA</span>
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
-              Three AI Capabilities for Operations & Quality Assurance
+              JANIBEAR Keeps Clients Longer
             </h2>
             <p className="text-lg text-zinc-300 max-w-2xl mx-auto">
               Deliver consistently, catch issues before the customer does, and keep every location on track—automatically.
@@ -315,43 +315,6 @@ export default function Home() {
                 </div>
               );
             })}
-          </div>
-        </div>
-      </section>
-
-      <section className="py-24 border-b border-amber-400/30 bg-black">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-12">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-400/30 text-amber-300 text-sm font-medium mb-4">
-                <Package className="h-4 w-4" />
-                <span>Inventory & Orders</span>
-              </div>
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
-                Organize Supplies—Stop the Paper Notes and Text Threads
-              </h2>
-              <p className="text-lg text-zinc-300 max-w-2xl mx-auto">
-                Most companies are still using paper notes, text messages, or Excel if they&apos;re lucky. JANIBEAR gives you one place to track inventory and build orders—then email them straight to your preferred vendor.
-              </p>
-            </div>
-            <div className="bg-white/5 border border-amber-400/50 rounded-xl p-8">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-300 flex items-center justify-center shrink-0">
-                  <Package className="h-6 w-6" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-white mb-2">Simple inventory, ready-to-send orders</h3>
-                  <p className="text-zinc-300 mb-4">
-                    Track what you need by location or job, build orders in one place, and send them to your vendor by email—no more scattered notes or digging through threads. Built for how janitorial companies actually work.
-                  </p>
-                  <ul className="space-y-2 text-zinc-400 text-sm">
-                    <li className="flex items-start gap-2"><Check className="h-4 w-4 text-amber-400 shrink-0 mt-0.5" /><span>One place to inventory supplies by site or job</span></li>
-                    <li className="flex items-start gap-2"><Check className="h-4 w-4 text-amber-400 shrink-0 mt-0.5" /><span>Build orders and email them to your preferred vendor</span></li>
-                    <li className="flex items-start gap-2"><Check className="h-4 w-4 text-amber-400 shrink-0 mt-0.5" /><span>Replace paper notes, texts, and spreadsheet chaos</span></li>
-                  </ul>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </section>
@@ -391,17 +354,17 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
-              Built Specifically for Janitorial Companies
+              Built by Janitorial Operators, For Janitorial Operators.
             </h2>
             <p className="text-lg text-zinc-300 max-w-xl mx-auto">
-              Designed by janitorial industry experts, for janitorial sales teams.
+              Designed by janitorial industry experts to not only win business, but keep it.
             </p>
           </div>
           <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
             {[
               { icon: UserCheck, label: 'Janitorial Sales Reps', desc: 'Close more deals faster' },
               { icon: Building2, label: 'Owner-Operators', desc: 'Scale without hiring' },
-              { icon: Users, label: 'Franchise Operators', desc: 'Standardize across locations' },
+              { icon: Users, label: 'Franchise Operators', desc: 'Standardize across locations', note: 'We cater to both Area Franchisors and Unit Franchisees' },
               { icon: Target, label: 'Facility Services', desc: 'Expand into janitorial' },
             ].map((item, index) => {
               const Icon = item.icon;
@@ -412,9 +375,53 @@ export default function Home() {
                   </div>
                   <span className="font-semibold text-white text-sm mb-1">{item.label}</span>
                   <span className="text-zinc-400 text-xs">{item.desc}</span>
+                  {'note' in item && item.note && (
+                    <span className="text-zinc-500 text-xs mt-2">{item.note}</span>
+                  )}
                 </div>
               );
             })}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-24 border-b border-amber-400/30 bg-black">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="flex items-center justify-center gap-2 mb-6">
+              <div className="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-400/30 text-amber-300 text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5">
+                <Plus className="h-3.5 w-3.5" />
+                Sales Module
+              </div>
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
+              Complete Sales Management
+            </h2>
+            <p className="text-lg text-zinc-300 mb-12 max-w-2xl mx-auto">
+              From first walkthrough to closed deal—building capture, proposals, follow-ups, and pricing—all in one platform.
+            </p>
+            <div className="grid sm:grid-cols-2 md:grid-cols-5 gap-6">
+              {[
+                { icon: Camera, label: 'Building Capture' },
+                { icon: Wand2, label: 'Proposals' },
+                { icon: Repeat, label: 'Follow-Ups' },
+                { icon: DollarSign, label: 'Pricing' },
+                { icon: TrendingUp, label: 'Close Deals' },
+              ].map((item, index) => {
+                const Icon = item.icon;
+                return (
+                  <div key={index} className="flex flex-col items-center gap-3 p-4 rounded-xl bg-white/5 border border-amber-400/50 hover:border-amber-400 transition-colors">
+                    <div className="w-10 h-10 rounded-lg bg-amber-500/10 text-amber-300 flex items-center justify-center">
+                      <Icon className="h-5 w-5" />
+                    </div>
+                    <span className="font-medium text-white text-sm text-center">{item.label}</span>
+                  </div>
+                );
+              })}
+            </div>
+            <p className="mt-8 text-sm text-zinc-400 text-center">
+              The Sales module is included in every plan—from first walkthrough to closed deal.
+            </p>
           </div>
         </div>
       </section>
@@ -471,7 +478,7 @@ export default function Home() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/demo">
-                <Button size="lg" className="text-lg px-8 h-14 bg-amber-500 text-white hover:bg-amber-400 border-0 shadow-lg hover:shadow-xl hover:shadow-amber-500/25 transition-all w-full sm:w-auto">
+                <Button size="lg" className="landing-cta text-lg px-8 h-14 border-0 shadow-lg hover:shadow-xl w-full sm:w-auto">
                   Get a Demo
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>

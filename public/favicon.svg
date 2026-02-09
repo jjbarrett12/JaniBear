@@ -1,20 +1,23 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <!-- Bear head from JaniBear logo - geometric low-poly, simplified for favicon -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Geometric bear from new JANIBEAR logo - yellow & white, favicon size -->
   <defs>
-    <linearGradient id="head" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#6C7B8E"/>
-      <stop offset="50%" style="stop-color:#4C5C6F"/>
-      <stop offset="100%" style="stop-color:#3F4D5C"/>
+    <linearGradient id="bear-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef3c7"/>
+      <stop offset="50%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#d97706"/>
     </linearGradient>
   </defs>
   <!-- Left ear -->
-  <polygon points="16,20 34,26 26,44 12,38" fill="url(#head)" stroke="#2B353E" stroke-width="2"/>
+  <polygon points="4,6 12,9 10,16 4,14" fill="url(#bear-grad)" stroke="#fcd34d" stroke-width="0.8"/>
   <!-- Right ear -->
-  <polygon points="84,20 66,26 74,44 88,38" fill="url(#head)" stroke="#2B353E" stroke-width="2"/>
-  <!-- Main head -->
-  <polygon points="50,8 90,30 82,70 50,92 18,70 10,30" fill="url(#head)" stroke="#2B353E" stroke-width="2"/>
-  <!-- Snout -->
-  <polygon points="36,50 64,50 58,78 50,86 42,78" fill="#CFD3D6" stroke="#2B353E" stroke-width="1.5"/>
+  <polygon points="28,6 20,9 22,16 28,14" fill="url(#bear-grad)" stroke="#fcd34d" stroke-width="0.8"/>
+  <!-- Main head (hexagon) -->
+  <polygon points="16,2 30,10 28,24 16,30 4,24 2,10" fill="url(#bear-grad)" stroke="#fcd34d" stroke-width="0.8"/>
+  <!-- Snout (lighter) -->
+  <polygon points="12,14 20,14 18,22 16,26 14,22" fill="#fef3c7" stroke="#fbbf24" stroke-width="0.6"/>
   <!-- Nose -->
-  <polygon points="46,56 54,56 50,64" fill="#4C5C6F" stroke="#2B353E" stroke-width="1"/>
+  <polygon points="14,17 18,17 16,20" fill="#92400e"/>
+  <!-- Eye accents -->
+  <polygon points="8,12 10,14 8,16 6,14" fill="#fef3c7"/>
+  <polygon points="22,12 24,14 22,16 20,14" fill="#fef3c7"/>
 </svg>

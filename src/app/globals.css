@@ -45,14 +45,16 @@
   flex-shrink: 0;
   object-fit: contain;
   object-position: left center;
-  /* Larger logo: 48px mobile, 72px desktop (header is h-16 md:h-20) */
-  height: 3rem !important;
-  max-height: 3rem !important;
+  /* White + yellow: invert to white, yellow glow */
+  filter: brightness(0) invert(1) drop-shadow(0 0 1px rgba(251, 191, 36, 0.8)) drop-shadow(0 0 4px rgba(251, 191, 36, 0.5));
+  /* 2x size: 6rem mobile, 9rem desktop */
+  height: 6rem !important;
+  max-height: 6rem !important;
 }
 @media (min-width: 768px) {
   .landing-header .landing-logo {
-    height: 4.5rem !important;
-    max-height: 4.5rem !important;
+    height: 9rem !important;
+    max-height: 9rem !important;
   }
 }
 .landing-page .landing-cta {
@@ -343,16 +345,17 @@
   background: rgba(0, 0, 0, 0.95) !important;
 }
 .landing-page .landing-header .landing-logo {
-  height: 3rem !important;
-  max-height: 3rem !important;
+  height: 6rem !important;
+  max-height: 6rem !important;
   width: auto !important;
   object-fit: contain;
   object-position: left center;
+  filter: brightness(0) invert(1) drop-shadow(0 0 1px rgba(251, 191, 36, 0.8)) drop-shadow(0 0 4px rgba(251, 191, 36, 0.5));
 }
 @media (min-width: 768px) {
   .landing-page .landing-header .landing-logo {
-    height: 4.5rem !important;
-    max-height: 4.5rem !important;
+    height: 9rem !important;
+    max-height: 9rem !important;
   }
 }
 .landing-page .landing-header button.landing-nav-link,

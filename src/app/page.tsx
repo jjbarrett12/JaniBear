@@ -51,7 +51,7 @@ export default function Home() {
   return (
     <div className="landing-page min-h-screen bg-black text-white pb-20 md:pb-0">
       <nav
-        className={`landing-header border-b border-white/10 sticky top-0 z-50 h-16 md:h-20 py-0 flex items-center overflow-visible transition-all duration-300 ${
+        className={`landing-header border-b border-amber-400/30 sticky top-0 z-50 h-24 md:h-36 py-0 flex items-center overflow-visible transition-all duration-300 ${
           navScrolled ? 'landing-header-scrolled shadow-sm' : ''
         }`}
         style={{ backgroundColor: '#000' }}
@@ -127,8 +127,8 @@ export default function Home() {
             onClick={() => setMenuOpen(false)}
             aria-hidden
           />
-          <div className="absolute top-0 right-0 bottom-0 w-full max-w-sm bg-black border-l border-white/10 shadow-xl flex flex-col">
-            <div className="flex items-center justify-between p-4 border-b border-white/10">
+          <div className="absolute top-0 right-0 bottom-0 w-full max-w-sm bg-black border-l border-amber-400/30 shadow-xl flex flex-col">
+            <div className="flex items-center justify-between p-4 border-b border-amber-400/30">
               <span className="text-sm font-medium text-zinc-400">Menu</span>
               <button
                 type="button"
@@ -161,7 +161,7 @@ export default function Home() {
       )}
 
       {/* Sticky bottom CTA — mobile only */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 p-3 safe-bottom bg-black/95 border-t border-white/10 backdrop-blur md:hidden">
+      <div className="fixed bottom-0 left-0 right-0 z-50 p-3 safe-bottom bg-black/95 border-t border-amber-400/30 backdrop-blur md:hidden">
         <Link href="/demo" className="block w-full">
           <Button className="landing-cta w-full h-12 text-base font-semibold rounded-lg">
             Get a Demo
@@ -229,7 +229,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="features" className="py-24 border-b border-white/10 bg-black">
+      <section id="features" className="py-24 border-b border-amber-400/30 bg-black">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-400/30 text-amber-300 text-sm font-medium mb-4">
@@ -253,7 +253,7 @@ export default function Home() {
               const Icon = item.icon;
               const colorClasses = { gold: 'bg-amber-500/10 text-amber-400 border-amber-500/20', cyan: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20', emerald: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' };
               return (
-                <div key={index} className={`relative p-8 rounded-2xl bg-white/5 border border-white/10 hover:border-amber-400/20 transition-all ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`} style={{ transitionDelay: `${index * 100}ms`, transitionDuration: '500ms' }}>
+                <div key={index} className={`relative p-8 rounded-2xl bg-white/5 border border-amber-400/50 hover:border-amber-400 transition-all ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`} style={{ transitionDelay: `${index * 100}ms`, transitionDuration: '500ms' }}>
                   <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full ${colorClasses[item.color as keyof typeof colorClasses]} text-xs font-semibold mb-4`}>
                     <Icon className="h-3.5 w-3.5" />
                     <span>{item.badge}</span>
@@ -275,7 +275,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="operations-qa" className="py-24 border-b border-white/10 bg-black">
+      <section id="operations-qa" className="py-24 border-b border-amber-400/30 bg-black">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-400/30 text-emerald-300 text-sm font-medium mb-4">
@@ -299,7 +299,7 @@ export default function Home() {
               const Icon = item.icon;
               const colorClasses = { gold: 'bg-amber-500/10 text-amber-400 border-amber-500/20', cyan: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20', emerald: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' };
               return (
-                <div key={index} className={`relative p-8 rounded-2xl bg-white/5 border border-white/10 hover:border-amber-400/20 transition-all ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`} style={{ transitionDelay: `${index * 100}ms`, transitionDuration: '500ms' }}>
+                <div key={index} className={`relative p-8 rounded-2xl bg-white/5 border border-amber-400/50 hover:border-amber-400 transition-all ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`} style={{ transitionDelay: `${index * 100}ms`, transitionDuration: '500ms' }}>
                   <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full ${colorClasses[item.color as keyof typeof colorClasses]} text-xs font-semibold mb-4`}>
                     <Icon className="h-3.5 w-3.5" />
                     <span>{item.badge}</span>
@@ -321,7 +321,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-24 border-b border-white/10 bg-black">
+      <section className="py-24 border-b border-amber-400/30 bg-black">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
@@ -336,7 +336,7 @@ export default function Home() {
                 Most companies are still using paper notes, text messages, or Excel if they&apos;re lucky. JANIBEAR gives you one place to track inventory and build orders—then email them straight to your preferred vendor.
               </p>
             </div>
-            <div className="bg-white/5 border border-white/10 rounded-xl p-8">
+            <div className="bg-white/5 border border-amber-400/50 rounded-xl p-8">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-300 flex items-center justify-center shrink-0">
                   <Package className="h-6 w-6" />
@@ -358,7 +358,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-24 border-b border-white/10">
+      <section className="py-24 border-b border-amber-400/30">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
@@ -377,7 +377,7 @@ export default function Home() {
             ].map((item, index) => {
               const Icon = item.icon;
               return (
-                <div key={index} className="bg-white/5 rounded-xl p-6 border border-white/10 text-center hover:border-amber-400/20 transition-colors">
+                <div key={index} className="bg-white/5 rounded-xl p-6 border border-amber-400/50 text-center hover:border-amber-400/20 transition-colors">
                   <Icon className="h-8 w-8 mx-auto mb-3 text-amber-400/80" />
                   <div className="text-3xl font-bold text-white mb-1">{item.stat}</div>
                   <div className="text-zinc-300 font-medium text-sm mb-1">{item.label}</div>
@@ -389,7 +389,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-24 border-b border-white/10 bg-black">
+      <section className="py-24 border-b border-amber-400/30 bg-black">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
@@ -408,7 +408,7 @@ export default function Home() {
             ].map((item, index) => {
               const Icon = item.icon;
               return (
-                <div key={index} className="flex flex-col items-center p-6 rounded-xl bg-white/5 border border-white/10 hover:border-amber-400/20 transition-colors text-center">
+                <div key={index} className="flex flex-col items-center p-6 rounded-xl bg-white/5 border border-amber-400/50 hover:border-amber-400 transition-colors text-center">
                   <div className="w-12 h-12 rounded-xl bg-cyan-500/10 text-cyan-300 flex items-center justify-center mb-3">
                     <Icon className="h-6 w-6" />
                   </div>
@@ -421,7 +421,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-24 border-b border-white/10">
+      <section className="py-24 border-b border-amber-400/30">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
             <div className="flex items-center justify-center gap-2 mb-6">
@@ -446,7 +446,7 @@ export default function Home() {
               ].map((item, index) => {
                 const Icon = item.icon;
                 return (
-                  <div key={index} className="flex flex-col items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/10 hover:border-amber-400/20 transition-colors">
+                  <div key={index} className="flex flex-col items-center gap-3 p-4 rounded-xl bg-white/5 border border-amber-400/50 hover:border-amber-400 transition-colors">
                     <div className="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-300 flex items-center justify-center">
                       <Icon className="h-5 w-5" />
                     </div>
@@ -462,7 +462,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="book-demo" className="py-24 border-b border-white/10">
+      <section id="book-demo" className="py-24 border-b border-amber-400/30">
         <div className="container mx-auto px-4 text-center">
           <div className="max-w-2xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">
@@ -491,7 +491,7 @@ export default function Home() {
         </div>
       </section>
 
-      <footer className="bg-black border-t border-white/10 text-zinc-400 py-12">
+      <footer className="bg-black border-t border-amber-400/30 text-zinc-400 py-12">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-4 gap-8">
             <div className="[&>span]:bg-transparent [&>span]:shadow-none [&>span]:block">

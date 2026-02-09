@@ -45,16 +45,14 @@
   flex-shrink: 0;
   object-fit: contain;
   object-position: left center;
-  /* White + yellow: invert to white, yellow glow */
-  filter: brightness(0) invert(1) drop-shadow(0 0 1px rgba(251, 191, 36, 0.8)) drop-shadow(0 0 4px rgba(251, 191, 36, 0.5));
-  /* 2x size: 6rem mobile, 9rem desktop */
-  height: 6rem !important;
-  max-height: 6rem !important;
+  /* New white/yellow logo: fill header height, no filter */
+  height: 3rem !important;
+  max-height: 3rem !important;
 }
 @media (min-width: 768px) {
   .landing-header .landing-logo {
-    height: 9rem !important;
-    max-height: 9rem !important;
+    height: 4rem !important;
+    max-height: 4rem !important;
   }
 }
 .landing-page .landing-cta {
@@ -345,17 +343,16 @@
   background: rgba(0, 0, 0, 0.95) !important;
 }
 .landing-page .landing-header .landing-logo {
-  height: 6rem !important;
-  max-height: 6rem !important;
+  height: 3rem !important;
+  max-height: 3rem !important;
   width: auto !important;
   object-fit: contain;
   object-position: left center;
-  filter: brightness(0) invert(1) drop-shadow(0 0 1px rgba(251, 191, 36, 0.8)) drop-shadow(0 0 4px rgba(251, 191, 36, 0.5));
 }
 @media (min-width: 768px) {
   .landing-page .landing-header .landing-logo {
-    height: 9rem !important;
-    max-height: 9rem !important;
+    height: 4rem !important;
+    max-height: 4rem !important;
   }
 }
 .landing-page .landing-header button.landing-nav-link,

@@ -88,6 +88,13 @@ This copies the entire file to your clipboard, then just paste it in Supabase!
 - **Solution**: Make sure you copied the ENTIRE file, including all semicolons
 - Check that you didn't accidentally cut off part of the SQL
 
+## Recent migrations (019, 020)
+
+- **019** – Multi-org modules & tiers: `org_type` (franchisor/franchisee/independent), `membership_role` enum, plans/subscriptions, walkthrough_scans, integrations, RLS. Extends existing tables; no duplicate tables/enums.
+- **020** – Cleanup: Sales→Ops handoff fields (`opportunities.won_at`, `ops_handoff_status`; `sites.source_opportunity_id`), LiDAR scan comments and index, `org_members_effective` view (single effective role), default org subscriptions for existing orgs. Idempotent; safe to run after 019.
+
+See also: `PERMISSIONS_MODEL.md`, `SALES_OPS_HANDOFF.md`, `LIDAR_SCAN_DATA_MODEL.md`.
+
 ## Still Can't Find It?
 
 If you're still having trouble:

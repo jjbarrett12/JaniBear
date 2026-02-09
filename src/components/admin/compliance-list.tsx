@@ -47,15 +47,15 @@ export function ComplianceList({ records: initialRecords }: ComplianceListProps)
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'compliant':
-        return 'bg-green-100 text-green-800';
+        return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400';
       case 'non_compliant':
-        return 'bg-red-100 text-red-800';
+        return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400';
       case 'in_progress':
-        return 'bg-blue-100 text-blue-800';
+        return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400';
       case 'expired':
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
       default:
-        return 'bg-yellow-100 text-yellow-800';
+        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400';
     }
   };
 
@@ -75,13 +75,13 @@ export function ComplianceList({ records: initialRecords }: ComplianceListProps)
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case 'critical':
-        return 'bg-red-100 text-red-800';
+        return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400';
       case 'high':
-        return 'bg-amber-100 text-amber-800';
+        return 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400';
       case 'medium':
-        return 'bg-yellow-100 text-yellow-800';
+        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
     }
   };
 
@@ -144,22 +144,22 @@ export function ComplianceList({ records: initialRecords }: ComplianceListProps)
       </Card>
 
       {filteredRecords.length === 0 ? (
-        <Card>
+        <Card className="dark:bg-gray-800 dark:border-gray-700">
           <CardContent className="p-12 text-center">
-            <AlertCircle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-600">No compliance records found</p>
+            <AlertCircle className="h-12 w-12 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
+            <p className="text-gray-600 dark:text-gray-400">No compliance records found</p>
           </CardContent>
         </Card>
       ) : (
         <div className="space-y-4">
           {filteredRecords.map((record) => (
             <Link key={record.id} href={`/app/admin/compliance/${record.id}`}>
-              <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer dark:bg-gray-800 dark:border-gray-700">
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
-                        <h3 className="text-lg font-semibold">{record.title}</h3>
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{record.title}</h3>
                         <Badge className={getStatusColor(record.status)}>
                           <span className="flex items-center gap-1">
                             {getStatusIcon(record.status)}
@@ -170,7 +170,7 @@ export function ComplianceList({ records: initialRecords }: ComplianceListProps)
                           {record.priority}
                         </Badge>
                       </div>
-                      <div className="flex items-center gap-4 text-sm text-gray-600 mb-2">
+                      <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400 mb-2">
                         <span className="font-medium">{getTypeLabel(record.type)}</span>
                         {record.locations && (
                           <span>• Location: {record.locations.name}</span>
@@ -183,7 +183,7 @@ export function ComplianceList({ records: initialRecords }: ComplianceListProps)
                         )}
                       </div>
                       {record.description && (
-                        <p className="text-gray-700 mb-3 line-clamp-2">
+                        <p className="text-gray-700 dark:text-gray-300 mb-3 line-clamp-2">
                           {record.description}
                         </p>
                       )}
@@ -191,7 +191,7 @@ export function ComplianceList({ records: initialRecords }: ComplianceListProps)
                         {record.due_date && (
                           <div
                             className={`flex items-center gap-1 ${
-                              isOverdue(record.due_date) ? 'text-red-600 font-semibold' : 'text-gray-600'
+                              isOverdue(record.due_date) ? 'text-red-600 dark:text-red-400 font-semibold' : 'text-gray-600 dark:text-gray-400'
                             }`}
                           >
                             <Calendar className="h-4 w-4" />
@@ -200,14 +200,14 @@ export function ComplianceList({ records: initialRecords }: ComplianceListProps)
                           </div>
                         )}
                         {record.completion_date && (
-                          <div className="flex items-center gap-1 text-green-600">
+                          <div className="flex items-center gap-1 text-green-600 dark:text-green-400">
                             <CheckCircle className="h-4 w-4" />
                             Completed: {formatDate(record.completion_date)}
                           </div>
                         )}
                       </div>
                       {record.ai_suggestions && (
-                        <div className="mt-3 p-2 bg-blue-50 rounded text-sm text-blue-800">
+                        <div className="mt-3 p-2 bg-blue-50 dark:bg-blue-900/20 rounded text-sm text-blue-800 dark:text-blue-300">
                           <span className="font-medium">AI Suggestions Available</span>
                         </div>
                       )}

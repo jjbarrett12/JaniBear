@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { requireOperatorOrg } from '@/lib/api-guard';
 import OpenAI from 'openai';
 
 const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
@@ -24,12 +24,8 @@ interface CrewCapacity {
 
 export async function POST(request: Request) {
   try {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const guard = await requireOperatorOrg();
+    if (!guard.ok) return guard.response;
 
     const body = await request.json();
     const { locations, numCrews, crewCapacities, optimizeFor = 'balanced' } = body;

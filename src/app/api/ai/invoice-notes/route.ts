@@ -1,30 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
 import { getAIService } from '@/lib/ai/openai-service';
+import { requireApiOrg } from '@/lib/api-guard';
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const guard = await requireApiOrg();
+    if (!guard.ok) return guard.response;
 
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const body = await request.json().catch(() => ({}));
+    const { items = [], total, customer } = body ?? {};
 
-    const { data: orgMember } = await supabase
-      .from('org_members')
-      .select('org_id')
-      .eq('user_id', user.id)
-      .single();
-
-    if (!orgMember) {
-      return NextResponse.json({ error: 'Organization not found' }, { status: 404 });
-    }
-
-    const body = await request.json();
-    const { items, total, customer } = body;
-
-    const aiService = await getAIService(orgMember.org_id);
+    const aiService = await getAIService(guard.context.activeOrgId!);
 
     if (!aiService) {
       return NextResponse.json(
@@ -35,7 +21,7 @@ export async function POST(request: NextRequest) {
 
     const notes = await aiService.generateInvoiceNotes({
       customer: customer || 'Customer',
-      items: items.map((item: any) => ({
+      items: (Array.isArray(items) ? items : []).map((item: any) => ({
         description: item.description,
         quantity: parseFloat(item.quantity || '0'),
         price: parseFloat(item.unit_price || '0'),

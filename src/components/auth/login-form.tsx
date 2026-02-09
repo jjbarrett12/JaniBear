@@ -216,7 +216,7 @@ export function LoginForm() {
   };
 
   return (
-    <div className="rounded-2xl border border-zinc-200/90 bg-white shadow-xl shadow-zinc-200/20 p-6 sm:p-8">
+    <div className="rounded-2xl border border-zinc-200/90 dark:border-zinc-700/80 bg-white dark:bg-gray-900 shadow-xl shadow-zinc-200/20 dark:shadow-none p-6 sm:p-8">
       {/* Social sign-in first */}
       <div className="space-y-3">
         <Button
@@ -253,8 +253,8 @@ export function LoginForm() {
         <span className="absolute inset-0 flex items-center">
           <span className="w-full border-t border-zinc-200" />
         </span>
-        <span className="relative flex justify-center bg-white">
-          <span className="text-xs font-medium text-zinc-400 px-3">or sign in with email</span>
+        <span className="relative flex justify-center bg-white dark:bg-gray-900">
+          <span className="text-xs font-medium text-zinc-400 dark:text-zinc-500 px-3">or sign in with email</span>
         </span>
       </div>
 

@@ -61,8 +61,13 @@ export function ComplianceForm({ compliance, locations, employees }: ComplianceF
         }
       : {
           type: 'safety',
+          title: '',
+          description: '',
           status: 'pending',
           priority: 'medium',
+          due_date: '',
+          location_id: '',
+          assigned_to: '',
         },
   });
 
@@ -298,8 +303,8 @@ export function ComplianceForm({ compliance, locations, employees }: ComplianceF
             <div>
               <Label htmlFor="location_id">Location (Optional)</Label>
               <Select
-                value={watch('location_id')}
-                onValueChange={(value) => setValue('location_id', value)}
+                value={watch('location_id') || ''}
+                onValueChange={(value) => setValue('location_id', value || undefined)}
               >
                 <SelectTrigger className="h-14">
                   <SelectValue placeholder="Select location" />
@@ -317,8 +322,8 @@ export function ComplianceForm({ compliance, locations, employees }: ComplianceF
             <div>
               <Label htmlFor="assigned_to">Assign To (Optional)</Label>
               <Select
-                value={watch('assigned_to')}
-                onValueChange={(value) => setValue('assigned_to', value)}
+                value={watch('assigned_to') || ''}
+                onValueChange={(value) => setValue('assigned_to', value || undefined)}
               >
                 <SelectTrigger className="h-14">
                   <SelectValue placeholder="Select employee" />

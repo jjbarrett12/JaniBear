@@ -176,8 +176,18 @@
   * {
     @apply border-border;
   }
+  html {
+    scroll-behavior: smooth;
+  }
   body {
     @apply bg-background text-foreground;
+  }
+  /* Clear focus ring for mouse users, visible for keyboard */
+  :focus-visible {
+    @apply outline-none ring-2 ring-amber-500/60 ring-offset-2 ring-offset-background;
+  }
+  :focus:not(:focus-visible) {
+    @apply outline-none ring-0;
   }
 }
 

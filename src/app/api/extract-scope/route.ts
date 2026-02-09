@@ -1,24 +1,33 @@
 import { NextResponse } from 'next/server';
 import { extractScope } from '@/lib/ai';
 import { createClient } from '@/lib/supabase/server';
+import { requireApiOrg } from '@/lib/api-guard';
 
 export async function POST(req: Request) {
   try {
-    const { walkthrough_id } = await req.json();
+    const guard = await requireApiOrg();
+    if (!guard.ok) return guard.response;
+
+    const body = await req.json().catch(() => ({}));
+    const walkthrough_id = body?.walkthrough_id ?? null;
+    if (!walkthrough_id) {
+      return NextResponse.json({ error: 'walkthrough_id required' }, { status: 400 });
+    }
+
     const supabase = await createClient();
-    
-    // Get transcript
     const { data: transcript } = await supabase
       .from('walkthrough_transcripts')
       .select('text, org_id')
       .eq('walkthrough_id', walkthrough_id)
       .single();
 
-    if (!transcript) return new NextResponse('Transcript not found', { status: 404 });
+    if (!transcript) return NextResponse.json({ error: 'Transcript not found' }, { status: 404 });
+    if (transcript.org_id !== guard.context.activeOrgId) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
 
     const result = await extractScope(transcript.text);
 
-    // Save scope model
     await supabase.from('scope_models').insert({
       walkthrough_id,
       org_id: transcript.org_id,
@@ -29,6 +38,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json(result);
   } catch (error) {
-    return new NextResponse('Internal Error', { status: 500 });
+    console.error('extract-scope error:', error);
+    return NextResponse.json({ error: 'Internal Error' }, { status: 500 });
   }
 }

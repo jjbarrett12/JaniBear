@@ -1,0 +1,12 @@
+# Schema & migrations: no duplicate tables or enums
+
+## Rule
+
+- **Do NOT create duplicate tables or enums.** If an equivalent table or enum already exists, **extend or migrate it** instead of creating a new one.
+- **If unsure** whether something equivalent exists, **ask before creating** a new table or enum.
+
+## When changing schema (e.g. `supabase/migrations/`)
+
+1. Search existing migrations and schema for tables/enums with the same or similar purpose.
+2. Prefer `ALTER TABLE` / `ALTER TYPE` / new columns / new enum values over new tables or new enums.
+3. Only add new tables or enums when there is no existing equivalent.

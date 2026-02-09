@@ -145,8 +145,8 @@ export default function Home() {
               <Link href="/pricing" onClick={() => setMenuOpen(false)} className="px-3 py-3 text-white font-medium rounded-lg hover:bg-zinc-800">
                 Pricing
               </Link>
-              <Link href="/#features" onClick={() => setMenuOpen(false)} className="px-3 py-3 text-white font-medium rounded-lg hover:bg-zinc-800">
-                How it works
+              <Link href="/survey" onClick={() => setMenuOpen(false)} className="px-3 py-3 text-white font-medium rounded-lg hover:bg-zinc-800">
+                Plans
               </Link>
               <Link href="/contact" onClick={() => setMenuOpen(false)} className="px-3 py-3 text-white font-medium rounded-lg hover:bg-zinc-800">
                 Contact
@@ -179,7 +179,7 @@ export default function Home() {
           </div>
 
           <h1
-            className={`hero-headline text-3xl sm:text-4xl md:text-5xl lg:text-[2.75rem] font-extrabold text-white tracking-tight leading-[1.2] max-w-3xl mx-auto transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            className={`hero-headline font-heading text-3xl sm:text-4xl md:text-5xl lg:text-[2.75rem] font-extrabold text-white tracking-tight leading-[1.2] max-w-3xl mx-auto transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
           >
             See how top janitorial companies win bids, prove quality, and scale —{' '}
             <span
@@ -235,7 +235,7 @@ export default function Home() {
               <Brain className="h-4 w-4" />
               <span>Powered by AI</span>
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
+            <h2 className="font-heading text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
               Three AI Capabilities That Win More Bids
             </h2>
             <p className="text-lg text-zinc-400 max-w-2xl mx-auto">

@@ -1,5 +1,6 @@
 import { createClient } from './supabase/server';
 import { redirect } from 'next/navigation';
+import { getActiveOrgIdFromCookie } from './user-context';
 
 export async function getCurrentUser() {
   const supabase = await createClient();
@@ -33,8 +34,19 @@ export async function getCurrentOrg() {
   const user = await getCurrentUser();
   
   if (!user) return null;
-  
-  // Get user's first org membership
+
+  const activeOrgId = await getActiveOrgIdFromCookie();
+  if (activeOrgId) {
+    const { data: membership } = await supabase
+      .from('org_members')
+      .select('org_id, role, organizations(*)')
+      .eq('user_id', user.id)
+      .eq('org_id', activeOrgId)
+      .maybeSingle();
+    if (membership) return membership;
+  }
+
+  // Fallback: first org membership
   const { data: membership } = await supabase
     .from('org_members')
     .select('org_id, role, organizations(*)')
@@ -47,7 +59,7 @@ export async function getCurrentOrg() {
 
 /**
  * Returns current user's org membership and org details (includes org_type for JANIBEAR OS gating).
- * Shape: { org_id, role, organizations: { name, org_type: 'operator' | 'franchisor', ... } }
+ * Shape: { org_id, role, organizations: { name, org_type: 'franchisor' | 'franchisee' | 'independent', ... } }
  */
 export async function requireOrg() {
   const user = await getCurrentUser();

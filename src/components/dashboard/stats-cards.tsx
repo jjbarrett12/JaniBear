@@ -138,7 +138,7 @@ export function StatsCards({ stats }: StatsCardsProps) {
                     <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
                       {card.title}
                     </p>
-                    <p className="text-2xl font-bold text-gray-900 dark:text-white group-hover:text-gray-700 dark:group-hover:text-gray-200 transition-colors">
+                    <p className="font-heading text-2xl font-bold text-gray-900 dark:text-white group-hover:text-gray-700 dark:group-hover:text-gray-200 transition-colors">
                       {card.value.toLocaleString()}
                     </p>
                     {card.subtitle && (

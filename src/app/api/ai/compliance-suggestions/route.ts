@@ -1,30 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
 import { getAIService } from '@/lib/ai/openai-service';
+import { requireApiOrg } from '@/lib/api-guard';
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const guard = await requireApiOrg();
+    if (!guard.ok) return guard.response;
 
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    const { data: orgMember } = await supabase
-      .from('org_members')
-      .select('org_id')
-      .eq('user_id', user.id)
-      .single();
-
-    if (!orgMember) {
-      return NextResponse.json({ error: 'Organization not found' }, { status: 404 });
-    }
+    const orgId = guard.context.activeOrgId!;
 
     const body = await request.json();
     const { type, title, description } = body;
 
-    const aiService = await getAIService(orgMember.org_id);
+    const aiService = await getAIService(orgId);
 
     if (!aiService) {
       return NextResponse.json(

@@ -31,8 +31,21 @@ export default async function SettingsPage() {
               Switch context to test Franchisor, Franchisee, or Independent experiences
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-6">
             <OrgSwitcher currentOrgId={org.org_id} />
+            <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 p-4 space-y-3">
+              <h4 className="font-semibold text-amber-700 dark:text-amber-400 text-sm">How to test different org types</h4>
+              <ol className="list-decimal list-inside text-sm text-gray-700 dark:text-gray-300 space-y-2">
+                <li>In Supabase Dashboard go to <strong>Authentication → Users</strong>, open your user, and copy your <strong>User UUID</strong>.</li>
+                <li>Open <strong>SQL Editor</strong> and open the script in <code className="rounded bg-black/10 dark:bg-white/10 px-1">TESTING_ORG_TYPES.md</code> in this repo (project root).</li>
+                <li>Replace both <code className="rounded bg-black/10 dark:bg-white/10 px-1">YOUR_USER_ID</code> in the script with your UUID, then run the script.</li>
+                <li>Come back here and refresh. Use the <strong>Active organization</strong> dropdown above to switch between <strong>Test Franchisor</strong>, <strong>Test Franchisee</strong>, and <strong>Test Independent</strong>.</li>
+                <li>After switching, the app reloads and shows that org type (Franchisor: standards/outcomes; Franchisee/Independent: full operations).</li>
+              </ol>
+              <p className="text-xs text-gray-600 dark:text-gray-400 pt-1">
+                Full SQL and details: <code className="rounded bg-black/10 dark:bg-white/10 px-1">TESTING_ORG_TYPES.md</code>
+              </p>
+            </div>
           </CardContent>
         </Card>
 

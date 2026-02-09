@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -22,6 +22,7 @@ interface BrandingSettingsProps {
 
 export function BrandingSettings({ orgId, initialData }: BrandingSettingsProps) {
   const { toast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [primaryColor, setPrimaryColor] = useState(initialData?.primary_color || '#3b82f6');
   const [secondaryColor, setSecondaryColor] = useState(initialData?.secondary_color || '#64748b');
   const [logoUrl, setLogoUrl] = useState(initialData?.logo_url || null);
@@ -76,7 +77,12 @@ export function BrandingSettings({ orgId, initialData }: BrandingSettingsProps) 
           upsert: false,
         });
 
-      if (uploadError) throw uploadError;
+      if (uploadError) {
+        if (uploadError.message?.includes('Bucket not found') || uploadError.message?.includes('not found')) {
+          throw new Error('Logo storage is not set up. Run migration 005_create_logo_storage_bucket.sql in Supabase SQL Editor.');
+        }
+        throw uploadError;
+      }
 
       // Get public URL
       const { data: { publicUrl } } = supabase.storage
@@ -143,9 +149,13 @@ export function BrandingSettings({ orgId, initialData }: BrandingSettingsProps) 
       setTimeout(() => window.location.reload(), 1000);
     } catch (error: any) {
       console.error('Error saving branding:', error);
+      const msg = error.message || 'Failed to save settings';
+      const hint = error.code === '42501' || msg.includes('policy') || msg.includes('row-level security')
+        ? ' Only org owners and managers can save branding. Run migration 021_org_branding_manager_update.sql in Supabase if you are a manager.'
+        : '';
       toast({
         title: 'Save failed',
-        description: error.message || 'Failed to save settings',
+        description: msg + hint,
         variant: 'destructive',
       });
     } finally {
@@ -192,27 +202,25 @@ export function BrandingSettings({ orgId, initialData }: BrandingSettingsProps) 
             )}
             <div className="flex-1">
               <Input
+                ref={fileInputRef}
                 type="file"
-                accept="image/*"
+                accept="image/png,image/jpeg,image/jpg,image/svg+xml"
                 onChange={handleLogoUpload}
                 disabled={isUploading}
                 className="hidden"
                 id="logo-upload"
+                aria-label="Upload logo"
               />
-              <Label htmlFor="logo-upload">
-                <Button
-                  type="button"
-                  variant="outline"
-                  disabled={isUploading}
-                  className="w-full h-14 text-base"
-                  asChild
-                >
-                  <span>
-                    <Upload className="h-5 w-5 mr-2" />
-                    {isUploading ? 'Uploading...' : logoUrl ? 'Change Logo' : 'Upload Logo'}
-                  </span>
-                </Button>
-              </Label>
+              <Button
+                type="button"
+                variant="outline"
+                disabled={isUploading}
+                className="w-full h-14 text-base"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <Upload className="h-5 w-5 mr-2" />
+                {isUploading ? 'Uploading...' : logoUrl ? 'Change Logo' : 'Upload Logo'}
+              </Button>
               <p className="text-xs text-gray-500 mt-1">
                 PNG, JPG, or SVG. Max 5MB. Recommended: 200x60px
               </p>

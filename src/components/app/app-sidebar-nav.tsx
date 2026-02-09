@@ -37,7 +37,7 @@ const salesItems = [
 ];
 
 const operationsItems = [
-  { href: '/app/locations', labelKey: 'navSiteHandover' as const, icon: KeyRound },
+  { href: '/app/locations', labelKey: 'navLocations' as const, icon: MapPin },
   { href: '/app/crews', labelKey: 'navCrewManagement' as const, icon: Users },
   { href: '/app/templates', labelKey: 'navBrandStandards' as const, icon: Award },
   { href: '/app/schedules', labelKey: 'navSchedules' as const, icon: Calendar },

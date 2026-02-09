@@ -168,27 +168,55 @@ export default function Home() {
         </Link>
       </div>
 
-      <section className="relative w-full overflow-hidden bg-black pt-12 md:pt-16 pb-20 md:pb-28">
+      <section className="relative w-full overflow-hidden bg-black pt-16 md:pt-24 pb-24 md:pb-32">
         <div className="relative container mx-auto px-4 text-center">
           <h1
-            className={`hero-headline font-heading text-3xl sm:text-4xl md:text-5xl lg:text-[2.75rem] font-extrabold text-white tracking-tight leading-[1.25] max-w-3xl mx-auto transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            className={`hero-headline font-heading text-3xl sm:text-4xl md:text-5xl lg:text-[2.75rem] font-extrabold text-white tracking-tight leading-[1.6] max-w-3xl mx-auto transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
           >
             Win more janitorial bids.
             <br />
             Keep customers longer.
             <br />
-            Scale without adding headcount.
+            <span
+              className="hero-gradient-text inline-block bg-clip-text"
+              style={{
+                background: 'linear-gradient(135deg, #fde047 0%, #fbbf24 50%, #f59e0b 100%)',
+                WebkitBackgroundClip: 'text',
+                backgroundClip: 'text',
+                color: 'transparent',
+              }}
+            >
+              Scale without adding headcount.
+            </span>
           </h1>
 
           <p
-            className={`hero-subhead text-lg text-zinc-300 max-w-2xl mx-auto mt-6 leading-relaxed transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            className={`hero-subhead text-lg md:text-xl text-zinc-300 max-w-2xl mx-auto mt-12 leading-relaxed transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '80ms' }}
           >
-            Stop managing bids, inspections, and quality in spreadsheets and PDFs. JANIBEAR gives you one system to win contracts, prove performance.
+            Save hours every week with{' '}
+            <span
+              className="font-semibold text-amber-300"
+              style={{ textShadow: '0 0 20px rgba(251, 191, 36, 0.2)' }}
+            >
+              quality assurance
+            </span>
+            {' '}and accountability—so growth comes from{' '}
+            <span
+              className="font-semibold text-transparent bg-clip-text"
+              style={{
+                background: 'linear-gradient(90deg, #fde047, #fbbf24)',
+                WebkitBackgroundClip: 'text',
+                backgroundClip: 'text',
+              }}
+            >
+              better systems
+            </span>
+            , not more people.
           </p>
 
           <div
-            className={`mt-10 flex justify-center transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            className={`mt-14 flex justify-center transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '100ms' }}
           >
             <Image
@@ -238,35 +266,37 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Scrolling company logos */}
-      <section className="py-12 md:py-16 bg-black border-y border-white/10 overflow-hidden">
+      {/* Scrolling company logos - no border, ~5 visible at a time, always scrolling */}
+      <section className="py-12 md:py-16 bg-black overflow-hidden">
         <p className="text-center text-white text-sm mb-8">
           Trusted by 500+ cleaning companies across the U.S.
         </p>
         <div className="relative">
-          <div className="flex animate-landing-marquee gap-12 md:gap-16 items-center will-change-transform">
-            {[
-              { src: '/logos/placeholder.svg', alt: 'Partner company' },
-              { src: '/logos/placeholder.svg', alt: 'Partner company' },
-              { src: '/logos/placeholder.svg', alt: 'Partner company' },
-              { src: '/logos/placeholder.svg', alt: 'Partner company' },
-            ]
-              .flatMap((set) => [set, set])
-              .map((logo, i) => (
+          <div className="flex animate-landing-marquee gap-10 md:gap-14 items-center will-change-transform">
+            {(() => {
+              const logos = [
+                { src: '/logos/placeholder.svg', alt: 'Partner company' },
+                { src: '/logos/placeholder.svg', alt: 'Partner company' },
+                { src: '/logos/placeholder.svg', alt: 'Partner company' },
+                { src: '/logos/placeholder.svg', alt: 'Partner company' },
+              ];
+              const row = [...logos, ...logos, ...logos, ...logos];
+              return [...row, ...row].map((logo, i) => (
                 <div
                   key={i}
-                  className="flex items-center justify-center shrink-0 h-10 md:h-12 w-28 md:w-36 px-4"
+                  className="flex items-center justify-center shrink-0 h-10 md:h-12 w-[180px] md:w-[200px] px-4"
                 >
                   <Image
                     src={logo.src}
                     alt={logo.alt}
-                    width={144}
+                    width={200}
                     height={48}
                     className="max-h-full w-auto object-contain opacity-80 hover:opacity-100 transition-opacity"
                     unoptimized
                   />
                 </div>
-              ))}
+              ));
+            })()}
           </div>
         </div>
       </section>

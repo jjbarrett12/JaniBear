@@ -7,30 +7,18 @@ import { Button } from '@/components/ui/button';
 import {
   ArrowRight,
   Camera,
-  CheckCircle2,
-  Send,
-  Users,
-  Clock,
-  Shield,
   Check,
-  Building2,
-  UserCheck,
-  Zap,
-  Target,
+  Clock,
   ClipboardCheck,
-  Package,
-  FileSpreadsheet,
-  Plus,
+  Zap,
   TrendingUp,
   DollarSign,
   Repeat,
-  Brain,
   Wand2,
   CalendarDays,
   AlertCircle,
   Menu,
   X,
-  Bot,
 } from 'lucide-react';
 
 export default function Home() {
@@ -172,12 +160,12 @@ export default function Home() {
 
       <section className="relative w-full overflow-hidden bg-black pt-12 md:pt-16 pb-20 md:pb-28">
         <div className="relative container mx-auto px-4 text-center">
-          <div
-            className={`inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/20 text-zinc-300 text-sm font-medium mb-8 transition-all duration-500 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}`}
+          <p
+            className={`text-zinc-500 text-xs mb-6 transition-all duration-500 ${mounted ? 'opacity-100' : 'opacity-0'}`}
+            style={{ maxWidth: '28rem', marginLeft: 'auto', marginRight: 'auto' }}
           >
-            <Bot className="h-4 w-4 text-amber-400" />
-            <span>Powered by Jani</span>
-          </div>
+            Built for janitorial sales and operations
+          </p>
 
           <h1
             className={`hero-headline font-heading text-3xl sm:text-4xl md:text-5xl lg:text-[2.75rem] font-extrabold text-white tracking-tight leading-[1.2] max-w-3xl mx-auto transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
@@ -220,9 +208,17 @@ export default function Home() {
             </Link>
           </div>
 
-          <p
-            className={`mt-10 text-sm text-zinc-400 transition-all duration-700 ${mounted ? 'opacity-100' : 'opacity-0'}`}
+          <blockquote
+            className={`mt-10 text-base md:text-lg text-zinc-300 font-medium italic max-w-xl mx-auto transition-all duration-700 ${mounted ? 'opacity-100' : 'opacity-0'}`}
             style={{ transitionDelay: '200ms' }}
+          >
+            &ldquo;We stopped losing bids to cheaper competitors once we could prove our quality.&rdquo;
+            <footer className="mt-2 text-sm font-normal not-italic text-zinc-500">— Regional Janitorial Owner</footer>
+          </blockquote>
+
+          <p
+            className={`mt-8 text-sm text-zinc-500 transition-all duration-700 ${mounted ? 'opacity-100' : 'opacity-0'}`}
+            style={{ transitionDelay: '240ms' }}
           >
             Trusted by 500+ cleaning companies · Starting at $59/mo
           </p>
@@ -232,32 +228,23 @@ export default function Home() {
       <section id="features" className="py-24 border-b border-amber-400/30 bg-black">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-400/30 text-amber-300 text-sm font-medium mb-4">
-              <Brain className="h-4 w-4" />
-              <span>Powered by AI</span>
-            </div>
             <h2 className="font-heading text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
-              Three AI Capabilities That Win More Bids
+              How JANIBEAR helps you win more bids
             </h2>
             <p className="text-lg text-zinc-300 max-w-2xl mx-auto">
-              From walkthrough to closed deal—AI handles the heavy lifting so you can focus on relationships.
+              From walkthrough to closed deal—JANIBEAR removes the manual work that slows your sales team down.
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {[
-              { icon: Camera, badge: 'AI Bidding', title: 'Intelligent Building Capture', desc: 'Point your phone camera at rooms, floors, and fixtures. AI automatically detects flooring types, counts fixtures, measures square footage, and identifies special requirements—all in real-time.', features: ['Floor type detection', 'Fixture counting', 'Square footage calculation', 'Special area identification'], color: 'gold' },
-              { icon: Wand2, badge: 'AI Proposals', title: 'Instant Professional Proposals', desc: 'AI generates complete, branded proposals with scope of work, frequency schedules, pricing tables, and assumptions—ready to send in minutes, not hours.', features: ['Branded PDF generation', 'Automated pricing', 'Scope documentation', 'Professional formatting'], color: 'cyan' },
-              { icon: Repeat, badge: 'AI Follow-Ups', title: 'Automated Follow-Up Cadences', desc: 'Never lose a lead. AI tracks proposal status, sends personalized follow-ups at optimal times, and maintains engagement until the deal closes—all automatically.', features: ['Smart timing', 'Personalized messaging', 'Status tracking', 'Engagement optimization'], color: 'emerald' },
+              { icon: Camera, title: 'Intelligent Building Capture', desc: 'Walk properties once. Never miss details. Never re-measure.', features: ['Floor types & fixtures', 'Square footage', 'Special requirements'] },
+              { icon: Wand2, title: 'Professional Proposals', desc: 'Scope, pricing, and assumptions in one document. Ready to send in minutes.', features: ['Branded PDFs', 'Consistent pricing', 'Less back-and-forth'] },
+              { icon: Repeat, title: 'Follow-ups that close', desc: 'Stay in front of leads until the deal closes—without the manual chase.', features: ['Right timing', 'Fewer dropped leads', 'Clear status'] },
             ].map((item, index) => {
               const Icon = item.icon;
-              const colorClasses = { gold: 'bg-amber-500/10 text-amber-400 border-amber-500/20', cyan: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20', emerald: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' };
               return (
                 <div key={index} className={`relative p-8 rounded-2xl bg-white/5 border border-amber-400/50 hover:border-amber-400 transition-all ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`} style={{ transitionDelay: `${index * 100}ms`, transitionDuration: '500ms' }}>
-                  <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full ${colorClasses[item.color as keyof typeof colorClasses]} text-xs font-semibold mb-4`}>
-                    <Icon className="h-3.5 w-3.5" />
-                    <span>{item.badge}</span>
-                  </div>
                   <h3 className="text-xl font-semibold text-white mb-3">{item.title}</h3>
                   <p className="text-zinc-300 leading-relaxed text-sm mb-4">{item.desc}</p>
                   <ul className="space-y-2">
@@ -278,83 +265,32 @@ export default function Home() {
       <section id="operations-qa" className="py-24 border-b border-amber-400/30 bg-black">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-400/30 text-emerald-300 text-sm font-medium mb-4">
-              <ClipboardCheck className="h-4 w-4" />
-              <span>Operations & QA</span>
-            </div>
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
-              Three AI Capabilities for Operations & Quality Assurance
+              Quality and operations—handled automatically
             </h2>
             <p className="text-lg text-zinc-300 max-w-2xl mx-auto">
-              Deliver consistently, catch issues before the customer does, and keep every location on track—automatically.
+              After the bid is won, JANIBEAR helps you deliver consistently, catch issues early, and keep every location on track.
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {[
-              { icon: ClipboardCheck, badge: 'AI Quality', title: 'Consistent Inspections & Scoring', desc: 'Run quality checks that actually get completed. AI supports consistent scoring, photo documentation, and trend tracking so you catch issues before the customer does.', features: ['Consistent scoring', 'Issue detection', 'Photo documentation', 'Trend tracking'], color: 'gold' },
-              { icon: CalendarDays, badge: 'AI Scheduling', title: 'Smarter Crews & Coverage', desc: 'Put the right crew on the right job. AI helps match crews to locations, surface coverage gaps, and reduce missed cleans so service stays reliable.', features: ['Crew-to-location matching', 'Coverage visibility', 'Schedule optimization', 'Missed-clean alerts'], color: 'cyan' },
-              { icon: AlertCircle, badge: 'AI Issue Resolution', title: 'Fast Response & Resolution', desc: 'When something goes wrong, fix it before it becomes a complaint. AI tracks work orders, prioritizes by urgency, and keeps resolution and communication in one place.', features: ['Priority routing', 'Status tracking', 'Quick resolution', 'Customer communication'], color: 'emerald' },
+              { icon: ClipboardCheck, title: 'Inspections & scoring', desc: 'Consistent quality checks, photo documentation, and trend tracking so you catch issues before the customer does.' },
+              { icon: CalendarDays, title: 'Crews & coverage', desc: 'Match crews to locations, see coverage gaps, and reduce missed cleans so service stays reliable.' },
+              { icon: AlertCircle, title: 'Issue resolution', desc: 'Track work orders, prioritize by urgency, and keep resolution and communication in one place.' },
             ].map((item, index) => {
               const Icon = item.icon;
-              const colorClasses = { gold: 'bg-amber-500/10 text-amber-400 border-amber-500/20', cyan: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20', emerald: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' };
               return (
                 <div key={index} className={`relative p-8 rounded-2xl bg-white/5 border border-amber-400/50 hover:border-amber-400 transition-all ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`} style={{ transitionDelay: `${index * 100}ms`, transitionDuration: '500ms' }}>
-                  <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full ${colorClasses[item.color as keyof typeof colorClasses]} text-xs font-semibold mb-4`}>
-                    <Icon className="h-3.5 w-3.5" />
-                    <span>{item.badge}</span>
-                  </div>
                   <h3 className="text-xl font-semibold text-white mb-3">{item.title}</h3>
-                  <p className="text-zinc-300 leading-relaxed text-sm mb-4">{item.desc}</p>
-                  <ul className="space-y-2">
-                    {item.features.map((feature, i) => (
-                      <li key={i} className="flex items-start gap-2 text-zinc-400 text-sm">
-                        <Check className="h-4 w-4 text-amber-400 shrink-0 mt-0.5" />
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
+                  <p className="text-zinc-300 leading-relaxed text-sm">{item.desc}</p>
                 </div>
               );
             })}
           </div>
-        </div>
-      </section>
-
-      <section className="py-24 border-b border-amber-400/30 bg-black">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-12">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-400/30 text-amber-300 text-sm font-medium mb-4">
-                <Package className="h-4 w-4" />
-                <span>Inventory & Orders</span>
-              </div>
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
-                Organize Supplies—Stop the Paper Notes and Text Threads
-              </h2>
-              <p className="text-lg text-zinc-300 max-w-2xl mx-auto">
-                Most companies are still using paper notes, text messages, or Excel if they&apos;re lucky. JANIBEAR gives you one place to track inventory and build orders—then email them straight to your preferred vendor.
-              </p>
-            </div>
-            <div className="bg-white/5 border border-amber-400/50 rounded-xl p-8">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-300 flex items-center justify-center shrink-0">
-                  <Package className="h-6 w-6" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-white mb-2">Simple inventory, ready-to-send orders</h3>
-                  <p className="text-zinc-300 mb-4">
-                    Track what you need by location or job, build orders in one place, and send them to your vendor by email—no more scattered notes or digging through threads. Built for how janitorial companies actually work.
-                  </p>
-                  <ul className="space-y-2 text-zinc-400 text-sm">
-                    <li className="flex items-start gap-2"><Check className="h-4 w-4 text-amber-400 shrink-0 mt-0.5" /><span>One place to inventory supplies by site or job</span></li>
-                    <li className="flex items-start gap-2"><Check className="h-4 w-4 text-amber-400 shrink-0 mt-0.5" /><span>Build orders and email them to your preferred vendor</span></li>
-                    <li className="flex items-start gap-2"><Check className="h-4 w-4 text-amber-400 shrink-0 mt-0.5" /><span>Replace paper notes, texts, and spreadsheet chaos</span></li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
+          <p className="text-center text-sm text-zinc-500 mt-10">
+            Optional operations modules available—inventory, purchase orders, invoicing, and more.
+          </p>
         </div>
       </section>
 
@@ -364,8 +300,11 @@ export default function Home() {
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
               Measurable Results for Janitorial Companies
             </h2>
-            <p className="text-lg text-zinc-300 max-w-2xl mx-auto">
+            <p className="text-lg text-zinc-300 max-w-2xl mx-auto mb-2">
               See why janitorial sales teams choose JANIBEAR to win more bids.
+            </p>
+            <p className="text-sm text-zinc-500 max-w-xl mx-auto">
+              Results based on early customer usage and internal benchmarks.
             </p>
           </div>
           <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto">
@@ -377,7 +316,7 @@ export default function Home() {
             ].map((item, index) => {
               const Icon = item.icon;
               return (
-                <div key={index} className="bg-white/5 rounded-xl p-6 border border-amber-400/50 text-center hover:border-amber-400/20 transition-colors">
+                <div key={index} className="bg-white/5 rounded-xl p-6 border border-amber-400/50 text-center hover:border-amber-400 transition-colors">
                   <Icon className="h-8 w-8 mx-auto mb-3 text-amber-400/80" />
                   <div className="text-3xl font-bold text-white mb-1">{item.stat}</div>
                   <div className="text-zinc-300 font-medium text-sm mb-1">{item.label}</div>
@@ -385,79 +324,6 @@ export default function Home() {
                 </div>
               );
             })}
-          </div>
-        </div>
-      </section>
-
-      <section className="py-24 border-b border-amber-400/30 bg-black">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
-              Built Specifically for Janitorial Companies
-            </h2>
-            <p className="text-lg text-zinc-300 max-w-xl mx-auto">
-              Designed by janitorial industry experts, for janitorial sales teams.
-            </p>
-          </div>
-          <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
-            {[
-              { icon: UserCheck, label: 'Janitorial Sales Reps', desc: 'Close more deals faster' },
-              { icon: Building2, label: 'Owner-Operators', desc: 'Scale without hiring' },
-              { icon: Users, label: 'Franchise Operators', desc: 'Standardize across locations' },
-              { icon: Target, label: 'Facility Services', desc: 'Expand into janitorial' },
-            ].map((item, index) => {
-              const Icon = item.icon;
-              return (
-                <div key={index} className="flex flex-col items-center p-6 rounded-xl bg-white/5 border border-amber-400/50 hover:border-amber-400 transition-colors text-center">
-                  <div className="w-12 h-12 rounded-xl bg-cyan-500/10 text-cyan-300 flex items-center justify-center mb-3">
-                    <Icon className="h-6 w-6" />
-                  </div>
-                  <span className="font-semibold text-white text-sm mb-1">{item.label}</span>
-                  <span className="text-zinc-400 text-xs">{item.desc}</span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      <section className="py-24 border-b border-amber-400/30">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <div className="flex items-center justify-center gap-2 mb-6">
-              <div className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-400/30 text-emerald-300 text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5">
-                <Plus className="h-3.5 w-3.5" />
-                Operations Module
-              </div>
-            </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
-              Complete Operations Management
-            </h2>
-            <p className="text-lg text-zinc-300 mb-12 max-w-2xl mx-auto">
-              After you win the bid, manage inspections, crews, compliance, purchase orders, and invoicing—all in one platform.
-            </p>
-            <div className="grid sm:grid-cols-2 md:grid-cols-5 gap-6">
-              {[
-                { icon: ClipboardCheck, label: 'Inspections' },
-                { icon: Users, label: 'Crews' },
-                { icon: Shield, label: 'Compliance' },
-                { icon: Package, label: 'Purchase Orders' },
-                { icon: FileSpreadsheet, label: 'Invoicing' },
-              ].map((item, index) => {
-                const Icon = item.icon;
-                return (
-                  <div key={index} className="flex flex-col items-center gap-3 p-4 rounded-xl bg-white/5 border border-amber-400/50 hover:border-amber-400 transition-colors">
-                    <div className="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-300 flex items-center justify-center">
-                      <Icon className="h-5 w-5" />
-                    </div>
-                    <span className="font-medium text-white text-sm text-center">{item.label}</span>
-                  </div>
-                );
-              })}
-            </div>
-            <p className="mt-8 text-sm text-zinc-400 text-center">
-              Add the Operations module to your plan for complete janitorial business management—from sales to delivery.
-            </p>
           </div>
         </div>
       </section>

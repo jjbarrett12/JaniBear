@@ -49,26 +49,26 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="landing-page min-h-screen bg-zinc-950 text-zinc-100 pb-20 md:pb-0">
+    <div className="landing-page min-h-screen bg-black text-white pb-20 md:pb-0">
       <nav
         className={`landing-header border-b sticky top-0 z-50 h-14 md:h-16 py-0 flex items-center overflow-visible transition-all duration-300 ${
           navScrolled ? 'landing-header-scrolled shadow-sm' : ''
         }`}
       >
-        <div className="container mx-auto px-4 h-full flex items-center justify-between gap-4 min-h-0">
+        <div className="container relative mx-auto px-4 h-full flex items-center justify-between gap-4 min-h-0">
           <Link href="/" className="landing-logo-wrap flex items-center shrink-0 overflow-visible bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block [&>span]:overflow-visible">
             <Image
               src="/janibear-logo.png"
               alt="JANIBEAR"
               width={320}
               height={104}
-              className="landing-logo w-auto object-contain object-center bg-transparent"
+              className="landing-logo w-auto object-contain object-left bg-transparent"
               priority
               unoptimized
             />
           </Link>
-          {/* Desktop: nav categories (Pricing, Plans, Features, Contact) - centered */}
-          <div className="hidden md:flex items-center gap-1 lg:gap-2 flex-1 justify-center">
+          {/* Desktop: nav categories centered in the middle of the bar */}
+          <div className="hidden md:flex absolute left-1/2 top-0 h-full -translate-x-1/2 items-center gap-1 lg:gap-2">
             <Link href="/pricing">
               <Button variant="ghost" size="sm" className="landing-nav-link shrink-0 h-9 px-3">
                 Pricing
@@ -90,8 +90,8 @@ export default function Home() {
               </Button>
             </Link>
           </div>
-          {/* Desktop: Sign in + Get a Demo */}
-          <div className="hidden md:flex items-center gap-1 lg:gap-2 shrink-0">
+          {/* Desktop: Sign in + Get a Demo — right side */}
+          <div className="hidden md:flex items-center gap-1 lg:gap-2 shrink-0 ml-auto">
             <Link href="/auth/login" className="landing-nav-link landing-nav-link-text text-sm font-medium shrink-0 h-9 flex items-center px-3 hover:underline">
               Sign in
             </Link>
@@ -105,7 +105,7 @@ export default function Home() {
           <button
             type="button"
             onClick={() => setMenuOpen(true)}
-            className="md:hidden landing-nav-link p-2 rounded-md -mr-2 text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100"
+            className="md:hidden landing-nav-link p-2 rounded-md -mr-2 text-zinc-400 hover:text-white hover:bg-white/10"
             aria-label="Open menu"
           >
             <Menu className="h-6 w-6" />
@@ -122,36 +122,36 @@ export default function Home() {
           aria-label="Navigation menu"
         >
           <div
-            className="absolute inset-0 bg-zinc-950/80 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/80 backdrop-blur-sm"
             onClick={() => setMenuOpen(false)}
             aria-hidden
           />
-          <div className="absolute top-0 right-0 bottom-0 w-full max-w-sm bg-zinc-900 border-l border-zinc-800 shadow-xl flex flex-col">
-            <div className="flex items-center justify-between p-4 border-b border-zinc-800">
+          <div className="absolute top-0 right-0 bottom-0 w-full max-w-sm bg-black border-l border-white/10 shadow-xl flex flex-col">
+            <div className="flex items-center justify-between p-4 border-b border-white/10">
               <span className="text-sm font-medium text-zinc-400">Menu</span>
               <button
                 type="button"
                 onClick={() => setMenuOpen(false)}
-                className="p-2 rounded-md text-zinc-400 hover:text-white hover:bg-zinc-800"
+                className="p-2 rounded-md text-zinc-400 hover:text-white hover:bg-white/10"
                 aria-label="Close menu"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
             <nav className="flex flex-col p-4 gap-1">
-              <Link href="/#features" onClick={() => setMenuOpen(false)} className="px-3 py-3 text-white font-medium rounded-lg hover:bg-zinc-800">
+              <Link href="/#features" onClick={() => setMenuOpen(false)} className="px-3 py-3 text-white font-medium rounded-lg hover:bg-white/10">
                 Features
               </Link>
-              <Link href="/pricing" onClick={() => setMenuOpen(false)} className="px-3 py-3 text-white font-medium rounded-lg hover:bg-zinc-800">
+              <Link href="/pricing" onClick={() => setMenuOpen(false)} className="px-3 py-3 text-white font-medium rounded-lg hover:bg-white/10">
                 Pricing
               </Link>
-              <Link href="/survey" onClick={() => setMenuOpen(false)} className="px-3 py-3 text-white font-medium rounded-lg hover:bg-zinc-800">
+              <Link href="/survey" onClick={() => setMenuOpen(false)} className="px-3 py-3 text-white font-medium rounded-lg hover:bg-white/10">
                 Plans
               </Link>
-              <Link href="/contact" onClick={() => setMenuOpen(false)} className="px-3 py-3 text-white font-medium rounded-lg hover:bg-zinc-800">
+              <Link href="/contact" onClick={() => setMenuOpen(false)} className="px-3 py-3 text-white font-medium rounded-lg hover:bg-white/10">
                 Contact
               </Link>
-              <Link href="/auth/login" onClick={() => setMenuOpen(false)} className="px-3 py-3 text-zinc-400 text-sm hover:text-white hover:bg-zinc-800 rounded-lg mt-2">
+              <Link href="/auth/login" onClick={() => setMenuOpen(false)} className="px-3 py-3 text-zinc-400 text-sm hover:text-white hover:bg-white/10 rounded-lg mt-2">
                 Sign in
               </Link>
             </nav>
@@ -160,7 +160,7 @@ export default function Home() {
       )}
 
       {/* Sticky bottom CTA — mobile only */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 p-3 safe-bottom bg-zinc-950/95 border-t border-zinc-800 backdrop-blur md:hidden">
+      <div className="fixed bottom-0 left-0 right-0 z-50 p-3 safe-bottom bg-black/95 border-t border-white/10 backdrop-blur md:hidden">
         <Link href="/demo" className="block w-full">
           <Button className="landing-cta w-full h-12 text-base font-semibold rounded-lg">
             Get a Demo
@@ -169,10 +169,10 @@ export default function Home() {
         </Link>
       </div>
 
-      <section className="relative w-full overflow-hidden bg-gradient-to-b from-indigo-950/90 via-indigo-950/50 to-zinc-950 pt-12 md:pt-16 pb-20 md:pb-28">
+      <section className="relative w-full overflow-hidden bg-black pt-12 md:pt-16 pb-20 md:pb-28">
         <div className="relative container mx-auto px-4 text-center">
           <div
-            className={`inline-flex items-center gap-2 px-4 py-2 rounded-full bg-transparent border-2 border-indigo-400/80 text-zinc-200 text-sm font-medium mb-8 transition-all duration-500 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}`}
+            className={`inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/20 text-zinc-300 text-sm font-medium mb-8 transition-all duration-500 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}`}
           >
             <Bot className="h-4 w-4 text-amber-400" />
             <span>Powered by Jani</span>
@@ -185,7 +185,7 @@ export default function Home() {
             <span
               className="hero-gradient-text inline-block"
               style={{
-                background: 'linear-gradient(to right, #d97706, #fbbf24, #fcd34d)',
+                background: 'linear-gradient(to right, #fbbf24, #fcd34d)',
                 WebkitBackgroundClip: 'text',
                 backgroundClip: 'text',
                 color: 'transparent',
@@ -196,10 +196,10 @@ export default function Home() {
           </h1>
 
           <p
-            className={`hero-subhead text-lg text-zinc-400 max-w-2xl mx-auto mt-6 leading-relaxed transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            className={`hero-subhead text-lg text-zinc-300 max-w-2xl mx-auto mt-6 leading-relaxed transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '80ms' }}
           >
-            JANIBEAR AI replaces spreadsheets, PDFs, and guesswork with a single platform for <span className="hero-gradient-text inline-block" style={{ background: 'linear-gradient(to right, #d97706, #fbbf24, #fcd34d)', WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' }}>bidding</span>, inspections, reporting, and accountability.
+            JANIBEAR AI replaces spreadsheets, PDFs, and guesswork with a single platform for <span className="hero-gradient-text inline-block" style={{ background: 'linear-gradient(to right, #fbbf24, #fcd34d)', WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' }}>bidding</span>, inspections, reporting, and accountability.
           </p>
 
           <div
@@ -220,7 +220,7 @@ export default function Home() {
           </div>
 
           <p
-            className={`mt-10 text-sm text-zinc-500 transition-all duration-700 ${mounted ? 'opacity-100' : 'opacity-0'}`}
+            className={`mt-10 text-sm text-zinc-400 transition-all duration-700 ${mounted ? 'opacity-100' : 'opacity-0'}`}
             style={{ transitionDelay: '200ms' }}
           >
             Trusted by 500+ cleaning companies · Starting at $59/mo
@@ -490,7 +490,7 @@ export default function Home() {
         </div>
       </section>
 
-      <footer className="bg-zinc-950 border-t border-zinc-800/80 text-zinc-400 py-12">
+      <footer className="bg-black border-t border-white/10 text-zinc-400 py-12">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-4 gap-8">
             <div className="[&>span]:bg-transparent [&>span]:shadow-none [&>span]:block">

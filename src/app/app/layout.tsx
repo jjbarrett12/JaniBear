@@ -26,7 +26,7 @@ export default async function AppLayout({
       <ThemeApplier />
       <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
         <AppSidebar />
-        <main className="lg:pl-64 pt-20 lg:pt-0 pb-20 lg:pb-0">
+        <main className="lg:pl-56 pt-20 lg:pt-0 pb-20 lg:pb-0">
           <div className="p-4 md:p-8 max-w-[1600px] mx-auto w-full">
             {children}
           </div>

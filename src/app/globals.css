@@ -2,35 +2,35 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Landing page: dark theme */
+/* Landing page: black theme, white text */
 .landing-page {
-  background-color: #09090b !important;
-  color: #f4f4f5;
+  background-color: #000 !important;
+  color: #fff;
 }
-/* Nav: white background, dark text; blur on scroll */
+/* Nav: black background, white text; blur on scroll */
 .landing-header {
-  background: #fff !important;
-  border-color: #e5e7eb !important;
+  background: #000 !important;
+  border-color: #27272a !important;
 }
 .landing-header.landing-header-scrolled {
-  background: rgba(255, 255, 255, 0.92) !important;
+  background: rgba(0, 0, 0, 0.95) !important;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
 .landing-header .landing-nav-link {
-  color: #111 !important;
+  color: #fafafa !important;
   background: transparent !important;
   border: none !important;
 }
 .landing-header .landing-nav-link:hover {
-  color: #000 !important;
-  background: #f3f4f6 !important;
+  color: #fff !important;
+  background: rgba(255, 255, 255, 0.1) !important;
 }
 .landing-header .landing-nav-link-text {
-  color: #111 !important;
+  color: #fafafa !important;
 }
 .landing-header .landing-nav-link-text:hover {
-  color: #000 !important;
+  color: #fff !important;
   background: transparent !important;
 }
 .landing-logo-wrap {
@@ -38,12 +38,23 @@
   align-items: center;
   overflow: visible;
   flex-shrink: 0;
+  justify-content: flex-start;
+  /* Reserve space for 2x-wider logo so layout doesn't shift */
+  width: 160px;
+}
+@media (min-width: 768px) {
+  .landing-logo-wrap {
+    width: 200px;
+  }
 }
 .landing-header .landing-logo {
   max-height: 40px !important;
   height: 40px !important;
   width: auto !important;
   flex-shrink: 0;
+  /* 2x wider, same height so header height stays fixed */
+  transform: scaleX(2) scaleY(1);
+  transform-origin: left center;
 }
 @media (min-width: 768px) {
   .landing-header .landing-logo {
@@ -52,30 +63,31 @@
   }
 }
 .landing-page .landing-cta {
-  background: #d97706 !important;
-  color: #fff !important;
+  background: #fbbf24 !important;
+  color: #000 !important;
   border: none !important;
-  box-shadow: 0 10px 15px -3px rgba(217, 119, 6, 0.25);
+  box-shadow: 0 4px 14px rgba(251, 191, 36, 0.4);
 }
 .landing-page .landing-cta:hover {
-  background: #f59e0b !important;
+  background: #fcd34d !important;
+  color: #000 !important;
 }
 .landing-page .landing-cta-lg {
   font-size: 1.125rem;
   padding-left: 2rem;
   padding-right: 2rem;
   height: 3.5rem;
-  box-shadow: 0 10px 15px -3px rgba(217, 119, 6, 0.25), 0 4px 6px -4px rgba(217, 119, 6, 0.25);
+  box-shadow: 0 4px 14px rgba(251, 191, 36, 0.4);
 }
 .landing-page .landing-outline {
   background: transparent !important;
-  border: 1px solid #3f3f46 !important;
-  color: #d4d4d8 !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+  color: #fafafa !important;
 }
 .landing-page .landing-outline:hover {
-  border-color: #52525b !important;
+  border-color: rgba(255, 255, 255, 0.7) !important;
   color: #fff !important;
-  background: rgba(63, 63, 70, 0.5) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
 }
 .landing-page section {
   border-color: rgba(39, 39, 42, 0.8);
@@ -84,10 +96,10 @@
   color: #fff;
 }
 .landing-page p {
-  color: #a1a1aa;
+  color: #d4d4d8;
 }
-.landing-page span:not(.gradient-text) {
-  color: #a1a1aa;
+.landing-page span:not(.gradient-text):not([style*="transparent"]) {
+  color: #d4d4d8;
 }
 
 /* Hero: gradient underline on "Automatically" */
@@ -111,7 +123,7 @@
 }
 .landing-page .hero-meta {
   font-weight: 400;
-  color: #71717a !important;
+  color: #a1a1aa !important;
 }
 
 @layer base {

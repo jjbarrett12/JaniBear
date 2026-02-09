@@ -57,7 +57,7 @@ export function AppSidebarNav({ premium }: { premium: boolean }) {
   const t = getAppT(locale);
 
   return (
-    <nav className="flex-1 space-y-4 p-4 overflow-y-auto">
+    <nav className="min-w-0 flex-1 space-y-4 overflow-y-auto p-3">
       <Link
         href="/app/dashboard"
         className="flex items-center gap-3 rounded-lg px-4 py-3 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors min-h-[48px]"

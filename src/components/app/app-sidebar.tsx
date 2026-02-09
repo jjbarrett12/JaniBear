@@ -35,18 +35,18 @@ export async function AppSidebar() {
       {/* Mobile Sidebar */}
       <MobileSidebar logoUrl={orgData?.logo_url} />
 
-      {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex fixed left-0 top-0 z-40 h-screen w-64 border-r bg-white dark:bg-gray-900 dark:border-gray-800">
-        <div className="flex h-full flex-col">
-          <div className="flex h-20 items-center border-b dark:border-gray-800 px-4">
-            <Link href="/app/dashboard" className="flex items-center gap-3 bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block">
+      {/* Desktop Sidebar - w-56 so it doesn't overlap main content */}
+      <aside className="hidden lg:flex fixed left-0 top-0 z-40 h-screen w-56 shrink-0 overflow-hidden border-r bg-white dark:bg-gray-900 dark:border-gray-800">
+        <div className="flex h-full min-w-0 flex-1 flex-col">
+          <div className="flex h-20 shrink-0 items-center border-b dark:border-gray-800 px-3">
+            <Link href="/app/dashboard" className="flex min-w-0 items-center gap-2 bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block">
               {orgData?.logo_url ? (
                 <Image
                   src={orgData.logo_url}
                   alt="Company Logo"
-                  width={220}
-                  height={80}
-                  className="h-16 w-auto object-contain bg-transparent"
+                  width={180}
+                  height={64}
+                  className="h-14 w-auto max-w-[200px] object-contain bg-transparent"
                   priority
                   unoptimized
                 />
@@ -54,9 +54,9 @@ export async function AppSidebar() {
                 <Image
                   src="/janibear-logo.png"
                   alt="JANIBEAR Logo"
-                  width={240}
-                  height={80}
-                  className="h-16 w-auto object-contain bg-transparent"
+                  width={180}
+                  height={64}
+                  className="h-14 w-auto max-w-[200px] object-contain bg-transparent"
                   priority
                   unoptimized
                 />
@@ -64,8 +64,10 @@ export async function AppSidebar() {
             </Link>
           </div>
           
-          <div className="p-4 border-b dark:border-gray-800 space-y-3">
-            <GlobalSearch />
+          <div className="min-w-0 shrink-0 space-y-3 border-b p-3 dark:border-gray-800">
+            <div className="min-w-0">
+              <GlobalSearch />
+            </div>
             <div className="flex items-center justify-between gap-2">
               <LanguageSwitcher />
               <DarkModeToggle />

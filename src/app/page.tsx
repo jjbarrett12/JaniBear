@@ -173,8 +173,8 @@ export default function Home() {
           <h1
             className={`hero-headline font-heading text-3xl sm:text-4xl md:text-5xl lg:text-[2.75rem] font-extrabold text-white tracking-tight max-w-3xl mx-auto transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
           >
-            <span className="block mb-4 md:mb-5">Win more janitorial bids.</span>
-            <span className="block mb-4 md:mb-5">Keep customers longer.</span>
+            <span className="block mb-1 md:mb-2">Win more janitorial bids.</span>
+            <span className="block mb-1 md:mb-2">Keep customers longer.</span>
             <span className="block">Scale without adding headcount.</span>
           </h1>
 
@@ -183,14 +183,7 @@ export default function Home() {
             style={{ transitionDelay: '80ms' }}
           >
             One system for bidding, inspections, and accountability—{' '}
-            <span
-              className="font-semibold text-transparent bg-clip-text"
-              style={{
-                background: 'linear-gradient(135deg, #fde047 0%, #fbbf24 50%, #f59e0b 100%)',
-                WebkitBackgroundClip: 'text',
-                backgroundClip: 'text',
-              }}
-            >
+            <span className="font-semibold text-amber-400">
               built by cleaning companies, for cleaning companies.
             </span>
           </p>

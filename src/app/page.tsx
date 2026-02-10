@@ -194,25 +194,17 @@ export default function Home() {
             className={`hero-subhead text-lg md:text-xl text-zinc-300 max-w-2xl mx-auto mt-12 leading-relaxed transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '80ms' }}
           >
-            Save hours every week with{' '}
-            <span
-              className="font-semibold text-amber-300"
-              style={{ textShadow: '0 0 20px rgba(251, 191, 36, 0.2)' }}
-            >
-              built-in quality assurance
-            </span>
-            {' '}and accountability—so growth comes from{' '}
+            One system for bidding, inspections, and accountability—{' '}
             <span
               className="font-semibold text-transparent bg-clip-text"
               style={{
-                background: 'linear-gradient(90deg, #fde047, #fbbf24)',
+                background: 'linear-gradient(135deg, #fde047 0%, #fbbf24 50%, #f59e0b 100%)',
                 WebkitBackgroundClip: 'text',
                 backgroundClip: 'text',
               }}
             >
-              better systems
+              built specifically for commercial janitorial teams.
             </span>
-            , not more people.
           </p>
 
           <div

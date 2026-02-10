@@ -29,7 +29,7 @@ import {
 function InfoRow({
   label,
   value,
-  icon: Icon,
+  icon: IconComponent,
   sensitive,
 }: {
   label: string;
@@ -38,10 +38,9 @@ function InfoRow({
   sensitive?: boolean;
 }) {
   if (value === undefined || value === null || value === '') return null;
-  const Icon = icon;
   return (
     <div className="flex items-start gap-3 py-2 border-b border-gray-100 dark:border-gray-700 last:border-0">
-      {Icon && <Icon className="h-4 w-4 text-gray-500 dark:text-gray-400 mt-0.5 shrink-0" />}
+      {IconComponent && <IconComponent className="h-4 w-4 text-gray-500 dark:text-gray-400 mt-0.5 shrink-0" />}
       <div className="min-w-0 flex-1">
         <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">{label}</p>
         <p className={`text-sm mt-0.5 ${sensitive ? 'font-mono bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded' : ''}`}>

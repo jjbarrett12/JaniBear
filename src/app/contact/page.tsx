@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Mail, Phone, MessageSquare, ArrowRight } from 'lucide-react';
+import { BrandName } from '@/components/ui/brand-name';
 
 export default function ContactPage() {
   return (
@@ -52,7 +53,7 @@ export default function ContactPage() {
               Get in Touch
             </h1>
             <p className="text-lg text-zinc-400 max-w-2xl mx-auto">
-              Have questions about JANIBEAR? We&apos;d love to hear from you. Send us a message and we&apos;ll respond as soon as possible.
+              Have questions about <BrandName />? We&apos;d love to hear from you. Send us a message and we&apos;ll respond as soon as possible.
             </p>
           </div>
 
@@ -133,7 +134,7 @@ export default function ContactPage() {
                     <div>
                       <h3 className="font-semibold text-white mb-1">Book a Demo</h3>
                       <p className="text-zinc-400 text-sm mb-2">
-                        Schedule a personalized demo to see JANIBEAR in action
+                        Schedule a personalized demo to see <BrandName /> in action
                       </p>
                       <Link href="/demo">
                         <Button variant="outline" size="sm" className="border-zinc-700 text-zinc-300 hover:bg-zinc-800">
@@ -229,7 +230,7 @@ export default function ContactPage() {
             </div>
           </div>
           <div className="border-t border-zinc-800 mt-8 pt-8 text-center text-sm text-zinc-500">
-            <p>&copy; {new Date().getFullYear()} JANIBEAR. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} <BrandName />. All rights reserved.</p>
           </div>
         </div>
       </footer>

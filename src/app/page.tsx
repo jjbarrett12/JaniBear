@@ -30,6 +30,7 @@ import {
   Plus,
   Shield,
 } from 'lucide-react';
+import { BrandName } from '@/components/ui/brand-name';
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -89,14 +90,14 @@ export default function Home() {
               </Button>
             </Link>
           </div>
-          {/* Desktop: Sign in + Get a Demo — right side */}
+          {/* Desktop: Sign in + primary CTA — right side */}
           <div className="hidden md:flex items-center gap-1 lg:gap-2 shrink-0 ml-auto">
             <Link href="/auth/login" className="landing-nav-link landing-nav-link-text text-sm font-medium shrink-0 h-9 flex items-center px-3 hover:underline">
               Sign in
             </Link>
             <Link href="/demo">
               <Button size="sm" className="landing-cta shrink-0 h-10 px-4 md:px-5 font-semibold">
-                Get a Demo
+                See It in Action
               </Button>
             </Link>
           </div>
@@ -162,66 +163,97 @@ export default function Home() {
       <div className="fixed bottom-0 left-0 right-0 z-50 p-3 safe-bottom bg-black/95 border-t border-amber-400/30 backdrop-blur md:hidden">
         <Link href="/demo" className="block w-full">
           <Button className="landing-cta w-full h-12 text-base font-semibold rounded-lg">
-            Get a Demo
+            See It in Action
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         </Link>
       </div>
 
-      <section className="relative w-full overflow-hidden bg-black pt-16 md:pt-24 pb-8 md:pb-10">
+      <section className="relative w-full overflow-hidden bg-black pt-20 md:pt-28 pb-10 md:pb-14">
+        {/* Subtle radial glow for depth */}
+        <div className="absolute inset-0 pointer-events-none" aria-hidden>
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[120%] max-w-4xl h-[80%] bg-gradient-radial-hero opacity-40" />
+        </div>
+        <div className="absolute inset-0 pointer-events-none opacity-[0.03] hero-noise" aria-hidden />
         <div className="relative container mx-auto px-4 text-center">
-          <h1
-            className={`hero-headline font-heading text-3xl sm:text-4xl md:text-5xl lg:text-[2.75rem] font-extrabold text-white tracking-tight max-w-3xl mx-auto transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
-          >
-            <span className="block mb-1 md:mb-2">Win more janitorial bids.</span>
-            <span className="block mb-1 md:mb-2">Keep customers longer.</span>
-            <span className="block">Scale without adding headcount.</span>
+          <h1 className="max-w-3xl mx-auto">
+            <span
+              className={`hero-headline block font-heading text-3xl sm:text-4xl md:text-5xl lg:text-[2.75rem] font-extrabold text-white tracking-tight transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+              style={{ transitionDelay: '0ms' }}
+            >
+              Win more bids.
+            </span>
+            <span
+              className={`hero-headline block font-heading text-3xl sm:text-4xl md:text-5xl lg:text-[2.75rem] font-extrabold text-white tracking-tight mb-1 md:mb-2 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+              style={{ transitionDelay: '80ms' }}
+            >
+              Keep customers longer.
+            </span>
+            <span
+              className={`hero-headline block font-heading text-3xl sm:text-4xl md:text-5xl lg:text-[2.75rem] font-extrabold text-white tracking-tight transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+              style={{ transitionDelay: '160ms' }}
+            >
+              Scale—without adding headcount.
+            </span>
           </h1>
 
           <p
-            className={`hero-subhead text-lg md:text-xl text-zinc-300 max-w-2xl mx-auto mt-12 leading-relaxed transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
-            style={{ transitionDelay: '80ms' }}
+            className={`hero-subhead text-lg md:text-xl text-zinc-300 max-w-2xl mx-auto mt-14 leading-relaxed transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            style={{ transitionDelay: '240ms' }}
           >
-            One system for bidding, inspections, and accountability—{' '}
+            A single system for bidding, inspections, and accountability—{' '}
             <span className="font-semibold text-amber-400">
-              built by cleaning companies, for cleaning companies.
+              built by janitorial operators
             </span>
           </p>
 
-          <div
-            className={`mt-14 flex justify-center transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
-            style={{ transitionDelay: '100ms' }}
+          {/* Trust strip: scale first, then quote as proof */}
+          <p
+            className={`hero-micro mt-12 text-xs md:text-sm text-zinc-500 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            style={{ transitionDelay: '280ms' }}
           >
-            <Image
-              src="/hero-review.png"
-              alt="Customer testimonial: Once we could prove our quality, price stopped being the main objection. — Chris K. - Owner, Regional Janitorial Company"
-              width={640}
-              height={280}
-              className="w-full max-w-2xl rounded-2xl object-contain"
-              unoptimized
-            />
+            Trusted by 500+ commercial janitorial teams nationwide
+          </p>
+
+          <div
+            className={`mt-6 flex flex-col items-center justify-center transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            style={{ transitionDelay: '320ms' }}
+          >
+            <div className="relative w-full max-w-2xl rounded-2xl ring-1 ring-amber-400/25 shadow-2xl shadow-amber-950/30 bg-white/[0.02] p-1">
+              <Image
+                src="/hero-review.png"
+                alt="Customer testimonial: Once we could prove our quality, price stopped being the main objection."
+                width={640}
+                height={280}
+                className="w-full rounded-xl object-contain"
+                unoptimized
+              />
+            </div>
+            <p className="hero-micro mt-3 text-xs text-zinc-500">
+              — Chris K., Owner — Regional janitorial company (1,200+ locations)
+            </p>
           </div>
 
           <div
-            className={`flex flex-col sm:flex-row gap-3 justify-center items-center mt-6 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
-            style={{ transitionDelay: '120ms' }}
+            className={`flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center mt-8 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            style={{ transitionDelay: '400ms' }}
           >
             <Link href="/demo">
               <Button size="lg" className="landing-cta landing-cta-lg text-base px-8 h-12">
-                Get a Demo
+                See It in Action
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
             <Link href="/pricing">
-              <Button size="lg" variant="outline" className="landing-outline text-base px-6 h-12">
-                View Pricing
+              <Button variant="outline" className="landing-cta-secondary shrink-0">
+                See Plans
               </Button>
             </Link>
           </div>
 
           <ul
-            className={`flex flex-wrap justify-center gap-x-6 gap-y-2 mt-8 text-sm text-zinc-300 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
-            style={{ transitionDelay: '160ms' }}
+            className={`hero-micro flex flex-wrap justify-center gap-x-8 gap-y-2 mt-10 text-sm text-zinc-400 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            style={{ transitionDelay: '480ms' }}
           >
             <li className="flex items-center gap-2">
               <Check className="h-5 w-5 text-amber-400 shrink-0" />
@@ -236,13 +268,6 @@ export default function Home() {
               <span>Built for commercial janitorial teams</span>
             </li>
           </ul>
-
-          <p
-            className={`mt-10 text-sm text-zinc-500 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
-            style={{ transitionDelay: '180ms' }}
-          >
-            Trusted by 500+ cleaning companies across the U.S.
-          </p>
         </div>
       </section>
 
@@ -254,7 +279,7 @@ export default function Home() {
               <span>Powered by AI</span>
             </div>
             <h2 className="font-heading text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
-              JANIBEAR Wins More Bids
+              <BrandName /> Wins More Bids
             </h2>
             <p className="text-lg text-zinc-300 max-w-2xl mx-auto">
               From walkthrough to closed deal—AI handles the heavy lifting so you can focus on relationships.
@@ -300,7 +325,7 @@ export default function Home() {
               <span>Operations & QA</span>
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
-              JANIBEAR Keeps Clients Longer
+              <BrandName /> Keeps Clients Longer
             </h2>
             <p className="text-lg text-zinc-300 max-w-2xl mx-auto">
               Deliver consistently, catch issues before the customer does, and keep every location on track—automatically.
@@ -345,7 +370,7 @@ export default function Home() {
               Measurable Results for Janitorial Companies
             </h2>
             <p className="text-lg text-zinc-300 max-w-2xl mx-auto">
-              See why janitorial sales teams choose JANIBEAR to win more bids.
+              See why janitorial sales teams choose <BrandName /> to win more bids.
             </p>
           </div>
           <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto">
@@ -493,18 +518,18 @@ export default function Home() {
               Ready to See It in Action?
             </h2>
             <p className="text-lg text-zinc-300 mb-8">
-              Get a personalized demo. We&apos;ll show you how JANIBEAR handles bids, proposals, and operations—and configure pricing for your team.
+              Get a personalized demo. We&apos;ll show you how <BrandName /> handles bids, proposals, and operations—and configure pricing for your team.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/demo">
-                <Button size="lg" className="landing-cta text-lg px-8 h-14 border-0 shadow-lg hover:shadow-xl w-full sm:w-auto">
-                  Get a Demo
-                  <ArrowRight className="ml-2 h-5 w-5" />
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
+              <Link href="/demo" className="w-full sm:w-auto">
+                <Button size="lg" className="landing-cta landing-cta-lg text-base px-8 h-12 w-full sm:w-auto">
+                  See It in Action
+                  <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
               <Link href="/pricing">
-                <Button size="lg" variant="outline" className="text-lg px-8 h-14 border-white/30 text-zinc-200 hover:text-white hover:border-white/50 w-full sm:w-auto">
-                  View Pricing
+                <Button variant="outline" className="landing-cta-secondary shrink-0">
+                  See Plans
                 </Button>
               </Link>
             </div>
@@ -519,7 +544,7 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-4 gap-8">
             <div className="[&>span]:bg-transparent [&>span]:shadow-none [&>span]:block">
-              <Image src="/janibear-logo.png" alt="JANIBEAR" width={220} height={72} className="h-14 md:h-16 w-auto mb-4 object-contain bg-transparent opacity-95" unoptimized />
+              <Image src="/yellow.png" alt="JANIBEAR" width={220} height={72} className="h-14 md:h-16 w-auto mb-4 object-contain bg-transparent opacity-95" unoptimized />
               <p className="text-sm text-zinc-500">
                 AI-powered bidding, proposals, and follow-up automation for janitorial companies. Win more bids, close more deals.
               </p>
@@ -527,8 +552,8 @@ export default function Home() {
             <div>
               <h4 className="text-white font-semibold mb-4 text-sm">Product</h4>
               <ul className="space-y-2 text-sm">
-                <li><Link href="/demo" className="hover:text-white transition-colors">Get a Demo</Link></li>
-                <li><Link href="/pricing" className="hover:text-white transition-colors">Pricing</Link></li>
+                <li><Link href="/demo" className="hover:text-white transition-colors">See It in Action</Link></li>
+                <li><Link href="/pricing" className="hover:text-white transition-colors">See Plans</Link></li>
                 <li><Link href="/survey" className="hover:text-white transition-colors">Find Your Plan</Link></li>
                 <li><Link href="/#features" className="hover:text-white transition-colors">Features</Link></li>
                 <li><Link href="/contact" className="hover:text-white transition-colors">Contact</Link></li>
@@ -552,7 +577,7 @@ export default function Home() {
             </div>
           </div>
           <div className="border-t border-zinc-800 mt-8 pt-8 text-center text-sm text-zinc-500">
-            <p>&copy; {new Date().getFullYear()} JANIBEAR. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} <BrandName />. All rights reserved.</p>
           </div>
         </div>
       </footer>

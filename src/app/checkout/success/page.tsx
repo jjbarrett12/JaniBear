@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { CheckCircle2, ArrowRight } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { BrandName } from '@/components/ui/brand-name';
 
 export default function CheckoutSuccessPage({
   searchParams,
@@ -18,7 +19,7 @@ export default function CheckoutSuccessPage({
           </div>
           <CardTitle className="text-3xl">Payment Successful!</CardTitle>
           <CardDescription className="text-lg mt-2">
-            Thank you for subscribing to JANIBEAR
+            Thank you for subscribing to <BrandName variant="light" />
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">

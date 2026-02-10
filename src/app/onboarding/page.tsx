@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { OnboardingForm } from '@/components/onboarding/onboarding-form';
+import { BrandName } from '@/components/ui/brand-name';
 
 export default async function OnboardingPage() {
   const supabase = await createClient();
@@ -48,7 +49,7 @@ export default async function OnboardingPage() {
               />
             </div>
             <h1 className="text-xl md:text-2xl font-bold text-gray-900 mb-0.5">
-              Welcome to JANIBEAR
+              Welcome to <BrandName variant="light" />
             </h1>
             <p className="text-gray-600 text-sm">
               Create your organization to get started

@@ -60,10 +60,13 @@
   color: #000 !important;
   border: none !important;
   box-shadow: 0 4px 14px rgba(251, 191, 36, 0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 .landing-page .landing-cta:hover {
   background: #fcd34d !important;
   color: #000 !important;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(251, 191, 36, 0.45);
 }
 .landing-page .landing-cta-lg {
   font-size: 1.125rem;
@@ -72,15 +75,54 @@
   height: 3.5rem;
   box-shadow: 0 4px 14px rgba(251, 191, 36, 0.4);
 }
+.landing-page .landing-cta-lg:hover {
+  box-shadow: 0 8px 28px rgba(251, 191, 36, 0.5);
+}
 .landing-page .landing-outline {
   background: transparent !important;
   border: 1px solid rgba(255, 255, 255, 0.5) !important;
   color: #fff !important;
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
 }
 .landing-page .landing-outline:hover {
   border-color: rgba(255, 255, 255, 0.8) !important;
   color: #fff !important;
   background: rgba(255, 255, 255, 0.06) !important;
+  transform: translateY(-1px);
+}
+
+/* Secondary CTA: quieter, smaller, lower contrast (guides to primary) */
+.landing-page .landing-cta-secondary {
+  background: transparent !important;
+  border: 1px solid rgba(113, 113, 122, 0.6) !important;
+  color: rgb(161, 161, 170) !important;
+  font-size: 0.875rem !important;
+  height: 2.5rem !important;
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+.landing-page .landing-cta-secondary:hover {
+  border-color: rgba(161, 161, 170, 0.8) !important;
+  color: rgb(212, 212, 216) !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+}
+
+/* Hero: subtle radial glow (premium depth) */
+.bg-gradient-radial-hero {
+  background: radial-gradient(
+    ellipse 80% 70% at 50% 0%,
+    rgba(251, 191, 36, 0.08) 0%,
+    rgba(251, 191, 36, 0.02) 40%,
+    transparent 70%
+  );
+}
+
+/* Hero: very subtle noise texture */
+.hero-noise {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  pointer-events: none;
 }
 .landing-page section {
   border-color: rgba(39, 39, 42, 0.8);
@@ -113,6 +155,7 @@
 }
 .landing-page .hero-headline {
   letter-spacing: -0.02em;
+  line-height: 1.08;
 }
 /* Gradient text in hero (indigo → gold → green) — webkit for Safari */
 .landing-page .hero-gradient-text {
@@ -123,7 +166,10 @@
 }
 .landing-page .hero-subhead {
   font-weight: 400;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.04em;
+}
+.landing-page .hero-micro {
+  letter-spacing: 0.035em;
 }
 .landing-page .hero-meta {
   font-weight: 400;

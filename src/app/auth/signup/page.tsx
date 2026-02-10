@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation';
 import Image from 'next/image';
 import { createClient } from '@/lib/supabase/server';
 import { SignupForm } from '@/components/auth/signup-form';
+import { BrandName } from '@/components/ui/brand-name';
 
 export const metadata = { title: 'Sign up | JANIBEAR' };
 
@@ -36,7 +37,7 @@ export default async function SignupPage() {
             />
           </div>
           <h1 className="text-xl font-bold text-zinc-900 mt-2 mb-0">Create your account</h1>
-          <p className="text-zinc-500 text-sm mt-0.5 mb-0">Get started with JANIBEAR in seconds</p>
+          <p className="text-zinc-500 text-sm mt-0.5 mb-0">Get started with <BrandName variant="light" /> in seconds</p>
         </div>
         <div className="mt-0">
           <SignupForm />

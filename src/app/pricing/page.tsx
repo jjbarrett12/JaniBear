@@ -5,6 +5,7 @@ import { ArrowRight } from 'lucide-react';
 import { PricingCards } from '@/components/pricing/pricing-cards';
 import { PricingSurveyCta } from '@/components/pricing/pricing-survey-cta';
 import { DeviceDemo } from '@/components/marketing/device-demo';
+import { BrandName } from '@/components/ui/brand-name';
 
 export default function PricingPage() {
   return (
@@ -34,7 +35,7 @@ export default function PricingPage() {
             One platform does the work of both—so you can cut headcount without cutting quality. From one rep’s output to a full revenue engine.
           </p>
           <p className="text-sm text-zinc-500">
-            One FTE often costs $50k–$70k+/year. JANIBEAR starts at $59/mo—about 1% of that cost. All plans are <strong className="text-zinc-400">per company</strong>, not per seat.
+            One FTE often costs $50k–$70k+/year. <BrandName /> starts at $59/mo—about 1% of that cost. All plans are <strong className="text-zinc-400">per company</strong>, not per seat.
           </p>
         </div>
 
@@ -49,7 +50,7 @@ export default function PricingPage() {
           <h2 className="text-2xl font-bold text-white text-center mb-10">Frequently asked questions</h2>
           <div className="space-y-4">
             {[
-              { q: 'How does JANIBEAR replace a salesperson?', a: 'AI turns walkthroughs and notes into proposals with crew, hours, and pricing—so you close more bids with less manual work. Pipeline, scheduling, and proposal tools replace the repetitive parts of the sales role.' },
+              { q: <>How does <BrandName /> replace a salesperson?</>, a: 'AI turns walkthroughs and notes into proposals with crew, hours, and pricing—so you close more bids with less manual work. Pipeline, scheduling, and proposal tools replace the repetitive parts of the sales role.' },
               { q: 'How does it replace a QC/operations person?', a: 'Task breakdown turns schedules into per-crew task lists, inspections and issue tracking keep quality visible, and compliance/SDS/PO tools handle the admin work that usually needs a dedicated ops person.' },
               { q: 'Can I change plans later?', a: 'Yes, you can upgrade or downgrade at any time. Changes take effect immediately.' },
               { q: 'What payment methods do you accept?', a: 'We accept all major credit cards through Stripe. All payments are secure and encrypted.' },

@@ -83,14 +83,14 @@ export function MobileSidebar({ logoUrl }: MobileSidebarProps) {
 
   return (
     <>
-      {/* Mobile Header */}
-      <header className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 border-b dark:border-gray-800 h-20 flex items-center justify-between px-4">
+      {/* Mobile Header - black so white/yellow logo blends */}
+      <header className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-black border-b border-white/10 h-20 flex items-center justify-between px-4 text-white">
         <div className="flex items-center gap-3 [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block">
           <Button
             variant="ghost"
             size="icon"
             onClick={() => setIsOpen(true)}
-            className="h-12 w-12"
+            className="h-12 w-12 text-white hover:bg-white/10 hover:text-white"
           >
             <Menu className="h-6 w-6" />
           </Button>
@@ -116,7 +116,7 @@ export function MobileSidebar({ logoUrl }: MobileSidebarProps) {
             />
           )}
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 text-white [&_button]:text-white [&_button]:hover:bg-white/10 [&_button]:hover:text-white [&_.rounded-lg]:border-white/20">
           <LanguageSwitcher />
           <DarkModeToggle />
         </div>

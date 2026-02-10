@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Download, X } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { BrandName } from '@/components/ui/brand-name';
 
 export function PWAInstaller() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
@@ -68,7 +69,7 @@ export function PWAInstaller() {
     <Card className="fixed bottom-24 left-4 right-4 z-50 shadow-xl lg:hidden">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg">Install JANIBEAR</CardTitle>
+          <CardTitle className="text-lg">Install <BrandName variant="light" /></CardTitle>
           <Button
             variant="ghost"
             size="icon"

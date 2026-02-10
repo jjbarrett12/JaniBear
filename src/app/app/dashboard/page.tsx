@@ -50,7 +50,7 @@ export default async function DashboardPage(props: { searchParams?: Promise<{ de
   const searchParams = typeof props.searchParams === 'object' && props.searchParams !== null && 'then' in props.searchParams
     ? await props.searchParams
     : (props.searchParams ?? {});
-  const isDemo = searchParams?.demo === '1';
+  const explicitDemo = searchParams?.demo === '1';
 
   const org = await requireOrg();
   const user = await getCurrentUser();
@@ -211,8 +211,11 @@ export default async function DashboardPage(props: { searchParams?: Promise<{ de
   // Get user's name for greeting
   const userName = user?.user_metadata?.full_name?.split(' ')[0] || 'there';
 
-  // Override with demo data for marketing screenshots
-  const stats = isDemo ? DEMO_STATS : {
+  // Show sample data when: ?demo=1 OR account has minimal data (new user / empty dashboard)
+  const useSampleData = explicitDemo || (locationsCount <= 1 && completedInspectionsCount < 2);
+
+  // Override with sample data so new users see a full dashboard (customers, agendas, chart, activity)
+  const stats = useSampleData ? DEMO_STATS : {
     openIssues: openIssuesCount,
     totalLocations: locationsCount,
     recentInspections: recentInspections.length,
@@ -223,9 +226,9 @@ export default async function DashboardPage(props: { searchParams?: Promise<{ de
     totalIssues: totalIssuesCount,
     recentWalkthroughs: walkthroughsCount,
   };
-  const finalChartData = isDemo ? DEMO_CHART_DATA : chartData;
-  const finalSchedules = isDemo ? DEMO_SCHEDULE : formattedSchedules;
-  const finalActivities = isDemo ? DEMO_ACTIVITIES : activities;
+  const finalChartData = useSampleData ? DEMO_CHART_DATA : chartData;
+  const finalSchedules = useSampleData ? DEMO_SCHEDULE : formattedSchedules;
+  const finalActivities = useSampleData ? DEMO_ACTIVITIES : activities;
 
   return (
     <div className="space-y-6 pb-8">

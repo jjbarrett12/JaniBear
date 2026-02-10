@@ -1,13 +1,13 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Plus_Jakarta_Sans } from "next/font/google";
+import { Inter_Tight, Source_Sans_3 } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { PWAInstaller } from "@/components/app/pwa-installer";
 import { DarkModeProvider } from "@/components/app/dark-mode-provider";
 import { LanguageProvider } from "@/contexts/language-context";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
-const plusJakarta = Plus_Jakarta_Sans({
+const sourceSans = Source_Sans_3({ subsets: ["latin"], variable: "--font-sans" });
+const interTight = Inter_Tight({
   subsets: ["latin"],
   variable: "--font-heading",
 });
@@ -48,7 +48,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="JANIBEAR" />
       </head>
-      <body className={`${inter.variable} ${plusJakarta.variable} ${inter.className} font-sans`}>
+      <body className={`${sourceSans.variable} ${interTight.variable} ${sourceSans.className} font-sans`}>
         <LanguageProvider>
           <DarkModeProvider>
             {children}

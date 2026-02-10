@@ -36,11 +36,11 @@ export default async function LoginPage() {
         <div className="text-center mb-8">
           <div className="flex justify-center [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block" style={{ lineHeight: 0 }}>
             <Image
-              src="/janibear-logo.png"
+              src="/yellow.png"
               alt="JANIBEAR"
               width={600}
               height={200}
-              className="w-auto object-contain bg-transparent dark:brightness-0 dark:invert"
+              className="w-auto object-contain bg-transparent"
               style={{ imageRendering: 'auto', height: '5.5rem' }}
               priority
               unoptimized

@@ -20,6 +20,7 @@ import {
   FileSearch,
   BarChart3
 } from 'lucide-react';
+import { BrandName } from '@/components/ui/brand-name';
 
 export async function AppSidebarNew() {
   const supabase = await createClient();
@@ -70,7 +71,7 @@ export async function AppSidebarNew() {
                   unoptimized
                 />
               ) : (
-                <span className="font-bold text-xl">JANIBEAR</span>
+                <BrandName variant="light" className="text-xl" />
               )}
             </Link>
           </div>

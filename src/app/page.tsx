@@ -171,23 +171,11 @@ export default function Home() {
       <section className="relative w-full overflow-hidden bg-black pt-16 md:pt-24 pb-8 md:pb-10">
         <div className="relative container mx-auto px-4 text-center">
           <h1
-            className={`hero-headline font-heading text-3xl sm:text-4xl md:text-5xl lg:text-[2.75rem] font-extrabold text-white tracking-tight leading-[1.6] max-w-3xl mx-auto transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            className={`hero-headline font-heading text-3xl sm:text-4xl md:text-5xl lg:text-[2.75rem] font-extrabold text-white tracking-tight max-w-3xl mx-auto transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
           >
-            Win more janitorial bids.
-            <br />
-            Keep customers longer.
-            <br />
-            <span
-              className="hero-gradient-text inline-block bg-clip-text"
-              style={{
-                background: 'linear-gradient(135deg, #fde047 0%, #fbbf24 50%, #f59e0b 100%)',
-                WebkitBackgroundClip: 'text',
-                backgroundClip: 'text',
-                color: 'transparent',
-              }}
-            >
-              Scale without adding headcount.
-            </span>
+            <span className="block mb-4 md:mb-5">Win more janitorial bids.</span>
+            <span className="block mb-4 md:mb-5">Keep customers longer.</span>
+            <span className="block">Scale without adding headcount.</span>
           </h1>
 
           <p
@@ -203,7 +191,7 @@ export default function Home() {
                 backgroundClip: 'text',
               }}
             >
-              built specifically for commercial janitorial teams.
+              built by cleaning companies, for cleaning companies.
             </span>
           </p>
 

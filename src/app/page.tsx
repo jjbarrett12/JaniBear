@@ -168,7 +168,7 @@ export default function Home() {
         </Link>
       </div>
 
-      <section className="relative w-full overflow-hidden bg-black pt-16 md:pt-24 pb-24 md:pb-32">
+      <section className="relative w-full overflow-hidden bg-black pt-16 md:pt-24 pb-8 md:pb-10">
         <div className="relative container mx-auto px-4 text-center">
           <h1
             className={`hero-headline font-heading text-3xl sm:text-4xl md:text-5xl lg:text-[2.75rem] font-extrabold text-white tracking-tight leading-[1.6] max-w-3xl mx-auto transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
@@ -199,7 +199,7 @@ export default function Home() {
               className="font-semibold text-amber-300"
               style={{ textShadow: '0 0 20px rgba(251, 191, 36, 0.2)' }}
             >
-              quality assurance
+              built-in quality assurance
             </span>
             {' '}and accountability—so growth comes from{' '}
             <span
@@ -263,47 +263,19 @@ export default function Home() {
               <span>Built for commercial janitorial teams</span>
             </li>
           </ul>
+
+          <p
+            className={`mt-10 text-sm text-zinc-500 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            style={{ transitionDelay: '180ms' }}
+          >
+            Trusted by 500+ cleaning companies across the U.S.
+          </p>
         </div>
       </section>
 
-      {/* Scrolling company logos - no border, ~5 visible at a time, always scrolling */}
-      <section className="py-12 md:py-16 bg-black overflow-hidden">
-        <p className="text-center text-white text-sm mb-8">
-          Trusted by 500+ cleaning companies across the U.S.
-        </p>
-        <div className="relative">
-          <div className="flex animate-landing-marquee gap-10 md:gap-14 items-center will-change-transform">
-            {(() => {
-              const logos = [
-                { src: '/logos/placeholder.svg', alt: 'Partner company' },
-                { src: '/logos/placeholder.svg', alt: 'Partner company' },
-                { src: '/logos/placeholder.svg', alt: 'Partner company' },
-                { src: '/logos/placeholder.svg', alt: 'Partner company' },
-              ];
-              const row = [...logos, ...logos, ...logos, ...logos];
-              return [...row, ...row].map((logo, i) => (
-                <div
-                  key={i}
-                  className="flex items-center justify-center shrink-0 h-10 md:h-12 w-[180px] md:w-[200px] px-4"
-                >
-                  <Image
-                    src={logo.src}
-                    alt={logo.alt}
-                    width={200}
-                    height={48}
-                    className="max-h-full w-auto object-contain opacity-80 hover:opacity-100 transition-opacity"
-                    unoptimized
-                  />
-                </div>
-              ));
-            })()}
-          </div>
-        </div>
-      </section>
-
-      <section id="features" className="py-24 border-b border-amber-400/30 bg-black">
+      <section id="features" className="pt-10 md:pt-14 pb-16 md:pb-20 bg-black">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
+          <div className="text-center mb-12 md:mb-14">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-400/30 text-amber-300 text-sm font-medium mb-4">
               <Brain className="h-4 w-4" />
               <span>Powered by AI</span>
@@ -347,7 +319,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="operations-qa" className="py-24 border-b border-amber-400/30 bg-black">
+      <section id="operations-qa" className="py-16 md:py-20 bg-black">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-400/30 text-emerald-300 text-sm font-medium mb-4">
@@ -393,7 +365,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-24 border-b border-amber-400/30">
+      <section className="py-16 md:py-20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
@@ -424,7 +396,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-24 border-b border-amber-400/30 bg-black">
+      <section className="py-16 md:py-20 bg-black">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
@@ -459,7 +431,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-24 border-b border-amber-400/30 bg-black">
+      <section className="py-16 md:py-20 bg-black">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
             <div className="flex items-center justify-center gap-2 mb-6">
@@ -500,7 +472,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-24 border-b border-amber-400/30">
+      <section className="py-16 md:py-20">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
             <div className="flex items-center justify-center gap-2 mb-6">
@@ -541,7 +513,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="book-demo" className="py-24 border-b border-amber-400/30">
+      <section id="book-demo" className="py-16 md:py-20">
         <div className="container mx-auto px-4 text-center">
           <div className="max-w-2xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">
@@ -570,7 +542,7 @@ export default function Home() {
         </div>
       </section>
 
-      <footer className="bg-black border-t border-amber-400/30 text-zinc-400 py-12">
+      <footer className="bg-black text-zinc-400 py-12">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-4 gap-8">
             <div className="[&>span]:bg-transparent [&>span]:shadow-none [&>span]:block">

@@ -15,9 +15,9 @@ export function AppSidebarFooter({
   const t = getAppT(locale);
 
   return (
-    <div className="border-t dark:border-gray-800 p-4">
+    <div className="border-t border-border p-4">
       {userEmail && (
-        <div className="mb-4 px-3 text-sm text-gray-600 dark:text-gray-400">
+        <div className="mb-4 px-3 text-sm text-muted-foreground truncate">
           {userEmail}
         </div>
       )}

@@ -128,8 +128,9 @@ export function InspectionRunner({
     if (!membership) return;
 
     const fileExt = file.name.split('.').pop();
+    // First path segment must be org_id for storage RLS (inspection-photos bucket)
     const fileName = `${membership.org_id}/${inspectionId}/${itemId}/${Date.now()}.${fileExt}`;
-    
+
     const { error: uploadError } = await supabase.storage
       .from('inspection-photos')
       .upload(fileName, file);

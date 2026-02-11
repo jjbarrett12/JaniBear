@@ -79,12 +79,12 @@ export function ContractUploadForm() {
     }
 
     try {
-      // Upload file to storage
+      // Upload file to storage. First path segment must be org_id for storage RLS (inspection-photos bucket).
       const fileExt = file.name.split('.').pop();
       const fileName = `${membership.org_id}/contracts/${Date.now()}.${fileExt}`;
-      
+
       const { error: uploadError } = await supabase.storage
-        .from('inspection-photos') // Reuse bucket or create dedicated one
+        .from('inspection-photos')
         .upload(fileName, file);
 
       if (uploadError) throw uploadError;

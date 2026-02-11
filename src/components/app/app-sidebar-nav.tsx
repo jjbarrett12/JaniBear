@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useLanguage } from '@/contexts/language-context';
 import { getAppT } from '@/lib/app-translations';
 import { Badge } from '@/components/ui/badge';
@@ -52,7 +53,16 @@ const operationsItems = [
   { href: '/app/admin', labelKey: 'navAdmin' as const, icon: Settings },
 ];
 
+function navLinkClass(active: boolean) {
+  return `flex items-center gap-3 rounded-lg px-4 py-3 text-base font-medium transition-colors min-h-[48px] ${
+    active
+      ? 'bg-primary text-primary-foreground'
+      : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+  }`;
+}
+
 export function AppSidebarNav({ premium }: { premium: boolean }) {
+  const pathname = usePathname();
   const { locale } = useLanguage();
   const t = getAppT(locale);
 
@@ -60,14 +70,14 @@ export function AppSidebarNav({ premium }: { premium: boolean }) {
     <nav className="min-w-0 flex-1 space-y-4 overflow-y-auto p-3">
       <Link
         href="/app/dashboard"
-        className="flex items-center gap-3 rounded-lg px-4 py-3 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors min-h-[48px]"
+        className={navLinkClass(pathname === '/app/dashboard')}
       >
         <LayoutDashboard className="h-6 w-6 shrink-0" />
         <span className="truncate">{t('navDashboard')}</span>
       </Link>
       <Link
         href="/app/university"
-        className="flex items-center gap-3 rounded-lg px-4 py-3 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors min-h-[48px]"
+        className={navLinkClass(pathname.startsWith('/app/university'))}
       >
         <GraduationCap className="h-6 w-6 shrink-0" />
         <span className="truncate">{t('navUniversity')}</span>
@@ -77,16 +87,17 @@ export function AppSidebarNav({ premium }: { premium: boolean }) {
       </Link>
 
       <div className="space-y-1">
-        <p className="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+        <p className="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
           {t('navSales')}
         </p>
         {salesItems.map((item) => {
           const Icon = item.icon;
+          const isActive = pathname.startsWith(item.href);
           return (
             <Link
               key={`${item.href}-${item.labelKey}`}
               href={item.href}
-              className="flex items-center gap-3 rounded-lg px-4 py-3 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors min-h-[44px]"
+              className={navLinkClass(isActive)}
             >
               <Icon className="h-5 w-5 shrink-0" />
               <span className="truncate">{t(item.labelKey)}</span>
@@ -96,16 +107,17 @@ export function AppSidebarNav({ premium }: { premium: boolean }) {
       </div>
 
       <div className="space-y-1">
-        <p className="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+        <p className="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
           {t('navOperations')}
         </p>
         {operationsItems.map((item) => {
           const Icon = item.icon;
+          const isActive = pathname.startsWith(item.href);
           return (
             <Link
               key={`${item.href}-${item.labelKey}`}
               href={item.href}
-              className="flex items-center gap-3 rounded-lg px-4 py-3 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors min-h-[44px]"
+              className={navLinkClass(isActive)}
             >
               <Icon className="h-5 w-5 shrink-0" />
               <span className="truncate">{t(item.labelKey)}</span>
@@ -114,10 +126,10 @@ export function AppSidebarNav({ premium }: { premium: boolean }) {
         })}
       </div>
 
-      <div className="pt-2 border-t dark:border-gray-800 space-y-1">
+      <div className="pt-2 border-t border-border space-y-1">
         <Link
           href="/app/settings"
-          className="flex items-center gap-3 rounded-lg px-4 py-3 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors min-h-[44px]"
+          className={navLinkClass(pathname.startsWith('/app/settings'))}
         >
           <Settings className="h-5 w-5 shrink-0" />
           <span className="truncate">{t('navSettings')}</span>

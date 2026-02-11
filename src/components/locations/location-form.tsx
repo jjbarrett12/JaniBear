@@ -42,31 +42,55 @@ interface LocationFormProps {
   };
 }
 
-function parseSqftByFlooring(s: string): Record<string, number> | null {
+/** Flooring type keys used in sqft_by_flooring_type JSONB */
+const FLOORING_TYPES = [
+  { key: 'carpet', label: 'Carpet' },
+  { key: 'tile', label: 'Tile' },
+  { key: 'vct_tile', label: 'VCT Tile' },
+  { key: 'ceramic_tile', label: 'Ceramic Tile' },
+  { key: 'lvt', label: 'LVT' },
+  { key: 'wood', label: 'Wood' },
+  { key: 'vinyl', label: 'Vinyl' },
+  { key: 'other', label: 'Other' },
+] as const;
+
+function getSqftByFlooringFromObject(obj: Record<string, number> | null): Record<string, string> {
+  const out: Record<string, string> = {};
+  FLOORING_TYPES.forEach(({ key }) => {
+    const v = obj?.[key];
+    out[key] = v != null && !isNaN(Number(v)) ? String(v) : '';
+  });
+  return out;
+}
+
+function buildSqftByFlooringObject(sqftByFlooring: Record<string, string>): Record<string, number> | null {
   const out: Record<string, number> = {};
-  const lines = s.trim().split(/\n/).filter(Boolean);
-  for (const line of lines) {
-    const match = line.match(/^\s*([^:]+):\s*([\d,]+)\s*$/);
-    if (match) {
-      const type = match[1].trim().toLowerCase().replace(/\s+/g, '_');
-      const num = parseFloat(match[2].replace(/,/g, ''));
-      if (!isNaN(num)) out[type] = num;
-    }
-  }
+  Object.entries(sqftByFlooring).forEach(([key, value]) => {
+    const num = parseFloat(String(value).replace(/,/g, ''));
+    if (!isNaN(num) && num > 0) out[key] = num;
+  });
   return Object.keys(out).length ? out : null;
 }
 
-function formatSqftByFlooring(obj: Record<string, number> | null): string {
-  if (!obj) return '';
-  return Object.entries(obj)
-    .map(([k, v]) => `${k}: ${v}`)
-    .join('\n');
+function formatServiceAddress(address: string, city: string, state: string, zip: string): string {
+  const parts = [address, city, state, zip].filter(Boolean).join(', ');
+  return parts.trim() || '';
 }
 
 export function LocationForm({ initialData }: LocationFormProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const serviceAddressFormatted = formatServiceAddress(
+    initialData?.address || '',
+    initialData?.city || '',
+    initialData?.state || '',
+    initialData?.zip || ''
+  );
+  const initialBillingSameAsService =
+    !!initialData?.billing_address &&
+    initialData.billing_address.trim() === serviceAddressFormatted.trim();
 
   const [formData, setFormData] = useState({
     name: initialData?.name || '',
@@ -77,7 +101,7 @@ export function LocationForm({ initialData }: LocationFormProps) {
     square_footage: initialData?.square_footage?.toString() || '',
     notes: initialData?.notes || '',
     status: initialData?.status || 'active',
-    sqft_by_flooring: formatSqftByFlooring(initialData?.sqft_by_flooring_type ?? null),
+    sqft_by_flooring: getSqftByFlooringFromObject(initialData?.sqft_by_flooring_type ?? null),
     restroom_count: initialData?.restroom_count?.toString() || '',
     days_of_service: initialData?.days_of_service || '',
     door_alarm_code: initialData?.door_alarm_code || '',
@@ -88,6 +112,7 @@ export function LocationForm({ initialData }: LocationFormProps) {
     billing_contact_phone: initialData?.billing_contact_phone || '',
     billing_contact_email: initialData?.billing_contact_email || '',
     billing_address: initialData?.billing_address || '',
+    billing_same_as_service: initialBillingSameAsService,
     billing_notes: initialData?.billing_notes || '',
     account_billing_notes: initialData?.account_billing_notes || '',
     authorized_to_order_supplies: initialData?.authorized_to_order_supplies ?? false,
@@ -121,7 +146,11 @@ export function LocationForm({ initialData }: LocationFormProps) {
     }
 
     try {
-      const sqftByFlooring = parseSqftByFlooring(formData.sqft_by_flooring);
+      const sqftByFlooring = buildSqftByFlooringObject(formData.sqft_by_flooring);
+      const billingAddress =
+        formData.billing_same_as_service
+          ? formatServiceAddress(formData.address, formData.city, formData.state, formData.zip)
+          : formData.billing_address;
       const typesOfSupplies = formData.types_of_supplies_used
         .split(',')
         .map((s) => s.trim())
@@ -147,7 +176,7 @@ export function LocationForm({ initialData }: LocationFormProps) {
         billing_contact_name: formData.billing_contact_name || null,
         billing_contact_phone: formData.billing_contact_phone || null,
         billing_contact_email: formData.billing_contact_email || null,
-        billing_address: formData.billing_address || null,
+        billing_address: billingAddress || null,
         billing_notes: formData.billing_notes || null,
         account_billing_notes: formData.account_billing_notes || null,
         authorized_to_order_supplies: formData.authorized_to_order_supplies,
@@ -239,6 +268,7 @@ export function LocationForm({ initialData }: LocationFormProps) {
             <Input
               id="square_footage"
               type="number"
+              min={0}
               value={formData.square_footage}
               onChange={(e) => setFormData({ ...formData, square_footage: e.target.value })}
               disabled={isLoading}
@@ -246,17 +276,35 @@ export function LocationForm({ initialData }: LocationFormProps) {
             />
           </div>
           <div>
-            <Label htmlFor="sqft_by_flooring">Square footage by flooring type</Label>
-            <Textarea
-              id="sqft_by_flooring"
-              value={formData.sqft_by_flooring}
-              onChange={(e) => setFormData({ ...formData, sqft_by_flooring: e.target.value })}
-              disabled={isLoading}
-              placeholder="carpet: 5000&#10;tile: 3000&#10;hardwood: 2000"
-              rows={3}
-              className="mt-1 font-mono text-sm"
-            />
-            <p className="text-xs text-gray-500 mt-1">One per line: type: sqft</p>
+            <Label className="mb-2 block">Square footage by flooring type</Label>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-1">
+              {FLOORING_TYPES.map(({ key, label }) => (
+                <div key={key}>
+                  <Label htmlFor={`sqft_${key}`} className="text-xs text-gray-500 font-normal">
+                    {label}
+                  </Label>
+                  <Input
+                    id={`sqft_${key}`}
+                    type="number"
+                    min={0}
+                    value={formData.sqft_by_flooring[key] ?? ''}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        sqft_by_flooring: {
+                          ...formData.sqft_by_flooring,
+                          [key]: e.target.value,
+                        },
+                      })
+                    }
+                    disabled={isLoading}
+                    placeholder="0"
+                    className="mt-0.5"
+                  />
+                </div>
+              ))}
+            </div>
+            <p className="text-xs text-gray-500 mt-2">Enter sq ft for each flooring type. Leave blank if not applicable.</p>
           </div>
           <div>
             <Label htmlFor="notes">Notes</Label>
@@ -337,6 +385,24 @@ export function LocationForm({ initialData }: LocationFormProps) {
           <CardTitle>Billing info</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
+          <div className="flex items-center gap-2">
+            <Checkbox
+              id="billing_same_as_service"
+              checked={formData.billing_same_as_service}
+              onCheckedChange={(checked) => {
+                const same = !!checked;
+                setFormData({
+                  ...formData,
+                  billing_same_as_service: same,
+                  billing_address: same
+                    ? formatServiceAddress(formData.address, formData.city, formData.state, formData.zip)
+                    : formData.billing_address,
+                });
+              }}
+              disabled={isLoading}
+            />
+            <Label htmlFor="billing_same_as_service">Billing address same as service address</Label>
+          </div>
           <div>
             <Label htmlFor="billing_contact_name">Billing contact name</Label>
             <Input id="billing_contact_name" value={formData.billing_contact_name} onChange={(e) => setFormData({ ...formData, billing_contact_name: e.target.value })} disabled={isLoading} className="mt-1" />
@@ -351,7 +417,22 @@ export function LocationForm({ initialData }: LocationFormProps) {
           </div>
           <div>
             <Label htmlFor="billing_address">Billing address</Label>
-            <Textarea id="billing_address" value={formData.billing_address} onChange={(e) => setFormData({ ...formData, billing_address: e.target.value })} disabled={isLoading} rows={2} className="mt-1" />
+            <Textarea
+              id="billing_address"
+              value={
+                formData.billing_same_as_service
+                  ? formatServiceAddress(formData.address, formData.city, formData.state, formData.zip)
+                  : formData.billing_address
+              }
+              onChange={(e) => setFormData({ ...formData, billing_address: e.target.value })}
+              disabled={isLoading || formData.billing_same_as_service}
+              rows={2}
+              className="mt-1"
+              placeholder={formData.billing_same_as_service ? 'Same as service address' : undefined}
+            />
+            {formData.billing_same_as_service && (
+              <p className="text-xs text-gray-500 mt-1">Using service address above. Uncheck to enter a different billing address.</p>
+            )}
           </div>
           <div>
             <Label htmlFor="billing_notes">Billing notes</Label>

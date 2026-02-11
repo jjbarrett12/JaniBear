@@ -67,7 +67,7 @@ export default function QCAssignPage() {
         .eq('org_id', membership.org_id)
         .eq('is_active', true)
         .order('start_date', { ascending: false });
-      setSchedules((scheds as Schedule[]) || []);
+      setSchedules((scheds as unknown as Schedule[]) || []);
 
       const { data: crewList } = await supabase
         .from('crews')
@@ -116,7 +116,7 @@ export default function QCAssignPage() {
       .from('crew_members')
       .select('id, user_id, profiles(full_name)')
       .eq('crew_id', crewId);
-    const mems = (members as CrewMember[]) || [];
+    const mems = (members as unknown as CrewMember[]) || [];
     setCrewMembers(mems);
 
     if (mems.length === 0) {

@@ -36,9 +36,9 @@ export async function AppSidebar() {
       <MobileSidebar logoUrl={orgData?.logo_url} />
 
       {/* Desktop Sidebar - w-56 so it doesn't overlap main content */}
-      <aside className="hidden lg:flex fixed left-0 top-0 z-40 h-screen w-56 shrink-0 overflow-hidden border-r bg-white dark:bg-gray-900 dark:border-gray-800">
+      <aside className="hidden lg:flex fixed left-0 top-0 z-40 h-screen w-56 shrink-0 overflow-hidden border-r border-border bg-card">
         <div className="flex h-full min-w-0 flex-1 flex-col">
-          <div className="flex h-20 shrink-0 items-center border-b dark:border-gray-800 px-3">
+          <div className="flex h-20 shrink-0 items-center border-b border-border px-3">
             <Link href="/app/dashboard" className="flex min-w-0 items-center gap-2 bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block">
               {orgData?.logo_url ? (
                 <Image
@@ -64,7 +64,7 @@ export async function AppSidebar() {
             </Link>
           </div>
           
-          <div className="min-w-0 shrink-0 space-y-3 border-b p-3 dark:border-gray-800">
+          <div className="min-w-0 shrink-0 space-y-3 border-b border-border p-3">
             <div className="min-w-0">
               <GlobalSearch />
             </div>

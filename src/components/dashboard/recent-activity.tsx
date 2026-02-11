@@ -73,9 +73,9 @@ export function RecentActivity({ activities }: RecentActivityProps) {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.6, duration: 0.4 }}
+      transition={{ delay: 0.2, duration: 0.3 }}
     >
-      <Card className="border-0 shadow-md hover:shadow-lg transition-shadow h-full dark:bg-gray-800">
+      <Card className="rounded-xl border-0 shadow-sm hover:shadow-md transition-shadow h-full bg-card">
         <CardHeader className="pb-2">
           <div className="flex items-center gap-2">
             <div className="p-2 rounded-lg bg-gradient-to-br from-gray-700 to-gray-900 shadow-md">
@@ -99,11 +99,11 @@ export function RecentActivity({ activities }: RecentActivityProps) {
                     key={activity.id}
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.7 + index * 0.05 }}
+                    transition={{ delay: 0.25 + index * 0.03 }}
                   >
                     <Link
                       href={activity.href}
-                      className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors group"
+                      className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors group"
                     >
                       <div className={`p-2 rounded-lg ${config.color} shrink-0`}>
                         <Icon className="h-4 w-4" />

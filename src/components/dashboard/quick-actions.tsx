@@ -25,16 +25,16 @@ export function QuickActions() {
     { labelKey: 'quickAddLocation' as const, descKey: 'quickAddLocationDesc' as const, href: '/app/locations/new', icon: MapPin, gradient: 'from-blue-500 to-indigo-500', primary: false },
     { labelKey: 'quickCreateCrew' as const, descKey: 'quickCreateCrewDesc' as const, href: '/app/crews/new', icon: Users, gradient: 'from-violet-500 to-purple-500', primary: false },
     { labelKey: 'quickNewSchedule' as const, descKey: 'quickNewScheduleDesc' as const, href: '/app/schedules/new', icon: Calendar, gradient: 'from-cyan-500 to-blue-500', primary: false },
-    { labelKey: 'quickNewProposal' as const, descKey: 'quickNewProposalDesc' as const, href: '/app/sales/leads/new', icon: FileText, gradient: 'from-amber-500 to-amber-500', primary: false },
+    { labelKey: 'quickNewProposal' as const, descKey: 'quickNewProposalDesc' as const, href: '/app/sales/leads/new', icon: FileText, gradient: 'from-amber-500 to-orange-500', primary: false },
   ];
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.2, duration: 0.4 }}
+      transition={{ delay: 0.1, duration: 0.3 }}
     >
-      <Card className="border-0 shadow-md hover:shadow-lg transition-shadow dark:bg-gray-800">
+      <Card className="rounded-xl border-0 shadow-sm hover:shadow-md transition-shadow bg-card">
         <CardHeader className="pb-3">
           <div className="flex items-center gap-2">
             <div className="p-2 rounded-lg bg-gradient-to-br from-amber-500 to-rose-500 shadow-md">
@@ -54,7 +54,7 @@ export function QuickActions() {
                   <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.3 + index * 0.05 }}
+                    transition={{ delay: 0.15 + index * 0.03 }}
                     className={`
                       relative group p-4 rounded-xl border transition-all duration-200 cursor-pointer
                       ${action.primary 

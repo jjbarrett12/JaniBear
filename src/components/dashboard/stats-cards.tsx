@@ -31,14 +31,14 @@ interface StatsCardsProps {
 }
 
 const cardVariants = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, y: 12 },
   visible: (i: number) => ({
     opacity: 1,
     y: 0,
     transition: {
-      delay: i * 0.1,
-      duration: 0.4,
-      ease: 'easeOut',
+      delay: i * 0.05,
+      duration: 0.3,
+      ease: 'easeOut' as const,
     },
   }),
 };
@@ -113,7 +113,7 @@ export function StatsCards({ stats }: StatsCardsProps) {
             variants={cardVariants}
           >
             <Link href={card.href}>
-              <Card className="group relative overflow-hidden border-0 shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer h-full bg-white dark:bg-gray-800">
+              <Card className="group relative overflow-hidden rounded-xl border-0 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer h-full bg-card">
                 {/* Gradient accent bar */}
                 <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${card.gradient}`} />
                 

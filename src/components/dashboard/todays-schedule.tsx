@@ -45,9 +45,9 @@ export function TodaysSchedule({ items }: TodaysScheduleProps) {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.5, duration: 0.4 }}
+      transition={{ delay: 0.15, duration: 0.3 }}
     >
-      <Card className="border-0 shadow-md hover:shadow-lg transition-shadow h-full dark:bg-gray-800">
+      <Card className="rounded-xl border-0 shadow-sm hover:shadow-md transition-shadow h-full bg-card">
         <CardHeader className="pb-2">
           <div className="flex items-center gap-2">
             <div className="p-2 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 shadow-md">
@@ -67,7 +67,7 @@ export function TodaysSchedule({ items }: TodaysScheduleProps) {
               const color = statusColor[item.status] ?? 'bg-gray-100 text-gray-700';
               return (
                 <Link key={item.id} href="/app/schedules">
-                  <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer group">
+                  <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer group">
                     <div className={`mt-0.5 w-2 h-2 rounded-full ${item.status === 'completed' ? 'bg-emerald-500' : item.status === 'in_progress' ? 'bg-blue-500' : 'bg-gray-300 dark:bg-gray-500'}`} />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between gap-2">

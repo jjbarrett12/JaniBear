@@ -30,22 +30,22 @@ export function DashboardHeader({ userName }: { userName: string }) {
   return (
     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
       <div>
-        <p className="text-sm font-medium text-amber-600 dark:text-amber-400 mb-0.5">
+        <p className="text-sm font-medium text-primary mb-0.5">
           {greeting}
         </p>
-        <h1 className="font-heading text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
+        <h1 className="font-heading text-2xl md:text-3xl font-bold text-foreground tracking-tight">
           {userName}
         </h1>
-        <p className="text-gray-500 dark:text-gray-400 mt-1">
+        <p className="text-muted-foreground mt-1">
           {t('dashboardHeresWhatsHappening')}
         </p>
       </div>
       <div className="flex items-center gap-2">
         <span
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 shadow-sm"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium bg-card border border-border text-muted-foreground shadow-sm"
           aria-label={`Today is ${dateStr}`}
         >
-          <Calendar className="h-4 w-4 text-amber-500 dark:text-amber-400 shrink-0" />
+          <Calendar className="h-4 w-4 text-primary shrink-0" />
           <span className="hidden sm:inline">{dateStr}</span>
           <span className="sm:hidden">
             {new Date().toLocaleDateString(locale === 'es' ? 'es' : 'en-US', {

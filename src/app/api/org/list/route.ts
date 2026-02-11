@@ -20,9 +20,11 @@ export async function GET() {
     .select('org_id, organizations(id, name, org_type)')
     .eq('user_id', user.id);
 
-  const orgs = (memberships ?? [])
-    .map((m: { org_id: string; organizations: { id: string; name: string; org_type: string } | null }) => {
-      const org = m.organizations;
+  type Row = { org_id: string; organizations: { id: string; name: string; org_type: string } | { id: string; name: string; org_type: string }[] | null };
+  const orgs = (memberships ?? [] as Row[])
+    .map((m: Row) => {
+      const raw = m.organizations;
+      const org = Array.isArray(raw) ? raw[0] : raw;
       if (!org) return null;
       return { id: org.id, name: org.name, org_type: org.org_type ?? 'independent' };
     })

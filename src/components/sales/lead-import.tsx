@@ -1,6 +1,15 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+
+/** Minimal types for Web Speech API (not in TS lib) */
+interface SpeechResultItem {
+  [index: number]: { transcript: string };
+  length: number;
+}
+interface SpeechResultEvent {
+  results: Iterable<SpeechResultItem>;
+}
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -64,19 +73,22 @@ export function LeadImport({ onImport, isLoading }: LeadImportProps) {
   const [manualAddress, setManualAddress] = useState('');
   const [scanImage, setScanImage] = useState<string | null>(null);
   const [isListening, setIsListening] = useState(false);
-  const recognitionRef = useRef<SpeechRecognition | null>(null);
+  type SpeechRecognitionInstance = { continuous: boolean; interimResults: boolean; lang: string; onresult: ((e: SpeechResultEvent) => void) | null; start: () => void; stop: () => void; abort: () => void };
+  const recognitionRef = useRef<SpeechRecognitionInstance | null>(null);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (SpeechRecognition) {
-      recognitionRef.current = new SpeechRecognition();
-      recognitionRef.current.continuous = true;
-      recognitionRef.current.interimResults = true;
-      recognitionRef.current.lang = 'en-US';
-      recognitionRef.current.onresult = (e: SpeechRecognitionEvent) => {
+    const SR = (window as unknown as { SpeechRecognition?: new () => SpeechRecognitionInstance; webkitSpeechRecognition?: new () => SpeechRecognitionInstance }).SpeechRecognition
+      || (window as unknown as { webkitSpeechRecognition?: new () => SpeechRecognitionInstance }).webkitSpeechRecognition;
+    if (SR) {
+      const recognition = new SR();
+      recognitionRef.current = recognition;
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.lang = 'en-US';
+      recognition.onresult = (e: SpeechResultEvent) => {
         const transcript = Array.from(e.results)
-          .map(r => r[0].transcript)
+          .map((r) => (r as SpeechResultItem)[0]?.transcript ?? '')
           .join('');
         setPasteText(prev => prev + transcript);
       };

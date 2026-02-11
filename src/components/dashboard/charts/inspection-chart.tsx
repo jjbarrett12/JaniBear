@@ -26,9 +26,9 @@ export function InspectionChart({ data }: InspectionChartProps) {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.3, duration: 0.4 }}
+      transition={{ delay: 0.1, duration: 0.3 }}
     >
-      <Card className="border-0 shadow-md hover:shadow-lg transition-shadow dark:bg-gray-800">
+      <Card className="rounded-xl border-0 shadow-sm hover:shadow-md transition-shadow bg-card">
         <CardHeader className="pb-2">
           <CardTitle className="text-lg font-semibold text-gray-900 dark:text-white">
             Inspection Performance
@@ -64,12 +64,13 @@ export function InspectionChart({ data }: InspectionChartProps) {
                   />
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: 'var(--tooltip-bg, white)',
-                      border: 'none',
+                      backgroundColor: 'hsl(var(--card))',
+                      color: 'hsl(var(--card-foreground))',
+                      border: '1px solid hsl(var(--border))',
                       borderRadius: '8px',
-                      boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+                      boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
                     }}
-                    formatter={(value: number) => [`${value.toFixed(1)}%`, 'Score']}
+                    formatter={(value: number | undefined) => [value != null ? `${value.toFixed(1)}%` : '—', 'Score']}
                   />
                   <Area
                     type="monotone"

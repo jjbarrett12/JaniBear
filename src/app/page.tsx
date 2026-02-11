@@ -210,7 +210,7 @@ export default function Home() {
             style={{ transitionDelay: '240ms' }}
           >
             A single system for bidding, inspections, and accountability—{' '}
-            <span className="font-semibold text-amber-400">
+            <span className="hero-gradient-text gradient-text font-semibold bg-gradient-to-r from-amber-400 via-orange-300 to-amber-500 bg-clip-text text-transparent">
               built by janitorial operators
             </span>
           </p>

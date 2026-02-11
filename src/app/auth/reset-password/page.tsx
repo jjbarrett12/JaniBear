@@ -13,7 +13,7 @@ export default function ResetPasswordPage() {
         <div className="text-center">
           <div className="flex justify-center mb-4 [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block">
             <Image
-              src="/janibear-logo.png"
+              src="/yellow.png"
               alt="JANIBEAR Logo"
               width={600}
               height={200}

@@ -227,7 +227,7 @@ export default function Home() {
             className={`mt-6 flex flex-col items-center justify-center transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '320ms' }}
           >
-            <div className="relative w-full max-w-2xl rounded-2xl ring-1 ring-amber-400/25 shadow-2xl shadow-amber-950/30 bg-white/[0.02] p-1">
+            <div className="relative w-full max-w-2xl">
               <Image
                 src="/hero-review.png"
                 alt="Customer testimonial: Once we could prove our quality, price stopped being the main objection."
@@ -237,9 +237,6 @@ export default function Home() {
                 unoptimized
               />
             </div>
-            <p className="hero-micro mt-3 text-xs text-zinc-500">
-              — Chris K., Owner — Regional janitorial company (1,200+ locations)
-            </p>
           </div>
 
           <div

@@ -26,7 +26,7 @@ export default async function SignupPage() {
         <div className="text-center">
           <div className="flex justify-center [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block" style={{ lineHeight: 0 }}>
             <Image
-              src="/janibear-logo.png"
+              src="/yellow.png"
               alt="JANIBEAR"
               width={600}
               height={200}

@@ -13,7 +13,7 @@ export default function PricingPage() {
       <nav className="border-b border-zinc-800/80 bg-zinc-950/80 backdrop-blur-xl sticky top-0 z-50">
         <div className="container mx-auto px-4 py-1.5 flex items-center justify-between gap-4">
           <Link href="/" className="flex items-center shrink-0 bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block" style={{ minHeight: 40 }}>
-            <Image src="/janibear-logo.png" alt="JANIBEAR" width={560} height={182} className="!h-16 md:!h-20 w-auto !max-h-none object-contain bg-transparent" unoptimized />
+            <Image src="/yellow.png" alt="JANIBEAR" width={560} height={182} className="!h-16 md:!h-20 w-auto !max-h-none object-contain bg-transparent" unoptimized />
           </Link>
           <div className="flex items-center justify-end gap-4 md:gap-6 flex-1 min-w-0">
             <Link href="/pricing"><Button variant="ghost" size="sm" className="text-zinc-300 hover:text-white hover:bg-zinc-800 shrink-0">Pricing</Button></Link>

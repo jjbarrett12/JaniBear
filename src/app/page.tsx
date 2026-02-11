@@ -215,25 +215,19 @@ export default function Home() {
             Trusted by 500+ commercial janitorial teams nationwide
           </p>
 
-          {/* Review */}
+          {/* Review: bold text quote for more space */}
           <div
-            className={`mt-3 flex flex-col items-center justify-center transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            className={`mt-4 flex flex-col items-center justify-center transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '320ms' }}
           >
-            <div className="relative w-full max-w-2xl max-h-[90px] md:max-h-[110px]">
-              <Image
-                src="/hero-review.png"
-                alt="Customer testimonial: Once we could prove our quality, price stopped being the main objection."
-                width={640}
-                height={280}
-                className="w-full h-full rounded-xl object-contain object-center"
-                unoptimized
-              />
-            </div>
+            <p className="text-lg md:text-xl font-bold text-white max-w-2xl mx-auto text-center leading-snug">
+              &ldquo;Once we could prove our quality, price stopped being the main objection.&rdquo;
+            </p>
+            <p className="text-sm text-zinc-400 mt-2">— Chris K., Owner, Regional Janitorial Company ($11.2M)</p>
           </div>
 
           <div
-            className={`flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center mt-6 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            className={`flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center mt-8 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '400ms' }}
           >
             <Link href="/demo">
@@ -255,15 +249,15 @@ export default function Home() {
           >
             <li className="flex items-center gap-2">
               <Check className="h-5 w-5 text-amber-400 shrink-0" />
-              <span>We earn your renewal</span>
+              <span>Monthly or Annual Plans</span>
             </li>
             <li className="flex items-center gap-2">
               <Check className="h-5 w-5 text-amber-400 shrink-0" />
-              <span>No contracts</span>
+              <span>No Contracts</span>
             </li>
             <li className="flex items-center gap-2">
               <Check className="h-5 w-5 text-amber-400 shrink-0" />
-              <span>Built for commercial janitorial teams</span>
+              <span>Built for cleaning companies</span>
             </li>
           </ul>
         </div>

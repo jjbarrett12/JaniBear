@@ -256,22 +256,21 @@ export function ModularPricing({ businessModel, dark = true }: ModularPricingPro
     }
   };
 
+  const currentPlatform = PLATFORM_OPTIONS.find((o) => o.id === platform)!;
+
   return (
     <div id="pricing" className="scroll-mt-24">
-      {/* Billing: Monthly | Annual */}
-      <div className="mb-8">
-        <p className="text-sm font-medium text-zinc-400 uppercase tracking-wider mb-3">
-          Billing
-        </p>
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="flex gap-0 p-1 rounded-xl bg-zinc-900/80 border border-zinc-800 inline-flex">
+      {/* Single control row: Billing + Platform */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 mb-12">
+        <div className="flex flex-wrap items-center gap-4">
+          <div className="flex rounded-lg bg-zinc-900/60 border border-zinc-800 p-0.5">
             <button
               type="button"
               onClick={() => setBillingInterval('monthly')}
-              className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+              className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                 billingInterval === 'monthly'
-                  ? 'bg-amber-500 text-white shadow-sm'
-                  : 'text-zinc-400 hover:text-white hover:bg-zinc-800'
+                  ? 'bg-zinc-700 text-white'
+                  : 'text-zinc-400 hover:text-zinc-200'
               }`}
             >
               Monthly
@@ -279,114 +278,72 @@ export function ModularPricing({ businessModel, dark = true }: ModularPricingPro
             <button
               type="button"
               onClick={() => setBillingInterval('annual')}
-              className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+              className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                 billingInterval === 'annual'
-                  ? 'bg-amber-500 text-white shadow-sm'
-                  : 'text-zinc-400 hover:text-white hover:bg-zinc-800'
+                  ? 'bg-zinc-700 text-white'
+                  : 'text-zinc-400 hover:text-zinc-200'
               }`}
             >
               Annual
             </button>
           </div>
-          <span className="text-sm text-zinc-500">
-            {billingInterval === 'annual' ? (
-              'Save 2 months when you pay annually'
-            ) : (
-              'Switch to annual for 2 months free'
-            )}
-          </span>
-        </div>
-      </div>
-
-      {/* Toggle: Sales | Ops | Both */}
-      <div className="mb-10">
-        <p className="text-sm font-medium text-zinc-400 uppercase tracking-wider mb-3">
-          Step 1: Pick your core platform
-        </p>
-        <div className="flex flex-wrap gap-2 p-1 rounded-xl bg-zinc-900/80 border border-zinc-800 inline-flex">
-          {PLATFORM_OPTIONS.map((opt) => (
-            <button
-              key={opt.id}
-              type="button"
-              onClick={() => setPlatform(opt.id)}
-              className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                platform === opt.id
-                  ? 'bg-amber-500 text-white shadow-sm'
-                  : 'text-zinc-400 hover:text-white hover:bg-zinc-800'
-              }`}
-            >
-              {opt.shortLabel}
-            </button>
-          ))}
-        </div>
-        <div className="mt-4 p-4 rounded-xl bg-white/5 border border-zinc-800 max-w-2xl">
-          <h3 className="font-semibold text-white mb-1">
-            {PLATFORM_OPTIONS.find((o) => o.id === platform)?.label}
-          </h3>
-          <p className="text-sm text-zinc-400 mb-3">
-            {PLATFORM_OPTIONS.find((o) => o.id === platform)?.description}
-          </p>
-          <ul className="space-y-1.5 text-sm text-zinc-400">
-            {(PLATFORM_OPTIONS.find((o) => o.id === platform)?.features ?? []).map((f, i) => (
-              <li key={i} className="flex items-center gap-2">
-                <Check className="h-4 w-4 text-amber-400 flex-shrink-0" />
-                {f}
-              </li>
+          <div className="flex rounded-lg bg-zinc-900/60 border border-zinc-800 p-0.5">
+            {PLATFORM_OPTIONS.map((opt) => (
+              <button
+                key={opt.id}
+                type="button"
+                onClick={() => setPlatform(opt.id)}
+                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  platform === opt.id
+                    ? 'bg-zinc-700 text-white'
+                    : 'text-zinc-400 hover:text-zinc-200'
+                }`}
+              >
+                {opt.shortLabel}
+              </button>
             ))}
-          </ul>
+          </div>
         </div>
+        {billingInterval === 'annual' && (
+          <span className="text-xs text-zinc-500">2 months free when you pay annually</span>
+        )}
       </div>
 
-      {/* Step 2: Pricing Tiers (Cub, Grizzly, Kodiak) + HelpHubQR when Ops or Both */}
-      <div className="flex flex-col lg:flex-row gap-8 items-start">
-        <div className="flex-1 w-full">
-          <p className="text-sm font-medium text-zinc-400 uppercase tracking-wider mb-4">
-            Step 2: Pricing tiers
-          </p>
+      {/* One-line platform context (no big card) */}
+      <p className="text-zinc-500 text-sm mb-10 max-w-xl">
+        {currentPlatform.label}: {currentPlatform.description}
+      </p>
+
+      {/* Pricing tiers + HelpHubQR */}
+      <div className="flex flex-col lg:flex-row gap-10 items-start">
+        <div className="flex-1 w-full min-w-0">
           <div className="grid md:grid-cols-3 gap-6">
             {tiers.map((tier) => (
               <Card
                 key={`${platform}-${tier.id}`}
                 className={
                   dark
-                    ? `relative bg-zinc-900/80 border-zinc-800 hover:border-zinc-700 flex flex-col ${tier.popular ? 'border-amber-500/50 ring-1 ring-amber-500/20' : ''}`
-                    : `relative flex flex-col ${tier.popular ? 'border-primary border-2 shadow-lg' : ''}`
+                    ? `relative bg-zinc-900/50 border-zinc-800/80 hover:border-zinc-700 flex flex-col ${tier.popular ? 'border-amber-500/30' : ''}`
+                    : `relative flex flex-col ${tier.popular ? 'border-primary/50' : ''}`
                 }
               >
-                {tier.popular && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
-                    <span
-                      className={
-                        dark
-                          ? 'bg-amber-500/20 text-amber-400 px-3 py-0.5 rounded-full text-xs font-semibold border border-amber-500/30'
-                          : 'bg-primary text-primary-foreground px-3 py-0.5 rounded-full text-xs font-semibold'
-                      }
-                    >
-                      ⭐ Most Popular
-                    </span>
+                <CardHeader className="pb-3">
+                  <div className="flex items-center gap-2">
+                    <CardTitle className={dark ? 'text-lg text-white' : 'text-lg'}>{tier.name}</CardTitle>
+                    {tier.popular && (
+                      <span className="text-[10px] font-medium uppercase tracking-wide text-amber-500/90">
+                        Popular
+                      </span>
+                    )}
                   </div>
-                )}
-                <CardHeader className="pb-2">
-                  <CardTitle className={dark ? 'text-white' : ''}>{tier.name}</CardTitle>
-                  <p className="text-xs text-zinc-500">{tier.userLimit}</p>
-                  <ul className="space-y-1.5 text-sm text-zinc-400 mt-2">
-                    {tier.features.map((f, i) => (
-                      <li key={i} className="flex items-start gap-2">
-                        <Check className="h-4 w-4 text-amber-400 flex-shrink-0 mt-0.5" />
-                        {f}
-                      </li>
-                    ))}
-                  </ul>
-                  <p className="text-xs text-zinc-500 mt-2 font-medium">Best for:</p>
-                  <p className="text-xs text-zinc-500">{tier.bestFor}</p>
-                  <p className="text-sm text-amber-400/90 italic mt-2">&ldquo;{tier.microcopy}&rdquo;</p>
-                  <div className="mt-3">
+                  <p className="text-xs text-zinc-500 mt-0.5">{tier.userLimit}</p>
+                  <div className="mt-4">
                     {billingInterval === 'monthly' ? (
                       <>
                         <span className={dark ? 'text-2xl font-bold text-white' : 'text-2xl font-bold'}>
                           ${tier.price}
                         </span>
-                        <span className="text-zinc-500 text-sm">/month</span>
+                        <span className="text-zinc-500 text-sm">/mo</span>
                       </>
                     ) : (
                       <>
@@ -394,17 +351,29 @@ export function ModularPricing({ businessModel, dark = true }: ModularPricingPro
                           ${Math.round((tier.price * ANNUAL_MONTHS_BILLED) / 12)}
                         </span>
                         <span className="text-zinc-500 text-sm">/mo</span>
-                        <p className="text-xs text-zinc-500 mt-0.5">
-                          Billed annually · ${tier.price * ANNUAL_MONTHS_BILLED}/year
-                        </p>
+                        <span className="text-zinc-500 text-xs block mt-0.5">
+                          ${tier.price * ANNUAL_MONTHS_BILLED}/yr
+                        </span>
                       </>
                     )}
                   </div>
                 </CardHeader>
-                <CardFooter className="pt-0 mt-auto">
+                <CardContent className="pt-0 flex-1">
+                  <ul className="space-y-2 text-sm text-zinc-400">
+                    {tier.features.map((f, i) => (
+                      <li key={i} className="flex items-start gap-2">
+                        <Check className="h-3.5 w-3.5 text-zinc-500 flex-shrink-0 mt-0.5" />
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="text-xs text-zinc-500 mt-4">{tier.bestFor}</p>
+                </CardContent>
+                <CardFooter className="pt-4">
                   <Button
                     className={dark ? 'w-full bg-amber-500 text-white hover:bg-amber-400 border-0' : 'w-full'}
                     variant={dark ? undefined : tier.popular ? 'default' : 'outline'}
+                    size="sm"
                     onClick={() => handleCheckout(tier.id)}
                     disabled={!!loading}
                   >
@@ -417,7 +386,7 @@ export function ModularPricing({ businessModel, dark = true }: ModularPricingPro
         </div>
 
         {showHelpHubQR && (
-          <div className="w-full lg:w-72 shrink-0">
+          <div className="w-full lg:w-64 shrink-0">
             <HelpHubQRUpsell />
           </div>
         )}

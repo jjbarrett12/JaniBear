@@ -29,6 +29,7 @@ import {
   FileSpreadsheet,
   Plus,
   Shield,
+  Star,
 } from 'lucide-react';
 import { BrandName } from '@/components/ui/brand-name';
 
@@ -215,15 +216,22 @@ export default function Home() {
             Trusted by 500+ commercial janitorial teams nationwide
           </p>
 
-          {/* Review: bold text quote for more space */}
+          {/* Review: bold text quote with stars and minimal border */}
           <div
             className={`mt-4 flex flex-col items-center justify-center transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '320ms' }}
           >
-            <p className="text-lg md:text-xl font-bold text-white max-w-2xl mx-auto text-center leading-snug">
-              &ldquo;Once we could prove our quality, price stopped being the main objection.&rdquo;
-            </p>
-            <p className="text-sm text-zinc-400 mt-2">— Chris K., Owner, Regional Janitorial Company ($11.2M)</p>
+            <div className="w-full max-w-2xl mx-auto rounded-lg border border-amber-400/25 bg-white/[0.02] px-6 py-5 text-center">
+              <div className="flex justify-center gap-0.5 mb-3" aria-hidden>
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <Star key={i} className="h-5 w-5 fill-amber-400 text-amber-400" />
+                ))}
+              </div>
+              <p className="text-lg md:text-xl font-bold text-white leading-snug">
+                &ldquo;Once we could prove our quality, price stopped being the main objection.&rdquo;
+              </p>
+              <p className="text-sm text-zinc-400 mt-2">— Chris K., Owner, Regional Janitorial Company ($11.2M)</p>
+            </div>
           </div>
 
           <div

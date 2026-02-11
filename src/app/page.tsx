@@ -215,19 +215,12 @@ export default function Home() {
             </span>
           </p>
 
-          {/* Trust strip: scale first, then quote as proof */}
-          <p
-            className={`hero-micro mt-3 text-xs md:text-sm text-zinc-500 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+          {/* Review moved up so CTAs have room below */}
+          <div
+            className={`mt-4 flex flex-col items-center justify-center transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '280ms' }}
           >
-            Trusted by 500+ commercial janitorial teams nationwide
-          </p>
-
-          <div
-            className={`mt-3 flex flex-col items-center justify-center transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
-            style={{ transitionDelay: '320ms' }}
-          >
-            <div className="relative w-full max-w-2xl max-h-[140px] md:max-h-[160px]">
+            <div className="relative w-full max-w-2xl max-h-[120px] md:max-h-[140px]">
               <Image
                 src="/hero-review.png"
                 alt="Customer testimonial: Once we could prove our quality, price stopped being the main objection."
@@ -239,8 +232,16 @@ export default function Home() {
             </div>
           </div>
 
+          {/* Trust strip */}
+          <p
+            className={`hero-micro mt-4 text-xs md:text-sm text-zinc-500 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            style={{ transitionDelay: '320ms' }}
+          >
+            Trusted by 500+ commercial janitorial teams nationwide
+          </p>
+
           <div
-            className={`flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center mt-4 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            className={`flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center mt-6 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '400ms' }}
           >
             <Link href="/demo">
@@ -313,7 +314,7 @@ export default function Home() {
               </div>
               <h3 className="text-lg font-semibold text-white mb-2">Sales processes</h3>
               <p className="text-sm text-zinc-400 leading-relaxed">
-                Dedicated Sales section: leads, walkthroughs, proposals, and follow-up. New Walkthrough and New Proposal right from Quick Actions so you can move from site visit to closed deal without switching tools.
+                Dedicated Sales section: leads, walkthroughs, proposals, and follow-up. New Walkthrough and New Proposal right from Quick Actions so you can move from site visit to closed deal without switching tools—with a seamless handoff to operations once the deal closes.
               </p>
             </div>
             <div className="p-6 rounded-2xl bg-white/5 border border-emerald-400/30 hover:border-emerald-400/50 transition-colors">
@@ -322,7 +323,7 @@ export default function Home() {
               </div>
               <h3 className="text-lg font-semibold text-white mb-2">Operational support</h3>
               <p className="text-sm text-zinc-400 leading-relaxed">
-                Inspections, crews, schedules, and locations in one view. Start Inspection, Create Crew, New Schedule, and Add Location from the dashboard so field and office stay aligned.
+                Seamless handoff from sales. Inspections, crews, schedules, and locations in one view. Start Inspection, Create Crew, New Schedule, and Add Location from the dashboard so field and office stay aligned.
               </p>
             </div>
             <div className="p-6 rounded-2xl bg-white/5 border border-red-400/30 hover:border-red-400/50 transition-colors">
@@ -347,11 +348,15 @@ export default function Home() {
             </span>
             <span className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10">
               <Check className="h-4 w-4 text-amber-400 shrink-0" />
-              University & training
+              Training
             </span>
             <span className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10">
               <Check className="h-4 w-4 text-amber-400 shrink-0" />
               Card-based layout
+            </span>
+            <span className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10">
+              <Check className="h-4 w-4 text-amber-400 shrink-0" />
+              English & Spanish
             </span>
           </div>
         </div>

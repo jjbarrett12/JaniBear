@@ -220,7 +220,7 @@ export default function Home() {
             className={`mt-3 flex flex-col items-center justify-center transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '320ms' }}
           >
-            <div className="relative w-full max-w-2xl max-h-[110px] md:max-h-[130px]">
+            <div className="relative w-full max-w-2xl max-h-[90px] md:max-h-[110px]">
               <Image
                 src="/hero-review.png"
                 alt="Customer testimonial: Once we could prove our quality, price stopped being the main objection."
@@ -233,7 +233,7 @@ export default function Home() {
           </div>
 
           <div
-            className={`flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center mt-4 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            className={`flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center mt-6 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '400ms' }}
           >
             <Link href="/demo">
@@ -255,7 +255,7 @@ export default function Home() {
           >
             <li className="flex items-center gap-2">
               <Check className="h-5 w-5 text-amber-400 shrink-0" />
-              <span>15-minute walkthrough</span>
+              <span>We earn your renewal</span>
             </li>
             <li className="flex items-center gap-2">
               <Check className="h-5 w-5 text-amber-400 shrink-0" />

@@ -6,9 +6,8 @@ import { Check, QrCode } from 'lucide-react';
 import Link from 'next/link';
 
 const FEATURES = [
-  'QR codes by location/area',
-  'Staff + client issue submission',
-  'Auto-linked to Ops tasks',
+  'Field + client QR submissions',
+  'Auto-creates ops tasks',
   'Proof-of-response logs',
 ];
 
@@ -17,12 +16,12 @@ export function HelpHubQRUpsell() {
     <Card className="bg-zinc-900/80 border-emerald-400/40 border-2 overflow-hidden">
       <div className="bg-emerald-500/10 border-b border-emerald-400/20 px-4 py-2 flex items-center gap-2">
         <QrCode className="h-4 w-4 text-emerald-400" />
-        <span className="text-sm font-semibold text-emerald-300">Add-on</span>
+        <span className="text-sm font-semibold text-emerald-300">Add-on or included (Kodiak)</span>
       </div>
       <CardHeader className="pb-2">
         <h3 className="text-lg font-semibold text-white">HelpHubQR</h3>
         <p className="text-sm text-zinc-400">
-          Frontline issue reporting via QR—no apps required.
+          Frontline QR issue reporting tied directly to ops workflows. No apps required.
         </p>
       </CardHeader>
       <CardContent className="pt-0">
@@ -36,11 +35,11 @@ export function HelpHubQRUpsell() {
         </ul>
         <div className="mt-4 pt-4 border-t border-zinc-800">
           <p className="text-sm text-zinc-400">
-            <span className="font-semibold text-white">$29</span>
-            <span className="text-zinc-500">/location/month</span>
+            <span className="font-semibold text-white">Cub & Grizzly:</span>
+            <span className="text-zinc-500"> $29 per location/month</span>
           </p>
           <p className="text-xs text-emerald-400/90 mt-1">
-            or included free on Grizzly+ plans
+            Kodiak: Included
           </p>
         </div>
       </CardContent>

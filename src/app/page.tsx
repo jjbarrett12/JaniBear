@@ -169,7 +169,7 @@ export default function Home() {
         </Link>
       </div>
 
-      <section className="relative w-full overflow-hidden bg-black pt-12 md:pt-16 pb-6 md:pb-8">
+      <section className="relative w-full overflow-hidden bg-black pt-10 md:pt-14 pb-5 md:pb-6">
         {/* Subtle radial glow for depth */}
         <div className="absolute inset-0 pointer-events-none" aria-hidden>
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[120%] max-w-4xl h-[80%] bg-gradient-radial-hero opacity-40" />
@@ -198,7 +198,7 @@ export default function Home() {
           </h1>
 
           <p
-            className={`hero-subhead text-base md:text-lg text-zinc-300 max-w-2xl mx-auto mt-6 leading-relaxed transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            className={`hero-subhead text-base md:text-lg text-zinc-300 max-w-2xl mx-auto mt-5 leading-relaxed transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '240ms' }}
           >
             A single system for bidding, inspections, and accountability—{' '}
@@ -207,12 +207,20 @@ export default function Home() {
             </span>
           </p>
 
-          {/* Review moved up so CTAs have room below */}
-          <div
-            className={`mt-4 flex flex-col items-center justify-center transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+          {/* Trust strip: in the gap between subheader and review */}
+          <p
+            className={`hero-micro mt-3 text-xs md:text-sm text-zinc-500 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '280ms' }}
           >
-            <div className="relative w-full max-w-2xl max-h-[120px] md:max-h-[140px]">
+            Trusted by 500+ commercial janitorial teams nationwide
+          </p>
+
+          {/* Review */}
+          <div
+            className={`mt-3 flex flex-col items-center justify-center transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            style={{ transitionDelay: '320ms' }}
+          >
+            <div className="relative w-full max-w-2xl max-h-[110px] md:max-h-[130px]">
               <Image
                 src="/hero-review.png"
                 alt="Customer testimonial: Once we could prove our quality, price stopped being the main objection."
@@ -224,16 +232,8 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Trust strip */}
-          <p
-            className={`hero-micro mt-4 text-xs md:text-sm text-zinc-500 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
-            style={{ transitionDelay: '320ms' }}
-          >
-            Trusted by 500+ commercial janitorial teams nationwide
-          </p>
-
           <div
-            className={`flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center mt-6 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            className={`flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center mt-4 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '400ms' }}
           >
             <Link href="/demo">
@@ -250,7 +250,7 @@ export default function Home() {
           </div>
 
           <ul
-            className={`hero-micro flex flex-wrap justify-center gap-x-6 gap-y-1.5 mt-4 text-sm text-zinc-400 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            className={`hero-micro flex flex-wrap justify-center gap-x-6 gap-y-1.5 mt-3 text-sm text-zinc-400 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '480ms' }}
           >
             <li className="flex items-center gap-2">

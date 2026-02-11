@@ -79,11 +79,6 @@ export default function Home() {
                 Plans
               </Button>
             </Link>
-            <Link href="/#platform-ui">
-              <Button variant="ghost" size="sm" className="landing-nav-link shrink-0 h-9 px-3">
-                Platform
-              </Button>
-            </Link>
             <Link href="/#features">
               <Button variant="ghost" size="sm" className="landing-nav-link shrink-0 h-9 px-3">
                 Features
@@ -144,9 +139,6 @@ export default function Home() {
               </button>
             </div>
             <nav className="flex flex-col p-4 gap-1">
-              <Link href="/#platform-ui" onClick={() => setMenuOpen(false)} className="px-3 py-3 text-white font-medium rounded-lg hover:bg-white/10">
-                Platform
-              </Link>
               <Link href="/#features" onClick={() => setMenuOpen(false)} className="px-3 py-3 text-white font-medium rounded-lg hover:bg-white/10">
                 Features
               </Link>
@@ -274,91 +266,6 @@ export default function Home() {
               <span>Built for commercial janitorial teams</span>
             </li>
           </ul>
-        </div>
-      </section>
-
-      {/* Platform UI showcase: desktop + mobile, with Sales / Operations / Accountability */}
-      <section id="platform-ui" className="py-16 md:py-24 bg-black border-t border-zinc-800/80">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-10 md:mb-14">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-amber-400/30 text-amber-300 text-sm font-medium mb-4">
-              <Zap className="h-4 w-4" />
-              <span>The platform</span>
-            </div>
-            <h2 className="font-heading text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
-              One dashboard. Desktop and mobile.
-            </h2>
-            <p className="text-lg text-zinc-300 max-w-2xl mx-auto">
-              Everything in one place—sales, operations, and accountability—with a clean dark theme and quick actions so your team can work from the office or the field.
-            </p>
-          </div>
-
-          <div className="relative max-w-6xl mx-auto mb-14 md:mb-16">
-            <div className="rounded-2xl overflow-hidden ring-1 ring-amber-400/20 shadow-2xl shadow-amber-950/20 bg-zinc-900/50 p-2 md:p-4">
-              <Image
-                src="/dashboard-ui-showcase.png"
-                alt="JANIBEAR dashboard on laptop and smartphone: dark theme, KPI cards, quick actions, and navigation for sales and operations"
-                width={1200}
-                height={720}
-                className="w-full h-auto object-contain rounded-xl"
-                unoptimized
-                priority={false}
-              />
-            </div>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto">
-            <div className="p-6 rounded-2xl bg-white/5 border border-amber-400/30 hover:border-amber-400/50 transition-colors">
-              <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center mb-4">
-                <TrendingUp className="h-5 w-5" />
-              </div>
-              <h3 className="text-lg font-semibold text-white mb-2">Sales processes</h3>
-              <p className="text-sm text-zinc-400 leading-relaxed">
-                Dedicated Sales section: leads, walkthroughs, proposals, and follow-up. New Walkthrough and New Proposal right from Quick Actions so you can move from site visit to closed deal without switching tools—with a seamless handoff to operations once the deal closes.
-              </p>
-            </div>
-            <div className="p-6 rounded-2xl bg-white/5 border border-emerald-400/30 hover:border-emerald-400/50 transition-colors">
-              <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center mb-4">
-                <ClipboardCheck className="h-5 w-5" />
-              </div>
-              <h3 className="text-lg font-semibold text-white mb-2">Operational support</h3>
-              <p className="text-sm text-zinc-400 leading-relaxed">
-                Seamless handoff from sales. Inspections, crews, schedules, and locations in one view. Start Inspection, Create Crew, New Schedule, and Add Location from the dashboard so field and office stay aligned.
-              </p>
-            </div>
-            <div className="p-6 rounded-2xl bg-white/5 border border-red-400/30 hover:border-red-400/50 transition-colors">
-              <div className="w-10 h-10 rounded-xl bg-red-500/20 text-red-400 flex items-center justify-center mb-4">
-                <AlertCircle className="h-5 w-5" />
-              </div>
-              <h3 className="text-lg font-semibold text-white mb-2">Accountability</h3>
-              <p className="text-sm text-zinc-400 leading-relaxed">
-                High-priority issues front and center, inspection counts and scores at a glance, and review flows built in. Catch problems early and keep service quality measurable and traceable.
-              </p>
-            </div>
-          </div>
-
-          <div className="mt-10 flex flex-wrap justify-center gap-4 text-sm text-zinc-400">
-            <span className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10">
-              <Check className="h-4 w-4 text-amber-400 shrink-0" />
-              Responsive (desktop + mobile)
-            </span>
-            <span className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10">
-              <Check className="h-4 w-4 text-amber-400 shrink-0" />
-              Quick Actions
-            </span>
-            <span className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10">
-              <Check className="h-4 w-4 text-amber-400 shrink-0" />
-              Training
-            </span>
-            <span className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10">
-              <Check className="h-4 w-4 text-amber-400 shrink-0" />
-              Card-based layout
-            </span>
-            <span className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10">
-              <Check className="h-4 w-4 text-amber-400 shrink-0" />
-              English & Spanish
-            </span>
-          </div>
         </div>
       </section>
 
@@ -646,7 +553,6 @@ export default function Home() {
                 <li><Link href="/demo" className="hover:text-white transition-colors">See It in Action</Link></li>
                 <li><Link href="/pricing" className="hover:text-white transition-colors">See Plans</Link></li>
                 <li><Link href="/survey" className="hover:text-white transition-colors">Find Your Plan</Link></li>
-                <li><Link href="/#platform-ui" className="hover:text-white transition-colors">Platform</Link></li>
                 <li><Link href="/#features" className="hover:text-white transition-colors">Features</Link></li>
                 <li><Link href="/contact" className="hover:text-white transition-colors">Contact</Link></li>
                 <li><Link href="/auth/login" className="hover:text-white transition-colors">Sign In</Link></li>

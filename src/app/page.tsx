@@ -177,28 +177,28 @@ export default function Home() {
         </Link>
       </div>
 
-      <section className="relative w-full overflow-hidden bg-black pt-20 md:pt-28 pb-10 md:pb-14">
+      <section className="relative w-full overflow-hidden bg-black pt-12 md:pt-16 pb-6 md:pb-8">
         {/* Subtle radial glow for depth */}
         <div className="absolute inset-0 pointer-events-none" aria-hidden>
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[120%] max-w-4xl h-[80%] bg-gradient-radial-hero opacity-40" />
         </div>
         <div className="absolute inset-0 pointer-events-none opacity-[0.03] hero-noise" aria-hidden />
         <div className="relative container mx-auto px-4 text-center">
-          <h1 className="max-w-3xl mx-auto">
+          <h1 className="max-w-3xl mx-auto space-y-0.5">
             <span
-              className={`hero-headline block font-heading text-3xl sm:text-4xl md:text-5xl lg:text-[2.75rem] font-extrabold text-white tracking-tight transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+              className={`hero-headline block font-heading text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-white tracking-tight transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
               style={{ transitionDelay: '0ms' }}
             >
               Win more bids.
             </span>
             <span
-              className={`hero-headline block font-heading text-3xl sm:text-4xl md:text-5xl lg:text-[2.75rem] font-extrabold text-white tracking-tight mb-1 md:mb-2 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+              className={`hero-headline block font-heading text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-white tracking-tight transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
               style={{ transitionDelay: '80ms' }}
             >
               Keep customers longer.
             </span>
             <span
-              className={`hero-headline block font-heading text-3xl sm:text-4xl md:text-5xl lg:text-[2.75rem] font-extrabold text-white tracking-tight transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+              className={`hero-headline block font-heading text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-white tracking-tight transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
               style={{ transitionDelay: '160ms' }}
             >
               Scale—without adding headcount.
@@ -206,7 +206,7 @@ export default function Home() {
           </h1>
 
           <p
-            className={`hero-subhead text-lg md:text-xl text-zinc-300 max-w-2xl mx-auto mt-14 leading-relaxed transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            className={`hero-subhead text-base md:text-lg text-zinc-300 max-w-2xl mx-auto mt-6 leading-relaxed transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '240ms' }}
           >
             A single system for bidding, inspections, and accountability—{' '}
@@ -217,30 +217,30 @@ export default function Home() {
 
           {/* Trust strip: scale first, then quote as proof */}
           <p
-            className={`hero-micro mt-12 text-xs md:text-sm text-zinc-500 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            className={`hero-micro mt-3 text-xs md:text-sm text-zinc-500 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '280ms' }}
           >
             Trusted by 500+ commercial janitorial teams nationwide
           </p>
 
           <div
-            className={`mt-6 flex flex-col items-center justify-center transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            className={`mt-3 flex flex-col items-center justify-center transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '320ms' }}
           >
-            <div className="relative w-full max-w-2xl">
+            <div className="relative w-full max-w-2xl max-h-[140px] md:max-h-[160px]">
               <Image
                 src="/hero-review.png"
                 alt="Customer testimonial: Once we could prove our quality, price stopped being the main objection."
                 width={640}
                 height={280}
-                className="w-full rounded-xl object-contain"
+                className="w-full h-full rounded-xl object-contain object-center"
                 unoptimized
               />
             </div>
           </div>
 
           <div
-            className={`flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center mt-8 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            className={`flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center mt-4 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '400ms' }}
           >
             <Link href="/demo">
@@ -257,7 +257,7 @@ export default function Home() {
           </div>
 
           <ul
-            className={`hero-micro flex flex-wrap justify-center gap-x-8 gap-y-2 mt-10 text-sm text-zinc-400 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            className={`hero-micro flex flex-wrap justify-center gap-x-6 gap-y-1.5 mt-4 text-sm text-zinc-400 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '480ms' }}
           >
             <li className="flex items-center gap-2">

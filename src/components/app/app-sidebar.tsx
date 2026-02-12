@@ -52,7 +52,7 @@ export async function AppSidebar() {
                 />
               ) : (
                 <Image
-                  src="/transparent.png"
+                  src="/logo.png"
                   alt="JANIBEAR Logo"
                   width={180}
                   height={64}

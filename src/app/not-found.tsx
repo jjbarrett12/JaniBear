@@ -34,7 +34,7 @@ export default function NotFound() {
         <p className="text-sm text-zinc-500 mt-8">
           <Link href="/" className="inline-flex items-center gap-2 [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block">
             <Image
-              src="/yellow.png"
+              src="/logo.png"
               alt="JANIBEAR"
               width={140}
               height={46}

@@ -18,7 +18,7 @@ export default function SurveyPage() {
       <nav className="border-b border-zinc-800/80 bg-zinc-950/80 backdrop-blur-xl sticky top-0 z-50">
         <div className="container mx-auto px-4 py-1.5 flex items-center justify-between gap-4">
           <Link href="/" className="flex items-center shrink-0 bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block" style={{ minHeight: 40 }}>
-            <Image src="/yellow.png" alt="JANIBEAR" width={560} height={182} className="!h-16 md:!h-20 w-auto !max-h-none object-contain bg-transparent" unoptimized />
+            <Image src="/logo.png" alt="JANIBEAR" width={560} height={182} className="!h-16 md:!h-20 w-auto !max-h-none object-contain bg-transparent" unoptimized />
           </Link>
           <div className="flex items-center justify-end gap-2 md:gap-4 flex-1 min-w-0 flex-wrap">
             <div className="[&_.border]:border-zinc-700 [&_.bg-background]:bg-zinc-900 [&_.text-foreground]:text-zinc-100">

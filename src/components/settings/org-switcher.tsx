@@ -83,7 +83,7 @@ export function OrgSwitcher({
         <p className="text-sm text-muted-foreground">
           You have one organization. To test <strong>Franchisor</strong>, <strong>Franchisee</strong>, and{' '}
           <strong>Independent</strong> experiences, add yourself to test orgs of each type. See{' '}
-          <code className="rounded bg-muted px-1 text-xs">TESTING_ORG_TYPES.md</code> for the SQL script.
+          <code className="rounded bg-muted px-1 text-xs">supabase/scripts/testing_org_types.sql</code> (steps in <code className="rounded bg-muted px-1 text-xs">TESTING_ORG_TYPES.md</code>).
         </p>
       </div>
     );

@@ -59,7 +59,7 @@ export default function Home() {
         <div className="container relative mx-auto px-4 h-full flex items-center justify-between gap-4 min-h-0">
           <Link href="/" className="landing-logo-wrap flex items-center shrink-0 bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block">
             <Image
-              src="/yellow.png"
+              src="/logo.png"
               alt="JANIBEAR"
               width={320}
               height={80}
@@ -544,7 +544,7 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-4 gap-8">
             <div className="[&>span]:bg-transparent [&>span]:shadow-none [&>span]:block">
-              <Image src="/yellow.png" alt="JANIBEAR" width={220} height={72} className="h-14 md:h-16 w-auto mb-4 object-contain bg-transparent opacity-95" unoptimized />
+              <Image src="/logo.png" alt="JANIBEAR" width={220} height={72} className="h-14 md:h-16 w-auto mb-4 object-contain bg-transparent opacity-95" unoptimized />
               <p className="text-sm text-zinc-500">
                 AI-powered bidding, proposals, and follow-up automation for janitorial companies. Win more bids, close more deals.
               </p>

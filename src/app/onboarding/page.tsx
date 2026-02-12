@@ -39,7 +39,7 @@ export default async function OnboardingPage() {
           <div className="text-center">
             <div className="flex justify-center mb-2 [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block">
               <Image
-                src="/yellow.png"
+                src="/logo.png"
                 alt="JANIBEAR Logo"
                 width={600}
                 height={200}

@@ -1,19 +1,9 @@
-# Testing All Three Organization Types (Franchisor / Franchisee / Independent)
+-- =============================================================================
+-- Testing org types: create Test Franchisor, Test Franchisee, Test Independent
+-- and add yourself to all three. Run in Supabase → SQL Editor.
+-- Replace BOTH occurrences of YOUR_USER_ID with your auth.users id (UUID).
+-- =============================================================================
 
-To see the **Franchisor**, **Franchisee**, and **Independent** experiences with one login, you need to be a member of three organizations (one of each type) and use the **org switcher** in Settings to change which org is active.
-
-## 1. Get your user ID
-
-- In **Supabase Dashboard**: Authentication → Users → click your user → copy the **UUID**.
-- Or run in SQL Editor: `SELECT id FROM auth.users WHERE email = 'your@email.com';`
-
-## 2. Create three test orgs and add yourself
-
-**Easiest:** Open **`supabase/scripts/testing_org_types.sql`** in this repo, replace **both** occurrences of `YOUR_USER_ID` with your UUID from step 1, then copy the whole file and run it in **Supabase → SQL Editor**.
-
-Or copy the block below. Replace **both** occurrences of `YOUR_USER_ID` with your UUID (e.g. `a1b2c3d4-e5f6-7890-abcd-ef1234567890`).
-
-```sql
 -- 1) Ensure profile exists (required for org_members)
 INSERT INTO profiles (id, full_name)
 VALUES ('YOUR_USER_ID', 'Test User')
@@ -59,20 +49,3 @@ BEGIN
     ON CONFLICT (org_id) DO NOTHING;
   END IF;
 END $$;
-```
-
-**Note:** Adding yourself to a second/third org is not allowed by normal RLS (only your first membership is). So this script must be run in the SQL Editor (which uses elevated privilege). After it runs, you’ll be a member of all three test orgs.
-
-## 3. Switch organizations in the app
-
-1. Log in and go to **Settings** (sidebar → Settings).
-2. In the **Organization** card, use the **Active organization** dropdown.
-3. Choose **Test Franchisor**, **Test Franchisee**, or **Test Independent**.
-4. The page will reload; the app (sidebar, dashboard, routes) will now use the selected org type.
-
-## What you’ll see by type
-
-- **Franchisor:** Standards/outcomes focus; no labor control, no worker PII; “Suggested” / “Recommended” language.
-- **Franchisee / Independent (operator):** Full operations: crews, schedules, inspections, labor data, etc.
-
-Routes and features are gated by `org_type` and permissions; switching orgs is how you test each experience with a single login.

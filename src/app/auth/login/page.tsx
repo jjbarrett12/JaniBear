@@ -36,7 +36,7 @@ export default async function LoginPage() {
         <div className="text-center mb-8">
           <div className="flex justify-center [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block" style={{ lineHeight: 0 }}>
             <Image
-              src="/yellow.png"
+              src="/logo.png"
               alt="JANIBEAR"
               width={600}
               height={200}

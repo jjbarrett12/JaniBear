@@ -16,7 +16,7 @@ export default function ContactPage() {
         <div className="container mx-auto px-4 py-2 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block" style={{ minHeight: 56 }}>
             <Image
-              src="/yellow.png"
+              src="/logo.png"
               alt="JANIBEAR"
               width={560}
               height={182}
@@ -191,7 +191,7 @@ export default function ContactPage() {
           <div className="grid md:grid-cols-4 gap-8">
             <div className="[&>span]:bg-transparent [&>span]:shadow-none [&>span]:block">
               <Image
-                src="/yellow.png"
+                src="/logo.png"
                 alt="JANIBEAR"
                 width={220}
                 height={72}

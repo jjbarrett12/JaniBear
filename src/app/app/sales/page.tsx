@@ -63,7 +63,7 @@ export default async function SalesDashboardPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">New</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">New</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold">{byStage.new?.length ?? 0}</p>
@@ -71,7 +71,7 @@ export default async function SalesDashboardPage() {
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Walk-throughs</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Walk-throughs</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold">
@@ -81,7 +81,7 @@ export default async function SalesDashboardPage() {
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Proposals Sent</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Proposals Sent</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold">{byStage.proposal_sent?.length ?? 0}</p>
@@ -89,7 +89,7 @@ export default async function SalesDashboardPage() {
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Won</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Won</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold text-green-600">{byStage.won?.length ?? 0}</p>
@@ -110,17 +110,17 @@ export default async function SalesDashboardPage() {
                     <span className={`text-xs font-medium px-2 py-1 rounded ${stage.color}`}>
                       {stage.label}
                     </span>
-                    <span className="text-xs text-gray-500">{(byStage[stage.key]?.length ?? 0)}</span>
+                    <span className="text-xs text-muted-foreground">{(byStage[stage.key]?.length ?? 0)}</span>
                   </div>
-                  <div className="space-y-2 min-h-[120px] rounded-lg border border-dashed border-gray-200 bg-gray-50/50 p-2">
+                  <div className="space-y-2 min-h-[120px] rounded-lg border border-dashed border-border bg-muted/30 p-2">
                     {(byStage[stage.key] || []).slice(0, 5).map((lead: { id: string; contact_name?: string; company?: string; status?: string }) => (
                       <Link key={lead.id} href={`/app/sales/leads/${lead.id}`}>
-                        <div className="p-3 bg-white border rounded-lg hover:shadow-sm transition-shadow cursor-pointer">
-                          <p className="font-medium text-sm truncate">{lead.contact_name || lead.company || 'Unnamed'}</p>
+                        <div className="p-3 bg-card border border-border rounded-lg hover:shadow-sm transition-shadow cursor-pointer">
+                          <p className="font-medium text-sm truncate text-foreground">{lead.contact_name || lead.company || 'Unnamed'}</p>
                           {lead.company && lead.contact_name && (
-                            <p className="text-xs text-gray-500 truncate">{lead.company}</p>
+                            <p className="text-xs text-muted-foreground truncate">{lead.company}</p>
                           )}
-                          <ArrowRight className="h-3 w-3 text-gray-400 mt-1" />
+                          <ArrowRight className="h-3 w-3 text-muted-foreground mt-1" />
                         </div>
                       </Link>
                     ))}
@@ -162,7 +162,7 @@ export default async function SalesDashboardPage() {
                       </div>
                       <div>
                         <p className="font-medium">{lead.contact_name || lead.company || 'Unnamed Lead'}</p>
-                        <div className="flex items-center gap-3 text-sm text-gray-500">
+                        <div className="flex items-center gap-3 text-sm text-muted-foreground">
                           {lead.company && <span>{lead.company}</span>}
                           {lead.email && (
                             <span className="flex items-center gap-1">
@@ -183,8 +183,8 @@ export default async function SalesDashboardPage() {
                       }`}>
                         {STAGES.find(s => s.key === lead.status)?.label ?? lead.status}
                       </span>
-                      <span className="text-xs text-gray-400">{formatDate(lead.created_at)}</span>
-                      <ArrowRight className="h-4 w-4 text-gray-400" />
+                      <span className="text-xs text-muted-foreground">{formatDate(lead.created_at)}</span>
+                      <ArrowRight className="h-4 w-4 text-muted-foreground" />
                     </div>
                   </div>
                 </Link>
@@ -193,7 +193,7 @@ export default async function SalesDashboardPage() {
           ) : (
             <div className="text-center py-12">
               <UserPlus className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-              <p className="text-gray-500 mb-4">No leads yet. Import your first lead to start the sales flow.</p>
+              <p className="text-muted-foreground mb-4">No leads yet. Import your first lead to start the sales flow.</p>
               <Link href="/app/sales/leads/new">
                 <Button>
                   <Plus className="h-4 w-4 mr-2" />

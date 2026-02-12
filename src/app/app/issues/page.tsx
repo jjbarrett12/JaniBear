@@ -47,8 +47,8 @@ export default async function IssuesPage({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Issues</h1>
-          <p className="text-gray-600 mt-1">Track and resolve issues</p>
+          <h1 className="text-3xl font-bold text-foreground">Issues</h1>
+          <p className="text-muted-foreground mt-1">Track and resolve issues</p>
         </div>
         <div className="flex gap-2">
           <Link href="/app/issues?status=open">
@@ -79,12 +79,12 @@ export default async function IssuesPage({
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
                         <AlertCircle className="h-5 w-5 text-destructive" />
-                        <h3 className="text-lg font-semibold">{issue.title}</h3>
+                        <h3 className="text-lg font-semibold text-foreground">{issue.title}</h3>
                       </div>
                       {issue.description && (
-                        <p className="text-sm text-gray-600 mb-3">{issue.description}</p>
+                        <p className="text-sm text-muted-foreground mb-3">{issue.description}</p>
                       )}
-                      <div className="flex flex-wrap gap-4 text-sm text-gray-500">
+                      <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
                         <div className="flex items-center gap-1">
                           <MapPin className="h-4 w-4" />
                           {issue.locations?.name}
@@ -120,8 +120,8 @@ export default async function IssuesPage({
       ) : (
         <Card>
           <CardContent className="py-12 text-center">
-            <AlertCircle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-500">No issues found</p>
+            <AlertCircle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+            <p className="text-muted-foreground">No issues found</p>
           </CardContent>
         </Card>
       )}

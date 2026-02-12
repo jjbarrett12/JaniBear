@@ -128,16 +128,16 @@ export default async function AdminPage(props: { searchParams?: Promise<{ demo?:
       description: 'Configure AI features and API keys',
       href: '/app/admin/ai-settings',
       icon: Settings,
-      color: 'text-gray-600',
-      bgColor: 'bg-gray-50',
+      color: 'text-slate-600 dark:text-slate-300',
+      bgColor: 'bg-slate-100 dark:bg-slate-800',
     },
   ];
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-        <p className="text-gray-600 mt-2">Manage employees, compliance, invoicing, and AI features</p>
+        <h1 className="text-3xl font-bold text-foreground">Admin Dashboard</h1>
+        <p className="text-muted-foreground mt-2">Manage employees, compliance, invoicing, and AI features</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -152,7 +152,7 @@ export default async function AdminPage(props: { searchParams?: Promise<{ demo?:
                       <Icon className={`h-6 w-6 ${feature.color}`} />
                     </div>
                     {feature.count !== undefined && (
-                      <span className="text-2xl font-bold text-gray-900">{feature.count}</span>
+                      <span className="text-2xl font-bold text-foreground">{feature.count}</span>
                     )}
                   </div>
                   <CardTitle className="mt-4">{feature.title}</CardTitle>
@@ -172,28 +172,28 @@ export default async function AdminPage(props: { searchParams?: Promise<{ demo?:
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <Link
               href="/app/admin/employees/new"
-              className="p-4 border rounded-lg hover:bg-gray-50 transition-colors"
+              className="p-4 border rounded-lg hover:bg-muted/50 transition-colors"
             >
               <Users className="h-5 w-5 mb-2 text-blue-600" />
               <div className="font-medium">Add Employee</div>
             </Link>
             <Link
               href="/app/admin/compliance/new"
-              className="p-4 border rounded-lg hover:bg-gray-50 transition-colors"
+              className="p-4 border rounded-lg hover:bg-muted/50 transition-colors"
             >
               <ClipboardCheck className="h-5 w-5 mb-2 text-green-600" />
               <div className="font-medium">New Compliance Record</div>
             </Link>
             <Link
               href="/app/admin/purchase-orders/new"
-              className="p-4 border rounded-lg hover:bg-gray-50 transition-colors"
+              className="p-4 border rounded-lg hover:bg-muted/50 transition-colors"
             >
               <ShoppingCart className="h-5 w-5 mb-2 text-purple-600" />
               <div className="font-medium">Create Purchase Order</div>
             </Link>
             <Link
               href="/app/admin/invoices/new"
-              className="p-4 border rounded-lg hover:bg-gray-50 transition-colors"
+              className="p-4 border rounded-lg hover:bg-muted/50 transition-colors"
             >
               <Receipt className="h-5 w-5 mb-2 text-indigo-600" />
               <div className="font-medium">Create Invoice</div>
@@ -216,13 +216,13 @@ export default async function AdminPage(props: { searchParams?: Promise<{ demo?:
               {DEMO_ACTIVITY.map((item, i) => {
                 const Icon = item.icon;
                 return (
-                  <li key={i} className="flex items-start gap-3 py-2 border-b border-gray-100 last:border-0 last:pb-0">
-                    <div className={`p-2 rounded-lg bg-gray-100 ${item.color}`}>
+                  <li key={i} className="flex items-start gap-3 py-2 border-b border-border last:border-0 last:pb-0">
+                    <div className={`p-2 rounded-lg bg-muted ${item.color}`}>
                       <Icon className="h-4 w-4" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium text-gray-900">{item.label}</p>
-                      <p className="text-sm text-gray-500">{item.time}</p>
+                      <p className="font-medium text-foreground">{item.label}</p>
+                      <p className="text-sm text-muted-foreground">{item.time}</p>
                     </div>
                   </li>
                 );

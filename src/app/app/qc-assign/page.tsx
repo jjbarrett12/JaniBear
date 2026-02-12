@@ -170,11 +170,11 @@ export default function QCAssignPage() {
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
+        <h1 className="text-3xl font-bold text-foreground flex items-center gap-2">
           <ListChecks className="h-8 w-8 text-primary" />
           QC Task Assign
         </h1>
-        <p className="text-gray-600 mt-1">
+        <p className="text-muted-foreground mt-1">
           Take a service schedule and number of employees, then break it into task lists per employee.
         </p>
       </div>
@@ -256,7 +256,7 @@ export default function QCAssignPage() {
                     <Users className="h-4 w-4 text-primary" />
                     {b.name}
                   </div>
-                  <ul className="list-disc list-inside text-sm text-gray-600 space-y-1">
+                  <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
                     {b.tasks.map((t) => (
                       <li key={t.id}>{t.label}</li>
                     ))}
@@ -270,7 +270,7 @@ export default function QCAssignPage() {
 
       {schedules.length === 0 && (
         <Card>
-          <CardContent className="py-8 text-center text-gray-500">
+          <CardContent className="py-8 text-center text-muted-foreground">
             No active schedules. Create a schedule first under Schedules.
           </CardContent>
         </Card>

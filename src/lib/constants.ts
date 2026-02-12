@@ -1,6 +1,9 @@
 // Application constants
 
 export const APP_NAME = "JANIBEAR";
+
+/** Calendly booking URL (e.g. https://calendly.com/your-link). When set, "See It in Action" / "Book a demo" link here. */
+export const CALENDLY_URL = typeof process !== "undefined" ? (process.env.NEXT_PUBLIC_CALENDLY_URL ?? "") : "";
 export const APP_DESCRIPTION = "Mobile-first janitorial quality inspection and task management SaaS";
 
 // User roles

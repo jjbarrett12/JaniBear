@@ -36,14 +36,14 @@ export default function ScheduleScannerPage() {
           href="/app/schedules" 
           className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
         >
-          <ArrowLeft className="h-5 w-5 text-gray-600" />
+          <ArrowLeft className="h-5 w-5 text-muted-foreground" />
         </Link>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
             <Sparkles className="h-6 w-6 text-amber-500" />
             AI Schedule Scanner
           </h1>
-          <p className="text-gray-500">
+          <p className="text-muted-foreground">
             Scan existing schedules and split across crews with AI
           </p>
         </div>

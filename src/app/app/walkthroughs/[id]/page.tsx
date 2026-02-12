@@ -111,18 +111,18 @@ export default async function WalkthroughDetailPage({ params }: { params: Promis
             href="/app/walkthroughs" 
             className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
           >
-            <ArrowLeft className="h-5 w-5 text-gray-600" />
+            <ArrowLeft className="h-5 w-5 text-muted-foreground" />
           </Link>
           <div>
             <div className="flex items-center gap-3">
-              <h1 className="text-2xl font-bold text-gray-900">
+              <h1 className="text-2xl font-bold text-foreground">
                 {scope?.customer?.company_name || walkthrough.opportunities?.clients?.name || 'Walkthrough Details'}
               </h1>
               <Badge className={statusColors[walkthrough.status as keyof typeof statusColors] || 'bg-gray-100'}>
                 {walkthrough.status}
               </Badge>
             </div>
-            <p className="text-gray-500">
+            <p className="text-muted-foreground">
               {scope?.site?.address || walkthrough.sites?.address || 'No address'}
             </p>
           </div>
@@ -149,7 +149,7 @@ export default async function WalkthroughDetailPage({ params }: { params: Promis
                 <Building2 className="h-5 w-5 text-blue-600" />
               </div>
               <div>
-                <p className="text-xs text-gray-500">Square Footage</p>
+                <p className="text-xs text-muted-foreground">Square Footage</p>
                 <p className="font-semibold">{scope?.site?.square_footage?.toLocaleString() || '—'} sq ft</p>
               </div>
             </div>
@@ -163,7 +163,7 @@ export default async function WalkthroughDetailPage({ params }: { params: Promis
                 <Calendar className="h-5 w-5 text-violet-600" />
               </div>
               <div>
-                <p className="text-xs text-gray-500">Service Frequency</p>
+                <p className="text-xs text-muted-foreground">Service Frequency</p>
                 <p className="font-semibold">{scope?.service?.days_per_week || '—'}x per week</p>
               </div>
             </div>
@@ -177,7 +177,7 @@ export default async function WalkthroughDetailPage({ params }: { params: Promis
                 <Clock className="h-5 w-5 text-amber-600" />
               </div>
               <div>
-                <p className="text-xs text-gray-500">Est. Hours/Visit</p>
+                <p className="text-xs text-muted-foreground">Est. Hours/Visit</p>
                 <p className="font-semibold">{scope?.pricing?.estimated_hours || '—'} hrs</p>
               </div>
             </div>
@@ -214,26 +214,26 @@ export default async function WalkthroughDetailPage({ params }: { params: Promis
             {scope?.customer ? (
               <div className="space-y-3">
                 <div>
-                  <p className="text-sm text-gray-500">Company</p>
+                  <p className="text-sm text-muted-foreground">Company</p>
                   <p className="font-medium">{scope.customer.company_name || '—'}</p>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-sm text-gray-500">Contact</p>
+                    <p className="text-sm text-muted-foreground">Contact</p>
                     <p className="font-medium">{scope.customer.contact_name || '—'}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">Phone</p>
+                    <p className="text-sm text-muted-foreground">Phone</p>
                     <p className="font-medium">{scope.customer.contact_phone || '—'}</p>
                   </div>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Email</p>
+                  <p className="text-sm text-muted-foreground">Email</p>
                   <p className="font-medium">{scope.customer.contact_email || '—'}</p>
                 </div>
               </div>
             ) : (
-              <p className="text-gray-500 text-sm">No customer information captured</p>
+              <p className="text-muted-foreground text-sm">No customer information captured</p>
             )}
           </CardContent>
         </Card>
@@ -250,33 +250,33 @@ export default async function WalkthroughDetailPage({ params }: { params: Promis
             {scope?.site ? (
               <div className="space-y-3">
                 <div>
-                  <p className="text-sm text-gray-500">Address</p>
+                  <p className="text-sm text-muted-foreground">Address</p>
                   <p className="font-medium">{scope.site.address || '—'}</p>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-sm text-gray-500">Square Footage</p>
+                    <p className="text-sm text-muted-foreground">Square Footage</p>
                     <p className="font-medium">{scope.site.square_footage?.toLocaleString() || '—'} sq ft</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">Restrooms</p>
+                    <p className="text-sm text-muted-foreground">Restrooms</p>
                     <p className="font-medium">{scope.site.restroom_count || '—'}</p>
                   </div>
                 </div>
                 {scope.site.flooring && (
                   <div>
-                    <p className="text-sm text-gray-500 mb-2">Flooring Breakdown</p>
+                    <p className="text-sm text-muted-foreground mb-2">Flooring Breakdown</p>
                     <div className="grid grid-cols-3 gap-2">
                       <div className="p-2 bg-gray-50 rounded text-center">
-                        <p className="text-xs text-gray-500">Hard Surface</p>
+                        <p className="text-xs text-muted-foreground">Hard Surface</p>
                         <p className="font-medium text-sm">{scope.site.flooring.hard_surface?.toLocaleString() || 0}</p>
                       </div>
                       <div className="p-2 bg-gray-50 rounded text-center">
-                        <p className="text-xs text-gray-500">Carpet</p>
+                        <p className="text-xs text-muted-foreground">Carpet</p>
                         <p className="font-medium text-sm">{scope.site.flooring.carpet?.toLocaleString() || 0}</p>
                       </div>
                       <div className="p-2 bg-gray-50 rounded text-center">
-                        <p className="text-xs text-gray-500">Tile</p>
+                        <p className="text-xs text-muted-foreground">Tile</p>
                         <p className="font-medium text-sm">{scope.site.flooring.tile?.toLocaleString() || 0}</p>
                       </div>
                     </div>
@@ -284,7 +284,7 @@ export default async function WalkthroughDetailPage({ params }: { params: Promis
                 )}
               </div>
             ) : (
-              <p className="text-gray-500 text-sm">No site details captured</p>
+              <p className="text-muted-foreground text-sm">No site details captured</p>
             )}
           </CardContent>
         </Card>
@@ -302,23 +302,23 @@ export default async function WalkthroughDetailPage({ params }: { params: Promis
               <div className="space-y-3">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-sm text-gray-500">Frequency</p>
+                    <p className="text-sm text-muted-foreground">Frequency</p>
                     <p className="font-medium">{scope.service.days_per_week}x per week</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">Time of Day</p>
+                    <p className="text-sm text-muted-foreground">Time of Day</p>
                     <p className="font-medium capitalize">{scope.service.time_of_day || '—'}</p>
                   </div>
                 </div>
                 {scope.service.special_requirements && (
                   <div>
-                    <p className="text-sm text-gray-500">Special Requirements</p>
+                    <p className="text-sm text-muted-foreground">Special Requirements</p>
                     <p className="text-sm mt-1 p-3 bg-gray-50 rounded">{scope.service.special_requirements}</p>
                   </div>
                 )}
               </div>
             ) : (
-              <p className="text-gray-500 text-sm">No service requirements captured</p>
+              <p className="text-muted-foreground text-sm">No service requirements captured</p>
             )}
           </CardContent>
         </Card>
@@ -336,15 +336,15 @@ export default async function WalkthroughDetailPage({ params }: { params: Promis
               <div className="space-y-3">
                 <div className="grid grid-cols-3 gap-4">
                   <div>
-                    <p className="text-sm text-gray-500">Hourly Rate</p>
+                    <p className="text-sm text-muted-foreground">Hourly Rate</p>
                     <p className="font-medium">${scope.pricing.hourly_rate}/hr</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">Crew Size</p>
+                    <p className="text-sm text-muted-foreground">Crew Size</p>
                     <p className="font-medium">{scope.pricing.estimated_crew_size} people</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">Hours/Visit</p>
+                    <p className="text-sm text-muted-foreground">Hours/Visit</p>
                     <p className="font-medium">{scope.pricing.estimated_hours} hrs</p>
                   </div>
                 </div>
@@ -358,7 +358,7 @@ export default async function WalkthroughDetailPage({ params }: { params: Promis
                 )}
               </div>
             ) : (
-              <p className="text-gray-500 text-sm">No pricing details captured</p>
+              <p className="text-muted-foreground text-sm">No pricing details captured</p>
             )}
           </CardContent>
         </Card>
@@ -376,12 +376,12 @@ export default async function WalkthroughDetailPage({ params }: { params: Promis
               <div className="grid grid-cols-3 gap-2">
                 {walkthrough.walkthrough_media.map((media: { id: string; type: string }) => (
                   <div key={media.id} className="aspect-square bg-gray-100 rounded-md flex items-center justify-center">
-                    <span className="text-xs text-gray-500">{media.type}</span>
+                    <span className="text-xs text-muted-foreground">{media.type}</span>
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="border-2 border-dashed rounded-lg p-8 text-center text-gray-500">
+              <div className="border-2 border-dashed rounded-lg p-8 text-center text-muted-foreground">
                 <p className="text-sm">No media captured yet</p>
                 <p className="text-xs mt-1">Media capture coming soon</p>
               </div>
@@ -397,10 +397,10 @@ export default async function WalkthroughDetailPage({ params }: { params: Promis
           <CardContent>
             {transcript?.text ? (
               <div className="p-4 bg-gray-50 rounded-md">
-                <p className="text-sm text-gray-700">{transcript.text}</p>
+                <p className="text-sm text-foreground">{transcript.text}</p>
               </div>
             ) : (
-              <div className="border-2 border-dashed rounded-lg p-8 text-center text-gray-500">
+              <div className="border-2 border-dashed rounded-lg p-8 text-center text-muted-foreground">
                 <p className="text-sm">No transcript available</p>
                 <p className="text-xs mt-1">Voice transcription coming soon</p>
               </div>

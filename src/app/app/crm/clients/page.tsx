@@ -25,7 +25,7 @@ export default async function ClientsPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-gray-900">Clients</h1>
+        <h1 className="text-3xl font-bold text-foreground">Clients</h1>
         <Link href="/app/crm/clients/new">
           <Button>
             <Plus className="mr-2 h-4 w-4" />
@@ -34,7 +34,7 @@ export default async function ClientsPage() {
         </Link>
       </div>
 
-      <div className="rounded-md border bg-white">
+      <div className="rounded-md border bg-card text-card-foreground">
         <Table>
           <TableHeader>
             <TableRow>

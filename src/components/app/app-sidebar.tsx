@@ -52,11 +52,11 @@ export async function AppSidebar() {
                 />
               ) : (
                 <Image
-                  src="/yellow.png"
+                  src="/transparent.png"
                   alt="JANIBEAR Logo"
                   width={180}
                   height={64}
-                  className="h-14 w-auto max-w-[200px] object-contain bg-transparent"
+                  className="h-14 w-auto max-w-[200px] object-contain bg-transparent [&>img]:bg-transparent"
                   priority
                   unoptimized
                 />

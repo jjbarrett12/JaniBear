@@ -8,6 +8,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Edit, User, Mail, Phone, Calendar, DollarSign, Languages } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
+import { LOCALE_LABELS } from '@/lib/survey-translations';
+import type { Locale } from '@/lib/survey-translations';
 
 export default async function EmployeeDetailPage({
   params,
@@ -115,7 +117,7 @@ export default async function EmployeeDetailPage({
                 <div>
                   <div className="text-sm text-gray-500">Language Preference</div>
                   <div className="font-medium">
-                    {employee.language_preference === 'en' ? 'English' : 'Spanish'}
+                    {employee.language_preference ? (LOCALE_LABELS[employee.language_preference as Locale] ?? employee.language_preference) : '—'}
                   </div>
                 </div>
               </div>

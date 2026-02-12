@@ -1,11 +1,9 @@
 /**
- * App / crew-facing UI translations (EN + ES).
- * Used for My Tasks, Schedules, and other worker-facing surfaces.
+ * App / crew-facing UI translations. Supports major US languages; fallback to English for untranslated locales.
  */
 import type { Locale } from './survey-translations';
 
-export const appTranslations = {
-  en: {
+const enApp = {
     // My Tasks
     myTasks: 'My Tasks',
     yourAssignedCleaningTasks: 'Your assigned cleaning tasks',
@@ -112,7 +110,10 @@ export const appTranslations = {
     statusClosed: 'Closed',
     statusActive: 'Active',
     statusInProgress: 'In Progress',
-  },
+  };
+
+export const appTranslations = {
+  en: enApp,
   es: {
     myTasks: 'Mis tareas',
     yourAssignedCleaningTasks: 'Tus tareas de limpieza asignadas',
@@ -215,11 +216,22 @@ export const appTranslations = {
     statusActive: 'Activo',
     statusInProgress: 'En curso',
   },
+  // Fallback to English for now; replace with localized strings as needed
+  pt: enApp,
+  it: enApp,
+  ru: enApp,
+  uk: enApp,
+  zh: enApp,
+  vi: enApp,
+  tl: enApp,
+  fr: enApp,
+  ar: enApp,
+  ko: enApp,
 } as const;
 
 export type AppTranslationKey = keyof (typeof appTranslations)['en'];
 
 export function getAppT(locale: Locale) {
-  const t = appTranslations[locale];
+  const t = appTranslations[locale] ?? appTranslations.en;
   return (key: AppTranslationKey): string => t[key];
 }

@@ -1,11 +1,57 @@
 /**
- * Survey and common UI strings for English and Spanish.
- * Used by the survey wizard and can be extended for the rest of the platform.
+ * Survey and common UI strings. Supports major US languages; fallback to English for untranslated locales.
  */
-export type Locale = 'en' | 'es';
+export type Locale =
+  | 'en'
+  | 'es'
+  | 'pt'
+  | 'it'
+  | 'ru'
+  | 'uk'
+  | 'zh'
+  | 'vi'
+  | 'tl'
+  | 'fr'
+  | 'ar'
+  | 'ko';
 
-export const surveyTranslations = {
-  en: {
+/** Display names for the language switcher (language in its own language). */
+export const LOCALE_LABELS: Record<Locale, string> = {
+  en: 'English',
+  es: 'Español',
+  pt: 'Português',
+  it: 'Italiano',
+  ru: 'Русский',
+  uk: 'Українська',
+  zh: '中文',
+  vi: 'Tiếng Việt',
+  tl: 'Tagalog',
+  fr: 'Français',
+  ar: 'العربية',
+  ko: '한국어',
+};
+
+/** Intl locale codes for date/number formatting. */
+export const LOCALE_TO_INTL: Record<Locale, string> = {
+  en: 'en-US',
+  es: 'es',
+  pt: 'pt',
+  it: 'it',
+  ru: 'ru',
+  uk: 'uk',
+  zh: 'zh-CN',
+  vi: 'vi',
+  tl: 'tl',
+  fr: 'fr',
+  ar: 'ar',
+  ko: 'ko',
+};
+
+export function getIntlLocale(locale: Locale): string {
+  return LOCALE_TO_INTL[locale] ?? 'en-US';
+}
+
+const enSurvey = {
     // Survey page
     pageTitle: 'Find your perfect plan',
     pageSubtitle: "Answer a few quick questions and we'll recommend the best plan for your business.",
@@ -52,7 +98,10 @@ export const surveyTranslations = {
     planBlackBear: 'Black Bear',
     planGrizzly: 'Grizzly',
     planKodiak: 'Kodiak',
-  },
+  };
+
+export const surveyTranslations = {
+  en: enSurvey,
   es: {
     pageTitle: 'Encuentra tu plan ideal',
     pageSubtitle: 'Responde unas preguntas y te recomendaremos el mejor plan para tu negocio.',
@@ -95,11 +144,22 @@ export const surveyTranslations = {
     planGrizzly: 'Grizzly',
     planKodiak: 'Kodiak',
   },
+  // Fallback to English for now; replace with localized strings as needed
+  pt: enSurvey,
+  it: enSurvey,
+  ru: enSurvey,
+  uk: enSurvey,
+  zh: enSurvey,
+  vi: enSurvey,
+  tl: enSurvey,
+  fr: enSurvey,
+  ar: enSurvey,
+  ko: enSurvey,
 } as const;
 
 export type SurveyTranslationKey = keyof (typeof surveyTranslations)['en'];
 
 export function getSurveyT(locale: Locale) {
-  const t = surveyTranslations[locale];
+  const t = surveyTranslations[locale] ?? surveyTranslations.en;
   return (key: SurveyTranslationKey): string => t[key];
 }

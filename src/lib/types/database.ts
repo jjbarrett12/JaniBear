@@ -35,7 +35,7 @@ export interface Database {
           full_name: string | null;
           phone: string | null;
           avatar_url: string | null;
-          language_preference: 'en' | 'es';
+          language_preference: 'en' | 'es' | 'pt' | 'it' | 'ru' | 'uk' | 'zh' | 'vi' | 'tl' | 'fr' | 'ar' | 'ko';
           created_at: string;
         };
         Insert: {
@@ -43,7 +43,7 @@ export interface Database {
           full_name?: string | null;
           phone?: string | null;
           avatar_url?: string | null;
-          language_preference?: 'en' | 'es';
+          language_preference?: 'en' | 'es' | 'pt' | 'it' | 'ru' | 'uk' | 'zh' | 'vi' | 'tl' | 'fr' | 'ar' | 'ko';
           created_at?: string;
         };
         Update: {
@@ -51,7 +51,7 @@ export interface Database {
           full_name?: string | null;
           phone?: string | null;
           avatar_url?: string | null;
-          language_preference?: 'en' | 'es';
+          language_preference?: 'en' | 'es' | 'pt' | 'it' | 'ru' | 'uk' | 'zh' | 'vi' | 'tl' | 'fr' | 'ar' | 'ko';
           created_at?: string;
         };
       };

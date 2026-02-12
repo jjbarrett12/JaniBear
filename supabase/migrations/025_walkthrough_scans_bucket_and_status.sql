@@ -43,8 +43,13 @@ USING (
 );
 
 -- ============================================
--- walkthrough_scans.status: constrain allowed values
+-- walkthrough_scans.status: constrain allowed values (only if table exists)
 -- ============================================
-ALTER TABLE walkthrough_scans DROP CONSTRAINT IF EXISTS walkthrough_scans_status_check;
-ALTER TABLE walkthrough_scans ADD CONSTRAINT walkthrough_scans_status_check
-  CHECK (status IN ('uploaded', 'processing', 'ready', 'failed'));
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'walkthrough_scans') THEN
+    ALTER TABLE walkthrough_scans DROP CONSTRAINT IF EXISTS walkthrough_scans_status_check;
+    ALTER TABLE walkthrough_scans ADD CONSTRAINT walkthrough_scans_status_check
+      CHECK (status IN ('uploaded', 'processing', 'ready', 'failed'));
+  END IF;
+END $$;

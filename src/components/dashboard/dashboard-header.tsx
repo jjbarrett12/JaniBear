@@ -2,25 +2,39 @@
 
 import { useLanguage } from '@/contexts/language-context';
 import { getAppT } from '@/lib/app-translations';
+import type { Locale } from '@/lib/survey-translations';
+import { getIntlLocale } from '@/lib/survey-translations';
 import { Calendar } from 'lucide-react';
 
-function getTimeBasedGreeting(locale: string): string {
+const GREETINGS: Record<Locale, [string, string, string]> = {
+  en: ['Good morning', 'Good afternoon', 'Good evening'],
+  es: ['Buenos días', 'Buenas tardes', 'Buenas noches'],
+  pt: ['Bom dia', 'Boa tarde', 'Boa noite'],
+  it: ['Buongiorno', 'Buon pomeriggio', 'Buonasera'],
+  ru: ['Доброе утро', 'Добрый день', 'Добрый вечер'],
+  uk: ['Доброго ранку', 'Добрий день', 'Добрий вечір'],
+  zh: ['早上好', '下午好', '晚上好'],
+  vi: ['Chào buổi sáng', 'Chào buổi chiều', 'Chào buổi tối'],
+  tl: ['Magandang umaga', 'Magandang hapon', 'Magandang gabi'],
+  fr: ['Bonjour', 'Bon après-midi', 'Bonsoir'],
+  ar: ['صباح الخير', 'مساء الخير', 'مساء الخير'],
+  ko: ['좋은 아침', '좋은 오후', '안녕하세요'],
+};
+
+function getTimeBasedGreeting(locale: Locale): string {
   const hour = new Date().getHours();
-  if (locale === 'es') {
-    if (hour < 12) return 'Buenos días';
-    if (hour < 18) return 'Buenas tardes';
-    return 'Buenas noches';
-  }
-  if (hour < 12) return 'Good morning';
-  if (hour < 18) return 'Good afternoon';
-  return 'Good evening';
+  const [morning, afternoon, evening] = GREETINGS[locale] ?? GREETINGS.en;
+  if (hour < 12) return morning;
+  if (hour < 18) return afternoon;
+  return evening;
 }
 
 export function DashboardHeader({ userName }: { userName: string }) {
   const { locale } = useLanguage();
   const t = getAppT(locale);
   const greeting = getTimeBasedGreeting(locale);
-  const dateStr = new Date().toLocaleDateString(locale === 'es' ? 'es' : 'en-US', {
+  const intlLocale = getIntlLocale(locale);
+  const dateStr = new Date().toLocaleDateString(intlLocale, {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
@@ -48,7 +62,7 @@ export function DashboardHeader({ userName }: { userName: string }) {
           <Calendar className="h-4 w-4 text-primary shrink-0" />
           <span className="hidden sm:inline">{dateStr}</span>
           <span className="sm:hidden">
-            {new Date().toLocaleDateString(locale === 'es' ? 'es' : 'en-US', {
+            {new Date().toLocaleDateString(intlLocale, {
               weekday: 'short',
               month: 'short',
               day: 'numeric',

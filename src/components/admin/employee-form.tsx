@@ -13,8 +13,12 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { createClient } from '@/lib/supabase/client';
+import type { Locale } from '@/lib/survey-translations';
+import { LOCALE_LABELS } from '@/lib/survey-translations';
 import { Upload, X } from 'lucide-react';
 import Image from 'next/image';
+
+const LOCALES: Locale[] = ['en', 'es', 'pt', 'it', 'ru', 'uk', 'zh', 'vi', 'tl', 'fr', 'ar', 'ko'];
 
 const employeeSchema = z.object({
   employee_number: z.string().optional(),
@@ -29,7 +33,7 @@ const employeeSchema = z.object({
   department: z.string().optional(),
   position: z.string().optional(),
   hourly_rate: z.string().optional(),
-  language_preference: z.enum(['en', 'es']),
+  language_preference: z.enum(['en', 'es', 'pt', 'it', 'ru', 'uk', 'zh', 'vi', 'tl', 'fr', 'ar', 'ko']),
   emergency_contact_name: z.string().optional(),
   emergency_contact_phone: z.string().optional(),
   notes: z.string().optional(),
@@ -376,8 +380,11 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="en">English</SelectItem>
-                    <SelectItem value="es">Spanish</SelectItem>
+                    {LOCALES.map((loc) => (
+                      <SelectItem key={loc} value={loc}>
+                        {LOCALE_LABELS[loc]}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>

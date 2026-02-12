@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useLanguage } from '@/contexts/language-context';
 import { getAppT } from '@/lib/app-translations';
+import { getIntlLocale } from '@/lib/survey-translations';
 import { Calendar, Clock, Users } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
@@ -29,7 +30,7 @@ const statusColor: Record<string, string> = {
 export function TodaysSchedule({ items }: TodaysScheduleProps) {
   const { locale } = useLanguage();
   const t = getAppT(locale);
-  const today = new Date().toLocaleDateString(locale === 'es' ? 'es' : 'en-US', {
+  const today = new Date().toLocaleDateString(getIntlLocale(locale), {
     weekday: 'long',
     month: 'short',
     day: 'numeric',

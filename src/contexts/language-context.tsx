@@ -12,12 +12,15 @@ type LanguageContextValue = {
 
 const LanguageContext = createContext<LanguageContextValue | null>(null);
 
+const SUPPORTED_LOCALES: Locale[] = ['en', 'es', 'pt', 'it', 'ru', 'uk', 'zh', 'vi', 'tl', 'fr', 'ar', 'ko'];
+
 function getInitialLocale(): Locale {
   if (typeof window === 'undefined') return 'en';
   const stored = localStorage.getItem(STORAGE_KEY) as Locale | null;
-  if (stored === 'en' || stored === 'es') return stored;
+  if (stored && SUPPORTED_LOCALES.includes(stored)) return stored;
   const browser = navigator.language?.toLowerCase();
-  if (browser?.startsWith('es')) return 'es';
+  const match = SUPPORTED_LOCALES.find((l) => l === browser?.slice(0, 2));
+  if (match) return match;
   return 'en';
 }
 

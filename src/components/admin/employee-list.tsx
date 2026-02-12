@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Search, Edit, Trash2, User } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { LOCALE_LABELS } from '@/lib/survey-translations';
 
 interface Employee {
   id: string;
@@ -177,7 +178,7 @@ export function EmployeeList({ employees: initialEmployees }: EmployeeListProps)
                   </Badge>
                   {employee.language_preference && (
                     <Badge variant="outline">
-                      {employee.language_preference.toUpperCase()}
+                      {LOCALE_LABELS[employee.language_preference as keyof typeof LOCALE_LABELS] ?? employee.language_preference.toUpperCase()}
                     </Badge>
                   )}
                 </div>

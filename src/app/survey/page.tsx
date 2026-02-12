@@ -6,10 +6,11 @@ import { Button } from '@/components/ui/button';
 import { SurveyWizard } from '@/components/survey/survey-wizard';
 import { useLanguage } from '@/contexts/language-context';
 import { getSurveyT } from '@/lib/survey-translations';
+import { LanguageSwitcher } from '@/components/app/language-switcher';
 import { useMemo } from 'react';
 
 export default function SurveyPage() {
-  const { locale, setLocale } = useLanguage();
+  const { locale } = useLanguage();
   const t = useMemo(() => getSurveyT(locale), [locale]);
 
   return (
@@ -20,23 +21,8 @@ export default function SurveyPage() {
             <Image src="/yellow.png" alt="JANIBEAR" width={560} height={182} className="!h-16 md:!h-20 w-auto !max-h-none object-contain bg-transparent" unoptimized />
           </Link>
           <div className="flex items-center justify-end gap-2 md:gap-4 flex-1 min-w-0 flex-wrap">
-            <div className="flex items-center gap-1 border border-zinc-700 rounded-lg p-0.5">
-              <button
-                type="button"
-                onClick={() => setLocale('en')}
-                className={`px-2 py-1 text-sm rounded-md transition-colors ${locale === 'en' ? 'bg-amber-500 text-white' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'}`}
-                aria-label="English"
-              >
-                EN
-              </button>
-              <button
-                type="button"
-                onClick={() => setLocale('es')}
-                className={`px-2 py-1 text-sm rounded-md transition-colors ${locale === 'es' ? 'bg-amber-500 text-white' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'}`}
-                aria-label="Español"
-              >
-                ES
-              </button>
+            <div className="[&_.border]:border-zinc-700 [&_.bg-background]:bg-zinc-900 [&_.text-foreground]:text-zinc-100">
+              <LanguageSwitcher />
             </div>
             <Link href="/pricing"><Button variant="ghost" size="sm" className="text-zinc-300 hover:text-white hover:bg-zinc-800 shrink-0">{t('pricing')}</Button></Link>
             <Link href="/survey"><Button variant="ghost" size="sm" className="text-zinc-300 hover:text-white hover:bg-zinc-800 shrink-0">{t('findYourPlan')}</Button></Link>

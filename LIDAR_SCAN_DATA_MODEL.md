@@ -2,6 +2,8 @@
 
 This guide explains how to implement LiDAR (RoomPlan) capture and storage so each scan is stored in Supabase and linked to a walkthrough.
 
+**Strategy:** LiDAR = geometry + area (high ROI). Surface type (carpet vs tile) = vision + assisted tagging. See **`LIDAR_AND_SURFACE_STRATEGY.md`**.
+
 ---
 
 ## 1. Prerequisites
@@ -178,18 +180,35 @@ After the row is in `status = 'uploaded'`:
 
 **Suggested shape for `extracted`:**
 
+LiDAR provides **geometry and area**; surface type (carpet/tile/etc.) is from **vision + user confirmation**. See `LIDAR_AND_SURFACE_STRATEGY.md`.
+
 ```json
 {
   "rooms": [
-    { "name": "Lobby", "sqft": 450, "surfaces": 12 },
-    { "name": "Restroom", "sqft": 120, "surfaces": 8 }
+    {
+      "name": "Lobby",
+      "sqft": 450,
+      "surfaces": 12,
+      "room_polygon": "<geo or ref>",
+      "floor_area": 450,
+      "frames": [".../preview_0.jpg", ".../preview_1.jpg"],
+      "user_surface_tag": "tile",
+      "surface_prediction": "tile",
+      "surface_confidence": 0.92
+    },
+    { "name": "Restroom", "sqft": 120, "surfaces": 8, "floor_area": 120, "user_surface_tag": "tile" }
   ],
   "total_sqft": 570,
   "surfaces": 20
 }
 ```
 
-You can add more keys (e.g. `fixtures`, `ceiling_height`) as needed. Use `extracted` for scope generation and proposal prep.
+- **room_polygon** / **floor_area** — from LiDAR/RoomPlan (geometry).
+- **frames** — RGB stills per room for vision/segmentation.
+- **user_surface_tag** — user-confirmed surface type (MVP: required one-tap; Tier 2+: optional when confidence high). One of: `carpet` | `tile` | `lvt` | `wood` | `concrete` | `other`.
+- **surface_prediction** / **surface_confidence** — from background classifier; used to pre-fill and show “Auto-detected” when confidence ≥ threshold.
+
+You can add more keys (e.g. `fixtures`, `ceiling_height`) as needed. Use `extracted` for scope generation and proposal prep. Merged scope (billing) lives in `scope_models` with `surface_type_final`, `surface_source`, etc. (see migration `027_scope_surface_audit_fields.sql`).
 
 ---
 

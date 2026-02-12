@@ -1,36 +1,33 @@
 'use client';
 
 import { useLanguage } from '@/contexts/language-context';
+import type { Locale } from '@/lib/survey-translations';
+import { LOCALE_LABELS } from '@/lib/survey-translations';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+
+const LOCALES: Locale[] = ['en', 'es', 'pt', 'it', 'ru', 'uk', 'zh', 'vi', 'tl', 'fr', 'ar', 'ko'];
 
 export function LanguageSwitcher() {
   const { locale, setLocale } = useLanguage();
 
   return (
-    <div className="flex items-center gap-1 border border-gray-200 dark:border-gray-700 rounded-lg p-0.5">
-      <button
-        type="button"
-        onClick={() => setLocale('en')}
-        className={`px-2 py-1 text-xs font-medium rounded-md transition-colors ${
-          locale === 'en'
-            ? 'bg-primary text-primary-foreground'
-            : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
-        }`}
-        aria-label="English"
-      >
-        EN
-      </button>
-      <button
-        type="button"
-        onClick={() => setLocale('es')}
-        className={`px-2 py-1 text-xs font-medium rounded-md transition-colors ${
-          locale === 'es'
-            ? 'bg-primary text-primary-foreground'
-            : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
-        }`}
-        aria-label="Español"
-      >
-        ES
-      </button>
-    </div>
+    <Select value={locale} onValueChange={(value) => setLocale(value as Locale)}>
+      <SelectTrigger className="w-[10rem] h-9 text-xs" aria-label="Select language">
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent>
+        {LOCALES.map((loc) => (
+          <SelectItem key={loc} value={loc} className="text-xs">
+            {LOCALE_LABELS[loc]}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
   );
 }

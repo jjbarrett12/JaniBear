@@ -6,7 +6,22 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Loader2 } from 'lucide-react';
+
+export type OnboardingOrgType = 'independent' | 'franchisee' | 'franchisor';
+
+const ORG_TYPE_OPTIONS: { value: OnboardingOrgType; label: string }[] = [
+  { value: 'independent', label: 'Owner / Operator (independent business)' },
+  { value: 'franchisee', label: 'Franchisee (franchise location)' },
+  { value: 'franchisor', label: 'Franchisor (brand owner)' },
+];
 
 function SignOutLink() {
   const [signingOut, setSigningOut] = useState(false);
@@ -31,6 +46,7 @@ function SignOutLink() {
 export function OnboardingForm() {
   const [orgName, setOrgName] = useState('');
   const [fullName, setFullName] = useState('');
+  const [orgType, setOrgType] = useState<OnboardingOrgType>('independent');
   const [isLoading, setIsLoading] = useState(false);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
@@ -122,10 +138,10 @@ export function OnboardingForm() {
         throw new Error(`Profile: ${profileError.message}`);
       }
 
-      // Create organization
+      // Create organization with selected account type (determines which dashboard they see)
       const { data: org, error: orgError } = await supabase
         .from('organizations')
-        .insert({ name: orgName })
+        .insert({ name: orgName, org_type: orgType })
         .select()
         .single();
 
@@ -182,6 +198,28 @@ export function OnboardingForm() {
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-2">
+            <Label>I am signing up as</Label>
+            <Select
+              value={orgType}
+              onValueChange={(v) => setOrgType(v as OnboardingOrgType)}
+              disabled={isLoading}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select account type" />
+              </SelectTrigger>
+              <SelectContent>
+                {ORG_TYPE_OPTIONS.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-muted-foreground">
+              This determines your dashboard and features (Owner/Operator, Franchisee, or Franchisor).
+            </p>
+          </div>
           <div className="space-y-2">
             <Label htmlFor="orgName">Organization Name</Label>
             <Input

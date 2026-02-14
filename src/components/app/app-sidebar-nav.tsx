@@ -26,6 +26,8 @@ import {
   GraduationCap,
   Ticket,
   MessageCircle,
+  Wallet,
+  BarChart3,
 } from 'lucide-react';
 
 const salesItems = [
@@ -74,6 +76,20 @@ export function AppSidebarNav({ premium }: { premium: boolean }) {
       >
         <LayoutDashboard className="h-6 w-6 shrink-0" />
         <span className="truncate">{t('navDashboard')}</span>
+      </Link>
+      <Link
+        href="/app/financial-health"
+        className={navLinkClass(pathname === '/app/financial-health')}
+      >
+        <Wallet className="h-6 w-6 shrink-0" />
+        <span className="truncate">{t('navFinancialHealth')}</span>
+      </Link>
+      <Link
+        href="/app/kpis"
+        className={navLinkClass(pathname === '/app/kpis')}
+      >
+        <BarChart3 className="h-6 w-6 shrink-0" />
+        <span className="truncate">{t('navKpiDashboard')}</span>
       </Link>
       <Link
         href="/app/university"

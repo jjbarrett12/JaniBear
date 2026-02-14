@@ -29,7 +29,14 @@ function getTimeBasedGreeting(locale: Locale): string {
   return evening;
 }
 
-export function DashboardHeader({ userName }: { userName: string }) {
+export function DashboardHeader({
+  userName,
+  subtitle,
+}: {
+  userName: string;
+  /** Optional override for the subtitle (e.g. franchisee vs owner-operator) */
+  subtitle?: string;
+}) {
   const { locale } = useLanguage();
   const t = getAppT(locale);
   const greeting = getTimeBasedGreeting(locale);
@@ -51,7 +58,7 @@ export function DashboardHeader({ userName }: { userName: string }) {
           {userName}
         </h1>
         <p className="text-muted-foreground mt-1">
-          {t('dashboardHeresWhatsHappening')}
+          {subtitle ?? t('dashboardHeresWhatsHappening')}
         </p>
       </div>
       <div className="flex items-center gap-2">

@@ -45,9 +45,9 @@
   flex-shrink: 0;
   object-fit: contain;
   object-position: left center;
-  /* New white/yellow logo: fill header height, no filter */
-  height: 3rem !important;
-  max-height: 3rem !important;
+  /* White + gold logo: fill header height, no filter so colors stay true */
+  height: 3.5rem !important;
+  max-height: 3.5rem !important;
 }
 @media (min-width: 768px) {
   .landing-header .landing-logo {
@@ -203,6 +203,10 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
+    /* Financial Health dashboard */
+    --health-green: 142 76% 36%;
+    --health-amber: 38 92% 50%;
+    --health-red: 0 72% 51%;
   }
 
   /* Dark mode: #121B3A bg, #F3F4F6 text, #F28C28 accent, #3B4FA3 dividers */
@@ -231,6 +235,9 @@
     --chart-3: 227 47% 44%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+    --health-green: 142 70% 45%;
+    --health-amber: 38 92% 55%;
+    --health-red: 0 72% 55%;
   }
 }
 
@@ -398,8 +405,8 @@
   background: rgba(0, 0, 0, 0.95) !important;
 }
 .landing-page .landing-header .landing-logo {
-  height: 3rem !important;
-  max-height: 3rem !important;
+  height: 3.5rem !important;
+  max-height: 3.5rem !important;
   width: auto !important;
   object-fit: contain;
   object-position: left center;

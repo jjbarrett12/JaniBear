@@ -13,19 +13,19 @@ export interface Database {
         Row: {
           id: string;
           name: string;
-          org_type: 'operator' | 'franchisor';
+          org_type: 'franchisor' | 'franchisee' | 'independent';
           created_at: string;
         };
         Insert: {
           id?: string;
           name: string;
-          org_type?: 'operator' | 'franchisor';
+          org_type?: 'franchisor' | 'franchisee' | 'independent';
           created_at?: string;
         };
         Update: {
           id?: string;
           name?: string;
-          org_type?: 'operator' | 'franchisor';
+          org_type?: 'franchisor' | 'franchisee' | 'independent';
           created_at?: string;
         };
       };

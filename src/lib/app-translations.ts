@@ -71,6 +71,8 @@ const enApp = {
     navAdmin: 'Admin',
     navLocations: 'Locations',
     navMessages: 'Messages',
+    navFinancialHealth: 'Financial Health',
+    navKpiDashboard: 'KPI Dashboard',
 
     // Dashboard
     dashboardWelcomeBack: 'Welcome back',
@@ -177,6 +179,8 @@ export const appTranslations = {
     navAdmin: 'Administración',
     navLocations: 'Ubicaciones',
     navMessages: 'Mensajes',
+    navFinancialHealth: 'Salud financiera',
+    navKpiDashboard: 'Panel de KPIs',
 
     dashboardWelcomeBack: 'Bienvenido de nuevo',
     dashboardHeresWhatsHappening: 'Esto es lo que pasa en tu negocio hoy',

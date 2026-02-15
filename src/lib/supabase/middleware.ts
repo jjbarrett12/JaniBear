@@ -26,22 +26,6 @@ function redirectToApp(pathname: string): string | null {
 }
 
 export async function updateSession(request: NextRequest) {
-  // Canonical host: redirect www <-> non-www to a single origin to avoid auth/cookie and strobe issues
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '');
-  if (appUrl) {
-    let canonicalHost: string;
-    try {
-      canonicalHost = new URL(appUrl).host;
-    } catch {
-      canonicalHost = '';
-    }
-    const requestHost = request.nextUrl.host;
-    if (canonicalHost && requestHost !== canonicalHost) {
-      const canonicalUrl = new URL(request.nextUrl.pathname + request.nextUrl.search, appUrl);
-      return NextResponse.redirect(canonicalUrl, 302);
-    }
-  }
-
   let supabaseResponse = NextResponse.next({
     request,
   });

@@ -40,7 +40,7 @@ NEXT_PUBLIC_SUPABASE_URL=your_project_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
 ```
 
-**Production:** Set `NEXT_PUBLIC_APP_URL` to your single canonical URL (e.g. `https://janibear.com`). The app will redirect all traffic (including www vs non-www) to that host so auth and cookies stay consistent. Ensure your hosting/DNS serves both www and non-www to this app so the redirect can run.
+**Production:** Set `NEXT_PUBLIC_APP_URL` to your live URL (e.g. `https://janibear.com`). To avoid redirect loops, do not redirect www↔non-www in app code; use your host (e.g. Vercel domain settings) to make one canonical and redirect the other.
 
 ### 2. Database Migrations
 

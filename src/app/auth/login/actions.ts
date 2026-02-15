@@ -4,8 +4,6 @@ import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { cookies } from 'next/headers';
 
-const ACTIVE_ORG_COOKIE = 'active_org_id';
-const COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
 const REMEMBER_EMAIL_COOKIE = 'janibear_remember_email';
 
 export type SignInState = { error?: string; code?: string };
@@ -64,23 +62,5 @@ export async function signInWithPasswordAction(
     cookieStore.delete(REMEMBER_EMAIL_COOKIE);
   }
 
-  const { data: membership } = await supabase
-    .from('org_members')
-    .select('org_id')
-    .eq('user_id', data.user.id)
-    .limit(1)
-    .maybeSingle();
-
-  if (membership?.org_id) {
-    cookieStore.set(ACTIVE_ORG_COOKIE, membership.org_id, {
-      path: '/',
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: COOKIE_MAX_AGE,
-    });
-  }
-
-  const destination = membership?.org_id ? '/app/dashboard' : '/onboarding';
-  redirect(destination);
+  redirect('/auth/landing');
 }

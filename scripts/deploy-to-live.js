@@ -41,6 +41,15 @@ async function main() {
     }
   }
 
+  console.log('  Pulling latest from origin main (rebase)...');
+  try {
+    run('git pull --rebase origin main');
+  } catch (e) {
+    console.error('\n  Pull failed. Fix any conflicts, then run: git rebase --continue, then npm run deploy again.');
+    console.error('  Or to abort: git rebase --abort');
+    process.exit(1);
+  }
+
   console.log('  Pushing to origin main...');
   try {
     run('git push origin main');

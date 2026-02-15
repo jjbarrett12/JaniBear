@@ -21,6 +21,12 @@ export async function getCurrentUser() {
   return user;
 }
 
+/** Returns current user id or null. Use in admin/role checks to avoid duplicate getUser() and undefined. */
+export async function getCurrentUserId(): Promise<string | null> {
+  const user = await getCurrentUser();
+  return user?.id ?? null;
+}
+
 export async function requireAuth() {
   const user = await getCurrentUser();
   if (!user) {

@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import { requireOrg } from '@/lib/auth';
+import { requireOrg, getCurrentUserId } from '@/lib/auth';
 import { createClient } from '@/lib/supabase/server';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
@@ -35,6 +35,8 @@ export default async function AdminPage(props: { searchParams?: Promise<{ demo?:
   const isDemo = searchParams?.demo === '1';
 
   const org = await requireOrg();
+  const userId = await getCurrentUserId();
+  if (!userId) redirect('/auth/login');
   const supabase = await createClient();
 
   // Check if user is admin/owner
@@ -42,7 +44,7 @@ export default async function AdminPage(props: { searchParams?: Promise<{ demo?:
     .from('org_members')
     .select('role')
     .eq('org_id', org.org_id)
-    .eq('user_id', (await supabase.auth.getUser()).data.user?.id)
+    .eq('user_id', userId)
     .single();
 
   if (!member || !['owner', 'admin', 'manager'].includes(member.role)) {

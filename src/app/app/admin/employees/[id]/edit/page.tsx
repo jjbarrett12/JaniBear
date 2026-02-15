@@ -1,5 +1,5 @@
 import { redirect, notFound } from 'next/navigation';
-import { requireOrg } from '@/lib/auth';
+import { requireOrg, getCurrentUserId } from '@/lib/auth';
 import { createClient } from '@/lib/supabase/server';
 import { EmployeeForm } from '@/components/admin/employee-form';
 
@@ -9,6 +9,8 @@ export default async function EditEmployeePage({
   params: { id: string };
 }) {
   const org = await requireOrg();
+  const userId = await getCurrentUserId();
+  if (!userId) redirect('/auth/login');
   const supabase = await createClient();
 
   // Check admin access
@@ -16,7 +18,7 @@ export default async function EditEmployeePage({
     .from('org_members')
     .select('role')
     .eq('org_id', org.org_id)
-    .eq('user_id', (await supabase.auth.getUser()).data.user?.id)
+    .eq('user_id', userId)
     .single();
 
   if (!member || !['owner', 'admin', 'manager'].includes(member.role)) {

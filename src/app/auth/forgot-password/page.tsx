@@ -33,7 +33,7 @@ export default async function ForgotPasswordPage() {
             Reset Your Password
           </h1>
           <p className="text-gray-600 text-base">
-            Enter your email address and we'll send you a link to reset your password
+            Enter your email address and we&apos;ll send you a link to reset your password
           </p>
         </div>
         <ForgotPasswordForm />

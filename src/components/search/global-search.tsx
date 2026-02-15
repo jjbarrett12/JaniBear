@@ -240,7 +240,7 @@ export function GlobalSearch() {
       {isOpen && query.length >= 2 && !isSearching && results.length === 0 && (
         <Card className="absolute top-full mt-2 w-full z-50 shadow-xl border-2">
           <CardContent className="p-4 text-center text-sm text-gray-500">
-            No results found for "{query}"
+            No results found for &quot;{query}&quot;
           </CardContent>
         </Card>
       )}

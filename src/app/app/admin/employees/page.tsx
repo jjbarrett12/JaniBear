@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import { requireOrg } from '@/lib/auth';
+import { requireOrg, getCurrentUserId } from '@/lib/auth';
 import { createClient } from '@/lib/supabase/server';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -13,6 +13,8 @@ export default async function EmployeesPage({
   searchParams: { search?: string; status?: string };
 }) {
   const org = await requireOrg();
+  const userId = await getCurrentUserId();
+  if (!userId) redirect('/auth/login');
   const supabase = await createClient();
 
   // Check admin access
@@ -20,7 +22,7 @@ export default async function EmployeesPage({
     .from('org_members')
     .select('role')
     .eq('org_id', org.org_id)
-    .eq('user_id', (await supabase.auth.getUser()).data.user?.id)
+    .eq('user_id', userId)
     .single();
 
   if (!member || !['owner', 'admin', 'manager'].includes(member.role)) {

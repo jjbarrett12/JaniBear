@@ -168,7 +168,7 @@ export function BrandingSettings({ orgId, initialData }: BrandingSettingsProps) 
       <CardHeader>
         <CardTitle>Branding & Customization</CardTitle>
         <CardDescription>
-          Customize your organization's colors and logo
+          Customize your organization&apos;s colors and logo
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-8">

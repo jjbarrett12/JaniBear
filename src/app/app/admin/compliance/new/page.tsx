@@ -1,17 +1,19 @@
 import { redirect } from 'next/navigation';
-import { requireOrg } from '@/lib/auth';
+import { requireOrg, getCurrentUserId } from '@/lib/auth';
 import { createClient } from '@/lib/supabase/server';
 import { ComplianceForm } from '@/components/admin/compliance-form';
 
 export default async function NewCompliancePage() {
   const org = await requireOrg();
+  const userId = await getCurrentUserId();
+  if (!userId) redirect('/auth/login');
   const supabase = await createClient();
 
   const { data: member } = await supabase
     .from('org_members')
     .select('role')
     .eq('org_id', org.org_id)
-    .eq('user_id', (await supabase.auth.getUser()).data.user?.id)
+    .eq('user_id', userId)
     .single();
 
   if (!member) {

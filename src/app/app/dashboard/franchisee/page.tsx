@@ -31,11 +31,11 @@ export default async function FranchiseeDashboardPage(props: {
     <div className="space-y-6 pb-8">
       <DashboardHeader
         userName={data.userName}
-        subtitle="Here's what's happening at your franchise location."
+        subtitle="Here&#39;s what&#39;s happening at your franchise location."
       />
       <div className="rounded-lg border border-border bg-muted/40 px-4 py-3 flex items-center justify-between gap-4 flex-wrap">
         <p className="text-sm text-muted-foreground">
-          You're viewing your franchise location. Compare outcomes and optional standards in KPI Dashboard and Financial Health.
+          You&apos;re viewing your franchise location. Compare outcomes and optional standards in KPI Dashboard and Financial Health.
         </p>
         <Link
           href="/app/templates"

@@ -6,8 +6,8 @@ const COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
 
 /**
  * GET /api/auth/landing
- * Single hop after login: server has cookies, sets active_org_id, redirects to dashboard or onboarding.
- * Use this as the only post-login destination so the cookie is set on the same response as the redirect.
+ * Post-login: set active_org_id cookie when user has an org, always redirect to /app/dashboard.
+ * New users with no org hit the dashboard and are then sent to /onboarding by the app layout.
  */
 export async function GET(request: NextRequest) {
   const supabase = await createClient();
@@ -24,8 +24,7 @@ export async function GET(request: NextRequest) {
     .limit(1)
     .maybeSingle();
 
-  const destination = membership?.org_id ? '/app/dashboard' : '/onboarding';
-  const res = NextResponse.redirect(new URL(destination, request.url));
+  const res = NextResponse.redirect(new URL('/app/dashboard', request.url));
 
   if (membership?.org_id) {
     res.cookies.set(ACTIVE_ORG_COOKIE, membership.org_id, {

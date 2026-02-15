@@ -62,5 +62,5 @@ export async function signInWithPasswordAction(
     cookieStore.delete(REMEMBER_EMAIL_COOKIE);
   }
 
-  redirect('/auth/landing');
+  redirect('/api/auth/landing');
 }

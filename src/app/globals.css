@@ -45,14 +45,14 @@
   flex-shrink: 0;
   object-fit: contain;
   object-position: left center;
-  /* White + gold logo: fill header height, no filter so colors stay true */
-  height: 3.5rem !important;
-  max-height: 3.5rem !important;
+  /* White + gold logo: 2x size for prominence */
+  height: 7rem !important;
+  max-height: 7rem !important;
 }
 @media (min-width: 768px) {
   .landing-header .landing-logo {
-    height: 4rem !important;
-    max-height: 4rem !important;
+    height: 8rem !important;
+    max-height: 8rem !important;
   }
 }
 .landing-page .landing-cta {
@@ -405,16 +405,16 @@
   background: rgba(0, 0, 0, 0.95) !important;
 }
 .landing-page .landing-header .landing-logo {
-  height: 3.5rem !important;
-  max-height: 3.5rem !important;
+  height: 7rem !important;
+  max-height: 7rem !important;
   width: auto !important;
   object-fit: contain;
   object-position: left center;
 }
 @media (min-width: 768px) {
   .landing-page .landing-header .landing-logo {
-    height: 4rem !important;
-    max-height: 4rem !important;
+    height: 8rem !important;
+    max-height: 8rem !important;
   }
 }
 .landing-page .landing-header button.landing-nav-link,

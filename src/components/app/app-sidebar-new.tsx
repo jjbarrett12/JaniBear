@@ -34,16 +34,16 @@ export async function AppSidebarNew() {
     .single();
   
   const navItems = [
-    { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { href: '/crm/clients', label: 'Clients', icon: Building2 },
-    { href: '/crm/opportunities', label: 'Opportunities', icon: TrendingUp },
-    { href: '/walkthroughs', label: 'Walkthroughs', icon: FileSearch },
-    { href: '/qc/inspections', label: 'Inspections', icon: ClipboardCheck },
-    { href: '/qc/issues', label: 'Issues', icon: AlertCircle },
-    { href: '/ops/workload', label: 'Workload', icon: Users },
-    { href: '/ops/schedule', label: 'Schedule', icon: Calendar },
-    { href: '/reports/monthly', label: 'Reports', icon: BarChart3 },
-    { href: '/settings/org', label: 'Settings', icon: Settings },
+    { href: '/app/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { href: '/app/crm/clients', label: 'Clients', icon: Building2 },
+    { href: '/app/sales', label: 'Sales / Opportunities', icon: TrendingUp },
+    { href: '/app/walkthroughs', label: 'Walkthroughs', icon: FileSearch },
+    { href: '/app/inspections', label: 'Inspections', icon: ClipboardCheck },
+    { href: '/app/issues', label: 'Issues', icon: AlertCircle },
+    { href: '/app/crews', label: 'Crews / Workload', icon: Users },
+    { href: '/app/schedules', label: 'Schedule', icon: Calendar },
+    { href: '/app/kpis', label: 'Reports / KPIs', icon: BarChart3 },
+    { href: '/app/settings', label: 'Settings', icon: Settings },
   ];
 
   const handleSignOut = async () => {
@@ -59,7 +59,7 @@ export async function AppSidebarNew() {
       <aside className="hidden lg:flex fixed left-0 top-0 z-40 h-screen w-64 border-r bg-white">
         <div className="flex h-full flex-col">
           <div className="flex h-16 items-center border-b px-6">
-            <Link href="/dashboard" className="flex items-center gap-3">
+            <Link href="/app/dashboard" className="flex items-center gap-3">
               {organization?.logo_url ? (
                 <Image
                   src={organization.logo_url}

@@ -33,12 +33,14 @@ A comprehensive, multi-tenant SaaS for janitorial businesses, featuring AI-power
 
 ### 1. Environment Setup
 
-Create `.env.local`:
+Create `.env.local` (see `.env.local.example` for all options):
 
 ```env
 NEXT_PUBLIC_SUPABASE_URL=your_project_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
 ```
+
+**Production:** Set `NEXT_PUBLIC_APP_URL` to your single canonical URL (e.g. `https://janibear.com`). The app will redirect all traffic (including www vs non-www) to that host so auth and cookies stay consistent. Ensure your hosting/DNS serves both www and non-www to this app so the redirect can run.
 
 ### 2. Database Migrations
 
@@ -62,7 +64,17 @@ npm install
 npm run dev
 ```
 
-Visit `http://localhost:3001`.
+Visit `http://localhost:3001`. Changes here affect only your machine.
+
+### 5. Update janibear.com (deploy to production)
+
+Local (`npm run dev`) and the live site (janibear.com) use the same codebase, but the live site only updates when you deploy:
+
+```bash
+npm run deploy
+```
+
+This script stages all changes, commits (if any), and pushes to `main`. Vercel builds and deploys to https://janibear.com in 1–2 minutes. Use this when you’re ready for your local changes to go live.
 
 ## 📁 Project Structure
 

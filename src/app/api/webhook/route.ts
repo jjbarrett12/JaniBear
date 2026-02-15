@@ -29,23 +29,49 @@ export async function POST(request: NextRequest) {
     switch (event.type) {
       case 'checkout.session.completed': {
         const session = event.data.object as Stripe.Checkout.Session;
-        
-        // Handle successful payment
-        // You can create/update user subscription in Supabase here
-        console.log('Checkout session completed:', session.id);
-        
-        // Example: Update user's subscription status in Supabase
-        // const supabase = await createClient();
-        // await supabase
-        //   .from('subscriptions')
-        //   .upsert({
-        //     user_id: session.metadata?.userId,
-        //     plan_id: session.metadata?.planId,
-        //     stripe_customer_id: session.customer,
-        //     stripe_subscription_id: session.subscription,
-        //     status: 'active',
-        //   });
 
+        if (session.metadata?.type === 'pro_gear_order' && session.metadata?.order_id) {
+          const supabase = await createClient();
+          await supabase
+            .from('pro_gear_orders')
+            .update({
+              status: 'confirmed',
+              payment_type: 'one_time',
+              stripe_checkout_session_id: session.id,
+              updated_at: new Date().toISOString(),
+            })
+            .eq('id', session.metadata.order_id);
+          break;
+        }
+
+        if (
+          session.metadata?.type === 'pro_gear_financing' &&
+          session.metadata?.order_id &&
+          session.subscription
+        ) {
+          const term = parseInt(session.metadata.term ?? '6', 10);
+          const supabase = await createClient();
+          await supabase
+            .from('pro_gear_orders')
+            .update({
+              status: 'confirmed',
+              payment_type: 'financed',
+              financing_months: term,
+              stripe_subscription_id: session.subscription as string,
+              updated_at: new Date().toISOString(),
+            })
+            .eq('id', session.metadata.order_id);
+
+          const endDate = new Date();
+          endDate.setMonth(endDate.getMonth() + term);
+          await stripe.subscriptions.update(session.subscription as string, {
+            cancel_at: Math.floor(endDate.getTime() / 1000),
+          });
+          break;
+        }
+
+        // Legacy: subscription/plan checkout
+        console.log('Checkout session completed:', session.id);
         break;
       }
 

@@ -51,6 +51,7 @@ export function SDSForm({ sdsSheet }: SDSFormProps) {
   const [issueDate, setIssueDate] = useState(sdsSheet.issue_date?.slice(0, 10) ?? '');
   const [expirationDate, setExpirationDate] = useState(sdsSheet.expiration_date?.slice(0, 10) ?? '');
   const [documentUrl, setDocumentUrl] = useState(sdsSheet.document_url ?? '');
+  const [replaceFile, setReplaceFile] = useState<File | null>(null);
   const [storageRequirements, setStorageRequirements] = useState(sdsSheet.storage_requirements ?? '');
   const [disposalRequirements, setDisposalRequirements] = useState(sdsSheet.disposal_requirements ?? '');
   const [emergencyProcedures, setEmergencyProcedures] = useState(sdsSheet.emergency_procedures ?? '');
@@ -66,6 +67,21 @@ export function SDSForm({ sdsSheet }: SDSFormProps) {
     setIsSubmitting(true);
     try {
       const supabase = createClient();
+      let finalDocumentUrl = documentUrl.trim() || sdsSheet.document_url;
+      let finalStoragePath: string | null = sdsSheet.document_storage_path ?? null;
+
+      if (replaceFile) {
+        const ext = replaceFile.name.split('.').pop() || 'pdf';
+        const storagePath = `${sdsSheet.org_id}/sds/${Date.now()}_${productName.slice(0, 40).replace(/[^a-zA-Z0-9-_]/g, '_')}.${ext}`;
+        const { error: uploadError } = await supabase.storage
+          .from('sds-sheets')
+          .upload(storagePath, replaceFile, { upsert: false });
+        if (uploadError) throw uploadError;
+        const { data: { publicUrl } } = supabase.storage.from('sds-sheets').getPublicUrl(storagePath);
+        finalDocumentUrl = publicUrl;
+        finalStoragePath = storagePath;
+      }
+
       const { error } = await supabase
         .from('sds_sheets')
         .update({
@@ -76,7 +92,8 @@ export function SDSForm({ sdsSheet }: SDSFormProps) {
           version: version.trim() || null,
           issue_date: issueDate || null,
           expiration_date: expirationDate || null,
-          document_url: documentUrl.trim() || sdsSheet.document_url,
+          document_url: finalDocumentUrl,
+          document_storage_path: finalStoragePath,
           storage_requirements: storageRequirements.trim() || null,
           disposal_requirements: disposalRequirements.trim() || null,
           emergency_procedures: emergencyProcedures.trim() || null,
@@ -166,10 +183,28 @@ export function SDSForm({ sdsSheet }: SDSFormProps) {
                 type="url"
                 value={documentUrl}
                 onChange={(e) => setDocumentUrl(e.target.value)}
-                placeholder="https://..."
+                placeholder="https://... or upload below"
                 disabled={isSubmitting}
               />
             </div>
+          </div>
+          <div className="space-y-2">
+            <Label>Replace document (optional)</Label>
+            <label className="flex flex-col items-center justify-center w-full min-h-[80px] border-2 border-dashed rounded-lg cursor-pointer hover:bg-muted/50 transition-colors border-muted-foreground/25">
+              <div className="flex flex-col items-center justify-center py-4 px-4">
+                <p className="text-sm text-muted-foreground">
+                  {replaceFile ? replaceFile.name : 'Click to upload a new PDF or document'}
+                </p>
+                <p className="text-xs text-muted-foreground/80 mt-1">PDF, DOC, DOCX</p>
+              </div>
+              <input
+                type="file"
+                className="hidden"
+                accept=".pdf,.doc,.docx"
+                onChange={(e) => setReplaceFile(e.target.files?.[0] ?? null)}
+                disabled={isSubmitting}
+              />
+            </label>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">

@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import {
   LayoutDashboard,
   MapPin,
+  Map,
   FileText,
   Calendar,
   ClipboardCheck,
@@ -28,6 +29,7 @@ import {
   MessageCircle,
   Wallet,
   BarChart3,
+  Wrench,
 } from 'lucide-react';
 
 const salesItems = [
@@ -40,6 +42,7 @@ const salesItems = [
 ];
 
 const operationsItems = [
+  { href: '/app/map', labelKey: 'navMap' as const, icon: Map },
   { href: '/app/locations', labelKey: 'navLocations' as const, icon: MapPin },
   { href: '/app/crews', labelKey: 'navCrewManagement' as const, icon: Users },
   { href: '/app/templates', labelKey: 'navBrandStandards' as const, icon: Award },
@@ -100,6 +103,13 @@ export function AppSidebarNav({ premium }: { premium: boolean }) {
         {premium && (
           <Badge variant="secondary" className="ml-auto text-[10px] px-1.5 py-0 shrink-0">Premium</Badge>
         )}
+      </Link>
+      <Link
+        href="/app/pro-gear"
+        className={navLinkClass(pathname.startsWith('/app/pro-gear'))}
+      >
+        <Wrench className="h-6 w-6 shrink-0" />
+        <span className="truncate">{t('navProGear')}</span>
       </Link>
 
       <div className="space-y-1">

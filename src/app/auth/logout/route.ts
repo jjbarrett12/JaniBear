@@ -3,7 +3,8 @@ import { NextResponse } from 'next/server';
 
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') ?? requestUrl.origin;
+  // Stay on same origin so redirect is consistent (avoids www vs non-www issues)
+  const baseUrl = requestUrl.origin || process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '');
 
   try {
     const supabase = await createClient();

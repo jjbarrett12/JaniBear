@@ -8,8 +8,9 @@ export async function GET(request: NextRequest) {
   const error = requestUrl.searchParams.get('error');
   const errorDescription = requestUrl.searchParams.get('error_description');
 
-  // Use origin for local dev, NEXT_PUBLIC_APP_URL for production
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') || requestUrl.origin;
+  // Always redirect within the same origin so cookies stay valid (avoids www vs non-www strobe/loop).
+  // Only use NEXT_PUBLIC_APP_URL when we have no request origin (e.g. server-only).
+  const baseUrl = requestUrl.origin || process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') || requestUrl.origin;
 
   // Handle OAuth errors
   if (error) {

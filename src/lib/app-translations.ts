@@ -69,10 +69,12 @@ const enApp = {
     navHelpHubQR: 'HelpHubQR',
     navQcTaskAssign: 'QC task assign',
     navAdmin: 'Admin',
+    navMap: 'Map',
     navLocations: 'Locations',
     navMessages: 'Messages',
     navFinancialHealth: 'Financial Health',
     navKpiDashboard: 'KPI Dashboard',
+    navProGear: 'Member Pro Gear',
 
     // Dashboard
     dashboardWelcomeBack: 'Welcome back',
@@ -177,10 +179,12 @@ export const appTranslations = {
     navHelpHubQR: 'HelpHubQR',
     navQcTaskAssign: 'Asignar tareas QC',
     navAdmin: 'Administración',
+    navMap: 'Mapa',
     navLocations: 'Ubicaciones',
     navMessages: 'Mensajes',
     navFinancialHealth: 'Salud financiera',
     navKpiDashboard: 'Panel de KPIs',
+    navProGear: 'Member Pro Gear',
 
     dashboardWelcomeBack: 'Bienvenido de nuevo',
     dashboardHeresWhatsHappening: 'Esto es lo que pasa en tu negocio hoy',

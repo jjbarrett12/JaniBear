@@ -24,12 +24,6 @@ export async function AppSidebar() {
   ]);
   const { data: orgData } = organization ?? { data: null };
   
-  const handleSignOut = async () => {
-    'use server';
-    const supabase = await createClient();
-    await supabase.auth.signOut();
-  };
-
   return (
     <>
       {/* Mobile Sidebar */}
@@ -77,7 +71,7 @@ export async function AppSidebar() {
           
           <AppSidebarNav premium={premium} />
 
-          <AppSidebarFooter userEmail={user?.email} signOutAction={handleSignOut} />
+          <AppSidebarFooter userEmail={user?.email} />
         </div>
       </aside>
     </>

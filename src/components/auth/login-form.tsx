@@ -381,6 +381,12 @@ export function LoginForm() {
             Sign up
           </Link>
         </p>
+        <p className="text-sm text-zinc-500">
+          Stuck or can&apos;t sign in?{' '}
+          <Link href="/auth/logout" className="text-amber-600 hover:text-amber-700 underline">
+            Sign out and try again
+          </Link>
+        </p>
       </div>
     </div>
   );

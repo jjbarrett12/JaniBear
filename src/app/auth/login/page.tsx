@@ -15,8 +15,11 @@ export default async function LoginPage() {
       .select('org_id')
       .eq('user_id', user.id)
       .limit(1)
-      .single();
-    redirect(membership ? '/app/dashboard' : '/onboarding');
+      .maybeSingle();
+    if (membership) {
+      redirect('/auth/set-org-and-continue?next=/app/dashboard');
+    }
+    redirect('/onboarding');
   }
 
   return (

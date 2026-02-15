@@ -1,15 +1,14 @@
 'use client';
 
+import Link from 'next/link';
 import { useLanguage } from '@/contexts/language-context';
 import { getAppT } from '@/lib/app-translations';
 import { Button } from '@/components/ui/button';
 
 export function AppSidebarFooter({
   userEmail,
-  signOutAction,
 }: {
   userEmail?: string | null;
-  signOutAction: () => void;
 }) {
   const { locale } = useLanguage();
   const t = getAppT(locale);
@@ -21,11 +20,9 @@ export function AppSidebarFooter({
           {userEmail}
         </div>
       )}
-      <form action={signOutAction}>
-        <Button type="submit" variant="outline" className="w-full h-12 text-base">
-          {t('signOut')}
-        </Button>
-      </form>
+      <Button asChild variant="outline" className="w-full h-12 text-base">
+        <Link href="/auth/logout">{t('signOut')}</Link>
+      </Button>
     </div>
   );
 }

@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import { 
   LayoutDashboard, 
@@ -74,12 +73,6 @@ export function MobileSidebar({ logoUrl }: MobileSidebarProps) {
   useEffect(() => {
     setIsOpen(false);
   }, [pathname]);
-
-  const handleSignOut = async () => {
-    const supabase = createClient();
-    await supabase.auth.signOut();
-    window.location.href = '/auth/login';
-  };
 
   return (
     <>
@@ -257,12 +250,8 @@ export function MobileSidebar({ logoUrl }: MobileSidebarProps) {
               </nav>
 
               <div className="border-t dark:border-gray-800 p-4">
-                <Button 
-                  onClick={handleSignOut}
-                  variant="outline" 
-                  className="w-full h-12 text-base"
-                >
-                  {t('signOut')}
+                <Button asChild variant="outline" className="w-full h-12 text-base">
+                  <Link href="/auth/logout">{t('signOut')}</Link>
                 </Button>
               </div>
             </div>

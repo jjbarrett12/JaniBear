@@ -26,11 +26,8 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(new URL('/auth/login', baseUrl));
   }
 
-  // We'll determine the final redirect URL after checking membership
-  let finalRedirectUrl = new URL('/app/dashboard', baseUrl);
-  
-  // Create response object - we'll set the URL later
-  const response = NextResponse.redirect(finalRedirectUrl);
+  // Redirect to landing so one place sets org cookie and sends to dashboard or onboarding
+  const response = NextResponse.redirect(new URL('/api/auth/landing', baseUrl));
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -58,47 +55,5 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  // After successful exchange, check if user needs onboarding
-  const { data: { user } } = await supabase.auth.getUser();
-  
-  if (user) {
-    // Check if user has an org membership
-    const { data: membership } = await supabase
-      .from('org_members')
-      .select('org_id')
-      .eq('user_id', user.id)
-      .limit(1)
-      .maybeSingle();
-
-    if (!membership?.org_id) {
-      // User needs onboarding - but we already have cookies set on response
-      // Create new redirect with same cookies
-      const onboardingUrl = new URL('/onboarding', baseUrl);
-      const onboardingResponse = NextResponse.redirect(onboardingUrl);
-      
-      // Copy all cookies from original response
-      response.cookies.getAll().forEach(cookie => {
-        onboardingResponse.cookies.set(cookie.name, cookie.value, {
-          path: '/',
-          httpOnly: true,
-          secure: baseUrl.startsWith('https'),
-          sameSite: 'lax',
-        });
-      });
-      
-      return onboardingResponse;
-    }
-
-    // Set active_org_id so first /app load has stable org (stops onboarding ↔ dashboard jitter)
-    response.cookies.set('active_org_id', membership.org_id, {
-      path: '/',
-      httpOnly: true,
-      secure: baseUrl.startsWith('https'),
-      sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 365,
-    });
-  }
-
-  // User has membership, go to dashboard
   return response;
 }

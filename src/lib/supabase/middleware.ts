@@ -82,6 +82,28 @@ export async function updateSession(request: NextRequest) {
       return NextResponse.redirect(url);
     }
 
+    // Set active_org_id if missing when entering /app (stops redirect loops; one less hop)
+    if (user && pathname.startsWith('/app/')) {
+      const hasOrgCookie = request.cookies.get('active_org_id')?.value;
+      if (!hasOrgCookie) {
+        const { data: membership } = await supabase
+          .from('org_members')
+          .select('org_id')
+          .eq('user_id', user.id)
+          .limit(1)
+          .maybeSingle();
+        if (membership?.org_id) {
+          supabaseResponse.cookies.set('active_org_id', membership.org_id, {
+            path: '/',
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            maxAge: 60 * 60 * 24 * 365,
+          });
+        }
+      }
+    }
+
     return supabaseResponse;
   } catch {
     return supabaseResponse;

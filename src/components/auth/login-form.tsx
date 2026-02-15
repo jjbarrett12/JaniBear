@@ -175,7 +175,6 @@ export function LoginForm() {
       }
 
       if (data.user) {
-        // Save remember me preference
         if (rememberMe && typeof window !== 'undefined') {
           localStorage.setItem('janibear_saved_email', email);
           localStorage.setItem('janibear_remember_me', 'true');
@@ -183,9 +182,8 @@ export function LoginForm() {
           localStorage.removeItem('janibear_saved_email');
           localStorage.removeItem('janibear_remember_me');
         }
-
-        // Let the server decide dashboard vs onboarding and set org cookie (avoids client RLS/timing issues)
-        window.location.href = '/auth/set-org-and-continue?next=/app/dashboard';
+        // One server hop: landing sets org cookie and redirects (cookie + redirect in same response)
+        window.location.href = '/api/auth/landing';
         return;
       }
     } catch (err) {

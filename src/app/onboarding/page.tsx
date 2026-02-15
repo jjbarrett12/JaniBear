@@ -7,27 +7,37 @@ import { BrandName } from '@/components/ui/brand-name';
 
 export default async function OnboardingPage() {
   const supabase = await createClient();
-  
-  // Use getUser() for proper session validation
-  const { data: { user } } = await supabase.auth.getUser();
-  
+  const { data: { session } } = await supabase.auth.getSession();
+  const user = session?.user ?? (await supabase.auth.getUser()).data.user;
+
   if (!user) {
-    redirect('/auth/login');
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center px-4 bg-gradient-to-br from-gray-50 to-gray-100">
+        <div className="text-center space-y-4 max-w-sm">
+          <h1 className="text-xl font-semibold text-gray-900">Sign in to continue</h1>
+          <p className="text-gray-600 text-sm">Your session may have expired. Sign in to create your organization.</p>
+          <Link
+            href="/auth/login"
+            className="inline-flex items-center justify-center rounded-lg bg-amber-600 px-4 py-2 text-sm font-medium text-white hover:bg-amber-700"
+          >
+            Sign in
+          </Link>
+        </div>
+      </div>
+    );
   }
-  
-  // Check if user already has an org
+
   const { data: membership } = await supabase
     .from('org_members')
     .select('org_id')
     .eq('user_id', user.id)
     .limit(1)
     .maybeSingle();
-  
+
   if (membership) {
-    // Set active_org_id cookie then go to dashboard (avoids jitter)
-    redirect('/auth/set-org-and-continue?next=/app/dashboard');
+    redirect('/app/dashboard');
   }
-  
+
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-50 to-gray-100">
       <div className="flex justify-end px-4 py-3 border-b border-gray-200 bg-white/80">

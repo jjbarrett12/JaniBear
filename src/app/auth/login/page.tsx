@@ -10,16 +10,7 @@ export default async function LoginPage() {
   const { data: { session } } = await supabase.auth.getSession();
   const user = session?.user ?? (await supabase.auth.getUser()).data.user;
   if (user) {
-    const { data: membership } = await supabase
-      .from('org_members')
-      .select('org_id')
-      .eq('user_id', user.id)
-      .limit(1)
-      .maybeSingle();
-    if (membership) {
-      redirect('/auth/set-org-and-continue?next=/app/dashboard');
-    }
-    redirect('/onboarding');
+    redirect('/api/auth/landing');
   }
 
   return (

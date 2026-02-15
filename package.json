@@ -12,6 +12,7 @@
     "build": "next build",
     "start": "next start -p 3001",
     "deploy": "node scripts/deploy-to-live.js",
+    "delpoy": "npm run deploy",
     "lint": "next lint",
     "generate-icons": "node scripts/create-icons.js",
     "test:imports": "node scripts/test-imports.js"

@@ -1,10 +1,6 @@
 import { createClient } from './supabase/server';
 import { redirect } from 'next/navigation';
-import { cookies } from 'next/headers';
 import { getActiveOrgIdFromCookie } from './user-context';
-
-const ACTIVE_ORG_COOKIE = 'active_org_id';
-const COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
 
 export async function getCurrentUser() {
   const supabase = await createClient();
@@ -82,14 +78,6 @@ export async function requireOrg() {
       .limit(1)
       .maybeSingle();
     if (firstMembership) {
-      const cookieStore = await cookies();
-      cookieStore.set(ACTIVE_ORG_COOKIE, firstMembership.org_id, {
-        path: '/',
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        maxAge: COOKIE_MAX_AGE,
-      });
       org = firstMembership;
     }
   }

@@ -1,7 +1,6 @@
 'use client';
 
-import { useState, useEffect, useFormState } from 'react';
-import { useFormStatus } from 'react-dom';
+import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
@@ -9,21 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
-import { signInWithPasswordAction, type SignInState } from '@/app/auth/login/actions';
-
-function SignInSubmitButton() {
-  const { pending } = useFormStatus();
-  return (
-    <Button
-      type="submit"
-      className="w-full h-12 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-semibold text-[15px] shadow-sm"
-      disabled={pending}
-    >
-      {pending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-      Sign in
-    </Button>
-  );
-}
+import { signInWithPasswordAction } from '@/app/auth/login/actions';
 
 function GoogleIcon({ className }: { className?: string }) {
   return (
@@ -48,8 +33,6 @@ type LoginFormProps = { defaultEmail?: string };
 
 export function LoginForm({ defaultEmail = '' }: LoginFormProps) {
   const searchParams = useSearchParams();
-  const [state, formAction] = useFormState(signInWithPasswordAction, null);
-
   const [email, setEmail] = useState(defaultEmail);
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -59,6 +42,8 @@ export function LoginForm({ defaultEmail = '' }: LoginFormProps) {
   const [rememberMe, setRememberMe] = useState(!!defaultEmail);
   const [oauthLoading, setOauthLoading] = useState<'google' | 'facebook' | null>(null);
   const [magicLinkLoading, setMagicLinkLoading] = useState(false);
+  const [submitError, setSubmitError] = useState<{ error: string; code?: string } | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const urlError =
     searchParams.get('error') === 'session'
@@ -66,8 +51,8 @@ export function LoginForm({ defaultEmail = '' }: LoginFormProps) {
       : searchParams.get('error') === 'oauth'
         ? searchParams.get('message') || 'OAuth sign in failed. Please try again.'
         : null;
-  const error = state?.error ?? urlError;
-  const errorCode = state?.code ?? null;
+  const error = submitError?.error ?? urlError;
+  const errorCode = submitError?.code ?? null;
 
   const handleOAuthSignIn = async (provider: 'google' | 'facebook') => {
     setOauthLoading(provider);
@@ -97,6 +82,26 @@ export function LoginForm({ defaultEmail = '' }: LoginFormProps) {
       setRememberMe(true);
     }
   }, [defaultEmail]);
+
+  const handlePasswordSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setSubmitError(null);
+    setIsSubmitting(true);
+    const formData = new FormData();
+    formData.set('email', email);
+    formData.set('password', password);
+    formData.set('remember_me', rememberMe ? '1' : '0');
+    try {
+      const result = await signInWithPasswordAction(null, formData);
+      if (result?.error) {
+        setSubmitError({ error: result.error, code: result.code ?? undefined });
+      }
+    } catch {
+      setSubmitError({ error: 'An unexpected error occurred. Please try again.' });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const handleMagicLinkSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -200,11 +205,7 @@ export function LoginForm({ defaultEmail = '' }: LoginFormProps) {
           </Button>
         </form>
       ) : (
-        <form action={formAction} className="space-y-4">
-          <input type="hidden" name="email" value={email} readOnly />
-          <input type="hidden" name="password" value={password} readOnly />
-          <input type="hidden" name="remember_me" value={rememberMe ? '1' : '0'} readOnly />
-
+        <form onSubmit={handlePasswordSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="login-email" className="text-sm font-medium text-zinc-700">Email</Label>
             <Input
@@ -214,7 +215,7 @@ export function LoginForm({ defaultEmail = '' }: LoginFormProps) {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              disabled={false}
+              disabled={isSubmitting}
               autoComplete="email"
               className="h-12 rounded-xl border-zinc-200 bg-zinc-50/50 focus:bg-white placeholder:text-zinc-400"
             />
@@ -229,7 +230,7 @@ export function LoginForm({ defaultEmail = '' }: LoginFormProps) {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                disabled={false}
+                disabled={isSubmitting}
                 autoComplete="current-password"
                 className="h-12 rounded-xl border-zinc-200 bg-zinc-50/50 focus:bg-white pr-12"
               />
@@ -250,7 +251,7 @@ export function LoginForm({ defaultEmail = '' }: LoginFormProps) {
                 type="checkbox"
                 checked={rememberMe}
                 onChange={(e) => setRememberMe(e.target.checked)}
-                disabled={false}
+                disabled={isSubmitting}
                 className="w-4 h-4 rounded border-zinc-300 text-amber-500 focus:ring-2 focus:ring-amber-500/20"
               />
               <span className="text-sm font-medium text-zinc-600">Remember me</span>
@@ -283,7 +284,14 @@ export function LoginForm({ defaultEmail = '' }: LoginFormProps) {
             </div>
           )}
 
-          <SignInSubmitButton />
+          <Button
+            type="submit"
+            className="w-full h-12 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-semibold text-[15px] shadow-sm"
+            disabled={isSubmitting || !!oauthLoading}
+          >
+            {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+            Sign in
+          </Button>
         </form>
       )}
 

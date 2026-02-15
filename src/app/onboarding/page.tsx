@@ -24,7 +24,8 @@ export default async function OnboardingPage() {
     .maybeSingle();
   
   if (membership) {
-    redirect('/app/dashboard');
+    // Set active_org_id cookie then go to dashboard (avoids jitter)
+    redirect('/auth/set-org-and-continue?next=/app/dashboard');
   }
   
   return (

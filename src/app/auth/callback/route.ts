@@ -88,6 +88,15 @@ export async function GET(request: NextRequest) {
       
       return onboardingResponse;
     }
+
+    // Set active_org_id so first /app load has stable org (stops onboarding ↔ dashboard jitter)
+    response.cookies.set('active_org_id', membership.org_id, {
+      path: '/',
+      httpOnly: true,
+      secure: baseUrl.startsWith('https'),
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 365,
+    });
   }
 
   // User has membership, go to dashboard

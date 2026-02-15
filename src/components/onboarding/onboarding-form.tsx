@@ -164,8 +164,8 @@ export function OnboardingForm() {
         throw new Error(`Membership: ${memberError.message}`);
       }
 
-      // Full-page redirect so server sees new membership
-      window.location.href = '/app/dashboard';
+      // Set active_org_id cookie then go to dashboard (avoids onboarding ↔ dashboard jitter)
+      window.location.href = '/auth/set-org-and-continue?next=/app/dashboard';
       return;
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Failed to create organization';

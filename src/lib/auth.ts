@@ -4,20 +4,13 @@ import { getActiveOrgIdFromCookie } from './user-context';
 
 export async function getCurrentUser() {
   const supabase = await createClient();
-  
-  // Try getSession first (reads from cookies, faster)
-  const { data: { session } } = await supabase.auth.getSession();
-  if (session?.user) {
-    return session.user;
-  }
-  
-  // Fallback to getUser (makes API call to validate)
+  // Use getUser() only: validates session with Supabase (same as middleware).
+  // getSession() can be stale or empty when middleware refreshed the session but
+  // the response wasn't updated, causing redirect loops.
   const { data: { user }, error } = await supabase.auth.getUser();
-  
   if (error || !user) {
     return null;
   }
-  
   return user;
 }
 
@@ -88,7 +81,7 @@ export async function requireOrg() {
     }
   }
   if (!org) {
-    redirect('/onboarding');
+    redirect('/api/auth/landing');
   }
   return org;
 }

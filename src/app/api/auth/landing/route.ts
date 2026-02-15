@@ -6,8 +6,8 @@ const COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
 
 /**
  * GET /api/auth/landing
- * Post-login: set active_org_id cookie when user has an org, always redirect to /app/dashboard.
- * New users with no org hit the dashboard and are then sent to /onboarding by the app layout.
+ * Post-login (or when app layout has no org): set active_org_id if user has membership, then redirect.
+ * Only place that sends to /onboarding is when user has zero memberships (new user).
  */
 export async function GET(request: NextRequest) {
   const supabase = await createClient();
@@ -24,16 +24,17 @@ export async function GET(request: NextRequest) {
     .limit(1)
     .maybeSingle();
 
-  const res = NextResponse.redirect(new URL('/app/dashboard', request.url));
-
-  if (membership?.org_id) {
-    res.cookies.set(ACTIVE_ORG_COOKIE, membership.org_id, {
-      path: '/',
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: COOKIE_MAX_AGE,
-    });
+  if (!membership?.org_id) {
+    return NextResponse.redirect(new URL('/onboarding', request.url));
   }
+
+  const res = NextResponse.redirect(new URL('/app/dashboard', request.url));
+  res.cookies.set(ACTIVE_ORG_COOKIE, membership.org_id, {
+    path: '/',
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    maxAge: COOKIE_MAX_AGE,
+  });
   return res;
 }

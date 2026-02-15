@@ -7,8 +7,7 @@ import { BrandName } from '@/components/ui/brand-name';
 
 export default async function OnboardingPage() {
   const supabase = await createClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? (await supabase.auth.getUser()).data.user;
+  const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
     return (

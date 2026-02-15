@@ -20,11 +20,7 @@ export default async function AuthContinuePage({
   const next = getValidNext(params.next);
 
   const supabase = await createClient();
-  // Prefer getSession (cookie-based, no network) so redirect works immediately after login
-  const { data: { session } } = await supabase.auth.getSession();
-  if (session?.user) {
-    redirect(next);
-  }
+  // Validate session so redirect works when cookies are present (e.g. after password login)
   const { data: { user } } = await supabase.auth.getUser();
   if (user) {
     redirect(next);

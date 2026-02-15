@@ -182,8 +182,10 @@ export function LoginForm() {
           localStorage.removeItem('janibear_saved_email');
           localStorage.removeItem('janibear_remember_me');
         }
-        // One server hop: landing sets org cookie and redirects (cookie + redirect in same response)
-        window.location.href = '/api/auth/landing';
+        // Same-page fetch sends auth cookies; server sets org cookie on response, then we go to app
+        const r = await fetch('/api/auth/after-login', { method: 'POST', credentials: 'include' });
+        const { redirect: redirectTo } = await r.json();
+        window.location.href = redirectTo || '/app/dashboard';
         return;
       }
     } catch (err) {

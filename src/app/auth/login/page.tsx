@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation';
 import Image from 'next/image';
+import { cookies } from 'next/headers';
 import { createClient } from '@/lib/supabase/server';
 import { LoginForm } from '@/components/auth/login-form';
 
@@ -7,11 +8,13 @@ export const metadata = { title: 'Sign in | JANIBEAR' };
 
 export default async function LoginPage() {
   const supabase = await createClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? (await supabase.auth.getUser()).data.user;
+  const { data: { user } } = await supabase.auth.getUser();
   if (user) {
     redirect('/app/dashboard');
   }
+
+  const cookieStore = await cookies();
+  const defaultEmail = cookieStore.get('janibear_remember_email')?.value ?? undefined;
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-10 sm:py-12 relative overflow-hidden">
@@ -43,7 +46,7 @@ export default async function LoginPage() {
           <h1 className="text-2xl font-bold text-zinc-900 dark:text-white mt-4 mb-1">Welcome back</h1>
           <p className="text-zinc-500 dark:text-zinc-400 text-sm">Sign in to your account to continue</p>
         </div>
-        <LoginForm />
+        <LoginForm defaultEmail={defaultEmail} />
       </div>
     </div>
   );

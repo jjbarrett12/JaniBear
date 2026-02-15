@@ -27,7 +27,9 @@ export async function GET(request: NextRequest) {
     .limit(1)
     .maybeSingle();
 
-  const res = NextResponse.redirect(new URL(target, request.url));
+  // No org → send to onboarding; otherwise set cookie and send to requested target
+  const finalTarget = membership?.org_id ? target : '/onboarding';
+  const res = NextResponse.redirect(new URL(finalTarget, request.url));
   if (membership?.org_id) {
     res.cookies.set(ACTIVE_ORG_COOKIE, membership.org_id, {
       path: '/',

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -30,7 +30,6 @@ function FacebookIcon({ className }: { className?: string }) {
 
 export function LoginForm() {
   const searchParams = useSearchParams();
-  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -185,26 +184,8 @@ export function LoginForm() {
           localStorage.removeItem('janibear_remember_me');
         }
 
-        // Check if user has org membership
-        let targetPath = '/onboarding';
-        try {
-          const { data: membership } = await supabase
-            .from('org_members')
-            .select('org_id')
-            .eq('user_id', data.user.id)
-            .limit(1)
-            .maybeSingle();
-          
-          if (membership?.org_id) {
-            targetPath = '/app/dashboard';
-          }
-        } catch {
-          // Default to onboarding if check fails
-        }
-
-        // Use router.push for client-side navigation which preserves cookies
-        router.push(targetPath);
-        router.refresh();
+        // Let the server decide dashboard vs onboarding and set org cookie (avoids client RLS/timing issues)
+        window.location.href = '/auth/set-org-and-continue?next=/app/dashboard';
         return;
       }
     } catch (err) {

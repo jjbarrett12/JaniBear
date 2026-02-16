@@ -23,27 +23,39 @@ export function NotificationBell() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
 
+  const loadNotifications = async () => {
+    setError(null);
+    setLoading(true);
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      setLoading(false);
+      return;
+    }
+
+    const { data, error: queryError } = await supabase
+      .from('notifications')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false })
+      .limit(10);
+
+    setLoading(false);
+    if (queryError) {
+      setError(queryError.message);
+      return;
+    }
+    if (data) {
+      setNotifications(data);
+      setUnreadCount(data.filter((n) => !n.read).length);
+    }
+  };
+
   useEffect(() => {
-    const loadNotifications = async () => {
-      const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      const { data } = await supabase
-        .from('notifications')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
-        .limit(10);
-
-      if (data) {
-        setNotifications(data);
-        setUnreadCount(data.filter((n) => !n.read).length);
-      }
-    };
-
     loadNotifications();
 
     // Set up real-time subscription
@@ -58,7 +70,7 @@ export function NotificationBell() {
           table: 'notifications',
         },
         () => {
-          loadNotifications();
+          void loadNotifications();
         }
       )
       .subscribe();
@@ -116,10 +128,10 @@ export function NotificationBell() {
       </Button>
 
       {isOpen && (
-        <Card className="absolute top-full right-0 mt-2 w-96 z-50 shadow-xl border-2 max-h-[500px] flex flex-col">
-          <CardHeader className="flex flex-row items-center justify-between pb-3 border-b">
-            <CardTitle className="text-lg">Notifications</CardTitle>
-            <div className="flex gap-2">
+        <Card className="absolute top-full right-0 mt-2 w-96 z-50 shadow-xl border-2 max-h-[500px] flex flex-col min-w-0">
+          <CardHeader className="flex flex-row items-center justify-between gap-2 pb-3 border-b shrink-0">
+            <CardTitle className="text-lg shrink-0 whitespace-nowrap">Notifications</CardTitle>
+            <div className="flex gap-2 shrink-0">
               {unreadCount > 0 && (
                 <Button
                   variant="ghost"
@@ -139,11 +151,23 @@ export function NotificationBell() {
               </Button>
             </div>
           </CardHeader>
-          <CardContent className="flex-1 overflow-y-auto p-0">
-            {notifications.length === 0 ? (
-              <div className="p-6 text-center text-gray-500">
-                <Bell className="h-12 w-12 mx-auto mb-2 text-gray-300" />
-                <p>No notifications</p>
+          <CardContent className="flex-1 overflow-y-auto p-0 min-h-0">
+            {loading ? (
+              <div className="p-6 text-center text-muted-foreground">
+                <div className="h-8 w-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+                <p className="text-sm">Loading…</p>
+              </div>
+            ) : error ? (
+              <div className="p-6 text-center text-muted-foreground">
+                <p className="text-sm mb-2">Couldn&apos;t load notifications</p>
+                <Button variant="outline" size="sm" onClick={() => void loadNotifications()}>
+                  Try again
+                </Button>
+              </div>
+            ) : notifications.length === 0 ? (
+              <div className="p-6 text-center text-muted-foreground">
+                <Bell className="h-12 w-12 mx-auto mb-2 text-muted-foreground/50" />
+                <p className="text-sm">No notifications yet</p>
               </div>
             ) : (
               <div className="divide-y">

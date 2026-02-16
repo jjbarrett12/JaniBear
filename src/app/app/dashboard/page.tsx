@@ -12,33 +12,38 @@ import { getOperatorDashboardData } from '@/lib/dashboard-data';
 import { Award } from 'lucide-react';
 
 /**
- * Dashboard: render correct content in one response to avoid redirect reload.
- * Only redirect when necessary (no org → landing; franchisor → /franchisor).
+ * Dashboard: layout already ran requireOrg(), so we have an org. Only redirect franchisors to /franchisor.
+ * Do not redirect to /api/auth/landing here — that can cause a redirect loop when the cookie isn't set yet.
  */
 export default async function DashboardPage(props: {
   searchParams?: Promise<{ demo?: string }> | { demo?: string };
 }) {
+  const org = await requireOrg();
   const { context } = await getUserContext();
-  if (!context.activeOrgId) redirect('/api/auth/landing');
 
   if (isFranchisor(context)) {
     redirect('/franchisor');
   }
-
-  const org = await requireOrg();
   const searchParams =
     typeof props.searchParams === 'object' && props.searchParams !== null && 'then' in props.searchParams
       ? await props.searchParams
       : (props.searchParams ?? {});
   const explicitDemo = (searchParams as { demo?: string })?.demo === '1';
   const data = await getOperatorDashboardData(org.org_id, { demo: explicitDemo });
+  const safeData = {
+    userName: data.userName,
+    stats: data.stats,
+    chartData: data.chartData,
+    schedules: data.schedules,
+    activities: data.activities,
+  };
 
   const isFranchisee = context.orgType === 'franchisee';
 
   return (
     <div className="space-y-6 pb-8">
       <DashboardHeader
-        userName={data.userName}
+        userName={safeData.userName}
         subtitle={
           isFranchisee
             ? "Here's what's happening at your franchise location."
@@ -59,17 +64,17 @@ export default async function DashboardPage(props: {
           </Link>
         </div>
       )}
-      <StatsCards stats={data.stats} />
+      <StatsCards stats={safeData.stats} />
       <QuickActions />
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2 space-y-6">
-          <InspectionChart data={data.chartData} />
+          <InspectionChart data={safeData.chartData} />
           <div className="grid gap-6 md:grid-cols-2">
-            <TodaysSchedule items={data.schedules} />
+            <TodaysSchedule items={safeData.schedules} />
           </div>
         </div>
         <div className="lg:col-span-1">
-          <RecentActivity activities={data.activities} />
+          <RecentActivity activities={safeData.activities} />
         </div>
       </div>
     </div>

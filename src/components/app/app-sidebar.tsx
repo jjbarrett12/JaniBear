@@ -32,15 +32,15 @@ export async function AppSidebar() {
       {/* Desktop Sidebar - w-56 so it doesn't overlap main content */}
       <aside className="hidden lg:flex fixed left-0 top-0 z-40 h-screen w-56 shrink-0 overflow-hidden border-r border-border bg-card">
         <div className="flex h-full min-w-0 flex-1 flex-col">
-          <div className="flex h-20 shrink-0 items-center border-b border-border px-3">
-            <Link href="/app/dashboard" className="flex w-full min-w-0 items-center justify-start bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block [&>span]:!relative [&>span]:w-full [&>span]:h-full">
+          <div className="flex min-h-[5.5rem] shrink-0 items-center justify-center border-b border-border px-2 py-3 bg-amber-50/90 dark:bg-amber-950/30">
+            <Link href="/app/dashboard" className="flex w-full min-w-0 min-h-[4rem] items-center justify-center bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block [&>span]:!relative [&>span]:w-full [&>span]:h-full">
               {orgData?.logo_url ? (
                 <Image
                   src={orgData.logo_url}
                   alt="Company Logo"
                   width={216}
-                  height={72}
-                  className="h-full w-full max-h-16 object-contain object-left bg-transparent"
+                  height={80}
+                  className="h-full w-full min-h-[3.5rem] object-contain object-center bg-transparent"
                   priority
                   unoptimized
                 />
@@ -49,8 +49,8 @@ export async function AppSidebar() {
                   src="/logo.png"
                   alt="JANIBEAR Logo"
                   width={216}
-                  height={72}
-                  className="h-full w-full max-h-16 object-contain object-left bg-transparent [&>img]:bg-transparent"
+                  height={80}
+                  className="h-full w-full min-h-[3.5rem] object-contain object-center bg-transparent [&>img]:bg-transparent"
                   priority
                   unoptimized
                 />

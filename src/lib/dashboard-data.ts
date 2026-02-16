@@ -75,6 +75,7 @@ export async function getOperatorDashboardData(
   const supabase = await createClient();
   const user = await getCurrentUser();
 
+  try {
   const [
     inspectionsResult,
     issuesResult,
@@ -167,4 +168,14 @@ export async function getOperatorDashboardData(
     activities: useSampleData ? DEMO_ACTIVITIES : activities,
     userName,
   };
+  } catch (err) {
+    console.error('getOperatorDashboardData failed:', err);
+    return {
+      stats: DEMO_STATS,
+      chartData: DEMO_CHART_DATA,
+      schedules: DEMO_SCHEDULE,
+      activities: DEMO_ACTIVITIES,
+      userName: user?.user_metadata?.full_name?.split(' ')[0] || 'there',
+    };
+  }
 }

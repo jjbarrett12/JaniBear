@@ -124,15 +124,15 @@ export function MobileSidebar({ logoUrl }: MobileSidebarProps) {
           />
           <aside className="fixed top-0 left-0 z-50 h-full w-80 bg-white dark:bg-gray-900 shadow-xl lg:hidden transform transition-transform duration-300">
             <div className="flex h-full flex-col">
-              <div className="flex h-20 items-center justify-between border-b dark:border-gray-800 px-4">
-                <Link href="/app/dashboard" className="flex items-center gap-3 bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block">
+              <div className="flex min-h-20 items-center justify-between border-b dark:border-gray-800 px-4 py-3 bg-amber-50/90 dark:bg-amber-950/30">
+                <Link href="/app/dashboard" className="flex min-h-[3.5rem] w-full items-center bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block [&>span]:!relative [&>span]:w-full [&>span]:h-full">
                   {logoUrl ? (
                     <Image
                       src={logoUrl}
                       alt="Company Logo"
                       width={200}
                       height={70}
-                      className="h-16 w-auto object-contain bg-transparent"
+                      className="h-full w-full min-h-[3rem] object-contain object-left bg-transparent"
                       priority
                       unoptimized
                     />
@@ -142,7 +142,7 @@ export function MobileSidebar({ logoUrl }: MobileSidebarProps) {
                       alt="JANIBEAR Logo"
                       width={220}
                       height={80}
-                      className="h-16 w-auto object-contain bg-transparent [&>img]:bg-transparent"
+                      className="h-full w-full min-h-[3rem] object-contain object-left bg-transparent [&>img]:bg-transparent"
                       priority
                       unoptimized
                     />

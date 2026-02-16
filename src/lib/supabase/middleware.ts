@@ -68,6 +68,14 @@ export async function updateSession(request: NextRequest) {
 
     const pathname = request.nextUrl.pathname;
 
+    // Prefetch requests (next/link) may not have cookies; don't redirect or we get reload loops
+    const isPrefetch =
+      request.headers.get('Next-Router-Prefetch') === '1' ||
+      request.headers.get('purpose') === 'prefetch';
+    if (isPrefetch) {
+      return supabaseResponse;
+    }
+
     const appRedirect = redirectToApp(pathname);
     if (appRedirect) {
       const url = request.nextUrl.clone();

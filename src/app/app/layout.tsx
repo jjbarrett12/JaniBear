@@ -14,15 +14,15 @@ export default async function AppLayout({
   const org = await requireOrg();
   const supabase = await createClient();
 
-  // Get organization branding
+  // Get organization branding (maybeSingle so layout never throws if RLS/row missing)
   const { data: organization } = await supabase
     .from('organizations')
     .select('primary_color, secondary_color, logo_url, custom_branding')
     .eq('id', org.org_id)
-    .single();
+    .maybeSingle();
 
   return (
-    <ThemeProvider orgId={org.org_id} initialTheme={organization || undefined}>
+    <ThemeProvider orgId={org.org_id} initialTheme={organization ?? undefined}>
       <ThemeApplier />
       <div className="min-h-screen bg-background">
         <AppSidebar />

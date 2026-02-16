@@ -19,10 +19,10 @@ export async function AppSidebar() {
   
   // Get organization branding and premium status for University
   const [organization, premium] = await Promise.all([
-    supabase.from('organizations').select('logo_url').eq('id', org.org_id).single(),
+    supabase.from('organizations').select('logo_url').eq('id', org.org_id).maybeSingle(),
     isPremiumPlan(org.org_id),
   ]);
-  const { data: orgData } = organization ?? { data: null };
+  const orgData = organization?.data ?? null;
   
   return (
     <>

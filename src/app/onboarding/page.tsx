@@ -34,7 +34,7 @@ export default async function OnboardingPage() {
     .maybeSingle();
 
   if (membership) {
-    redirect('/app/dashboard');
+    redirect('/auth/set-org-and-continue?next=/app/dashboard');
   }
 
   return (

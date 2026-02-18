@@ -29,10 +29,11 @@ import {
   MessageCircle,
   Wallet,
   BarChart3,
-  Wrench,
+  ShoppingBag,
 } from 'lucide-react';
 
 const salesItems = [
+  { href: '/app/sales-dashboard', labelKey: 'navCommandCenter' as const, icon: BarChart3 },
   { href: '/app/sales', labelKey: 'navLeads' as const, icon: TrendingUp },
   { href: '/app/walkthroughs', labelKey: 'navSalesAppointment' as const, icon: FileSearch },
   { href: '/app/bids', labelKey: 'navProposalBuilding' as const, icon: Calculator },
@@ -108,7 +109,7 @@ export function AppSidebarNav({ premium }: { premium: boolean }) {
         href="/app/pro-gear"
         className={navLinkClass(pathname.startsWith('/app/pro-gear'))}
       >
-        <Wrench className="h-6 w-6 shrink-0" />
+        <ShoppingBag className="h-6 w-6 shrink-0" />
         <span className="truncate">{t('navProGear')}</span>
       </Link>
 

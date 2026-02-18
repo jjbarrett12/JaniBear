@@ -90,7 +90,7 @@ export default function DemoPage() {
         <div className="max-w-xl mx-auto">
           <div className="text-center mb-10">
             <h1 className="text-3xl md:text-4xl font-bold text-white mb-2 tracking-tight">
-              Book a demo or get early access
+              Book a 15-Min Demo or get early access
             </h1>
             <p className="text-zinc-400">
               Tell us a bit about you. Bring your pricing sheet—we&apos;ll configure it.

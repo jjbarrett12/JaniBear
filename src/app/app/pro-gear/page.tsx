@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import Link from 'next/link';
 import { Card } from '@/components/ui/card';
-import { Package, Wrench, ChevronRight } from 'lucide-react';
+import { Package, Store, ChevronRight } from 'lucide-react';
 import { ProductCard } from '@/components/pro-gear/product-card';
 import type { ProGearProduct } from '@/types/pro-gear';
 
@@ -51,7 +51,7 @@ export default async function ProGearHomePage() {
             <Card className="overflow-hidden transition-colors hover:bg-muted/50">
               <div className="flex items-center gap-4 p-6">
                 <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-                  <Wrench className="h-10 w-10 text-primary" />
+                  <Store className="h-10 w-10 text-primary" />
                 </div>
                 <div>
                   <h3 className="font-semibold">Equipment</h3>

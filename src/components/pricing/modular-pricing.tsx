@@ -642,16 +642,23 @@ export function ModularPricing({ businessModel, dark = true }: ModularPricingPro
         </div>
       </div>
 
-      {/* One-line platform context + which model's pricing is shown */}
-      <div className="mb-10 space-y-1">
-        {modelLabel && (
-          <p className="text-xs font-medium text-amber-400/90">
-            Pricing for: {modelLabel}
-          </p>
-        )}
-        <p className="text-zinc-500 text-sm max-w-xl">
+      {/* Clear context: which business model drives Cub / Grizzly / Kodiak differences */}
+      <div className="mb-10 p-4 rounded-xl bg-zinc-800/50 border border-zinc-700/80 max-w-2xl">
+        <p className="text-sm font-semibold text-white mb-1">
+          {modelLabel ? (
+            <>Plans for <span className="text-amber-400">{modelLabel}</span></>
+          ) : (
+            <>Choose your business model above to see the right plans</>
+          )}
+        </p>
+        <p className="text-zinc-400 text-sm">
           {currentPlatform.label}: {currentPlatform.description}
         </p>
+        {modelLabel && (
+          <p className="text-xs text-zinc-500 mt-2">
+            Cub, Grizzly, and Kodiak vary by model—limits and features are tailored to how you operate.
+          </p>
+        )}
       </div>
 
       {/* Pricing tiers + HelpHubQR */}
@@ -687,66 +694,74 @@ export function ModularPricing({ businessModel, dark = true }: ModularPricingPro
               <span className="text-xs text-zinc-500">Save 2 months when you pay annually</span>
             )}
           </div>
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-3 gap-8">
             {tiers.map((tier) => (
               <Card
                 key={`${platform}-${tier.id}`}
                 className={
                   dark
-                    ? `relative bg-zinc-900/50 border-zinc-800/80 hover:border-zinc-700 flex flex-col ${tier.popular ? 'border-amber-500/30' : ''}`
-                    : `relative flex flex-col ${tier.popular ? 'border-primary/50' : ''}`
+                    ? `relative bg-zinc-900/60 border-2 flex flex-col overflow-hidden ${tier.popular ? 'border-amber-500/50 shadow-lg shadow-amber-500/5' : 'border-zinc-800 hover:border-zinc-700'}`
+                    : `relative flex flex-col ${tier.popular ? 'border-2 border-primary/50 shadow-lg' : ''}`
                 }
               >
-                <CardHeader className="pb-3">
-                  <div className="flex items-center gap-2">
-                    <CardTitle className={dark ? 'text-lg text-white' : 'text-lg'}>{tier.name}</CardTitle>
+                {tier.popular && (
+                  <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 to-amber-400" />
+                )}
+                <CardHeader className="pb-4 pt-6 px-6">
+                  <div className="flex items-center justify-between gap-2">
+                    <CardTitle className={dark ? 'text-xl text-white' : 'text-xl'}>{tier.name}</CardTitle>
                     {tier.popular && (
-                      <span className="text-[10px] font-medium uppercase tracking-wide text-amber-500/90">
-                        Popular
+                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-amber-500/20 text-amber-400 border border-amber-400/40">
+                        Most popular
                       </span>
                     )}
                   </div>
-                  <p className="text-xs text-zinc-500 mt-0.5">{tier.userLimit}</p>
-                  <div className="mt-4">
+                  <p className="text-sm text-zinc-400 mt-1">{tier.userLimit}</p>
+                  <p className="text-sm text-amber-400/90 mt-2 font-medium">{tier.microcopy}</p>
+                  <div className="mt-5">
                     {billingInterval === 'monthly' ? (
                       <>
-                        <span className={dark ? 'text-2xl font-bold text-white' : 'text-2xl font-bold'}>
+                        <span className={dark ? 'text-3xl font-bold text-white tracking-tight' : 'text-3xl font-bold tracking-tight'}>
                           ${tier.price}
                         </span>
-                        <span className="text-zinc-500 text-sm">/mo</span>
+                        <span className="text-zinc-500 text-base ml-1">/mo</span>
                       </>
                     ) : (
                       <>
-                        <span className="text-zinc-500 text-lg line-through mr-1">
+                        <span className="text-zinc-500 text-sm line-through mr-2">
                           ${tier.price}/mo
                         </span>
-                        <span className={dark ? 'text-2xl font-bold text-white' : 'text-2xl font-bold'}>
+                        <span className={dark ? 'text-3xl font-bold text-white tracking-tight' : 'text-3xl font-bold tracking-tight'}>
                           ${tier.price * ANNUAL_MONTHS_BILLED}
                         </span>
-                        <span className="text-zinc-500 text-sm">/yr</span>
-                        <span className="text-emerald-500/90 text-xs block mt-0.5">
+                        <span className="text-zinc-500 text-base ml-1">/yr</span>
+                        <span className="text-emerald-400/90 text-sm block mt-1 font-medium">
                           Save 2 months
                         </span>
                       </>
                     )}
                   </div>
                 </CardHeader>
-                <CardContent className="pt-0 flex-1">
-                  <ul className="space-y-2 text-sm text-zinc-400">
+                <CardContent className="pt-0 px-6 flex-1">
+                  <p className="text-xs font-medium text-zinc-500 uppercase tracking-wide mb-3">What&apos;s included</p>
+                  <ul className="space-y-3 text-sm text-zinc-300">
                     {tier.features.map((f, i) => (
-                      <li key={i} className="flex items-start gap-2">
-                        <Check className="h-3.5 w-3.5 text-zinc-500 flex-shrink-0 mt-0.5" />
-                        {f}
+                      <li key={i} className="flex items-start gap-2.5">
+                        <Check className="h-4 w-4 text-amber-400/80 flex-shrink-0 mt-0.5" />
+                        <span>{f}</span>
                       </li>
                     ))}
                   </ul>
-                  <p className="text-xs text-zinc-500 mt-4">{tier.bestFor}</p>
+                  <div className="mt-6 p-3 rounded-lg bg-zinc-800/50 border border-zinc-700/50">
+                    <p className="text-xs font-medium text-zinc-500 mb-0.5">Best for</p>
+                    <p className="text-sm text-zinc-300">{tier.bestFor}</p>
+                  </div>
                 </CardContent>
-                <CardFooter className="pt-4">
+                <CardFooter className="pt-6 pb-6 px-6">
                   <Button
-                    className={dark ? 'w-full bg-amber-500 text-white hover:bg-amber-400 border-0' : 'w-full'}
+                    className={dark ? `w-full h-12 text-base font-semibold border-0 ${tier.popular ? 'bg-amber-500 text-white hover:bg-amber-400' : 'bg-zinc-700 text-white hover:bg-zinc-600'}` : 'w-full h-12'}
                     variant={dark ? undefined : tier.popular ? 'default' : 'outline'}
-                    size="sm"
+                    size="lg"
                     onClick={() => handleCheckout(tier.id)}
                     disabled={!!loading}
                   >

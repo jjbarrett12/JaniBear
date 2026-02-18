@@ -18,6 +18,7 @@ import {
   Settings,
   X,
   Menu,
+  BarChart3,
   TrendingUp,
   ListChecks,
   Package,
@@ -41,6 +42,7 @@ interface MobileSidebarProps {
 }
 
 const salesItemKeys: { href: string; labelKey: AppTranslationKey; icon: React.ComponentType<{ className?: string }> }[] = [
+  { href: '/app/sales-dashboard', labelKey: 'navCommandCenter', icon: BarChart3 },
   { href: '/app/sales', labelKey: 'navLeads', icon: TrendingUp },
   { href: '/app/walkthroughs', labelKey: 'navSalesAppointment', icon: FileSearch },
   { href: '/app/bids', labelKey: 'navProposalBuilding', icon: Calculator },

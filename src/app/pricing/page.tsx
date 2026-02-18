@@ -137,7 +137,7 @@ export default function PricingPage() {
             </Link>
             <Link href="/demo">
               <Button size="lg" variant="outline" className="border-zinc-600 text-zinc-200 hover:bg-zinc-800 hover:text-white">
-                Book a demo
+                Book a 15-Min Demo
               </Button>
             </Link>
           </div>

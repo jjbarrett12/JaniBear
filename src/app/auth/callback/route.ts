@@ -22,7 +22,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(new URL('/auth/login', baseUrl));
   }
 
-  const response = NextResponse.redirect(new URL('/api/auth/landing', baseUrl));
+  const nextPath = requestUrl.searchParams.get('next');
+  const allowedNext = nextPath && (nextPath === '/auth/reset-password' || nextPath.startsWith('/auth/'));
+  const destination = allowedNext ? nextPath : '/api/auth/landing';
+  const response = NextResponse.redirect(new URL(destination, baseUrl));
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

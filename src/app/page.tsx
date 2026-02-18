@@ -22,6 +22,7 @@ import {
   X,
   Bot,
   Brain,
+  Briefcase,
   Building2,
   UserCheck,
   Users,
@@ -42,15 +43,20 @@ export default function Home() {
     setMounted(true);
   }, []);
 
-  // If Supabase sent a password-reset link to the Site URL (homepage), send to reset-password with hash and search preserved
+  // If Supabase sent a password-reset or auth link to the Site URL (homepage), send to the right place
   useLayoutEffect(() => {
     if (typeof window === 'undefined') return;
     const { pathname, hash, search } = window.location;
     if (pathname !== '/' || (!hash && !search)) return;
-    const isRecovery =
-      (hash && (hash.includes('type=recovery') || hash.includes('access_token=') || hash.includes('recovery'))) ||
-      (search && (search.includes('type=recovery') || search.includes('access_token=') || search.includes('recovery')));
-    if (isRecovery) {
+    const hasCode = search && search.includes('code=');
+    const isRecoveryHash =
+      hash && (hash.includes('type=recovery') || hash.includes('access_token=') || hash.includes('recovery'));
+    const isRecoveryQuery =
+      search && (search.includes('type=recovery') || search.includes('access_token=') || search.includes('recovery'));
+    if (hasCode) {
+      const qs = search.replace(/^\?/, '');
+      window.location.replace(`/auth/callback?${qs}${qs ? '&' : ''}next=${encodeURIComponent('/auth/reset-password')}`);
+    } else if (isRecoveryHash || isRecoveryQuery) {
       window.location.replace(`/auth/reset-password${search}${hash}`);
     }
   }, []);
@@ -111,7 +117,7 @@ export default function Home() {
             </Link>
             <Link href="/demo">
               <Button size="sm" className="landing-cta shrink-0 h-10 px-4 md:px-5 font-semibold">
-                See It in Action
+                Book a 15-Minute Demo
               </Button>
             </Link>
           </div>
@@ -177,124 +183,160 @@ export default function Home() {
       <div className="fixed bottom-0 left-0 right-0 z-50 p-3 safe-bottom bg-black/95 border-t border-amber-400/30 backdrop-blur md:hidden">
         <Link href="/demo" className="block w-full">
           <Button className="landing-cta w-full h-12 text-base font-semibold rounded-lg">
-            See It in Action
+            Book a 15-Minute Demo
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         </Link>
       </div>
 
-      <section className="relative w-full overflow-hidden bg-black pt-10 md:pt-14 pb-5 md:pb-6">
-        {/* Subtle radial glow for depth */}
+      {/* Hero: billion-dollar aesthetic — headline, laptop mockup, dual engines, CTAs */}
+      <section className="relative w-full overflow-hidden bg-gradient-to-b from-zinc-950 via-black to-black pt-16 md:pt-20 pb-16 md:pb-24 min-h-[90vh] flex flex-col">
+        {/* Background: radial glow + grid + optional future bg image */}
         <div className="absolute inset-0 pointer-events-none" aria-hidden>
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[120%] max-w-4xl h-[80%] bg-gradient-radial-hero opacity-40" />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[160%] max-w-6xl h-[90%] bg-gradient-radial-hero opacity-60" />
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.025)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.025)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_75%_55%_at_50%_20%,black_30%,transparent_70%)]" />
         </div>
-        <div className="absolute inset-0 pointer-events-none opacity-[0.03] hero-noise" aria-hidden />
-        <div className="relative container mx-auto px-4 text-center">
-          <h1 className="max-w-3xl mx-auto space-y-0.5 hero-headline-gradient">
-            <span
-              className={`hero-headline block font-heading text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+        <div className="absolute inset-0 pointer-events-none opacity-[0.05] hero-noise" aria-hidden />
+
+        <div className="relative container mx-auto px-4 flex-1 flex flex-col items-center">
+          {/* Headline + subtitle + tagline */}
+          <div className="text-center max-w-4xl mx-auto">
+            <h1
+              className={`font-heading text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-[2.75rem] font-bold text-white tracking-tight leading-[1.1] transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
               style={{ transitionDelay: '0ms' }}
             >
-              Win more cleaning contracts.
-            </span>
-            <span
-              className={`hero-headline block font-heading text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+              Commercial Janitorial Software That Runs Like Two Managers — Without the Payroll
+            </h1>
+            <p
+              className={`mt-5 text-base md:text-lg text-zinc-300 max-w-3xl mx-auto leading-relaxed transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
               style={{ transitionDelay: '80ms' }}
             >
-              Prove your quality.
-            </span>
-            <span
-              className={`hero-headline block font-heading text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
-              style={{ transitionDelay: '160ms' }}
+              <BrandName /> combines sales growth and operational control into one platform — helping commercial cleaning companies win contracts, prove quality, and scale without adding supervisors.
+            </p>
+            <p
+              className={`mt-4 font-heading text-lg md:text-xl font-bold text-white transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+              style={{ transitionDelay: '120ms' }}
             >
-              Scale—without adding supervisors.
-            </span>
-          </h1>
+              Two managers&apos; worth of output. One platform.
+            </p>
+          </div>
 
-          <p
-            className={`hero-subhead text-base md:text-lg text-zinc-300 max-w-2xl mx-auto mt-5 leading-relaxed transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
-            style={{ transitionDelay: '240ms' }}
-          >
-            A single system for bidding, inspections, and accountability—{' '}
-            <span className="hero-gradient-text gradient-text font-semibold bg-gradient-to-r from-amber-400 via-orange-300 to-amber-500 bg-clip-text text-transparent">
-              built by janitorial operators
-            </span>
-          </p>
-
-          {/* Trust strip: in the gap between subheader and review */}
-          <p
-            className={`hero-micro mt-3 text-xs md:text-sm text-zinc-500 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
-            style={{ transitionDelay: '280ms' }}
-          >
-            Trusted by 500+ commercial janitorial teams nationwide
-          </p>
-
-          {/* Review: bold text quote with stars and minimal border */}
+          {/* Laptop + side callouts: grid on large, stack on small */}
           <div
-            className={`mt-4 flex flex-col items-center justify-center transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
-            style={{ transitionDelay: '320ms' }}
+            className={`w-full max-w-6xl mx-auto mt-10 md:mt-14 flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-4 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            style={{ transitionDelay: '160ms' }}
           >
-            <div className="w-full max-w-2xl mx-auto rounded-lg border border-amber-400/25 bg-white/[0.02] px-6 py-5 text-center">
-              <div className="flex justify-center gap-0.5 mb-3" aria-hidden>
-                {[1, 2, 3, 4, 5].map((i) => (
-                  <Star key={i} className="h-5 w-5 fill-amber-400 text-amber-400" />
-                ))}
+            {/* Sales Engine — left */}
+            <div className="w-full lg:max-w-[240px] order-2 lg:order-1 rounded-xl border border-amber-400/40 bg-zinc-900/80 backdrop-blur p-5 shadow-[0_0_40px_rgba(251,191,36,0.08)]">
+              <div className="w-10 h-10 rounded-lg bg-amber-500/20 border border-amber-400/30 flex items-center justify-center mb-4 text-amber-300">
+                <Briefcase className="h-5 w-5" />
               </div>
-              <p className="text-lg md:text-xl font-bold text-white leading-snug">
-                &ldquo;Once we could prove our quality, price stopped being the main objection.&rdquo;
-              </p>
-              <p className="text-sm text-zinc-400 mt-2">— Chris K., Owner, Regional Janitorial Company ($11.2M)</p>
+              <h3 className="text-white font-semibold text-base mb-3">Sales Engine</h3>
+              <ul className="space-y-2 text-sm text-zinc-300">
+                {['Professional proposals', 'Bid tracking', 'Scope builder', 'Close analytics'].map((item) => (
+                  <li key={item} className="flex items-center gap-2">
+                    <Check className="h-4 w-4 text-amber-400 shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-3 text-xs text-zinc-400 leading-snug">Win contracts without hiring a sales manager.</p>
+            </div>
+
+            {/* Laptop mockup — center */}
+            <div className="relative order-1 lg:order-2 flex-shrink-0">
+              <div className="absolute -inset-4 bg-amber-400/20 rounded-3xl blur-2xl" aria-hidden />
+              <div className="relative rounded-2xl border border-zinc-600/80 bg-zinc-900 shadow-2xl overflow-hidden" style={{ boxShadow: '0 0 60px rgba(251,191,36,0.15)' }}>
+                {/* Laptop bezel */}
+                <div className="px-3 pt-2 pb-1.5 bg-zinc-800/90 border-b border-zinc-700 flex items-center gap-2">
+                  <div className="flex gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber-500/80" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80" />
+                  </div>
+                  <span className="text-[10px] text-zinc-500 font-medium mx-auto">JANIBEAR</span>
+                </div>
+                {/* Screen content: two panels */}
+                <div className="flex w-[280px] sm:w-[340px] md:w-[400px] h-[160px] sm:h-[200px] md:h-[220px]">
+                  <div className="flex-1 border-r border-zinc-700/80 bg-zinc-950/80 p-2 sm:p-3">
+                    <p className="text-[10px] sm:text-xs font-semibold text-amber-400/90 mb-1.5">AI Proposal Generator</p>
+                    <div className="space-y-1">
+                      <div className="h-1.5 w-full max-w-[80%] rounded bg-zinc-700" />
+                      <div className="h-1.5 w-full max-w-[60%] rounded bg-zinc-700" />
+                      <div className="mt-2 h-5 w-14 rounded bg-amber-500/30 border border-amber-400/40 flex items-center justify-center">
+                        <span className="text-[8px] text-amber-300 font-medium">Generate</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex-1 bg-zinc-950/80 p-2 sm:p-3">
+                    <p className="text-[10px] sm:text-xs font-semibold text-zinc-300 mb-1.5">Building Inspections at Capitol Plaza</p>
+                    <div className="space-y-1">
+                      {[
+                        { label: 'Conan Holdings', status: 'red' },
+                        { label: 'Brighton Theatres', status: 'green' },
+                        { label: 'Binget Toos', status: 'yellow' },
+                        { label: 'Nongwoo Logistics', status: 'red' },
+                      ].map(({ label, status }) => (
+                        <div key={label} className="flex items-center gap-1.5">
+                          <span className={`w-1.5 h-1.5 rounded-full ${status === 'red' ? 'bg-red-500' : status === 'green' ? 'bg-emerald-500' : 'bg-amber-500'}`} />
+                          <span className="text-[9px] sm:text-[10px] text-zinc-400 truncate">{label}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Quality Control Engine — right */}
+            <div className="w-full lg:max-w-[240px] order-3 rounded-xl border border-amber-400/40 bg-zinc-900/80 backdrop-blur p-5 shadow-[0_0_40px_rgba(251,191,36,0.08)]">
+              <div className="w-10 h-10 rounded-lg bg-amber-500/20 border border-amber-400/30 flex items-center justify-center mb-4 text-amber-300">
+                <ClipboardCheck className="h-5 w-5" />
+              </div>
+              <h3 className="text-white font-semibold text-base mb-3">Quality Control Engine</h3>
+              <ul className="space-y-2 text-sm text-zinc-300">
+                {['QR inspections', 'Photo documentation', 'Building scorecards', 'Crew accountability'].map((item) => (
+                  <li key={item} className="flex items-center gap-2">
+                    <Check className="h-4 w-4 text-amber-400 shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-3 text-xs text-zinc-400 leading-snug">Standardize quality without adding supervisors.</p>
             </div>
           </div>
 
+          {/* Bottom CTAs */}
           <div
-            className={`flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center mt-8 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
-            style={{ transitionDelay: '400ms' }}
+            className={`flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center mt-8 md:mt-10 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            style={{ transitionDelay: '240ms' }}
           >
             <Link href="/demo">
               <Button size="lg" className="landing-cta landing-cta-lg text-base px-8 h-12">
-                See It in Action
+                Book a 15-Minute Demo
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
-            <Link href="/pricing">
-              <Button variant="outline" className="landing-cta-secondary shrink-0">
-                See Plans
+            <Link href="/demo">
+              <Button variant="outline" size="lg" className="landing-cta-secondary border-amber-400/50 text-zinc-300 hover:bg-white/5 hover:border-amber-400/70 h-12 px-6">
+                See a Real Inspection Report
               </Button>
             </Link>
           </div>
-
-          <ul
-            className={`hero-micro flex flex-wrap justify-center gap-x-6 gap-y-1.5 mt-3 text-sm text-zinc-400 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
-            style={{ transitionDelay: '480ms' }}
-          >
-            <li className="flex items-center gap-2">
-              <Check className="h-5 w-5 text-amber-400 shrink-0" />
-              <span>Monthly or Annual Plans</span>
-            </li>
-            <li className="flex items-center gap-2">
-              <Check className="h-5 w-5 text-amber-400 shrink-0" />
-              <span>No Contracts</span>
-            </li>
-            <li className="flex items-center gap-2">
-              <Check className="h-5 w-5 text-amber-400 shrink-0" />
-              <span>Built for cleaning companies</span>
-            </li>
-          </ul>
         </div>
       </section>
 
-      <section id="features" className="pt-10 md:pt-14 pb-16 md:pb-20 bg-black">
+      <section id="features" className="relative pt-16 md:pt-20 pb-20 md:pb-24 bg-zinc-950/80 border-t border-zinc-800/50">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12 md:mb-14">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-400/30 text-amber-300 text-sm font-medium mb-4">
+          <div className="text-center mb-14 md:mb-16">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-400/30 text-amber-300 text-sm font-medium mb-5">
               <Brain className="h-4 w-4" />
               <span>Powered by AI</span>
             </div>
-            <h2 className="font-heading text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
+            <h2 className="font-heading text-3xl md:text-5xl font-bold text-white mb-4 tracking-tight">
               <BrandName /> Wins More Bids
             </h2>
-            <p className="text-lg text-zinc-300 max-w-2xl mx-auto">
+            <p className="text-lg md:text-xl text-zinc-400 max-w-2xl mx-auto leading-relaxed">
               From walkthrough to closed deal—AI handles the heavy lifting so you can focus on relationships.
             </p>
           </div>
@@ -306,16 +348,16 @@ export default function Home() {
               { icon: Repeat, badge: 'AI Follow-Ups', title: 'Automated Follow-Up Cadences', desc: 'Never lose a lead. AI tracks proposal status, sends personalized follow-ups at optimal times, and maintains engagement until the deal closes—all automatically.', features: ['Smart timing', 'Personalized messaging', 'Status tracking', 'Engagement optimization'], color: 'emerald' },
             ].map((item, index) => {
               const Icon = item.icon;
-              const colorClasses = { gold: 'bg-amber-500/10 text-amber-400 border-amber-500/20', cyan: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20', emerald: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' };
+              const colorClasses = { gold: 'bg-amber-500/15 text-amber-400 border-amber-500/30', cyan: 'bg-cyan-500/15 text-cyan-400 border-cyan-500/30', emerald: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30' };
               return (
-                <div key={index} className={`relative p-8 rounded-2xl bg-white/5 border border-amber-400/50 hover:border-amber-400 transition-all ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`} style={{ transitionDelay: `${index * 100}ms`, transitionDuration: '500ms' }}>
-                  <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full ${colorClasses[item.color as keyof typeof colorClasses]} text-xs font-semibold mb-4`}>
+                <div key={index} className={`relative p-8 md:p-9 rounded-2xl bg-zinc-900/50 border border-zinc-700/80 hover:border-amber-400/40 hover:shadow-xl hover:shadow-amber-500/5 transition-all duration-300 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`} style={{ transitionDelay: `${index * 100}ms`, transitionDuration: '500ms' }}>
+                  <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full border ${colorClasses[item.color as keyof typeof colorClasses]} text-xs font-semibold mb-5`}>
                     <Icon className="h-3.5 w-3.5" />
                     <span>{item.badge}</span>
                   </div>
-                  <h3 className="text-xl font-semibold text-white mb-3">{item.title}</h3>
-                  <p className="text-zinc-300 leading-relaxed text-sm mb-4">{item.desc}</p>
-                  <ul className="space-y-2">
+                  <h3 className="text-xl md:text-2xl font-semibold text-white mb-3 tracking-tight">{item.title}</h3>
+                  <p className="text-zinc-400 leading-relaxed text-sm mb-5">{item.desc}</p>
+                  <ul className="space-y-2.5">
                     {item.features.map((feature, i) => (
                       <li key={i} className="flex items-start gap-2 text-zinc-400 text-sm">
                         <Check className="h-4 w-4 text-amber-400 shrink-0 mt-0.5" />
@@ -330,17 +372,17 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="operations-qa" className="py-16 md:py-20 bg-black">
+      <section id="operations-qa" className="relative py-20 md:py-24 bg-black border-t border-zinc-800/50">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-400/30 text-emerald-300 text-sm font-medium mb-4">
+          <div className="text-center mb-14 md:mb-16">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-400/30 text-emerald-300 text-sm font-medium mb-5">
               <ClipboardCheck className="h-4 w-4" />
               <span>Operations & QA</span>
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
+            <h2 className="font-heading text-3xl md:text-5xl font-bold text-white mb-4 tracking-tight">
               <BrandName /> Keeps Clients Longer
             </h2>
-            <p className="text-lg text-zinc-300 max-w-2xl mx-auto">
+            <p className="text-lg md:text-xl text-zinc-400 max-w-2xl mx-auto leading-relaxed">
               Deliver consistently, catch issues before the customer does, and keep every location on track—automatically.
             </p>
           </div>
@@ -352,19 +394,19 @@ export default function Home() {
               { icon: AlertCircle, badge: 'AI Issue Resolution', title: 'Fast Response & Resolution', desc: 'When something goes wrong, fix it before it becomes a complaint. AI tracks work orders, prioritizes by urgency, and keeps resolution and communication in one place.', features: ['Priority routing', 'Status tracking', 'Quick resolution', 'Customer communication'], color: 'emerald' },
             ].map((item, index) => {
               const Icon = item.icon;
-              const colorClasses = { gold: 'bg-amber-500/10 text-amber-400 border-amber-500/20', cyan: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20', emerald: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' };
+              const colorClasses = { gold: 'bg-amber-500/15 text-amber-400 border-amber-500/30', cyan: 'bg-cyan-500/15 text-cyan-400 border-cyan-500/30', emerald: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30' };
               return (
-                <div key={index} className={`relative p-8 rounded-2xl bg-white/5 border border-amber-400/50 hover:border-amber-400 transition-all ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`} style={{ transitionDelay: `${index * 100}ms`, transitionDuration: '500ms' }}>
-                  <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full ${colorClasses[item.color as keyof typeof colorClasses]} text-xs font-semibold mb-4`}>
+                <div key={index} className={`relative p-8 md:p-9 rounded-2xl bg-zinc-900/50 border border-zinc-700/80 hover:border-emerald-400/40 hover:shadow-xl hover:shadow-emerald-500/5 transition-all duration-300 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`} style={{ transitionDelay: `${index * 100}ms`, transitionDuration: '500ms' }}>
+                  <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full border ${colorClasses[item.color as keyof typeof colorClasses]} text-xs font-semibold mb-5`}>
                     <Icon className="h-3.5 w-3.5" />
                     <span>{item.badge}</span>
                   </div>
-                  <h3 className="text-xl font-semibold text-white mb-3">{item.title}</h3>
-                  <p className="text-zinc-300 leading-relaxed text-sm mb-4">{item.desc}</p>
-                  <ul className="space-y-2">
+                  <h3 className="text-xl md:text-2xl font-semibold text-white mb-3 tracking-tight">{item.title}</h3>
+                  <p className="text-zinc-400 leading-relaxed text-sm mb-5">{item.desc}</p>
+                  <ul className="space-y-2.5">
                     {item.features.map((feature, i) => (
                       <li key={i} className="flex items-start gap-2 text-zinc-400 text-sm">
-                        <Check className="h-4 w-4 text-amber-400 shrink-0 mt-0.5" />
+                        <Check className="h-4 w-4 text-emerald-400 shrink-0 mt-0.5" />
                         <span>{feature}</span>
                       </li>
                     ))}
@@ -376,13 +418,13 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-16 md:py-20">
+      <section className="py-20 md:py-24 bg-zinc-950/80 border-t border-zinc-800/50">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
+          <div className="text-center mb-14 md:mb-16">
+            <h2 className="font-heading text-3xl md:text-5xl font-bold text-white mb-4 tracking-tight">
               Measurable Results for Janitorial Companies
             </h2>
-            <p className="text-lg text-zinc-300 max-w-2xl mx-auto">
+            <p className="text-lg md:text-xl text-zinc-400 max-w-2xl mx-auto">
               See why janitorial sales teams choose <BrandName /> to win more bids.
             </p>
           </div>
@@ -395,11 +437,13 @@ export default function Home() {
             ].map((item, index) => {
               const Icon = item.icon;
               return (
-                <div key={index} className="bg-white/5 rounded-xl p-6 border border-amber-400/50 text-center hover:border-amber-400 transition-colors">
-                  <Icon className="h-8 w-8 mx-auto mb-3 text-amber-400/80" />
-                  <div className="text-3xl font-bold text-white mb-1">{item.stat}</div>
-                  <div className="text-zinc-300 font-medium text-sm mb-1">{item.label}</div>
-                  <div className="text-zinc-400 text-xs">{item.sublabel}</div>
+                <div key={index} className="bg-zinc-900/60 rounded-2xl p-8 border border-zinc-700/80 text-center hover:border-amber-400/40 hover:shadow-lg hover:shadow-amber-500/5 transition-all duration-300">
+                  <div className="w-14 h-14 rounded-xl bg-amber-500/10 border border-amber-400/20 flex items-center justify-center mx-auto mb-4">
+                    <Icon className="h-7 w-7 text-amber-400" />
+                  </div>
+                  <div className="text-3xl md:text-4xl font-bold text-white mb-2 tracking-tight">{item.stat}</div>
+                  <div className="text-zinc-300 font-semibold text-sm mb-1">{item.label}</div>
+                  <div className="text-zinc-500 text-xs">{item.sublabel}</div>
                 </div>
               );
             })}
@@ -407,13 +451,13 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-16 md:py-20 bg-black">
+      <section className="py-20 md:py-24 bg-black border-t border-zinc-800/50">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
-              Built by Janitorial Operators, For Janitorial Operators.
+          <div className="text-center mb-14 md:mb-16">
+            <h2 className="font-heading text-3xl md:text-5xl font-bold text-white mb-4 tracking-tight">
+              Built by Janitorial Operators, For Janitorial Operators
             </h2>
-            <p className="text-lg text-zinc-300 max-w-xl mx-auto">
+            <p className="text-lg md:text-xl text-zinc-400 max-w-xl mx-auto">
               Designed by janitorial industry experts to not only win business, but keep it.
             </p>
           </div>
@@ -426,12 +470,12 @@ export default function Home() {
             ].map((item, index) => {
               const Icon = item.icon;
               return (
-                <div key={index} className="flex flex-col items-center p-6 rounded-xl bg-white/5 border border-amber-400/50 hover:border-amber-400 transition-colors text-center">
-                  <div className="w-12 h-12 rounded-xl bg-cyan-500/10 text-cyan-300 flex items-center justify-center mb-3">
-                    <Icon className="h-6 w-6" />
+                <div key={index} className="flex flex-col items-center p-8 rounded-2xl bg-zinc-900/50 border border-zinc-700/80 hover:border-cyan-400/40 transition-all duration-300 text-center">
+                  <div className="w-14 h-14 rounded-xl bg-cyan-500/15 border border-cyan-400/20 text-cyan-300 flex items-center justify-center mb-4">
+                    <Icon className="h-7 w-7" />
                   </div>
-                  <span className="font-semibold text-white text-sm mb-1">{item.label}</span>
-                  {item.desc ? <span className="text-zinc-400 text-xs">{item.desc}</span> : null}
+                  <span className="font-semibold text-white text-base mb-1">{item.label}</span>
+                  {item.desc ? <span className="text-zinc-400 text-sm">{item.desc}</span> : null}
                   {'note' in item && item.note && (
                     <span className="text-zinc-500 text-xs mt-2">{item.note}</span>
                   )}
@@ -442,22 +486,22 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-16 md:py-20 bg-black">
+      <section className="py-20 md:py-24 bg-zinc-950/80 border-t border-zinc-800/50">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
             <div className="flex items-center justify-center gap-2 mb-6">
-              <div className="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-400/30 text-amber-300 text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5">
+              <div className="px-4 py-2 rounded-full bg-amber-500/10 border border-amber-400/30 text-amber-300 text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5">
                 <Plus className="h-3.5 w-3.5" />
                 Sales Module
               </div>
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
+            <h2 className="font-heading text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">
               Complete Sales Management
             </h2>
-            <p className="text-lg text-zinc-300 mb-12 max-w-2xl mx-auto">
+            <p className="text-lg text-zinc-400 mb-12 max-w-2xl mx-auto">
               From first walkthrough to closed deal—building capture, proposals, follow-ups, and pricing—all in one platform.
             </p>
-            <div className="grid sm:grid-cols-2 md:grid-cols-5 gap-6">
+            <div className="grid sm:grid-cols-2 md:grid-cols-5 gap-5">
               {[
                 { icon: Camera, label: 'Building Capture' },
                 { icon: Wand2, label: 'Proposals' },
@@ -467,38 +511,38 @@ export default function Home() {
               ].map((item, index) => {
                 const Icon = item.icon;
                 return (
-                  <div key={index} className="flex flex-col items-center gap-3 p-4 rounded-xl bg-white/5 border border-amber-400/50 hover:border-amber-400 transition-colors">
-                    <div className="w-10 h-10 rounded-lg bg-amber-500/10 text-amber-300 flex items-center justify-center">
-                      <Icon className="h-5 w-5" />
+                  <div key={index} className="flex flex-col items-center gap-3 p-5 rounded-xl bg-zinc-900/50 border border-zinc-700/80 hover:border-amber-400/40 transition-all duration-300">
+                    <div className="w-12 h-12 rounded-xl bg-amber-500/15 border border-amber-400/20 text-amber-300 flex items-center justify-center">
+                      <Icon className="h-6 w-6" />
                     </div>
                     <span className="font-medium text-white text-sm text-center">{item.label}</span>
                   </div>
                 );
               })}
             </div>
-            <p className="mt-8 text-sm text-zinc-400 text-center">
+            <p className="mt-8 text-sm text-zinc-500 text-center">
               The Sales module is included in every plan—from first walkthrough to closed deal.
             </p>
           </div>
         </div>
       </section>
 
-      <section className="py-16 md:py-20">
+      <section className="py-20 md:py-24 bg-black border-t border-zinc-800/50">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
             <div className="flex items-center justify-center gap-2 mb-6">
-              <div className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-400/30 text-emerald-300 text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5">
+              <div className="px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-400/30 text-emerald-300 text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5">
                 <Plus className="h-3.5 w-3.5" />
                 Operations Module
               </div>
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
+            <h2 className="font-heading text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">
               Complete Operations Management
             </h2>
-            <p className="text-lg text-zinc-300 mb-12 max-w-2xl mx-auto">
+            <p className="text-lg text-zinc-400 mb-12 max-w-2xl mx-auto">
               After you win the bid, manage inspections, crews, compliance, purchase orders, and invoicing—all in one platform.
             </p>
-            <div className="grid sm:grid-cols-2 md:grid-cols-5 gap-6">
+            <div className="grid sm:grid-cols-2 md:grid-cols-5 gap-5">
               {[
                 { icon: ClipboardCheck, label: 'Inspections' },
                 { icon: Users, label: 'Crews' },
@@ -508,35 +552,35 @@ export default function Home() {
               ].map((item, index) => {
                 const Icon = item.icon;
                 return (
-                  <div key={index} className="flex flex-col items-center gap-3 p-4 rounded-xl bg-white/5 border border-amber-400/50 hover:border-amber-400 transition-colors">
-                    <div className="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-300 flex items-center justify-center">
-                      <Icon className="h-5 w-5" />
+                  <div key={index} className="flex flex-col items-center gap-3 p-5 rounded-xl bg-zinc-900/50 border border-zinc-700/80 hover:border-emerald-400/40 transition-all duration-300">
+                    <div className="w-12 h-12 rounded-xl bg-emerald-500/15 border border-emerald-400/20 text-emerald-300 flex items-center justify-center">
+                      <Icon className="h-6 w-6" />
                     </div>
                     <span className="font-medium text-white text-sm text-center">{item.label}</span>
                   </div>
                 );
               })}
             </div>
-            <p className="mt-8 text-sm text-zinc-400 text-center">
+            <p className="mt-8 text-sm text-zinc-500 text-center">
               Add the Operations module to your plan for complete janitorial business management—from sales to delivery.
             </p>
           </div>
         </div>
       </section>
 
-      <section id="book-demo" className="py-16 md:py-20">
+      <section id="book-demo" className="relative py-20 md:py-24 bg-zinc-950/80 border-t border-zinc-800/50">
         <div className="container mx-auto px-4 text-center">
           <div className="max-w-2xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">
-              Ready to See It in Action?
+            <h2 className="font-heading text-3xl md:text-5xl font-bold text-white mb-5 tracking-tight">
+              Ready to Book a 15-Minute Demo?
             </h2>
-            <p className="text-lg text-zinc-300 mb-8">
+            <p className="text-lg md:text-xl text-zinc-400 mb-10 leading-relaxed">
               Get a personalized demo. We&apos;ll show you how <BrandName /> handles bids, proposals, and operations—and configure pricing for your team.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
               <Link href="/demo" className="w-full sm:w-auto">
                 <Button size="lg" className="landing-cta landing-cta-lg text-base px-8 h-12 w-full sm:w-auto">
-                  See It in Action
+                  Book a 15-Minute Demo
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
@@ -565,7 +609,7 @@ export default function Home() {
             <div>
               <h4 className="text-white font-semibold mb-4 text-sm">Product</h4>
               <ul className="space-y-2 text-sm">
-                <li><Link href="/demo" className="hover:text-white transition-colors">See It in Action</Link></li>
+                <li><Link href="/demo" className="hover:text-white transition-colors">Book a 15-Minute Demo</Link></li>
                 <li><Link href="/pricing" className="hover:text-white transition-colors">See Plans</Link></li>
                 <li><Link href="/survey" className="hover:text-white transition-colors">Find Your Plan</Link></li>
                 <li><Link href="/#features" className="hover:text-white transition-colors">Features</Link></li>

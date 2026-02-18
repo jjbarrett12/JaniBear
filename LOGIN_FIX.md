@@ -85,3 +85,55 @@ Then check the [Supabase Next.js SSR docs](https://supabase.com/docs/guides/auth
 - [ ] Tested in incognito once
 
 If all of the above are correct and login still fails, the next step is to add a small debug log (e.g. on `/auth/continue`) to see whether the server sees the session cookie when you land there after sign-in.
+
+---
+
+## 7. Admin password reset (dev tools / console)
+
+When the normal “Forgot password” email flow doesn’t work, you can set a user’s password from the server using an admin-only API, then sign in with the new password.
+
+### Requirements
+
+- **Local:** In `.env.local` add `SUPABASE_SERVICE_ROLE_KEY` (from Supabase Dashboard → Project Settings → API → `service_role` key). The route is allowed in development with no extra secret.
+- **Production (e.g. janibear.com):** In Vercel add:
+  - `SUPABASE_SERVICE_ROLE_KEY` (same as above)
+  - `JANIBEAR_ADMIN_RESET_SECRET` (any long random string you keep private)
+  Redeploy after adding env vars.
+
+### Use from the browser console
+
+1. Open your app (e.g. **https://janibear.com** or **http://localhost:3000**).
+2. Open DevTools (F12) → **Console**.
+3. Run (replace email and password with the real values):
+
+**Local (no secret):**
+
+```javascript
+fetch('/api/auth/admin-reset-password', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    email: 'jjbarrett12@gmail.com',
+    newPassword: 'YourNewPassword123!'
+  })
+}).then(r => r.json()).then(console.log);
+```
+
+**Production (with secret):** use the same `fetch`, but add the secret header (use the same value you set in Vercel for `JANIBEAR_ADMIN_RESET_SECRET`):
+
+```javascript
+fetch('/api/auth/admin-reset-password', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-admin-reset-secret': 'YOUR_SECRET_FROM_VERCEL_ENV'
+  },
+  body: JSON.stringify({
+    email: 'jjbarrett12@gmail.com',
+    newPassword: 'YourNewPassword123!'
+  })
+}).then(r => r.json()).then(console.log);
+```
+
+4. If you see `{ ok: true, message: "..." }`, the password was updated. Sign in on the login page with the **new** password.
+5. After you’re back in, you can remove `JANIBEAR_ADMIN_RESET_SECRET` from Vercel if you don’t want to keep using this route in production.

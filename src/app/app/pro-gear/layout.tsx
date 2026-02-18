@@ -2,7 +2,7 @@ import { requireOrg } from '@/lib/auth';
 import { requireProGearAccess } from '@/lib/pro-gear-auth';
 import { createClient } from '@/lib/supabase/server';
 import Link from 'next/link';
-import { ChevronRight, ShoppingCart, Package, Wrench } from 'lucide-react';
+import { ChevronRight, ShoppingCart, Package, Store } from 'lucide-react';
 
 export default async function ProGearLayout({
   children,
@@ -59,7 +59,7 @@ export default async function ProGearLayout({
                   href="/app/pro-gear/equipment"
                   className="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-muted"
                 >
-                  <Wrench className="h-4 w-4" />
+                  <Store className="h-4 w-4" />
                   Equipment ({equipment.length})
                 </Link>
               </li>

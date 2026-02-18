@@ -15,6 +15,14 @@ const DEMO_STATS = {
   avgScore: 94,
   totalIssues: 12,
   recentWalkthroughs: 18,
+  timeframes: {
+    inspectionsLast7Days: 12,
+    inspectionsLast30Days: 48,
+    inspectionsPrevious30Days: 42,
+    openIssuesNow: 3,
+    issuesResolvedLast7Days: 4,
+    issuesOpenedLast7Days: 2,
+  },
 };
 
 const DEMO_CHART_DATA = [
@@ -53,6 +61,21 @@ export type DashboardStats = {
   avgScore?: number;
   totalIssues?: number;
   recentWalkthroughs?: number;
+  /** Time-bound and comparison data for KPIs */
+  timeframes?: {
+    /** Completed inspections in last 7 days */
+    inspectionsLast7Days: number;
+    /** Completed inspections in last 30 days */
+    inspectionsLast30Days: number;
+    /** Completed inspections in previous 30 days (for trend) */
+    inspectionsPrevious30Days: number;
+    /** Open issues right now */
+    openIssuesNow: number;
+    /** Issues resolved in last 7 days */
+    issuesResolvedLast7Days: number;
+    /** New issues opened in last 7 days */
+    issuesOpenedLast7Days: number;
+  };
 };
 
 export type ChartDataPoint = { date: string; score: number; count: number };
@@ -78,6 +101,11 @@ export async function getOperatorDashboardData(
   const user = await getCurrentUser();
 
   try {
+  const now = new Date();
+  const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
+  const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString();
+  const sixtyDaysAgo = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000).toISOString();
+
   const [
     inspectionsResult,
     issuesResult,
@@ -87,6 +115,11 @@ export async function getOperatorDashboardData(
     schedulesResult,
     recentIssuesResult,
     inspectionScoresResult,
+    inspectionsLast7Result,
+    inspectionsLast30Result,
+    inspectionsPrev30Result,
+    issuesOpenedLast7Result,
+    issuesResolvedLast7Result,
   ] = await Promise.all([
     supabase.from('inspections').select('*, facilities(name)').eq('org_id', orgId).order('created_at', { ascending: false }).limit(5),
     supabase.from('issues').select('*', { count: 'exact' }).eq('org_id', orgId).eq('status', 'open'),
@@ -96,6 +129,11 @@ export async function getOperatorDashboardData(
     supabase.from('schedules').select('id, facilities(name), crews(name), is_active').eq('org_id', orgId).eq('is_active', true).limit(5),
     supabase.from('issues').select('id, title, status, created_at').eq('org_id', orgId).order('created_at', { ascending: false }).limit(5),
     supabase.from('inspections').select('total_score, created_at').eq('org_id', orgId).not('total_score', 'is', null).order('created_at', { ascending: false }).limit(14),
+    supabase.from('inspections').select('id', { count: 'exact', head: true }).eq('org_id', orgId).not('total_score', 'is', null).gte('created_at', sevenDaysAgo),
+    supabase.from('inspections').select('id', { count: 'exact', head: true }).eq('org_id', orgId).not('total_score', 'is', null).gte('created_at', thirtyDaysAgo),
+    supabase.from('inspections').select('id', { count: 'exact', head: true }).eq('org_id', orgId).not('total_score', 'is', null).gte('created_at', sixtyDaysAgo).lt('created_at', thirtyDaysAgo),
+    supabase.from('issues').select('id', { count: 'exact', head: true }).eq('org_id', orgId).gte('created_at', sevenDaysAgo),
+    supabase.from('issues').select('id', { count: 'exact', head: true }).eq('org_id', orgId).eq('status', 'resolved').not('resolved_at', 'is', null).gte('resolved_at', sevenDaysAgo),
   ]);
 
   const recentInspections = inspectionsResult.data || [];
@@ -151,6 +189,12 @@ export async function getOperatorDashboardData(
   const userName = user?.user_metadata?.full_name?.split(' ')[0] || 'there';
   const useSampleData = explicitDemo || (locationsCount <= 1 && completedInspectionsCount < 2);
 
+  const inspectionsLast7 = inspectionsLast7Result.count ?? 0;
+  const inspectionsLast30 = inspectionsLast30Result.count ?? 0;
+  const inspectionsPrev30 = inspectionsPrev30Result.count ?? 0;
+  const issuesOpenedLast7 = issuesOpenedLast7Result.count ?? 0;
+  const issuesResolvedLast7 = issuesResolvedLast7Result.count ?? 0;
+
   const stats: DashboardStats = useSampleData ? DEMO_STATS : {
     openIssues: openIssuesCount,
     totalLocations: locationsCount,
@@ -161,6 +205,14 @@ export async function getOperatorDashboardData(
     avgScore,
     totalIssues: totalIssuesCount,
     recentWalkthroughs: walkthroughsCount,
+    timeframes: {
+      inspectionsLast7Days: inspectionsLast7,
+      inspectionsLast30Days: inspectionsLast30,
+      inspectionsPrevious30Days: inspectionsPrev30,
+      openIssuesNow: openIssuesCount,
+      issuesResolvedLast7Days: issuesResolvedLast7,
+      issuesOpenedLast7Days: issuesOpenedLast7,
+    },
   };
 
   return {

@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { requireOrg } from '@/lib/auth';
 import { getUserContext, isFranchisor } from '@/lib/user-context';
+import { isSalesRepRole } from '@/types/sales';
 import { DashboardHeader } from '@/components/dashboard/dashboard-header';
 import { StatsCards } from '@/components/dashboard/stats-cards';
 import { QuickActions } from '@/components/dashboard/quick-actions';
@@ -24,6 +25,9 @@ export default async function DashboardPage(props: {
 
   if (isFranchisor(context)) {
     redirect('/franchisor');
+  }
+  if (isSalesRepRole(context.role, context.roleEnum)) {
+    redirect('/app/sales-dashboard');
   }
   const searchParams =
     typeof props.searchParams === 'object' && props.searchParams !== null && 'then' in props.searchParams

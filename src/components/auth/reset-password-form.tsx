@@ -159,7 +159,7 @@ export function ResetPasswordForm() {
       <CardContent className="p-6 md:p-8">
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-2">
-            <Label htmlFor="password" className="text-sm font-semibold">New Password</Label>
+            <Label htmlFor="password" className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">New Password</Label>
             <Input
               id="password"
               type="password"
@@ -168,7 +168,7 @@ export function ResetPasswordForm() {
               onChange={(e) => setPassword(e.target.value)}
               required
               disabled={isLoading}
-              className="h-12 text-base"
+              className="h-12 text-base rounded-xl border-zinc-200 dark:border-zinc-600 bg-zinc-100 dark:bg-zinc-800 focus:bg-white dark:focus:bg-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-500 dark:placeholder:text-zinc-400"
             />
             <PasswordStrengthMeter password={password} />
             <p className="text-xs text-gray-500">
@@ -177,7 +177,7 @@ export function ResetPasswordForm() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="confirmPassword" className="text-sm font-semibold">Confirm New Password</Label>
+            <Label htmlFor="confirmPassword" className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">Confirm New Password</Label>
             <Input
               id="confirmPassword"
               type="password"
@@ -186,7 +186,7 @@ export function ResetPasswordForm() {
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
               disabled={isLoading}
-              className="h-12 text-base"
+              className="h-12 text-base rounded-xl border-zinc-200 dark:border-zinc-600 bg-zinc-100 dark:bg-zinc-800 focus:bg-white dark:focus:bg-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-500 dark:placeholder:text-zinc-400"
             />
           </div>
           

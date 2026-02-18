@@ -147,7 +147,7 @@ export function SignupForm() {
 
         <form onSubmit={handleSignup} className="space-y-4">
           <div className="space-y-1.5">
-            <Label htmlFor="fullName" className="text-sm font-medium text-zinc-700">Full name</Label>
+            <Label htmlFor="fullName" className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Full name</Label>
             <Input
               id="fullName"
               type="text"
@@ -156,11 +156,11 @@ export function SignupForm() {
               onChange={(e) => setFullName(e.target.value)}
               required
               disabled={isLoading}
-              className="h-11 rounded-lg border-zinc-200 bg-zinc-50/50 focus:bg-white placeholder:text-zinc-400"
+              className="h-11 rounded-lg border-zinc-200 dark:border-zinc-600 bg-zinc-100 dark:bg-zinc-800 focus:bg-white dark:focus:bg-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-500 dark:placeholder:text-zinc-400 focus-visible:ring-2 focus-visible:ring-amber-500/30"
             />
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="email" className="text-sm font-medium text-zinc-700">Email</Label>
+            <Label htmlFor="email" className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Email</Label>
             <Input
               id="email"
               type="email"
@@ -169,11 +169,11 @@ export function SignupForm() {
               onChange={(e) => setEmail(e.target.value)}
               required
               disabled={isLoading}
-              className="h-11 rounded-lg border-zinc-200 bg-zinc-50/50 focus:bg-white placeholder:text-zinc-400"
+              className="h-11 rounded-lg border-zinc-200 dark:border-zinc-600 bg-zinc-100 dark:bg-zinc-800 focus:bg-white dark:focus:bg-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-500 dark:placeholder:text-zinc-400 focus-visible:ring-2 focus-visible:ring-amber-500/30"
             />
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="password" className="text-sm font-medium text-zinc-700">Password</Label>
+            <Label htmlFor="password" className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Password</Label>
             <div className="relative">
               <Input
                 id="password"
@@ -183,12 +183,12 @@ export function SignupForm() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 disabled={isLoading}
-                className="h-11 rounded-lg border-zinc-200 bg-zinc-50/50 focus:bg-white placeholder:text-zinc-400 pr-11"
+                className="h-11 rounded-lg border-zinc-200 dark:border-zinc-600 bg-zinc-100 dark:bg-zinc-800 focus:bg-white dark:focus:bg-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-500 dark:placeholder:text-zinc-400 pr-11 focus-visible:ring-2 focus-visible:ring-amber-500/30"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword((p) => !p)}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 rounded p-1"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300 rounded p-1"
                 tabIndex={-1}
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
@@ -199,7 +199,7 @@ export function SignupForm() {
             <p className="text-xs text-zinc-500">Use letters, numbers, and symbols for a stronger password</p>
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="confirmPassword" className="text-sm font-medium text-zinc-700">Confirm password</Label>
+            <Label htmlFor="confirmPassword" className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Confirm password</Label>
             <Input
               id="confirmPassword"
               type="password"
@@ -208,7 +208,7 @@ export function SignupForm() {
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
               disabled={isLoading}
-              className="h-11 rounded-lg border-zinc-200 bg-zinc-50/50 focus:bg-white placeholder:text-zinc-400"
+              className="h-11 rounded-lg border-zinc-200 dark:border-zinc-600 bg-zinc-100 dark:bg-zinc-800 focus:bg-white dark:focus:bg-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-500 dark:placeholder:text-zinc-400 focus-visible:ring-2 focus-visible:ring-amber-500/30"
             />
           </div>
 

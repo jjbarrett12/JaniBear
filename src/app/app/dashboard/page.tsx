@@ -9,6 +9,7 @@ import { RecentActivity } from '@/components/dashboard/recent-activity';
 import { TodaysSchedule } from '@/components/dashboard/todays-schedule';
 import { InspectionChart } from '@/components/dashboard/charts/inspection-chart';
 import { getOperatorDashboardData } from '@/lib/dashboard-data';
+import { SeedSampleDataBanner } from '@/components/dashboard/seed-sample-data-banner';
 import { Award } from 'lucide-react';
 
 /**
@@ -50,6 +51,9 @@ export default async function DashboardPage(props: {
             : "Here's what's happening with your business today."
         }
       />
+      {data.useSampleData && (
+        <SeedSampleDataBanner />
+      )}
       {isFranchisee && (
         <div className="rounded-lg border border-border bg-muted/40 px-4 py-3 flex items-center justify-between gap-4 flex-wrap">
           <p className="text-sm text-muted-foreground">

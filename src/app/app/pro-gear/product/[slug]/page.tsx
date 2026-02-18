@@ -48,7 +48,7 @@ export default async function ProGearProductPage({
             <Badge variant="secondary">Labor savings</Badge>
           )}
         </div>
-        <h1 className="mt-2 text-2xl font-bold tracking-tight md:text-3xl">
+        <h1 className="mt-2 text-2xl font-bold tracking-tight md:text-3xl text-foreground">
           {p.name}
         </h1>
         {p.brand && (

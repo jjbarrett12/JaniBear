@@ -57,8 +57,8 @@ export default async function SchedulesPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Schedules</h1>
-          <p className="text-gray-600 mt-1">Manage inspection schedules and assignments</p>
+          <h1 className="text-3xl font-bold text-foreground">Schedules</h1>
+          <p className="text-muted-foreground mt-1">Manage inspection schedules and assignments</p>
         </div>
         <div className="flex gap-2">
           <Link href="/app/schedules/scanner">

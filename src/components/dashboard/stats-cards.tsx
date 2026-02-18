@@ -52,7 +52,7 @@ export function StatsCards({ stats }: StatsCardsProps) {
       title: t('statsActiveLocations'),
       value: stats.totalLocations,
       icon: MapPin,
-      href: '/app/locations',
+      href: '/app/accounts',
       gradient: 'from-blue-500 to-blue-600',
       lightBg: 'bg-blue-50',
       trend: null,

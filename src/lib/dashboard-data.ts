@@ -65,6 +65,8 @@ export type OperatorDashboardData = {
   schedules: ScheduleItem[];
   activities: ActivityItem[];
   userName: string;
+  /** True when dashboard is showing demo numbers because there’s little or no real data */
+  useSampleData?: boolean;
 };
 
 export async function getOperatorDashboardData(
@@ -79,19 +81,19 @@ export async function getOperatorDashboardData(
   const [
     inspectionsResult,
     issuesResult,
-    locationsResult,
+    facilitiesResult,
     crewsResult,
     walkthroughsResult,
     schedulesResult,
     recentIssuesResult,
     inspectionScoresResult,
   ] = await Promise.all([
-    supabase.from('inspections').select('*, locations(name)').eq('org_id', orgId).order('created_at', { ascending: false }).limit(5),
+    supabase.from('inspections').select('*, facilities(name)').eq('org_id', orgId).order('created_at', { ascending: false }).limit(5),
     supabase.from('issues').select('*', { count: 'exact' }).eq('org_id', orgId).eq('status', 'open'),
-    supabase.from('locations').select('*', { count: 'exact', head: true }).eq('org_id', orgId),
+    supabase.from('facilities').select('*', { count: 'exact', head: true }).eq('org_id', orgId),
     supabase.from('crews').select('*', { count: 'exact', head: true }).eq('org_id', orgId),
     supabase.from('walkthroughs').select('*', { count: 'exact', head: true }).eq('org_id', orgId),
-    supabase.from('schedules').select('id, locations(name), crews(name), is_active').eq('org_id', orgId).eq('is_active', true).limit(5),
+    supabase.from('schedules').select('id, facilities(name), crews(name), is_active').eq('org_id', orgId).eq('is_active', true).limit(5),
     supabase.from('issues').select('id, title, status, created_at').eq('org_id', orgId).order('created_at', { ascending: false }).limit(5),
     supabase.from('inspections').select('total_score, created_at').eq('org_id', orgId).not('total_score', 'is', null).order('created_at', { ascending: false }).limit(14),
   ]);
@@ -99,7 +101,7 @@ export async function getOperatorDashboardData(
   const recentInspections = inspectionsResult.data || [];
   const openIssuesCount = issuesResult.count || 0;
   const totalIssuesCount = (await supabase.from('issues').select('*', { count: 'exact', head: true }).eq('org_id', orgId)).count || 0;
-  const locationsCount = locationsResult.count || 0;
+  const locationsCount = facilitiesResult.count || 0;
   const crewsCount = crewsResult.count || 0;
   const walkthroughsCount = walkthroughsResult.count || 0;
   const todaysSchedules = schedulesResult.data || [];
@@ -108,9 +110,9 @@ export async function getOperatorDashboardData(
   const completedInspectionsCount = (await supabase.from('inspections').select('*', { count: 'exact', head: true }).eq('org_id', orgId).not('total_score', 'is', null)).count || 0;
   const avgScore = inspectionScores.length > 0 ? inspectionScores.reduce((sum, i) => sum + (i.total_score || 0), 0) / inspectionScores.length : undefined;
 
-  const formattedSchedules: ScheduleItem[] = todaysSchedules.map((s: { id: string; locations?: { name: string } | null; crews?: { name: string } | null }) => ({
+  const formattedSchedules: ScheduleItem[] = todaysSchedules.map((s: { id: string; facilities?: { name: string } | null; crews?: { name: string } | null }) => ({
     id: s.id,
-    location_name: (s.locations as { name?: string } | null)?.name || 'Unknown Location',
+    location_name: (s.facilities as { name?: string } | null)?.name || 'Unknown Facility',
     crew_name: (s.crews as { name?: string } | null)?.name ?? null,
     status: 'pending' as const,
   }));
@@ -122,12 +124,12 @@ export async function getOperatorDashboardData(
   }));
 
   const activities: ActivityItem[] = [];
-  recentInspections.forEach((insp: { id: string; total_score: number | null; completed_at?: string; created_at: string; locations?: { name?: string } | null }) => {
+  recentInspections.forEach((insp: { id: string; total_score: number | null; completed_at?: string; created_at: string; facilities?: { name?: string } | null }) => {
     activities.push({
       id: insp.id,
       type: 'inspection',
       action: insp.total_score !== null ? 'Inspection completed' : 'Inspection started',
-      description: (insp.locations as { name?: string } | null)?.name || 'Unknown Location',
+      description: (insp.facilities as { name?: string } | null)?.name || 'Unknown Facility',
       timestamp: (insp as { completed_at?: string }).completed_at || insp.created_at || '',
       href: `/app/inspections/${insp.id}`,
       status: insp.total_score !== null ? 'completed' : 'pending',
@@ -167,6 +169,7 @@ export async function getOperatorDashboardData(
     schedules: useSampleData ? DEMO_SCHEDULE : formattedSchedules,
     activities: useSampleData ? DEMO_ACTIVITIES : activities,
     userName,
+    useSampleData,
   };
   } catch (err) {
     console.error('getOperatorDashboardData failed:', err);
@@ -176,6 +179,7 @@ export async function getOperatorDashboardData(
       schedules: DEMO_SCHEDULE,
       activities: DEMO_ACTIVITIES,
       userName: user?.user_metadata?.full_name?.split(' ')[0] || 'there',
+      useSampleData: true,
     };
   }
 }

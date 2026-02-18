@@ -14,6 +14,7 @@ import {
   Truck
 } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils';
+import { getCategoryBadgeClass } from '@/lib/category-colors';
 
 export default async function ProductsPage({
   searchParams,
@@ -57,7 +58,7 @@ export default async function ProductsPage({
           <ArrowLeft className="h-5 w-5 text-gray-600" />
         </Link>
         <div className="flex-1">
-          <h1 className="text-2xl font-bold text-gray-900">Products</h1>
+          <h1 className="text-2xl font-bold text-foreground">Products</h1>
           <p className="text-gray-600">Manage your product catalog</p>
         </div>
         <Link href="/app/supplies/products/new">
@@ -109,7 +110,7 @@ export default async function ProductsPage({
                         <Package className="h-5 w-5 text-emerald-600" />
                       </div>
                       <div>
-                        <h3 className="font-semibold text-gray-900 group-hover:text-emerald-600">
+                        <h3 className="font-semibold text-foreground group-hover:text-emerald-600">
                           {product.name}
                         </h3>
                         {product.sku && (
@@ -144,7 +145,9 @@ export default async function ProductsPage({
 
                   {product.category && (
                     <div className="mt-3 pt-3 border-t">
-                      <Badge variant="outline">{product.category}</Badge>
+                      <Badge variant="outline" className={getCategoryBadgeClass(product.category)}>
+                        {product.category}
+                      </Badge>
                     </div>
                   )}
 
@@ -160,7 +163,7 @@ export default async function ProductsPage({
         <Card>
           <CardContent className="py-16 text-center">
             <Package className="h-16 w-16 mx-auto text-gray-300 mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">No products yet</h3>
+            <h3 className="text-lg font-semibold text-foreground mb-2">No products yet</h3>
             <p className="text-gray-500 mb-6">Add products to your catalog to start ordering</p>
             <Link href="/app/supplies/products/new">
               <Button>

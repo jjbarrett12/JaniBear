@@ -78,8 +78,8 @@ export default async function InvoicesPage({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Invoices</h1>
-          <p className="text-gray-600 mt-2">Create and manage customer invoices</p>
+          <h1 className="text-3xl font-bold text-foreground">Invoices</h1>
+          <p className="text-muted-foreground mt-2">Create and manage customer invoices</p>
         </div>
         <Link href="/app/admin/invoices/new">
           <Button size="lg" className="h-14 text-lg">
@@ -92,15 +92,15 @@ export default async function InvoicesPage({
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-gray-600">Draft</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Draft</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-gray-600">{draftCount || 0}</div>
+            <div className="text-3xl font-bold text-muted-foreground">{draftCount || 0}</div>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-gray-600">Paid</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Paid</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-green-600">{paidCount || 0}</div>
@@ -108,7 +108,7 @@ export default async function InvoicesPage({
         </Card>
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-gray-600">Overdue</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Overdue</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-red-600">{overdueCount || 0}</div>
@@ -116,7 +116,7 @@ export default async function InvoicesPage({
         </Card>
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-gray-600">Total Paid</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Total Paid</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-blue-600">

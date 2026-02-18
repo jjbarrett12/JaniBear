@@ -28,7 +28,7 @@ export default async function ProGearOrdersPage({
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Order history</h1>
+      <h1 className="text-2xl font-bold text-foreground">Order history</h1>
 
       {paid && (
         <Card className="border-green-200 bg-green-50/50 dark:border-green-900 dark:bg-green-950/20">

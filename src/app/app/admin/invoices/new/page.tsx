@@ -30,7 +30,7 @@ export default async function NewInvoicePage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Create Invoice</h1>
+        <h1 className="text-3xl font-bold text-foreground">Create Invoice</h1>
         <p className="text-gray-600 mt-2">Create a new customer invoice</p>
       </div>
       <InvoiceForm locations={locations || []} />

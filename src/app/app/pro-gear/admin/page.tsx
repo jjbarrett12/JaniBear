@@ -19,7 +19,7 @@ export default async function ProGearAdminPage() {
 
   return (
     <div className="space-y-4">
-      <h1 className="text-2xl font-bold">Pro Gear — Product list</h1>
+      <h1 className="text-2xl font-bold text-foreground">Pro Gear — Product list</h1>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>

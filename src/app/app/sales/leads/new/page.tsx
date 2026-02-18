@@ -71,7 +71,7 @@ export default function NewLeadPage() {
           </Button>
         </Link>
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Import Lead</h1>
+          <h1 className="text-3xl font-bold text-foreground">Import Lead</h1>
           <p className="text-gray-600 mt-1">Add a lead via paste, email, voice, scan, or 3rd party</p>
         </div>
       </div>

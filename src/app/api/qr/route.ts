@@ -2,15 +2,16 @@ import QRCode from 'qrcode';
 import { NextResponse } from 'next/server';
 
 /**
- * GET /api/qr?location=UUID
- * Returns a PNG QR code that links to the public ticket form for this location.
- * Used on location detail page so companies can print/display the QR.
+ * GET /api/qr?location=UUID or ?facility=UUID
+ * Returns a PNG QR code that links to the public ticket form for this location/facility.
  */
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const locationId = searchParams.get('location');
-  if (!locationId) {
-    return NextResponse.json({ error: 'Missing location' }, { status: 400 });
+  const facilityId = searchParams.get('facility');
+  const ticketSlug = facilityId ?? locationId;
+  if (!ticketSlug) {
+    return NextResponse.json({ error: 'Missing location or facility' }, { status: 400 });
   }
 
   const baseUrl =
@@ -18,7 +19,7 @@ export async function GET(request: Request) {
     (request.headers.get('x-forwarded-proto') && request.headers.get('host')
       ? `${request.headers.get('x-forwarded-proto')}://${request.headers.get('host')}`
       : 'https://janibear.com');
-  const ticketUrl = `${baseUrl.replace(/\/$/, '')}/ticket/${locationId}`;
+  const ticketUrl = `${baseUrl.replace(/\/$/, '')}/ticket/${ticketSlug}`;
 
   try {
     const png = await QRCode.toBuffer(ticketUrl, {

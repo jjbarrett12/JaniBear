@@ -20,14 +20,14 @@ import { ArrowLeft, Loader2 } from 'lucide-react';
 
 interface NewTicketFormProps {
   orgId: string;
-  locations: Array<{ id: string; name: string }>;
+  facilities: Array<{ id: string; name: string }>;
 }
 
-export function NewTicketForm({ orgId, locations }: NewTicketFormProps) {
+export function NewTicketForm({ orgId, facilities }: NewTicketFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [locationId, setLocationId] = useState<string>('');
+  const [facilityId, setFacilityId] = useState<string>('');
   const [priority, setPriority] = useState<string>('medium');
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -37,8 +37,8 @@ export function NewTicketForm({ orgId, locations }: NewTicketFormProps) {
     const title = (form.querySelector<HTMLInputElement>('[name="title"]')?.value ?? '').trim();
     const description = (form.querySelector<HTMLInputElement>('[name="description"]')?.value ?? '').trim() || null;
 
-    if (!locationId || !title) {
-      setError('Please select a location and enter a title.');
+    if (!facilityId || !title) {
+      setError('Please select a facility and enter a title.');
       return;
     }
 
@@ -48,7 +48,7 @@ export function NewTicketForm({ orgId, locations }: NewTicketFormProps) {
       .from('service_tickets')
       .insert({
         org_id: orgId,
-        location_id: locationId,
+        facility_id: facilityId,
         title,
         description,
         priority,
@@ -77,26 +77,26 @@ export function NewTicketForm({ orgId, locations }: NewTicketFormProps) {
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <Label htmlFor="location_id">Location *</Label>
+            <Label htmlFor="facility_id">Facility *</Label>
             <Select
-              value={locationId}
-              onValueChange={setLocationId}
-              disabled={locations.length === 0}
+              value={facilityId}
+              onValueChange={setFacilityId}
+              disabled={facilities.length === 0}
             >
-              <SelectTrigger id="location_id" className="mt-1">
-                <SelectValue placeholder="Select location" />
+              <SelectTrigger id="facility_id" className="mt-1">
+                <SelectValue placeholder="Select facility" />
               </SelectTrigger>
               <SelectContent>
-                {locations.map((loc) => (
-                  <SelectItem key={loc.id} value={loc.id}>
-                    {loc.name}
+                {facilities.map((fac) => (
+                  <SelectItem key={fac.id} value={fac.id}>
+                    {fac.name}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
-            {locations.length === 0 && (
+            {facilities.length === 0 && (
               <p className="text-sm text-amber-600 dark:text-amber-400 mt-1">
-                Add a location first under Locations.
+                Add a facility first under Accounts.
               </p>
             )}
           </div>

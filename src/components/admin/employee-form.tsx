@@ -21,7 +21,6 @@ import Image from 'next/image';
 const LOCALES: Locale[] = ['en', 'es', 'pt', 'it', 'ru', 'uk', 'zh', 'vi', 'tl', 'fr', 'ar', 'ko'];
 
 const employeeSchema = z.object({
-  employee_number: z.string().optional(),
   first_name: z.string().min(1, 'First name is required'),
   last_name: z.string().min(1, 'Last name is required'),
   email: z.string().email('Invalid email').optional().or(z.literal('')),
@@ -32,7 +31,9 @@ const employeeSchema = z.object({
   role: z.enum(['employee', 'supervisor', 'manager', 'admin']),
   department: z.string().optional(),
   position: z.string().optional(),
+  pay_type: z.enum(['hourly', 'salary']),
   hourly_rate: z.string().optional(),
+  salary_amount: z.string().optional(),
   language_preference: z.enum(['en', 'es', 'pt', 'it', 'ru', 'uk', 'zh', 'vi', 'tl', 'fr', 'ar', 'ko']),
   emergency_contact_name: z.string().optional(),
   emergency_contact_phone: z.string().optional(),
@@ -64,7 +65,6 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
     resolver: zodResolver(employeeSchema),
     defaultValues: employee
       ? {
-          employee_number: employee.employee_number || '',
           first_name: employee.first_name || '',
           last_name: employee.last_name || '',
           email: employee.email || '',
@@ -75,7 +75,9 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
           role: employee.role || 'employee',
           department: employee.department || '',
           position: employee.position || '',
+          pay_type: employee.pay_type || 'hourly',
           hourly_rate: employee.hourly_rate?.toString() || '',
+          salary_amount: employee.salary_amount?.toString() || '',
           language_preference: employee.language_preference || 'en',
           emergency_contact_name: employee.emergency_contact_name || '',
           emergency_contact_phone: employee.emergency_contact_phone || '',
@@ -84,6 +86,7 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
       : {
           status: 'active',
           role: 'employee',
+          pay_type: 'hourly',
           language_preference: 'en',
         },
   });
@@ -140,7 +143,6 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
 
       const employeeData = {
         org_id: orgMember.org_id,
-        employee_number: data.employee_number || null,
         first_name: data.first_name,
         last_name: data.last_name,
         email: data.email || null,
@@ -151,7 +153,9 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
         role: data.role,
         department: data.department || null,
         position: data.position || null,
-        hourly_rate: data.hourly_rate ? parseFloat(data.hourly_rate) : null,
+        pay_type: data.pay_type,
+        hourly_rate: data.pay_type === 'hourly' && data.hourly_rate ? parseFloat(data.hourly_rate) : null,
+        salary_amount: data.pay_type === 'salary' && data.salary_amount ? parseFloat(data.salary_amount) : null,
         language_preference: data.language_preference,
         photo_url: photoUrl,
         emergency_contact_name: data.emergency_contact_name || null,
@@ -204,15 +208,6 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="employee_number">Employee Number</Label>
-                  <Input
-                    id="employee_number"
-                    {...register('employee_number')}
-                    placeholder="EMP-001"
-                    className="h-14"
-                  />
-                </div>
                 <div>
                   <Label htmlFor="status">Status</Label>
                   <Select
@@ -335,16 +330,49 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
                     className="h-14"
                   />
                 </div>
-                <div>
-                  <Label htmlFor="hourly_rate">Hourly Rate</Label>
-                  <Input
-                    id="hourly_rate"
-                    type="number"
-                    step="0.01"
-                    {...register('hourly_rate')}
-                    className="h-14"
-                  />
-                </div>
+              </div>
+              <div className="space-y-4">
+                <Label>Pay type</Label>
+                <Select
+                  value={watch('pay_type')}
+                  onValueChange={(v) => setValue('pay_type', v as 'hourly' | 'salary')}
+                >
+                  <SelectTrigger className="h-14">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="hourly">Hourly</SelectItem>
+                    <SelectItem value="salary">Salary</SelectItem>
+                  </SelectContent>
+                </Select>
+                {watch('pay_type') === 'hourly' ? (
+                  <div>
+                    <Label htmlFor="hourly_rate">Hourly rate ($)</Label>
+                    <Input
+                      id="hourly_rate"
+                      type="number"
+                      step="0.01"
+                      min={0}
+                      {...register('hourly_rate')}
+                      className="h-14"
+                      placeholder="e.g. 18.50"
+                    />
+                  </div>
+                ) : (
+                  <div>
+                    <Label htmlFor="salary_amount">Annual salary ($)</Label>
+                    <Input
+                      id="salary_amount"
+                      type="number"
+                      step="0.01"
+                      min={0}
+                      {...register('salary_amount')}
+                      className="h-14"
+                      placeholder="e.g. 42000"
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">Used in Financial Health for labor cost and cashflow</p>
+                  </div>
+                )}
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

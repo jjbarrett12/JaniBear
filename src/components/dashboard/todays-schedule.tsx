@@ -55,7 +55,7 @@ export function TodaysSchedule({ items }: TodaysScheduleProps) {
               <Calendar className="h-5 w-5 text-white" />
             </div>
             <div>
-              <CardTitle className="text-lg font-semibold text-gray-900 dark:text-white">
+              <CardTitle className="text-lg font-semibold text-foreground dark:text-white">
                 {t('todaysSchedule')}
               </CardTitle>
               <p className="text-sm text-gray-500 dark:text-gray-400">{today}</p>
@@ -72,7 +72,7 @@ export function TodaysSchedule({ items }: TodaysScheduleProps) {
                     <div className={`mt-0.5 w-2 h-2 rounded-full ${item.status === 'completed' ? 'bg-emerald-500' : item.status === 'in_progress' ? 'bg-blue-500' : 'bg-gray-300 dark:bg-gray-500'}`} />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between gap-2">
-                        <p className="font-medium text-gray-900 dark:text-white truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                        <p className="font-medium text-foreground dark:text-white truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
                           {item.location_name}
                         </p>
                         <Badge variant="secondary" className={`${color} text-xs shrink-0`}>

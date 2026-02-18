@@ -27,7 +27,7 @@ export default async function VendorDetailPage({ params }: { params: Promise<{ i
           <ArrowLeft className="h-5 w-5 text-gray-600" />
         </Link>
         <div className="flex-1">
-          <h1 className="text-2xl font-bold text-gray-900">Edit Vendor</h1>
+          <h1 className="text-2xl font-bold text-foreground">Edit Vendor</h1>
           <p className="text-gray-600">{vendor.name}</p>
         </div>
       </div>

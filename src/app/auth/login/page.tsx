@@ -18,17 +18,8 @@ export default async function LoginPage() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-10 sm:py-12 relative overflow-hidden">
-      {/* Background: subtle grid + gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-zinc-50 via-white to-amber-50/50 dark:from-gray-950 dark:via-gray-900 dark:to-amber-950/20" aria-hidden />
-      <div
-        className="absolute inset-0 opacity-[0.02] dark:opacity-[0.04]"
-        style={{
-          backgroundImage: `linear-gradient(to right, #0f172a 1px, transparent 1px),
-            linear-gradient(to bottom, #0f172a 1px, transparent 1px)`,
-          backgroundSize: '24px 24px',
-        }}
-        aria-hidden
-      />
+      {/* Background: clean gradient, no grid */}
+      <div className="absolute inset-0 bg-gradient-to-b from-white to-amber-50/40 dark:from-gray-950 dark:to-amber-950/10" aria-hidden />
       <div className="w-full max-w-[420px] relative z-10">
         <div className="text-center mb-8">
           <div className="flex justify-center [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block" style={{ lineHeight: 0 }}>

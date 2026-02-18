@@ -78,7 +78,7 @@ export default async function SalesCadencePage() {
           </Button>
         </Link>
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground">
             Sales Cadence
           </h1>
           <p className="text-gray-500 dark:text-gray-400 mt-1">
@@ -117,7 +117,7 @@ export default async function SalesCadencePage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                       <Icon className="h-4 w-4 text-gray-500" />
-                      <span className="font-medium text-gray-900 dark:text-white">
+                      <span className="font-medium text-foreground">
                         Touch {step.step_number}: {label}
                       </span>
                       {step.delay_days > 0 && (

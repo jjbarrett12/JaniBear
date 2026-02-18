@@ -74,7 +74,7 @@ export default async function NewOrderPage({
           <ArrowLeft className="h-5 w-5 text-gray-600" />
         </Link>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Create Purchase Order</h1>
+          <h1 className="text-2xl font-bold text-foreground">Create Purchase Order</h1>
           <p className="text-gray-600">
             {selectedClient 
               ? `Order for ${selectedClient.name}`

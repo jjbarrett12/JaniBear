@@ -20,7 +20,7 @@ export default async function ProGearHomePage() {
   return (
     <>
       <header className="mb-8">
-        <h1 className="text-2xl font-bold tracking-tight md:text-3xl">
+        <h1 className="text-2xl font-bold tracking-tight md:text-3xl text-foreground">
           Member Pro Gear
         </h1>
         <p className="mt-1 text-muted-foreground">

@@ -20,9 +20,24 @@ export const viewport: Viewport = {
   themeColor: "#3b82f6",
 };
 
+const siteUrl = process.env.NEXT_PUBLIC_APP_URL || "https://janibear.com";
+
 export const metadata: Metadata = {
-  title: "JANIBEAR - Janitorial Quality Inspection",
-  description: "Mobile-first janitorial quality inspection and task management SaaS",
+  title: "JANIBEAR – AI Software for Janitorial Sales & Operations",
+  description: "AI software for janitorial sales and operations. Bidding, inspections, quality proof, and automation built for serious cleaning companies.",
+  metadataBase: new URL(siteUrl),
+  openGraph: {
+    title: "JANIBEAR – AI Software for Janitorial Sales & Operations",
+    description: "AI software for janitorial sales and operations. Bidding, inspections, quality proof, and automation built for serious cleaning companies.",
+    url: siteUrl,
+    siteName: "JANIBEAR",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "JANIBEAR – AI Software for Janitorial Sales & Operations",
+    description: "AI software for janitorial sales and operations. Bidding, inspections, quality proof, and automation built for serious cleaning companies.",
+  },
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,

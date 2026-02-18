@@ -39,7 +39,7 @@ export function SuppliesWidget({
               <div className="p-2 rounded-lg bg-gradient-to-br from-teal-500 to-emerald-600 shadow-md">
                 <Package className="h-5 w-5 text-white" />
               </div>
-              <CardTitle className="text-lg font-semibold text-gray-900 dark:text-white">
+              <CardTitle className="text-lg font-semibold text-foreground dark:text-white">
                 Supplies
               </CardTitle>
             </div>
@@ -60,21 +60,21 @@ export function SuppliesWidget({
             <Link href="/app/supplies/vendors">
               <div className="flex flex-col items-center p-2 rounded-lg bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                 <Truck className="h-4 w-4 text-blue-500 mb-1" />
-                <span className="text-lg font-bold text-gray-900 dark:text-white">{vendorsCount}</span>
+                <span className="text-lg font-bold text-foreground dark:text-white">{vendorsCount}</span>
                 <span className="text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-wide">Vendors</span>
               </div>
             </Link>
             <Link href="/app/supplies/products">
               <div className="flex flex-col items-center p-2 rounded-lg bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                 <Package className="h-4 w-4 text-emerald-500 mb-1" />
-                <span className="text-lg font-bold text-gray-900 dark:text-white">{productsCount}</span>
+                <span className="text-lg font-bold text-foreground dark:text-white">{productsCount}</span>
                 <span className="text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-wide">Products</span>
               </div>
             </Link>
             <Link href="/app/supplies/customers">
               <div className="flex flex-col items-center p-2 rounded-lg bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                 <Users className="h-4 w-4 text-violet-500 mb-1" />
-                <span className="text-lg font-bold text-gray-900 dark:text-white">{clientsCount}</span>
+                <span className="text-lg font-bold text-foreground dark:text-white">{clientsCount}</span>
                 <span className="text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-wide">Customers</span>
               </div>
             </Link>
@@ -92,7 +92,7 @@ export function SuppliesWidget({
                     <div className="flex items-center justify-between py-2 px-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors group">
                       <div className="flex items-center gap-2 min-w-0">
                         <ShoppingCart className="h-3.5 w-3.5 text-amber-500 shrink-0" />
-                        <span className="text-sm font-medium text-gray-900 dark:text-white truncate group-hover:text-teal-600 dark:group-hover:text-teal-400">
+                        <span className="text-sm font-medium text-foreground dark:text-white truncate group-hover:text-teal-600 dark:group-hover:text-teal-400">
                           {order.po_number || 'PO'}
                         </span>
                         <Badge

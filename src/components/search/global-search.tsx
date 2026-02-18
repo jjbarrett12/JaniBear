@@ -74,20 +74,20 @@ export function GlobalSearch() {
 
         // Search locations
         const { data: locations } = await supabase
-          .from('locations')
-          .select('id, name, address, city')
+          .from('facilities')
+          .select('id, name, address_line1, city, account_id')
           .eq('org_id', membership.org_id)
           .ilike('name', `%${query}%`)
           .limit(5);
 
         if (locations) {
-          locations.forEach((loc) => {
+          locations.forEach((loc: { id: string; name: string; address_line1?: string; city?: string; account_id?: string }) => {
             searchResults.push({
               id: loc.id,
               type: 'location',
               title: loc.name,
-              subtitle: loc.address || loc.city || undefined,
-              href: `/app/locations/${loc.id}`,
+              subtitle: loc.address_line1 || loc.city || undefined,
+              href: loc.account_id ? `/app/accounts/${loc.account_id}/facilities/${loc.id}` : '/app/accounts',
             });
           });
         }
@@ -95,26 +95,26 @@ export function GlobalSearch() {
         // Search inspections
         const { data: inspections } = await supabase
           .from('inspections')
-          .select('id, location_id, completed_at, score')
+          .select('id, facility_id, completed_at, total_score')
           .eq('org_id', membership.org_id)
           .order('completed_at', { ascending: false })
           .limit(5);
 
         if (inspections) {
-          const locationIds = inspections.map((i) => i.location_id).filter(Boolean);
+          const facilityIds = inspections.map((i) => i.facility_id).filter(Boolean);
           const { data: locs } = await supabase
-            .from('locations')
+            .from('facilities')
             .select('id, name')
-            .in('id', locationIds);
+            .in('id', facilityIds);
 
           const locationMap = new Map(locs?.map((l) => [l.id, l.name]) || []);
 
           inspections.forEach((insp) => {
-            const locationName = locationMap.get(insp.location_id || '') || 'Unknown Location';
+            const facilityName = locationMap.get(insp.facility_id || '') || 'Unknown Facility';
             searchResults.push({
               id: insp.id,
               type: 'inspection',
-              title: `Inspection - ${locationName}`,
+              title: `Inspection - ${facilityName}`,
               subtitle: insp.completed_at ? formatDate(insp.completed_at) : 'In Progress',
               href: `/app/inspections/${insp.id}`,
             });
@@ -217,7 +217,7 @@ export function GlobalSearch() {
                   >
                     <Icon className="h-5 w-5 text-gray-400 flex-shrink-0" />
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900 truncate">
+                      <p className="text-sm font-medium text-foreground truncate">
                         {result.title}
                       </p>
                       {result.subtitle && (

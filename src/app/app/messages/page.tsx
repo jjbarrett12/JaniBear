@@ -21,7 +21,7 @@ export default async function MessagesInboxPage() {
     return (
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Messages</h1>
+          <h1 className="text-3xl font-bold text-foreground">Messages</h1>
           <Link href="/app/messages/new">
             <Button>
               <Plus className="h-4 w-4 mr-2" />
@@ -83,7 +83,7 @@ export default async function MessagesInboxPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Messages</h1>
+        <h1 className="text-3xl font-bold text-foreground">Messages</h1>
         <Link href="/app/messages/new">
           <Button>
             <Plus className="h-4 w-4 mr-2" />
@@ -104,7 +104,7 @@ export default async function MessagesInboxPage() {
                   <MessageCircle className="h-5 w-5" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium text-gray-900 dark:text-white truncate">
+                  <p className="font-medium text-foreground truncate">
                     {otherByConv[conv.id] || (conv.type === 'client' ? 'Client' : 'Crew')}
                   </p>
                   <p className="text-sm text-gray-500 dark:text-gray-400 truncate">

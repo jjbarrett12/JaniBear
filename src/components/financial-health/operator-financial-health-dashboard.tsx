@@ -27,19 +27,25 @@ import {
   getMockTopDrivers,
 } from '@/lib/financial-health-mock';
 import type { FinancialHealthFiltersState } from '@/components/financial-health/dashboard-filters';
+import type { EmployeeLaborSummary } from '@/lib/employee-labor-summary';
+
+const MOCK_REVENUE = 42800;
 
 /** Operator (franchisee + owner/operator) Financial Health dashboard. No franchisor content. */
-export function OperatorFinancialHealthDashboard() {
+export function OperatorFinancialHealthDashboard({ laborSummary }: { laborSummary?: EmployeeLaborSummary | null }) {
   const [filters, setFilters] = useState<FinancialHealthFiltersState>(defaultFilters);
 
-  const kpiStrip = getMockKpiStrip();
+  const monthlyLabor = laborSummary?.monthlyLaborDollars;
+  const laborPct = monthlyLabor != null && monthlyLabor > 0 ? (monthlyLabor / MOCK_REVENUE) * 100 : undefined;
+
+  const kpiStrip = getMockKpiStrip(laborPct);
   const revenue12 = getMockRevenue12Months();
   const topClients = getMockTop10Clients();
   const byVertical = getMockRevenueByVertical();
   const marginTrend = getMockMarginTrend();
-  const waterfall = getMockWaterfall();
+  const waterfall = getMockWaterfall(monthlyLabor);
   const contractProfit = getMockContractProfitability();
-  const laborTrend = getMockLaborTrend();
+  const laborTrend = getMockLaborTrend(laborPct);
   const overtime = getMockOvertimeWeekly();
   const bubbles = getMockAccountBubbles();
   const arAging = getMockArAging();
@@ -58,6 +64,11 @@ export function OperatorFinancialHealthDashboard() {
         <p className="text-sm text-muted-foreground">
           Are we profitable, stable, and pricing correctly—or are we bleeding? Answer in 10 seconds.
         </p>
+        {laborSummary && laborSummary.activeCount > 0 && (
+          <p className="text-xs text-muted-foreground">
+            Payroll from {laborSummary.activeCount} active employee{laborSummary.activeCount !== 1 ? 's' : ''} (hourly + salary) is included in Labor cost and Labor % of Revenue.
+          </p>
+        )}
       </div>
 
       <DashboardFilters

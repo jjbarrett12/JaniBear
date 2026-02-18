@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
@@ -40,6 +40,19 @@ export default function Home() {
 
   useEffect(() => {
     setMounted(true);
+  }, []);
+
+  // If Supabase sent a password-reset link to the Site URL (homepage), send to reset-password with hash and search preserved
+  useLayoutEffect(() => {
+    if (typeof window === 'undefined') return;
+    const { pathname, hash, search } = window.location;
+    if (pathname !== '/' || (!hash && !search)) return;
+    const isRecovery =
+      (hash && (hash.includes('type=recovery') || hash.includes('access_token=') || hash.includes('recovery'))) ||
+      (search && (search.includes('type=recovery') || search.includes('access_token=') || search.includes('recovery')));
+    if (isRecovery) {
+      window.location.replace(`/auth/reset-password${search}${hash}`);
+    }
   }, []);
 
   useEffect(() => {
@@ -177,24 +190,24 @@ export default function Home() {
         </div>
         <div className="absolute inset-0 pointer-events-none opacity-[0.03] hero-noise" aria-hidden />
         <div className="relative container mx-auto px-4 text-center">
-          <h1 className="max-w-3xl mx-auto space-y-0.5">
+          <h1 className="max-w-3xl mx-auto space-y-0.5 hero-headline-gradient">
             <span
-              className={`hero-headline block font-heading text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-white tracking-tight transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+              className={`hero-headline block font-heading text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
               style={{ transitionDelay: '0ms' }}
             >
-              Win more bids.
+              Win more cleaning contracts.
             </span>
             <span
-              className={`hero-headline block font-heading text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-white tracking-tight transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+              className={`hero-headline block font-heading text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
               style={{ transitionDelay: '80ms' }}
             >
-              Keep customers longer.
+              Prove your quality.
             </span>
             <span
-              className={`hero-headline block font-heading text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-white tracking-tight transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+              className={`hero-headline block font-heading text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
               style={{ transitionDelay: '160ms' }}
             >
-              Scale—without adding headcount.
+              Scale—without adding supervisors.
             </span>
           </h1>
 

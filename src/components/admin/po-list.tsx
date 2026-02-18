@@ -126,7 +126,7 @@ export function POList({ purchaseOrders: initialPOs }: POListProps) {
                             Expected: {formatDate(po.expected_delivery_date)}
                           </div>
                         )}
-                        <div className="flex items-center gap-1 text-gray-900 font-semibold">
+                        <div className="flex items-center gap-1 text-foreground font-semibold">
                           <DollarSign className="h-4 w-4" />
                           {formatCurrency(po.total_amount)}
                         </div>

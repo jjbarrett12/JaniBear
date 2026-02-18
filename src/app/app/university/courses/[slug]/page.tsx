@@ -40,7 +40,7 @@ export default async function UniversityCoursePage({
         </Link>
         <Card className="border-2 border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-950/30">
           <CardHeader>
-            <CardTitle className="text-gray-900 dark:text-white">Premium required</CardTitle>
+            <CardTitle className="text-foreground">Premium required</CardTitle>
             <p className="text-gray-600 dark:text-gray-400">
               This course is part of Jani-Bear University, included with Grizzly and Kodiak plans. Upgrade to unlock all courses.
             </p>
@@ -77,7 +77,7 @@ export default async function UniversityCoursePage({
           <Icon className="h-10 w-10 text-white" />
         </div>
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground">
             {course.title}
           </h1>
           <p className="text-gray-500 dark:text-gray-400 mt-1">{course.description}</p>

@@ -69,8 +69,8 @@ export default async function PurchaseOrdersPage({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Purchase Orders</h1>
-          <p className="text-gray-600 mt-2">Manage supply orders and PO numbers</p>
+          <h1 className="text-3xl font-bold text-foreground">Purchase Orders</h1>
+          <p className="text-muted-foreground mt-2">Manage supply orders and PO numbers</p>
         </div>
         <Link href="/app/admin/purchase-orders/new">
           <Button size="lg" className="h-14 text-lg">
@@ -83,15 +83,15 @@ export default async function PurchaseOrdersPage({
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-gray-600">Draft</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Draft</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-gray-600">{draftCount || 0}</div>
+            <div className="text-3xl font-bold text-muted-foreground">{draftCount || 0}</div>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-gray-600">Pending</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Pending</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-yellow-600">{pendingCount || 0}</div>
@@ -99,7 +99,7 @@ export default async function PurchaseOrdersPage({
         </Card>
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-gray-600">Ordered/In Transit</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Ordered/In Transit</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-blue-600">{orderedCount || 0}</div>

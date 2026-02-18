@@ -56,7 +56,7 @@ export default async function PODetailPage({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">{po.po_number}</h1>
+          <h1 className="text-3xl font-bold text-foreground">{po.po_number}</h1>
           <Badge className={getStatusColor(po.status)}>
             {po.status.replace('_', ' ')}
           </Badge>
@@ -114,7 +114,7 @@ export default async function PODetailPage({
                         <div className="flex-1">
                           <div className="font-semibold">{item.item_name}</div>
                           {item.description && (
-                            <div className="text-sm text-gray-600">{item.description}</div>
+                            <div className="text-sm text-muted-foreground">{item.description}</div>
                           )}
                           <div className="text-sm text-gray-500 mt-1">
                             {item.quantity} {item.unit} × {formatCurrency(item.unit_price)}
@@ -131,7 +131,7 @@ export default async function PODetailPage({
                     </div>
                   </>
                 ) : (
-                  <p className="text-gray-600">No items</p>
+                  <p className="text-muted-foreground">No items</p>
                 )}
               </div>
             </CardContent>

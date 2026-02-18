@@ -61,7 +61,7 @@ export function ServiceTicketDetail({ ticket: initialTicket, assignableUsers }: 
             {ticket.title}
           </h1>
           <p className="text-gray-600 dark:text-gray-400 mt-1">
-            {(ticket as any).locations?.name}
+            {(ticket as { facilities?: { name?: string } }).facilities?.name}
             {ticket.source === 'qr' && (
               <span className="inline-flex items-center gap-1 ml-2 text-sm text-primary">
                 <QrCode className="h-4 w-4" /> From QR
@@ -182,12 +182,14 @@ export function ServiceTicketDetail({ ticket: initialTicket, assignableUsers }: 
             </CardContent>
           </Card>
 
-          <Link href={`/app/locations/${ticket.location_id}`}>
-            <Button variant="outline" className="w-full">
-              <Ticket className="h-4 w-4 mr-2" />
-              View location & QR code
-            </Button>
-          </Link>
+          {ticket.facility_id && (ticket as { facilities?: { account_id: string } }).facilities?.account_id && (
+            <Link href={`/app/accounts/${(ticket as { facilities: { account_id: string } }).facilities.account_id}/facilities/${ticket.facility_id}`}>
+              <Button variant="outline" className="w-full">
+                <Ticket className="h-4 w-4 mr-2" />
+                View facility & QR code
+              </Button>
+            </Link>
+          )}
         </div>
       </div>
     </div>

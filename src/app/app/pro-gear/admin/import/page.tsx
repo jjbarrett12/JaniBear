@@ -4,7 +4,7 @@ import { ProGearImportForm } from '@/components/pro-gear/admin-import-form';
 export default function ProGearAdminImportPage() {
   return (
     <div className="max-w-2xl space-y-4">
-      <h1 className="text-2xl font-bold">Import products (CSV)</h1>
+      <h1 className="text-2xl font-bold text-foreground">Import products (CSV)</h1>
       <Card>
         <CardHeader>
           <CardTitle className="text-base">Upload CSV</CardTitle>

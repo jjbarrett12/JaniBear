@@ -9,21 +9,22 @@ import { formatDate } from '@/lib/utils';
 export default async function TicketsPage({
   searchParams,
 }: {
-  searchParams: { location?: string; status?: string };
+  searchParams: Promise<{ facility?: string; status?: string }> | { facility?: string; status?: string };
 }) {
   const org = await requireOrg();
   const supabase = await createClient();
+  const resolved = typeof (searchParams as Promise<unknown>)?.then === 'function' ? await (searchParams as Promise<{ facility?: string; status?: string }>) : (searchParams as { facility?: string; status?: string });
 
   let query = supabase
     .from('service_tickets')
-    .select('*, locations(name), profiles(full_name)')
+    .select('*, facilities(name, account_id), profiles(full_name)')
     .eq('org_id', org.org_id);
 
-  if (searchParams.location) {
-    query = query.eq('location_id', searchParams.location);
+  if (resolved.facility) {
+    query = query.eq('facility_id', resolved.facility);
   }
-  if (searchParams.status) {
-    query = query.eq('status', searchParams.status);
+  if (resolved.status) {
+    query = query.eq('status', resolved.status);
   }
 
   const { data: tickets } = await query.order('created_at', { ascending: false });
@@ -44,7 +45,7 @@ export default async function TicketsPage({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Service Tickets</h1>
+          <h1 className="text-3xl font-bold text-foreground">Service Tickets</h1>
           <p className="text-gray-600 dark:text-gray-400 mt-1">
             Requests from QR scans and manual entries — track and resolve
           </p>
@@ -59,22 +60,22 @@ export default async function TicketsPage({
 
       <div className="flex flex-wrap gap-2">
         <Link href="/app/tickets">
-          <Button variant={!searchParams.status ? 'default' : 'outline'} size="sm">
+          <Button variant={!resolved.status ? 'default' : 'outline'} size="sm">
             All
           </Button>
         </Link>
         <Link href="/app/tickets?status=open">
-          <Button variant={searchParams.status === 'open' ? 'default' : 'outline'} size="sm">
+          <Button variant={resolved.status === 'open' ? 'default' : 'outline'} size="sm">
             Open
           </Button>
         </Link>
         <Link href="/app/tickets?status=in_progress">
-          <Button variant={searchParams.status === 'in_progress' ? 'default' : 'outline'} size="sm">
+          <Button variant={resolved.status === 'in_progress' ? 'default' : 'outline'} size="sm">
             In Progress
           </Button>
         </Link>
         <Link href="/app/tickets?status=resolved">
-          <Button variant={searchParams.status === 'resolved' ? 'default' : 'outline'} size="sm">
+          <Button variant={resolved.status === 'resolved' ? 'default' : 'outline'} size="sm">
             Resolved
           </Button>
         </Link>
@@ -104,7 +105,7 @@ export default async function TicketsPage({
                       <div className="flex flex-wrap gap-4 text-sm text-gray-500 dark:text-gray-400">
                         <span className="flex items-center gap-1">
                           <MapPin className="h-4 w-4 shrink-0" />
-                          {(ticket as any).locations?.name}
+                          {(ticket as { facilities?: { name?: string } }).facilities?.name}
                         </span>
                         {ticket.contact_name && (
                           <span className="flex items-center gap-1">
@@ -146,12 +147,11 @@ export default async function TicketsPage({
           <CardContent className="py-12 text-center">
             <Ticket className="h-12 w-12 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
             <p className="text-gray-500 dark:text-gray-400 mb-2">No service tickets yet</p>
-            <p className="text-sm text-gray-500 dark:text-gray-400 max-w-md mx-auto">
-              Tickets are created when someone scans a location QR code or you add one manually from a
-              location page.
+            <p className="text-sm text-muted-foreground max-w-md mx-auto">
+              Tickets are created when someone scans a facility QR code or you add one manually.
             </p>
-            <Link href="/app/locations" className="mt-4 inline-block">
-              <Button variant="outline">View locations & QR codes</Button>
+            <Link href="/app/accounts" className="mt-4 inline-block">
+              <Button variant="outline">View accounts & facilities</Button>
             </Link>
           </CardContent>
         </Card>

@@ -40,7 +40,7 @@ export default async function EditEmployeePage({
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Edit Employee</h1>
+        <h1 className="text-3xl font-bold text-foreground">Edit Employee</h1>
         <p className="text-gray-600 mt-2">Update employee information</p>
       </div>
       <EmployeeForm employee={employee} />

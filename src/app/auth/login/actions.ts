@@ -1,16 +1,15 @@
 'use server';
 
-import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { cookies } from 'next/headers';
 
 const REMEMBER_EMAIL_COOKIE = 'janibear_remember_email';
 
-export type SignInState = { error?: string; code?: string };
+export type SignInState = { error?: string; code?: string; redirect?: string };
 
 /**
  * Email/password sign-in runs on the server so the session is written to cookies
- * in the same response. No client-side session → cookie race.
+ * in the same response. Returns redirect URL on success so client can navigate (more reliable than redirect() from action).
  */
 export async function signInWithPasswordAction(
   _prev: SignInState | null,
@@ -49,18 +48,21 @@ export async function signInWithPasswordAction(
     return { error: 'Sign in failed. Please try again.' };
   }
 
-  const cookieStore = await cookies();
-
-  if (rememberMe) {
-    cookieStore.set(REMEMBER_EMAIL_COOKIE, email, {
-      path: '/',
-      maxAge: 60 * 60 * 24 * 365,
-      sameSite: 'lax',
-      secure: process.env.NODE_ENV === 'production',
-    });
-  } else {
-    cookieStore.delete(REMEMBER_EMAIL_COOKIE);
+  try {
+    const cookieStore = await cookies();
+    if (rememberMe) {
+      cookieStore.set(REMEMBER_EMAIL_COOKIE, email, {
+        path: '/',
+        maxAge: 60 * 60 * 24 * 365,
+        sameSite: 'lax',
+        secure: process.env.NODE_ENV === 'production',
+      });
+    } else {
+      cookieStore.delete(REMEMBER_EMAIL_COOKIE);
+    }
+  } catch {
+    // Cookie set/delete can fail in some Server Action contexts; still allow login
   }
 
-  redirect('/api/auth/landing');
+  return { redirect: '/api/auth/landing' };
 }

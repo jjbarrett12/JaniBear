@@ -2,7 +2,7 @@
 
 import { Card, CardContent } from '@/components/ui/card';
 import type { KpiTileData } from '@/lib/financial-health-mock';
-import { healthBorderClass } from '@/lib/financial-health';
+import { healthBorderClass, healthTextClass } from '@/lib/financial-health';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 import { useMemo } from 'react';
 

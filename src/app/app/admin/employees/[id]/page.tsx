@@ -63,12 +63,9 @@ export default async function EmployeeDetailPage({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">
+          <h1 className="text-3xl font-bold text-foreground">
             {employee.first_name} {employee.last_name}
           </h1>
-          {employee.employee_number && (
-            <p className="text-gray-600 mt-1">#{employee.employee_number}</p>
-          )}
         </div>
         <Link href={`/app/admin/employees/${employee.id}/edit`}>
           <Button size="lg" className="h-14 text-lg">
@@ -141,13 +138,24 @@ export default async function EmployeeDetailPage({
                   <div className="font-medium">{employee.department}</div>
                 </div>
               )}
-              {employee.hourly_rate && (
+              {(employee.pay_type === 'salary' && employee.salary_amount != null) && (
                 <div className="flex items-center gap-3">
                   <DollarSign className="h-5 w-5 text-gray-400" />
                   <div>
-                    <div className="text-sm text-gray-500">Hourly Rate</div>
+                    <div className="text-sm text-gray-500">Pay</div>
                     <div className="font-medium">
-                      ${employee.hourly_rate.toFixed(2)}/hour
+                      ${Number(employee.salary_amount).toLocaleString()}/year
+                    </div>
+                  </div>
+                </div>
+              )}
+              {(employee.pay_type !== 'salary' && employee.hourly_rate != null) && (
+                <div className="flex items-center gap-3">
+                  <DollarSign className="h-5 w-5 text-gray-400" />
+                  <div>
+                    <div className="text-sm text-gray-500">Pay</div>
+                    <div className="font-medium">
+                      ${Number(employee.hourly_rate).toFixed(2)}/hour
                     </div>
                   </div>
                 </div>

@@ -23,7 +23,7 @@ export default async function NewPOPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Create Purchase Order</h1>
+        <h1 className="text-3xl font-bold text-foreground">Create Purchase Order</h1>
         <p className="text-gray-600 mt-2">Create a new purchase order for supplies</p>
       </div>
       <POForm />

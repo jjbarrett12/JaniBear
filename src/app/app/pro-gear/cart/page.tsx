@@ -24,7 +24,7 @@ export default async function ProGearCartPage() {
   if (!order) {
     return (
       <div className="space-y-4">
-        <h1 className="text-2xl font-bold">Cart</h1>
+        <h1 className="text-2xl font-bold text-foreground">Cart</h1>
         <Card>
           <CardContent className="py-8 text-center text-muted-foreground">
             Your cart is empty.
@@ -50,7 +50,7 @@ export default async function ProGearCartPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Cart</h1>
+      <h1 className="text-2xl font-bold text-foreground">Cart</h1>
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2">
           <Card>

@@ -47,7 +47,7 @@ export default async function CrewDetailPage({
           </Button>
         </Link>
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Edit Crew</h1>
+          <h1 className="text-3xl font-bold text-foreground">Edit Crew</h1>
           <p className="text-gray-600 dark:text-gray-400 mt-1">Update crew details and add or remove members</p>
         </div>
       </div>

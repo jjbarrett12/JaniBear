@@ -6,8 +6,8 @@ export default async function NewTicketPage() {
   const org = await requireOrg();
   const supabase = await createClient();
 
-  const { data: locations } = await supabase
-    .from('locations')
+  const { data: facilities } = await supabase
+    .from('facilities')
     .select('id, name')
     .eq('org_id', org.org_id)
     .order('name');
@@ -15,10 +15,10 @@ export default async function NewTicketPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">New service ticket</h1>
-        <p className="text-gray-600 dark:text-gray-400 mt-1">Create a ticket manually (e.g. from a phone call or email)</p>
+        <h1 className="text-3xl font-bold text-foreground">New service ticket</h1>
+        <p className="text-muted-foreground mt-1">Create a ticket manually (e.g. from a phone call or email)</p>
       </div>
-      <NewTicketForm orgId={org.org_id} locations={locations ?? []} />
+      <NewTicketForm orgId={org.org_id} facilities={facilities ?? []} />
     </div>
   );
 }

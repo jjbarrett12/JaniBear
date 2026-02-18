@@ -64,7 +64,7 @@ export default async function MessageThreadPage({
           <MessageCircle className="h-5 w-5" />
         </div>
         <div className="flex-1 min-w-0">
-          <h1 className="text-lg font-semibold text-gray-900 dark:text-white truncate">{title}</h1>
+          <h1 className="text-lg font-semibold text-foreground truncate">{title}</h1>
           <p className="text-sm text-gray-500 dark:text-gray-400">
             {conversation.type === 'client' ? 'Client' : 'Crew'} conversation
           </p>
@@ -89,7 +89,7 @@ export default async function MessageThreadPage({
                   className={`max-w-[85%] rounded-2xl px-4 py-2 ${
                     isMe
                       ? 'bg-primary text-primary-foreground'
-                      : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white'
+                      : 'bg-gray-100 dark:bg-gray-800 text-foreground'
                   }`}
                 >
                   {!isMe && (

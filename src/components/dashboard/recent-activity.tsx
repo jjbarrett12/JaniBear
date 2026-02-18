@@ -81,7 +81,7 @@ export function RecentActivity({ activities }: RecentActivityProps) {
             <div className="p-2 rounded-lg bg-gradient-to-br from-gray-700 to-gray-900 shadow-md">
               <Activity className="h-5 w-5 text-white" />
             </div>
-            <CardTitle className="text-lg font-semibold text-gray-900 dark:text-white">
+            <CardTitle className="text-lg font-semibold text-foreground dark:text-white">
               {t('recentActivity')}
             </CardTitle>
           </div>
@@ -110,7 +110,7 @@ export function RecentActivity({ activities }: RecentActivityProps) {
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <p className="text-sm font-medium text-gray-900 dark:text-white truncate group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+                          <p className="text-sm font-medium text-foreground dark:text-white truncate group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
                             {translateAction(activity.action, t)}
                           </p>
                           {status && (

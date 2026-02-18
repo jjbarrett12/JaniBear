@@ -38,6 +38,8 @@ interface ProductFormProps {
 }
 
 const CATEGORIES = [
+  'Foodservice & Disposables',
+  'Janitorial & Cleaning',
   'Cleaning Chemicals',
   'Paper Products',
   'Trash Liners',

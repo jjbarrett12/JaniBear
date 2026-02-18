@@ -57,8 +57,8 @@ export default async function SuppliesPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Supply Management</h1>
-          <p className="text-gray-600 mt-1">Manage vendors, products, and customer orders</p>
+          <h1 className="text-3xl font-bold text-foreground">Supply Management</h1>
+          <p className="text-muted-foreground mt-1">Manage vendors, products, and customer orders</p>
         </div>
         <div className="flex gap-2">
           <Link href="/app/supplies/orders/new">
@@ -162,7 +162,7 @@ export default async function SuppliesPage() {
                   <Link key={vendor.id} href={`/app/supplies/vendors/${vendor.id}`}>
                     <div className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer group">
                       <div>
-                        <p className="font-medium text-gray-900 group-hover:text-blue-600">{vendor.name}</p>
+                        <p className="font-medium text-foreground group-hover:text-blue-600">{vendor.name}</p>
                         <p className="text-sm text-gray-500">{vendor.contact_name || vendor.email || 'No contact'}</p>
                       </div>
                       <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-blue-500" />
@@ -204,7 +204,7 @@ export default async function SuppliesPage() {
                     <div className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer group">
                       <div>
                         <div className="flex items-center gap-2">
-                          <p className="font-medium text-gray-900 group-hover:text-amber-600">{order.po_number}</p>
+                          <p className="font-medium text-foreground group-hover:text-amber-600">{order.po_number}</p>
                           <Badge variant="secondary" className={
                             order.status === 'delivered' ? 'bg-emerald-100 text-emerald-700' :
                             order.status === 'ordered' ? 'bg-blue-100 text-blue-700' :
@@ -217,7 +217,7 @@ export default async function SuppliesPage() {
                         <p className="text-sm text-gray-500">{order.vendors?.name || order.supplier_name}</p>
                       </div>
                       <div className="text-right">
-                        <p className="font-medium text-gray-900">{formatCurrency(order.total_amount || 0)}</p>
+                        <p className="font-medium text-foreground">{formatCurrency(order.total_amount || 0)}</p>
                         <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-amber-500 ml-auto" />
                       </div>
                     </div>

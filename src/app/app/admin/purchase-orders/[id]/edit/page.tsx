@@ -43,7 +43,7 @@ export default async function EditPOPage({
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Edit Purchase Order</h1>
+        <h1 className="text-3xl font-bold text-foreground">Edit Purchase Order</h1>
         <p className="text-gray-600 mt-2">Update purchase order information</p>
       </div>
       <POForm purchaseOrder={{ ...po, items: items || [] }} />

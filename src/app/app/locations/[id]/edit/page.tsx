@@ -1,34 +1,38 @@
 import { createClient } from '@/lib/supabase/server';
 import { requireOrg } from '@/lib/auth';
-import { notFound } from 'next/navigation';
-import { LocationForm } from '@/components/locations/location-form';
+import { redirect } from 'next/navigation';
 
-export default async function EditLocationPage({
+/** Redirect legacy location edit to facility edit or account edit. */
+export default async function LegacyLocationEditPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
+  const { id } = await params;
   const org = await requireOrg();
   const supabase = await createClient();
 
-  const { data: location } = await supabase
-    .from('locations')
-    .select('*')
-    .eq('id', params.id)
+  const { data: facility } = await supabase
+    .from('facilities')
+    .select('account_id')
+    .eq('id', id)
     .eq('org_id', org.org_id)
     .single();
 
-  if (!location) {
-    notFound();
+  if (facility) {
+    redirect(`/app/accounts/${facility.account_id}/facilities/${id}/edit`);
   }
 
-  return (
-    <div className="max-w-2xl mx-auto">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-900">Edit Location</h1>
-        <p className="text-gray-600 mt-1">Update location details</p>
-      </div>
-      <LocationForm initialData={location} />
-    </div>
-  );
+  const { data: account } = await supabase
+    .from('accounts')
+    .select('id')
+    .eq('id', id)
+    .eq('org_id', org.org_id)
+    .single();
+
+  if (account) {
+    redirect(`/app/accounts/${id}/edit`);
+  }
+
+  redirect('/app/accounts');
 }

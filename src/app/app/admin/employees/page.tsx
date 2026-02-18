@@ -42,7 +42,7 @@ export default async function EmployeesPage({
 
   if (searchParams.search) {
     query = query.or(
-      `first_name.ilike.%${searchParams.search}%,last_name.ilike.%${searchParams.search}%,email.ilike.%${searchParams.search}%,employee_number.ilike.%${searchParams.search}%`
+      `first_name.ilike.%${searchParams.search}%,last_name.ilike.%${searchParams.search}%,email.ilike.%${searchParams.search}%`
     );
   }
 
@@ -64,8 +64,8 @@ export default async function EmployeesPage({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Employees</h1>
-          <p className="text-gray-600 mt-2">Manage your team members and their information</p>
+          <h1 className="text-3xl font-bold text-foreground">Employees</h1>
+          <p className="text-muted-foreground mt-2">Manage your team members and their information</p>
         </div>
         <Link href="/app/admin/employees/new">
           <Button size="lg" className="h-14 text-lg">
@@ -78,7 +78,7 @@ export default async function EmployeesPage({
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-gray-600">Total Employees</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Total Employees</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">{totalCount || 0}</div>
@@ -86,7 +86,7 @@ export default async function EmployeesPage({
         </Card>
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-gray-600">Active Employees</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Active Employees</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-green-600">{activeCount || 0}</div>
@@ -94,7 +94,7 @@ export default async function EmployeesPage({
         </Card>
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-gray-600">Inactive</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Inactive</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-gray-400">

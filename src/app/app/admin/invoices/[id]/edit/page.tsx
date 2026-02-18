@@ -49,7 +49,7 @@ export default async function EditInvoicePage({
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Edit Invoice</h1>
+        <h1 className="text-3xl font-bold text-foreground">Edit Invoice</h1>
         <p className="text-gray-600 mt-2">Update invoice information</p>
       </div>
       <InvoiceForm invoice={{ ...invoice, items: items || [] }} locations={locations || []} />

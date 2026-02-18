@@ -42,6 +42,33 @@ interface LocationFormProps {
   };
 }
 
+/** Days of service presets for dropdown */
+const DAYS_OF_SERVICE_PRESETS = [
+  '1x week - Mon',
+  '1x week - Tue',
+  '1x week - Wed',
+  '1x week - Thu',
+  '1x week - Fri',
+  '1x week - Sat',
+  '1x week - Sun',
+  '1x week - Wknd',
+  '2x week - Mon/Wed',
+  '2x week - Mon/Fri',
+  '2x week - Tue/Thu',
+  '2x week - Wed/Fri',
+  '2x week - Wknd',
+  '3x week - M/W/F',
+  '3x week - M/W/Wknd',
+  '3x week - Tue/Thu/Sat',
+  '4x week',
+  '5x week',
+  '6x week',
+  '7x week',
+  'Daily',
+];
+const DAYS_OF_SERVICE_OTHER = '__other__';
+const DAYS_OF_SERVICE_NONE = '__none__';
+
 /** Flooring type keys used in sqft_by_flooring_type JSONB */
 const FLOORING_TYPES = [
   { key: 'carpet', label: 'Carpet' },
@@ -77,6 +104,15 @@ function formatServiceAddress(address: string, city: string, state: string, zip:
   return parts.trim() || '';
 }
 
+/** When billing_notes was merged with "Account billing: ...", parse back out for the form */
+function parseBillingNotes(notes: string | null | undefined, accountNotes: string | null | undefined): { billing: string; accountBilling: string } {
+  if (accountNotes != null && accountNotes !== '') return { billing: notes ?? '', accountBilling: accountNotes };
+  const raw = notes ?? '';
+  const idx = raw.indexOf('\n\nAccount billing: ');
+  if (idx === -1) return { billing: raw, accountBilling: '' };
+  return { billing: raw.slice(0, idx).trim(), accountBilling: raw.slice(idx + 18).trim() };
+}
+
 export function LocationForm({ initialData }: LocationFormProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -91,6 +127,8 @@ export function LocationForm({ initialData }: LocationFormProps) {
   const initialBillingSameAsService =
     !!initialData?.billing_address &&
     initialData.billing_address.trim() === serviceAddressFormatted.trim();
+
+  const parsedBilling = parseBillingNotes(initialData?.billing_notes, initialData?.account_billing_notes);
 
   const [formData, setFormData] = useState({
     name: initialData?.name || '',
@@ -113,8 +151,8 @@ export function LocationForm({ initialData }: LocationFormProps) {
     billing_contact_email: initialData?.billing_contact_email || '',
     billing_address: initialData?.billing_address || '',
     billing_same_as_service: initialBillingSameAsService,
-    billing_notes: initialData?.billing_notes || '',
-    account_billing_notes: initialData?.account_billing_notes || '',
+    billing_notes: parsedBilling.billing,
+    account_billing_notes: parsedBilling.accountBilling,
     authorized_to_order_supplies: initialData?.authorized_to_order_supplies ?? false,
     contract_storage_path: initialData?.contract_storage_path || '',
     types_of_supplies_used: (initialData?.types_of_supplies_used ?? []).join(', '),
@@ -156,7 +194,13 @@ export function LocationForm({ initialData }: LocationFormProps) {
         .map((s) => s.trim())
         .filter(Boolean);
 
-      const locationData = {
+      // Merge account billing notes into billing_notes so save works when account_billing_notes column is missing (run migration 022 or 028 to add it)
+      const billingNotes =
+        formData.account_billing_notes?.trim()
+          ? [formData.billing_notes?.trim(), `Account billing: ${formData.account_billing_notes.trim()}`].filter(Boolean).join('\n\n')
+          : formData.billing_notes || null;
+
+      const locationData: Record<string, unknown> = {
         org_id: membership.org_id,
         name: formData.name,
         address: formData.address || null,
@@ -177,8 +221,7 @@ export function LocationForm({ initialData }: LocationFormProps) {
         billing_contact_phone: formData.billing_contact_phone || null,
         billing_contact_email: formData.billing_contact_email || null,
         billing_address: billingAddress || null,
-        billing_notes: formData.billing_notes || null,
-        account_billing_notes: formData.account_billing_notes || null,
+        billing_notes: billingNotes,
         authorized_to_order_supplies: formData.authorized_to_order_supplies,
         contract_storage_path: formData.contract_storage_path || null,
         types_of_supplies_used: typesOfSupplies.length ? typesOfSupplies : null,
@@ -333,14 +376,44 @@ export function LocationForm({ initialData }: LocationFormProps) {
           </div>
           <div>
             <Label htmlFor="days_of_service">Days of service</Label>
-            <Input
-              id="days_of_service"
-              value={formData.days_of_service}
-              onChange={(e) => setFormData({ ...formData, days_of_service: e.target.value })}
+            <Select
+              value={
+                DAYS_OF_SERVICE_PRESETS.includes(formData.days_of_service)
+                  ? formData.days_of_service
+                  : formData.days_of_service
+                    ? DAYS_OF_SERVICE_OTHER
+                    : DAYS_OF_SERVICE_NONE
+              }
+              onValueChange={(v) =>
+                setFormData({
+                  ...formData,
+                  days_of_service: v === DAYS_OF_SERVICE_OTHER ? '' : v === DAYS_OF_SERVICE_NONE ? '' : v,
+                })
+              }
               disabled={isLoading}
-              placeholder="e.g. Mon, Wed, Fri or 5x/week"
-              className="mt-1"
-            />
+            >
+              <SelectTrigger id="days_of_service" className="mt-1">
+                <SelectValue placeholder="Select frequency and days…" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={DAYS_OF_SERVICE_NONE}>Select…</SelectItem>
+                {DAYS_OF_SERVICE_PRESETS.map((preset) => (
+                  <SelectItem key={preset} value={preset}>
+                    {preset}
+                  </SelectItem>
+                ))}
+                <SelectItem value={DAYS_OF_SERVICE_OTHER}>Other (enter below)</SelectItem>
+              </SelectContent>
+            </Select>
+            {!DAYS_OF_SERVICE_PRESETS.includes(formData.days_of_service) ? (
+              <Input
+                value={formData.days_of_service}
+                onChange={(e) => setFormData({ ...formData, days_of_service: e.target.value })}
+                disabled={isLoading}
+                placeholder="e.g. Custom schedule"
+                className="mt-2"
+              />
+            ) : null}
           </div>
           <div>
             <Label htmlFor="door_alarm_code">Door / alarm code</Label>

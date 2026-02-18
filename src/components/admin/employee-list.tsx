@@ -14,7 +14,6 @@ import { LOCALE_LABELS } from '@/lib/survey-translations';
 
 interface Employee {
   id: string;
-  employee_number: string | null;
   first_name: string;
   last_name: string;
   email: string | null;
@@ -26,6 +25,9 @@ interface Employee {
   photo_url: string | null;
   language_preference: string;
   hire_date: string | null;
+  pay_type?: string | null;
+  hourly_rate?: number | null;
+  salary_amount?: number | null;
 }
 
 interface EmployeeListProps {
@@ -41,8 +43,7 @@ export function EmployeeList({ employees: initialEmployees }: EmployeeListProps)
     const matchesSearch =
       !searchTerm ||
       `${emp.first_name} ${emp.last_name}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      emp.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      emp.employee_number?.toLowerCase().includes(searchTerm.toLowerCase());
+      emp.email?.toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesStatus = statusFilter === 'all' || emp.status === statusFilter;
 
@@ -138,9 +139,14 @@ export function EmployeeList({ employees: initialEmployees }: EmployeeListProps)
                       <div className="font-semibold text-lg">
                         {employee.first_name} {employee.last_name}
                       </div>
-                      {employee.employee_number && (
-                        <div className="text-sm text-gray-500">
-                          #{employee.employee_number}
+                      {employee.pay_type === 'salary' && employee.salary_amount != null && (
+                        <div className="text-sm text-muted-foreground">
+                          Salary ${Number(employee.salary_amount).toLocaleString()}/yr
+                        </div>
+                      )}
+                      {(employee.pay_type !== 'salary') && employee.hourly_rate != null && (
+                        <div className="text-sm text-muted-foreground">
+                          ${Number(employee.hourly_rate).toFixed(2)}/hr
                         </div>
                       )}
                     </div>

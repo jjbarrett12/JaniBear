@@ -34,7 +34,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
           <ArrowLeft className="h-5 w-5 text-gray-600" />
         </Link>
         <div className="flex-1">
-          <h1 className="text-2xl font-bold text-gray-900">Edit Product</h1>
+          <h1 className="text-2xl font-bold text-foreground">Edit Product</h1>
           <p className="text-gray-600">{productResult.data.name}</p>
         </div>
       </div>

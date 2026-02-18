@@ -157,6 +157,14 @@
   letter-spacing: -0.02em;
   line-height: 1.08;
 }
+/* Hero headline: gradient text to make it pop */
+.landing-page .hero-headline-gradient {
+  background: linear-gradient(135deg, #fef3c7 0%, #fcd34d 25%, #f59e0b 50%, #fbbf24 75%, #fde68a 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 24px rgba(251, 191, 36, 0.25));
+}
 /* Gradient text in hero (indigo → gold → green) — webkit for Safari */
 .landing-page .hero-gradient-text {
   -webkit-background-clip: text;
@@ -258,6 +266,15 @@
   :focus:not(:focus-visible) {
     @apply outline-none ring-0;
   }
+}
+
+/* App module headers and descriptions: ensure readable in dark mode (dark blue background) */
+.dark main h1 {
+  color: hsl(var(--foreground)) !important;
+}
+.dark main .text-gray-600,
+.dark main .text-gray-500 {
+  color: hsl(var(--muted-foreground)) !important;
 }
 
 /* Improved touch targets for mobile */

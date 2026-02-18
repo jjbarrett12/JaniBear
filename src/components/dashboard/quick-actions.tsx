@@ -22,7 +22,7 @@ export function QuickActions() {
   const actions = [
     { labelKey: 'quickNewWalkthrough' as const, descKey: 'quickNewWalkthroughDesc' as const, href: '/app/walkthroughs/new', icon: Camera, gradient: 'from-amber-500 to-rose-500', primary: true },
     { labelKey: 'quickStartInspection' as const, descKey: 'quickStartInspectionDesc' as const, href: '/app/inspections/start', icon: ClipboardCheck, gradient: 'from-emerald-500 to-teal-500', primary: false },
-    { labelKey: 'quickAddLocation' as const, descKey: 'quickAddLocationDesc' as const, href: '/app/locations/new', icon: MapPin, gradient: 'from-blue-500 to-indigo-500', primary: false },
+    { labelKey: 'quickAddLocation' as const, descKey: 'quickAddLocationDesc' as const, href: '/app/accounts/new', icon: MapPin, gradient: 'from-blue-500 to-indigo-500', primary: false },
     { labelKey: 'quickCreateCrew' as const, descKey: 'quickCreateCrewDesc' as const, href: '/app/crews/new', icon: Users, gradient: 'from-violet-500 to-purple-500', primary: false },
     { labelKey: 'quickNewSchedule' as const, descKey: 'quickNewScheduleDesc' as const, href: '/app/schedules/new', icon: Calendar, gradient: 'from-cyan-500 to-blue-500', primary: false },
     { labelKey: 'quickNewProposal' as const, descKey: 'quickNewProposalDesc' as const, href: '/app/sales/leads/new', icon: FileText, gradient: 'from-amber-500 to-orange-500', primary: false },

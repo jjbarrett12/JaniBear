@@ -76,14 +76,14 @@ export function MobileSidebar({ logoUrl }: MobileSidebarProps) {
 
   return (
     <>
-      {/* Mobile Header - black so white/yellow logo blends */}
-      <header className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-black border-b border-white/10 h-20 flex items-center justify-between px-4 text-white">
+      {/* Mobile Header - same blue as sidebar; light mode: slight blue tint so logo stays visible */}
+      <header className="lg:hidden fixed top-0 left-0 right-0 z-50 h-16 flex items-center justify-between px-4 border-b border-border bg-[hsl(220,30%,97%)] dark:bg-card text-foreground">
         <div className="flex items-center gap-3 [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block">
           <Button
             variant="ghost"
             size="icon"
             onClick={() => setIsOpen(true)}
-            className="h-12 w-12 text-white hover:bg-white/10 hover:text-white"
+            className="h-10 w-10 text-foreground hover:bg-muted"
           >
             <Menu className="h-6 w-6" />
           </Button>
@@ -93,7 +93,7 @@ export function MobileSidebar({ logoUrl }: MobileSidebarProps) {
               alt="Company Logo"
               width={160}
               height={60}
-              className="h-14 w-auto object-contain bg-transparent"
+              className="h-10 w-auto object-contain bg-transparent"
               priority
               unoptimized
             />
@@ -103,13 +103,13 @@ export function MobileSidebar({ logoUrl }: MobileSidebarProps) {
               alt="JANIBEAR Logo"
               width={200}
               height={72}
-              className="h-14 w-auto object-contain bg-transparent [&>img]:bg-transparent"
+              className="h-10 w-auto object-contain bg-transparent [&>img]:bg-transparent"
               priority
               unoptimized
             />
           )}
         </div>
-        <div className="flex items-center gap-2 text-white [&_button]:text-white [&_button]:hover:bg-white/10 [&_button]:hover:text-white [&_.rounded-lg]:border-white/20">
+        <div className="flex items-center gap-2 [&_button]:text-foreground [&_button]:hover:bg-muted [&_.rounded-lg]:border-border">
           <LanguageSwitcher />
           <DarkModeToggle />
         </div>
@@ -124,7 +124,7 @@ export function MobileSidebar({ logoUrl }: MobileSidebarProps) {
           />
           <aside className="fixed top-0 left-0 z-50 h-full w-80 bg-white dark:bg-gray-900 shadow-xl lg:hidden transform transition-transform duration-300">
             <div className="flex h-full flex-col">
-              <div className="flex min-h-20 items-center justify-between border-b dark:border-gray-800 px-4 py-3 bg-amber-50/90 dark:bg-amber-950/30">
+              <div className="flex min-h-16 items-center justify-between border-b border-border px-4 py-2 bg-[hsl(220,30%,97%)] dark:bg-card">
                 <Link href="/app/dashboard" className="flex min-h-[3.5rem] w-full items-center bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block [&>span]:!relative [&>span]:w-full [&>span]:h-full">
                   {logoUrl ? (
                     <Image

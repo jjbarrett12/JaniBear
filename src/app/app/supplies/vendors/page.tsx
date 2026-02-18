@@ -34,7 +34,7 @@ export default async function VendorsPage() {
           <ArrowLeft className="h-5 w-5 text-gray-600" />
         </Link>
         <div className="flex-1">
-          <h1 className="text-2xl font-bold text-gray-900">Vendors</h1>
+          <h1 className="text-2xl font-bold text-foreground">Vendors</h1>
           <p className="text-gray-600">Manage your suppliers and their details</p>
         </div>
         <Link href="/app/supplies/vendors/new">
@@ -59,7 +59,7 @@ export default async function VendorsPage() {
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
-                          <h3 className="font-semibold text-gray-900 group-hover:text-blue-600">
+                          <h3 className="font-semibold text-foreground group-hover:text-blue-600">
                             {vendor.name}
                           </h3>
                           {vendor.is_preferred && (
@@ -117,7 +117,7 @@ export default async function VendorsPage() {
         <Card>
           <CardContent className="py-16 text-center">
             <Truck className="h-16 w-16 mx-auto text-gray-300 mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">No vendors yet</h3>
+            <h3 className="text-lg font-semibold text-foreground mb-2">No vendors yet</h3>
             <p className="text-gray-500 mb-6">Add your first vendor to start managing your supply chain</p>
             <Link href="/app/supplies/vendors/new">
               <Button>

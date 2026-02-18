@@ -19,8 +19,8 @@ export default async function CrewsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Crews</h1>
-          <p className="text-gray-600 mt-1">Manage your cleaning crews</p>
+          <h1 className="text-3xl font-bold text-foreground">Crews</h1>
+          <p className="text-muted-foreground mt-1">Manage your cleaning crews</p>
         </div>
         <Link href="/app/crews/new">
           <Button>
@@ -42,7 +42,7 @@ export default async function CrewsPage() {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-muted-foreground">
                     {crew.crew_members?.length || 0} member{crew.crew_members?.length !== 1 ? 's' : ''}
                   </p>
                   {crew.crew_members && crew.crew_members.length > 0 && (
@@ -56,7 +56,7 @@ export default async function CrewsPage() {
                         </span>
                       ))}
                       {crew.crew_members.length > 3 && (
-                        <span className="text-xs text-gray-500">
+                        <span className="text-xs text-muted-foreground">
                           +{crew.crew_members.length - 3} more
                         </span>
                       )}
@@ -70,8 +70,8 @@ export default async function CrewsPage() {
       ) : (
         <Card>
           <CardContent className="py-12 text-center">
-            <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-500 mb-4">No crews yet</p>
+            <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+            <p className="text-muted-foreground mb-4">No crews yet</p>
             <Link href="/app/crews/new">
               <Button>Create Your First Crew</Button>
             </Link>

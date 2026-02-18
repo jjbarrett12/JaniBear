@@ -17,7 +17,7 @@ const bottomNavKeys = [
   { href: '/app/dashboard', labelKey: 'navDashboard', icon: LayoutDashboard },
   { href: '/app/inspections', labelKey: 'navInspections', icon: ClipboardCheck },
   { href: '/app/issues', labelKey: 'navIssues', icon: AlertCircle },
-  { href: '/app/locations', labelKey: 'navLocations', icon: MapPin },
+  { href: '/app/accounts', labelKey: 'navAccounts', icon: MapPin },
   { href: '/app/settings', labelKey: 'navSettings', icon: Settings },
 ] as const;
 

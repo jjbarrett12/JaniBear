@@ -54,7 +54,7 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
             </Button>
           </Link>
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">{lead.contact_name || lead.company || 'Unnamed Lead'}</h1>
+            <h1 className="text-3xl font-bold text-foreground">{lead.contact_name || lead.company || 'Unnamed Lead'}</h1>
             <p className="text-gray-600 mt-1">
               {lead.company && lead.contact_name ? lead.company : lead.source} • {formatDate(lead.created_at)}
             </p>

@@ -76,8 +76,8 @@ export default async function CompliancePage({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Compliance Management</h1>
-          <p className="text-gray-600 mt-2">Track compliance records and requirements</p>
+          <h1 className="text-3xl font-bold text-foreground">Compliance Management</h1>
+          <p className="text-muted-foreground mt-2">Track compliance records and requirements</p>
         </div>
         <Link href="/app/admin/compliance/new">
           <Button size="lg" className="h-14 text-lg">
@@ -90,7 +90,7 @@ export default async function CompliancePage({
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-gray-600">Pending</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Pending</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-yellow-600">{pendingCount || 0}</div>
@@ -98,7 +98,7 @@ export default async function CompliancePage({
         </Card>
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-gray-600">Compliant</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Compliant</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-green-600">{compliantCount || 0}</div>
@@ -106,7 +106,7 @@ export default async function CompliancePage({
         </Card>
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-gray-600">Non-Compliant</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Non-Compliant</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-red-600">{nonCompliantCount || 0}</div>

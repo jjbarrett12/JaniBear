@@ -112,8 +112,10 @@ function last12Months(): string[] {
   return out;
 }
 
-export function getMockKpiStrip(): KpiTileData[] {
+export function getMockKpiStrip(overrideLaborPct?: number): KpiTileData[] {
   const months = last12Months();
+  const laborPct = overrideLaborPct ?? 58;
+  const laborHealth: KpiTileData['health'] = laborPct > 65 ? 'red' : laborPct > 55 ? 'amber' : 'green';
   return [
     {
       label: 'Revenue (MTD)',
@@ -131,10 +133,10 @@ export function getMockKpiStrip(): KpiTileData[] {
     },
     {
       label: 'Labor % of Revenue',
-      value: '58%',
+      value: overrideLaborPct != null ? `${Math.round(overrideLaborPct)}%` : '58%',
       delta: 2,
-      sparkline: [62, 60, 59, 58, 59, 57, 58, 58, 59, 58, 58, 58],
-      health: 'amber',
+      sparkline: [62, 60, 59, 58, 59, 57, 58, 58, 59, 58, 58, 58].map(() => laborPct),
+      health: laborHealth,
     },
     {
       label: 'Net Profit %',
@@ -219,11 +221,16 @@ export function getMockMarginTrend(): MarginMonth[] {
   return months.map((month, i) => ({ month, marginPct: pct[i] ?? 50 }));
 }
 
-export function getMockWaterfall(): WaterfallItem[] {
-  const revenue = 42800;
-  const labor = 24824;
-  const supplies = 3852;
-  const overhead = 6420;
+const MOCK_REVENUE = 42800;
+const MOCK_LABOR_DEFAULT = 24824;
+const MOCK_SUPPLIES = 3852;
+const MOCK_OVERHEAD = 6420;
+
+export function getMockWaterfall(overrideLabor?: number): WaterfallItem[] {
+  const revenue = MOCK_REVENUE;
+  const labor = overrideLabor ?? MOCK_LABOR_DEFAULT;
+  const supplies = MOCK_SUPPLIES;
+  const overhead = MOCK_OVERHEAD;
   const net = revenue - labor - supplies - overhead;
   return [
     { name: 'Revenue', value: revenue, cumulative: revenue },
@@ -247,10 +254,11 @@ export function getMockContractProfitability(): ContractProfitRow[] {
   ];
 }
 
-export function getMockLaborTrend(): LaborMonth[] {
+export function getMockLaborTrend(overrideLaborPct?: number): LaborMonth[] {
   const months = last12Months();
-  const pct = [62, 60, 59, 58, 59, 57, 58, 58, 59, 58, 58, 58];
-  return months.map((month, i) => ({ month, laborPct: pct[i] ?? 58 }));
+  const pct = overrideLaborPct ?? 58;
+  const series = [62, 60, 59, 58, 59, 57, 58, 58, 59, 58, 58, 58].map(() => pct);
+  return months.map((month, i) => ({ month, laborPct: series[i] ?? pct }));
 }
 
 export function getMockOvertimeWeekly(): OvertimeWeek[] {

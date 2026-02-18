@@ -4,10 +4,11 @@ import { NextResponse } from 'next/server';
 /**
  * POST /api/public/tickets
  * Create a service ticket from the public QR form. No auth required.
- * Body: { location_id, title, description?, contact_name?, contact_phone? }
+ * Body: { facility_id or location_id, title, description?, contact_name?, contact_phone? }
  */
 export async function POST(request: Request) {
   let body: {
+    facility_id?: string;
     location_id?: string;
     title?: string;
     description?: string;
@@ -20,11 +21,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
   }
 
-  const location_id = body.location_id?.trim();
+  const facilityId = (body.facility_id ?? body.location_id)?.trim();
   const title = body.title?.trim();
-  if (!location_id || !title) {
+  if (!facilityId || !title) {
     return NextResponse.json(
-      { error: 'location_id and title are required' },
+      { error: 'facility_id (or location_id) and title are required' },
       { status: 400 }
     );
   }
@@ -33,7 +34,7 @@ export async function POST(request: Request) {
   const { data: ticketId, error } = await supabase.rpc(
     'create_service_ticket_from_public',
     {
-      p_location_id: location_id,
+      p_location_id: facilityId,
       p_title: title,
       p_description: body.description ?? null,
       p_contact_name: body.contact_name ?? null,

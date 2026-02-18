@@ -17,6 +17,7 @@ import {
   Truck
 } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils';
+import { getCategoryBadgeClass } from '@/lib/category-colors';
 
 interface Product {
   id: string;
@@ -24,6 +25,7 @@ interface Product {
   sku?: string;
   unit_price?: number;
   unit?: string;
+  category?: string | null;
   vendors?: { name: string };
 }
 
@@ -160,7 +162,7 @@ export function CustomerProductManager({
                       <Package className="h-5 w-5 text-emerald-600" />
                     </div>
                     <div>
-                      <p className="font-medium text-gray-900">{cp.products.name}</p>
+                      <p className="font-medium text-foreground">{cp.products.name}</p>
                       <div className="flex items-center gap-3 text-sm text-gray-500">
                         {cp.products.sku && <span>SKU: {cp.products.sku}</span>}
                         {cp.products.vendors?.name && (
@@ -168,6 +170,11 @@ export function CustomerProductManager({
                             <Truck className="h-3 w-3" />
                             {cp.products.vendors.name}
                           </span>
+                        )}
+                        {cp.products.category && (
+                          <Badge variant="outline" className={getCategoryBadgeClass(cp.products.category)}>
+                            {cp.products.category}
+                          </Badge>
                         )}
                       </div>
                     </div>

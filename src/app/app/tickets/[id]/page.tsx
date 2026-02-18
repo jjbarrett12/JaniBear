@@ -14,7 +14,7 @@ export default async function TicketDetailPage({
 
   const { data: ticket } = await supabase
     .from('service_tickets')
-    .select('*, locations(id, name), profiles(full_name)')
+    .select('*, facilities(id, name, account_id), profiles(full_name)')
     .eq('id', id)
     .eq('org_id', org.org_id)
     .single();

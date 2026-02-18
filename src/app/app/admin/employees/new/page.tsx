@@ -24,7 +24,7 @@ export default async function NewEmployeePage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Add New Employee</h1>
+        <h1 className="text-3xl font-bold text-foreground">Add New Employee</h1>
         <p className="text-gray-600 mt-2">Create a new employee profile</p>
       </div>
       <EmployeeForm />

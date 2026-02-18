@@ -20,8 +20,8 @@ export default async function ContractsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Service Contracts</h1>
-          <p className="text-gray-600 mt-1">Manage uploaded contracts and schedules</p>
+          <h1 className="text-3xl font-bold text-foreground">Service Contracts</h1>
+          <p className="text-muted-foreground mt-1">Manage uploaded contracts and schedules</p>
         </div>
         <Link href="/app/contracts/upload">
           <Button>

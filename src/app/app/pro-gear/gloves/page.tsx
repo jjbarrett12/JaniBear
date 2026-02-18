@@ -16,7 +16,7 @@ export default async function ProGearGlovesPage() {
   return (
     <>
       <header className="mb-6">
-        <h1 className="text-2xl font-bold tracking-tight">Gloves</h1>
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">Gloves</h1>
         <p className="mt-1 text-muted-foreground">
           Disposable gloves — member pricing
         </p>

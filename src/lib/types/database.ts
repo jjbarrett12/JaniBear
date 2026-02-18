@@ -78,6 +78,173 @@ export interface Database {
           created_at?: string;
         };
       };
+      accounts: {
+        Row: {
+          id: string;
+          org_id: string;
+          name: string;
+          status: 'active' | 'inactive';
+          logo_url: string | null;
+          billing_contact_name: string | null;
+          billing_email: string | null;
+          billing_phone: string | null;
+          billing_terms: string | null;
+          contract_value_monthly: number | null;
+          notes: string | null;
+          user_limit: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          org_id: string;
+          name: string;
+          status?: 'active' | 'inactive';
+          logo_url?: string | null;
+          billing_contact_name?: string | null;
+          billing_email?: string | null;
+          billing_phone?: string | null;
+          billing_terms?: string | null;
+          contract_value_monthly?: number | null;
+          notes?: string | null;
+          user_limit?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          org_id?: string;
+          name?: string;
+          status?: 'active' | 'inactive';
+          logo_url?: string | null;
+          billing_contact_name?: string | null;
+          billing_email?: string | null;
+          billing_phone?: string | null;
+          billing_terms?: string | null;
+          contract_value_monthly?: number | null;
+          notes?: string | null;
+          user_limit?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      account_users: {
+        Row: {
+          id: string;
+          account_id: string;
+          user_id: string;
+          role: 'admin' | 'member';
+          status: 'invited' | 'active' | 'suspended';
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          account_id: string;
+          user_id: string;
+          role?: 'admin' | 'member';
+          status?: 'invited' | 'active' | 'suspended';
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          account_id?: string;
+          user_id?: string;
+          role?: 'admin' | 'member';
+          status?: 'invited' | 'active' | 'suspended';
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      account_invites: {
+        Row: {
+          id: string;
+          account_id: string;
+          email: string;
+          role: 'admin' | 'member';
+          token: string;
+          expires_at: string;
+          created_at: string;
+          created_by: string | null;
+          accepted_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          account_id: string;
+          email: string;
+          role?: 'admin' | 'member';
+          token: string;
+          expires_at: string;
+          created_at?: string;
+          created_by?: string | null;
+          accepted_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          account_id?: string;
+          email?: string;
+          role?: 'admin' | 'member';
+          token?: string;
+          expires_at?: string;
+          created_at?: string;
+          created_by?: string | null;
+          accepted_at?: string | null;
+        };
+      };
+      facilities: {
+        Row: {
+          id: string;
+          org_id: string;
+          account_id: string;
+          name: string;
+          address_line1: string | null;
+          address_line2: string | null;
+          city: string | null;
+          state: string | null;
+          zip: string | null;
+          timezone: string | null;
+          access_notes: string | null;
+          service_notes: string | null;
+          is_primary: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          org_id: string;
+          account_id: string;
+          name: string;
+          address_line1?: string | null;
+          address_line2?: string | null;
+          city?: string | null;
+          state?: string | null;
+          zip?: string | null;
+          timezone?: string | null;
+          access_notes?: string | null;
+          service_notes?: string | null;
+          is_primary?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          org_id?: string;
+          account_id?: string;
+          name?: string;
+          address_line1?: string | null;
+          address_line2?: string | null;
+          city?: string | null;
+          state?: string | null;
+          zip?: string | null;
+          timezone?: string | null;
+          access_notes?: string | null;
+          service_notes?: string | null;
+          is_primary?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
       locations: {
         Row: {
           id: string;
@@ -166,7 +333,7 @@ export interface Database {
         Row: {
           id: string;
           org_id: string;
-          location_id: string;
+          facility_id: string;
           template_id: string;
           schedule_id: string | null;
           inspector_user_id: string;
@@ -180,7 +347,7 @@ export interface Database {
         Insert: {
           id?: string;
           org_id: string;
-          location_id: string;
+          facility_id: string;
           template_id: string;
           schedule_id?: string | null;
           inspector_user_id: string;
@@ -194,7 +361,7 @@ export interface Database {
         Update: {
           id?: string;
           org_id?: string;
-          location_id?: string;
+          facility_id?: string;
           template_id?: string;
           schedule_id?: string | null;
           inspector_user_id?: string;
@@ -210,7 +377,7 @@ export interface Database {
         Row: {
           id: string;
           org_id: string;
-          location_id: string;
+          facility_id: string;
           inspection_id: string | null;
           inspection_response_id: string | null;
           title: string;
@@ -225,7 +392,7 @@ export interface Database {
         Insert: {
           id?: string;
           org_id: string;
-          location_id: string;
+          facility_id: string;
           inspection_id?: string | null;
           inspection_response_id?: string | null;
           title: string;
@@ -240,7 +407,7 @@ export interface Database {
         Update: {
           id?: string;
           org_id?: string;
-          location_id?: string;
+          facility_id?: string;
           inspection_id?: string | null;
           inspection_response_id?: string | null;
           title?: string;
@@ -257,7 +424,7 @@ export interface Database {
         Row: {
           id: string;
           org_id: string;
-          location_id: string;
+          facility_id: string;
           title: string;
           description: string | null;
           status: 'open' | 'in_progress' | 'resolved';
@@ -273,7 +440,7 @@ export interface Database {
         Insert: {
           id?: string;
           org_id: string;
-          location_id: string;
+          facility_id: string;
           title: string;
           description?: string | null;
           status?: 'open' | 'in_progress' | 'resolved';
@@ -289,7 +456,7 @@ export interface Database {
         Update: {
           id?: string;
           org_id?: string;
-          location_id?: string;
+          facility_id?: string;
           title?: string;
           description?: string | null;
           status?: 'open' | 'in_progress' | 'resolved';

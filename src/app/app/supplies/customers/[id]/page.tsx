@@ -66,7 +66,7 @@ export default async function CustomerProductsDetailPage({
               <Building2 className="h-5 w-5 text-violet-600" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">{client.name}</h1>
+              <h1 className="text-2xl font-bold text-foreground">{client.name}</h1>
               <p className="text-gray-600">Manage products for this customer</p>
             </div>
           </div>

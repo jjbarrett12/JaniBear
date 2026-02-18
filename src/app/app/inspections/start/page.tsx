@@ -19,8 +19,8 @@ export default async function StartInspectionPage({
   return (
     <div className="max-w-2xl mx-auto">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-900">Start Inspection</h1>
-        <p className="text-gray-600 mt-1">Select location and template</p>
+        <h1 className="text-3xl font-bold text-foreground">Start Inspection</h1>
+        <p className="text-muted-foreground mt-1">Select location and template</p>
       </div>
       <InspectionStarter />
     </div>

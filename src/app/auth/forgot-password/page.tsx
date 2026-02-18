@@ -3,13 +3,17 @@ import Image from 'next/image';
 import { createClient } from '@/lib/supabase/server';
 import { ForgotPasswordForm } from '@/components/auth/forgot-password-form';
 
-export default async function ForgotPasswordPage() {
+type Props = { searchParams: { email?: string } };
+
+export default async function ForgotPasswordPage({ searchParams }: Props) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   
   if (user) {
     redirect('/app/dashboard');
   }
+
+  const defaultEmail = typeof searchParams.email === 'string' ? searchParams.email.trim() : undefined;
   
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 px-4 py-12">
@@ -36,7 +40,7 @@ export default async function ForgotPasswordPage() {
             Enter your email address and we&apos;ll send you a link to reset your password
           </p>
         </div>
-        <ForgotPasswordForm />
+        <ForgotPasswordForm defaultEmail={defaultEmail} />
       </div>
     </div>
   );

@@ -22,7 +22,7 @@ export default async function NewProductPage() {
           <ArrowLeft className="h-5 w-5 text-gray-600" />
         </Link>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Add Product</h1>
+          <h1 className="text-2xl font-bold text-foreground">Add Product</h1>
           <p className="text-gray-600">Create a new product in your catalog</p>
         </div>
       </div>

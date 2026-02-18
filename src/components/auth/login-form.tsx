@@ -95,6 +95,9 @@ export function LoginForm({ defaultEmail = '' }: LoginFormProps) {
       const result = await signInWithPasswordAction(null, formData);
       if (result?.error) {
         setSubmitError({ error: result.error, code: result.code ?? undefined });
+      } else if (result?.redirect) {
+        window.location.href = result.redirect;
+        return;
       }
     } catch {
       setSubmitError({ error: 'An unexpected error occurred. Please try again.' });
@@ -169,14 +172,14 @@ export function LoginForm({ defaultEmail = '' }: LoginFormProps) {
           <span className="w-full border-t border-zinc-200" />
         </span>
         <span className="relative flex justify-center bg-white dark:bg-gray-900">
-          <span className="text-xs font-medium text-zinc-400 dark:text-zinc-500 px-3">or sign in with email</span>
+          <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400 px-3">or sign in with email</span>
         </span>
       </div>
 
       {isMagicLink ? (
         <form onSubmit={handleMagicLinkSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="login-email" className="text-sm font-medium text-zinc-700">Email</Label>
+            <Label htmlFor="login-email" className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Email</Label>
             <Input
               id="login-email"
               name="email"
@@ -187,7 +190,7 @@ export function LoginForm({ defaultEmail = '' }: LoginFormProps) {
               required
               disabled={magicLinkLoading}
               autoComplete="email"
-              className="h-12 rounded-xl border-zinc-200 bg-zinc-50/50 focus:bg-white placeholder:text-zinc-400"
+              className="h-12 rounded-xl border-zinc-200 dark:border-zinc-600 bg-zinc-100 dark:bg-zinc-800 focus:bg-white dark:focus:bg-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-500 dark:placeholder:text-zinc-400 focus-visible:ring-2 focus-visible:ring-amber-500/30"
             />
           </div>
           {error && (
@@ -207,7 +210,7 @@ export function LoginForm({ defaultEmail = '' }: LoginFormProps) {
       ) : (
         <form onSubmit={handlePasswordSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="login-email" className="text-sm font-medium text-zinc-700">Email</Label>
+            <Label htmlFor="login-email" className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Email</Label>
             <Input
               id="login-email"
               type="email"
@@ -217,11 +220,11 @@ export function LoginForm({ defaultEmail = '' }: LoginFormProps) {
               required
               disabled={isSubmitting}
               autoComplete="email"
-              className="h-12 rounded-xl border-zinc-200 bg-zinc-50/50 focus:bg-white placeholder:text-zinc-400"
+              className="h-12 rounded-xl border-zinc-200 dark:border-zinc-600 bg-zinc-100 dark:bg-zinc-800 focus:bg-white dark:focus:bg-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-500 dark:placeholder:text-zinc-400 focus-visible:ring-2 focus-visible:ring-amber-500/30"
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="login-password" className="text-sm font-medium text-zinc-700">Password</Label>
+            <Label htmlFor="login-password" className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Password</Label>
             <div className="relative">
               <Input
                 id="login-password"
@@ -232,12 +235,12 @@ export function LoginForm({ defaultEmail = '' }: LoginFormProps) {
                 required
                 disabled={isSubmitting}
                 autoComplete="current-password"
-                className="h-12 rounded-xl border-zinc-200 bg-zinc-50/50 focus:bg-white pr-12"
+                className="h-12 rounded-xl border-zinc-200 dark:border-zinc-600 bg-zinc-100 dark:bg-zinc-800 focus:bg-white dark:focus:bg-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-500 dark:placeholder:text-zinc-400 pr-12 focus-visible:ring-2 focus-visible:ring-amber-500/30"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword((p) => !p)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 rounded p-1.5 transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300 rounded p-1.5 transition-colors"
                 tabIndex={-1}
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
@@ -254,7 +257,7 @@ export function LoginForm({ defaultEmail = '' }: LoginFormProps) {
                 disabled={isSubmitting}
                 className="w-4 h-4 rounded border-zinc-300 text-amber-500 focus:ring-2 focus:ring-amber-500/20"
               />
-              <span className="text-sm font-medium text-zinc-600">Remember me</span>
+              <span className="text-sm font-medium text-zinc-600 dark:text-zinc-400">Remember me</span>
             </label>
             <Link href="/auth/forgot-password" className="text-sm font-medium text-amber-600 hover:text-amber-700">
               Forgot password?
@@ -280,6 +283,14 @@ export function LoginForm({ defaultEmail = '' }: LoginFormProps) {
                 >
                   {resending ? 'Sending…' : 'Resend confirmation email'}
                 </Button>
+              )}
+              {(errorCode === 'invalid_credentials' || error?.toLowerCase().includes('invalid')) && email?.trim() && (
+                <Link
+                  href={`/auth/forgot-password?email=${encodeURIComponent(email.trim())}`}
+                  className="inline-block mt-1 text-sm font-medium text-amber-700 hover:text-amber-800 underline"
+                >
+                  Reset password for this email →
+                </Link>
               )}
             </div>
           )}

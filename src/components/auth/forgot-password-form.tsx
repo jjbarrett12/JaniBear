@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,9 +9,15 @@ import { Card, CardContent } from '@/components/ui/card';
 import Link from 'next/link';
 import { CheckCircle2, Loader2 } from 'lucide-react';
 
-export function ForgotPasswordForm() {
-  const [email, setEmail] = useState('');
+type ForgotPasswordFormProps = { defaultEmail?: string };
+
+export function ForgotPasswordForm({ defaultEmail = '' }: ForgotPasswordFormProps) {
+  const [email, setEmail] = useState(defaultEmail);
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (defaultEmail) setEmail(defaultEmail);
+  }, [defaultEmail]);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
@@ -23,8 +29,9 @@ export function ForgotPasswordForm() {
 
     try {
       const supabase = createClient();
+      // Must be listed in Supabase Dashboard → Authentication → URL Configuration → Redirect URLs
       const redirectTo = `${window.location.origin}/auth/reset-password`;
-      
+
       const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo,
       });
@@ -73,7 +80,7 @@ export function ForgotPasswordForm() {
       <CardContent className="p-6 md:p-8">
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-sm font-semibold">Email Address</Label>
+            <Label htmlFor="email" className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">Email Address</Label>
             <Input
               id="email"
               type="email"
@@ -82,7 +89,7 @@ export function ForgotPasswordForm() {
               onChange={(e) => setEmail(e.target.value)}
               required
               disabled={isLoading}
-              className="h-12 text-base"
+              className="h-12 text-base rounded-xl border-zinc-200 dark:border-zinc-600 bg-zinc-100 dark:bg-zinc-800 focus:bg-white dark:focus:bg-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-500 dark:placeholder:text-zinc-400"
             />
           </div>
           

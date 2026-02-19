@@ -93,9 +93,9 @@ export function MobileSidebar({ logoUrl }: MobileSidebarProps) {
             <Image
               src={logoUrl}
               alt="Company Logo"
-              width={160}
-              height={60}
-              className="h-10 w-auto object-contain bg-transparent"
+              width={180}
+              height={64}
+              className="h-12 w-auto object-contain bg-transparent"
               priority
               unoptimized
             />
@@ -103,9 +103,9 @@ export function MobileSidebar({ logoUrl }: MobileSidebarProps) {
             <Image
               src="/logo.png"
               alt="JANIBEAR Logo"
-              width={200}
+              width={220}
               height={72}
-              className="h-10 w-auto object-contain bg-transparent [&>img]:bg-transparent"
+              className="h-12 w-auto object-contain bg-transparent [&>img]:bg-transparent dark:[&>img]:drop-shadow-[0_0_8px_rgba(255,255,255,0.15)] dark:[&>img]:brightness-110"
               priority
               unoptimized
             />
@@ -144,7 +144,7 @@ export function MobileSidebar({ logoUrl }: MobileSidebarProps) {
                       alt="JANIBEAR Logo"
                       width={220}
                       height={80}
-                      className="h-full w-full min-h-[3rem] object-contain object-left bg-transparent [&>img]:bg-transparent"
+                      className="h-full w-full min-h-[3.5rem] object-contain object-left bg-transparent [&>img]:bg-transparent dark:[&>img]:drop-shadow-[0_0_8px_rgba(255,255,255,0.15)] dark:[&>img]:brightness-110"
                       priority
                       unoptimized
                     />

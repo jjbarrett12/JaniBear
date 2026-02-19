@@ -33,6 +33,7 @@ import {
   Star,
 } from 'lucide-react';
 import { BrandName } from '@/components/ui/brand-name';
+import { HeroMacbookDashboard } from '@/components/landing/hero-macbook-dashboard';
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -189,11 +190,24 @@ export default function Home() {
         </Link>
       </div>
 
-      {/* Hero: billion-dollar aesthetic — headline, laptop mockup, dual engines, CTAs */}
-      <section className="relative w-full overflow-hidden bg-gradient-to-b from-zinc-950 via-black to-black pt-16 md:pt-20 pb-16 md:pb-24 min-h-[90vh] flex flex-col">
-        {/* Background: radial glow + grid + optional future bg image */}
+      {/* Hero: billion-dollar aesthetic — headline, MacBook dashboard, dual engines, CTAs */}
+      <section className="relative w-full overflow-hidden pt-16 md:pt-20 pb-16 md:pb-24 min-h-[90vh] flex flex-col">
+        {/* Backdrop: large venue / cleaning (replace with /hero-backdrop.jpg for ride-on scrubber shot) */}
         <div className="absolute inset-0 pointer-events-none" aria-hidden>
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[160%] max-w-6xl h-[90%] bg-gradient-radial-hero opacity-60" />
+          <Image
+            src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1920&q=80"
+            alt=""
+            fill
+            className="object-cover scale-105"
+            priority
+            sizes="100vw"
+          />
+          <div className="absolute inset-0 bg-black/75 backdrop-blur-[2px]" />
+          <div className="absolute inset-0 bg-gradient-to-b from-zinc-950/95 via-black/90 to-black" />
+        </div>
+        {/* Radial glow + grid */}
+        <div className="absolute inset-0 pointer-events-none" aria-hidden>
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[160%] max-w-6xl h-[90%] bg-gradient-radial-hero opacity-50" />
           <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.025)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.025)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_75%_55%_at_50%_20%,black_30%,transparent_70%)]" />
         </div>
         <div className="absolute inset-0 pointer-events-none opacity-[0.05] hero-noise" aria-hidden />
@@ -205,7 +219,11 @@ export default function Home() {
               className={`font-heading text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-[2.75rem] font-bold text-white tracking-tight leading-[1.1] transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
               style={{ transitionDelay: '0ms' }}
             >
-              Commercial Janitorial Software That Runs Like Two Managers — Without the Payroll
+              Commercial Janitorial Software That Runs Like{' '}
+              <span className="hero-headline-gradient">
+                Two Managers
+              </span>
+              {' '}— Without the Payroll
             </h1>
             <p
               className={`mt-5 text-base md:text-lg text-zinc-300 max-w-3xl mx-auto leading-relaxed transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
@@ -217,7 +235,10 @@ export default function Home() {
               className={`mt-4 font-heading text-lg md:text-xl font-bold text-white transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
               style={{ transitionDelay: '120ms' }}
             >
-              Two managers&apos; worth of output. One platform.
+              Two managers&apos; worth of output.{' '}
+              <span className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-400 bg-clip-text text-transparent drop-shadow-[0_0_16px_rgba(251,191,36,0.25)]">
+                One platform.
+              </span>
             </p>
           </div>
 
@@ -243,49 +264,9 @@ export default function Home() {
               <p className="mt-3 text-xs text-zinc-400 leading-snug">Win contracts without hiring a sales manager.</p>
             </div>
 
-            {/* Laptop mockup — center */}
-            <div className="relative order-1 lg:order-2 flex-shrink-0">
-              <div className="absolute -inset-4 bg-amber-400/20 rounded-3xl blur-2xl" aria-hidden />
-              <div className="relative rounded-2xl border border-zinc-600/80 bg-zinc-900 shadow-2xl overflow-hidden" style={{ boxShadow: '0 0 60px rgba(251,191,36,0.15)' }}>
-                {/* Laptop bezel */}
-                <div className="px-3 pt-2 pb-1.5 bg-zinc-800/90 border-b border-zinc-700 flex items-center gap-2">
-                  <div className="flex gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
-                    <span className="w-2.5 h-2.5 rounded-full bg-amber-500/80" />
-                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80" />
-                  </div>
-                  <span className="text-[10px] text-zinc-500 font-medium mx-auto">JANIBEAR</span>
-                </div>
-                {/* Screen content: two panels */}
-                <div className="flex w-[280px] sm:w-[340px] md:w-[400px] h-[160px] sm:h-[200px] md:h-[220px]">
-                  <div className="flex-1 border-r border-zinc-700/80 bg-zinc-950/80 p-2 sm:p-3">
-                    <p className="text-[10px] sm:text-xs font-semibold text-amber-400/90 mb-1.5">AI Proposal Generator</p>
-                    <div className="space-y-1">
-                      <div className="h-1.5 w-full max-w-[80%] rounded bg-zinc-700" />
-                      <div className="h-1.5 w-full max-w-[60%] rounded bg-zinc-700" />
-                      <div className="mt-2 h-5 w-14 rounded bg-amber-500/30 border border-amber-400/40 flex items-center justify-center">
-                        <span className="text-[8px] text-amber-300 font-medium">Generate</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex-1 bg-zinc-950/80 p-2 sm:p-3">
-                    <p className="text-[10px] sm:text-xs font-semibold text-zinc-300 mb-1.5">Building Inspections at Capitol Plaza</p>
-                    <div className="space-y-1">
-                      {[
-                        { label: 'Conan Holdings', status: 'red' },
-                        { label: 'Brighton Theatres', status: 'green' },
-                        { label: 'Binget Toos', status: 'yellow' },
-                        { label: 'Nongwoo Logistics', status: 'red' },
-                      ].map(({ label, status }) => (
-                        <div key={label} className="flex items-center gap-1.5">
-                          <span className={`w-1.5 h-1.5 rounded-full ${status === 'red' ? 'bg-red-500' : status === 'green' ? 'bg-emerald-500' : 'bg-amber-500'}`} />
-                          <span className="text-[9px] sm:text-[10px] text-zinc-400 truncate">{label}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
+            {/* MacBook with admin dashboard — center */}
+            <div className="order-1 lg:order-2">
+              <HeroMacbookDashboard />
             </div>
 
             {/* Quality Control Engine — right */}
@@ -621,8 +602,8 @@ export default function Home() {
               <h4 className="text-white font-semibold mb-4 text-sm">Company</h4>
               <ul className="space-y-2 text-sm">
                 <li><a href="#" className="hover:text-white transition-colors">About</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Contact</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Support</a></li>
+                <li><Link href="/contact" className="hover:text-white transition-colors">Contact</Link></li>
+                <li><Link href="/contact" className="hover:text-white transition-colors">Support</Link></li>
               </ul>
             </div>
             <div>

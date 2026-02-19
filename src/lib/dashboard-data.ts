@@ -44,11 +44,11 @@ const DEMO_SCHEDULE = [
 ];
 
 const DEMO_ACTIVITIES: Array<{ id: string; type: 'inspection' | 'issue'; action: string; description: string; timestamp: string; href: string; status: string }> = [
-  { id: 'a1', type: 'inspection', action: 'Inspection completed', description: 'Riverside Office Park – Bldg A', timestamp: new Date(Date.now() - 1000 * 60 * 15).toISOString(), href: '#', status: 'completed' },
-  { id: 'a2', type: 'issue', action: 'Issue reported', description: 'Restroom dispenser low – 2nd floor', timestamp: new Date(Date.now() - 1000 * 60 * 42).toISOString(), href: '#', status: 'open' },
-  { id: 'a3', type: 'inspection', action: 'Inspection completed', description: 'Tech Campus West', timestamp: new Date(Date.now() - 1000 * 60 * 90).toISOString(), href: '#', status: 'completed' },
-  { id: 'a4', type: 'inspection', action: 'Inspection started', description: 'Medical Plaza Suite 200', timestamp: new Date(Date.now() - 1000 * 60 * 120).toISOString(), href: '#', status: 'pending' },
-  { id: 'a5', type: 'issue', action: 'Issue reported', description: 'Spill in lobby – addressed', timestamp: new Date(Date.now() - 1000 * 60 * 180).toISOString(), href: '#', status: 'closed' },
+  { id: 'a1', type: 'inspection', action: 'Inspection completed', description: 'Riverside Office Park – Bldg A', timestamp: new Date(Date.now() - 1000 * 60 * 15).toISOString(), href: '/app/inspections', status: 'completed' },
+  { id: 'a2', type: 'issue', action: 'Issue reported', description: 'Restroom dispenser low – 2nd floor', timestamp: new Date(Date.now() - 1000 * 60 * 42).toISOString(), href: '/app/issues', status: 'open' },
+  { id: 'a3', type: 'inspection', action: 'Inspection completed', description: 'Tech Campus West', timestamp: new Date(Date.now() - 1000 * 60 * 90).toISOString(), href: '/app/inspections', status: 'completed' },
+  { id: 'a4', type: 'inspection', action: 'Inspection started', description: 'Medical Plaza Suite 200', timestamp: new Date(Date.now() - 1000 * 60 * 120).toISOString(), href: '/app/inspections', status: 'pending' },
+  { id: 'a5', type: 'issue', action: 'Issue reported', description: 'Spill in lobby – addressed', timestamp: new Date(Date.now() - 1000 * 60 * 180).toISOString(), href: '/app/issues', status: 'closed' },
 ];
 
 export type DashboardStats = {

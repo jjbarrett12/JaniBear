@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { useLanguage } from '@/contexts/language-context';
 import { getAppT } from '@/lib/app-translations';
-import { Button } from '@/components/ui/button';
 
 export function AppSidebarFooter({
   userEmail,
@@ -14,15 +13,18 @@ export function AppSidebarFooter({
   const t = getAppT(locale);
 
   return (
-    <div className="border-t border-border p-4">
+    <div className="border-t border-border px-3 py-2.5">
       {userEmail && (
-        <div className="mb-4 px-3 text-sm text-muted-foreground truncate">
+        <p className="text-[11px] text-muted-foreground truncate mb-1.5 px-1">
           {userEmail}
-        </div>
+        </p>
       )}
-      <Button asChild variant="outline" className="w-full h-12 text-base">
-        <Link href="/auth/logout">{t('signOut')}</Link>
-      </Button>
+      <Link
+        href="/auth/logout"
+        className="text-xs font-medium text-muted-foreground hover:text-foreground transition-colors px-1 block"
+      >
+        {t('signOut')}
+      </Link>
     </div>
   );
 }

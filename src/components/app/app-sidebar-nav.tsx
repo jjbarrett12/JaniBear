@@ -60,7 +60,7 @@ const operationsItems = [
 ];
 
 function navLinkClass(active: boolean) {
-  return `flex items-center gap-3 rounded-lg px-4 py-3 text-base font-medium transition-colors min-h-[48px] ${
+  return `flex items-center gap-2.5 rounded-md px-3 py-2 text-sm font-medium transition-colors min-h-[36px] ${
     active
       ? 'bg-primary text-primary-foreground'
       : 'text-muted-foreground hover:bg-muted hover:text-foreground'
@@ -73,33 +73,37 @@ export function AppSidebarNav({ premium }: { premium: boolean }) {
   const t = getAppT(locale);
 
   return (
-    <nav className="min-w-0 flex-1 space-y-4 overflow-y-auto p-3">
+    <nav className="min-w-0 flex-1 space-y-2 overflow-y-auto p-2">
       <Link
         href="/app/dashboard"
         className={navLinkClass(pathname === '/app/dashboard')}
+        prefetch={false}
       >
-        <LayoutDashboard className="h-6 w-6 shrink-0" />
+        <LayoutDashboard className="h-5 w-5 shrink-0" />
         <span className="truncate">{t('navDashboard')}</span>
       </Link>
       <Link
         href="/app/financial-health"
         className={navLinkClass(pathname === '/app/financial-health')}
+        prefetch={false}
       >
-        <Wallet className="h-6 w-6 shrink-0" />
+        <Wallet className="h-5 w-5 shrink-0" />
         <span className="truncate">{t('navFinancialHealth')}</span>
       </Link>
       <Link
         href="/app/kpis"
         className={navLinkClass(pathname === '/app/kpis')}
+        prefetch={false}
       >
-        <BarChart3 className="h-6 w-6 shrink-0" />
+        <BarChart3 className="h-5 w-5 shrink-0" />
         <span className="truncate">{t('navKpiDashboard')}</span>
       </Link>
       <Link
         href="/app/university"
         className={navLinkClass(pathname.startsWith('/app/university'))}
+        prefetch={false}
       >
-        <GraduationCap className="h-6 w-6 shrink-0" />
+        <GraduationCap className="h-5 w-5 shrink-0" />
         <span className="truncate">{t('navUniversity')}</span>
         {premium && (
           <Badge variant="secondary" className="ml-auto text-[10px] px-1.5 py-0 shrink-0">Premium</Badge>
@@ -108,13 +112,14 @@ export function AppSidebarNav({ premium }: { premium: boolean }) {
       <Link
         href="/app/pro-gear"
         className={navLinkClass(pathname.startsWith('/app/pro-gear'))}
+        prefetch={false}
       >
-        <ShoppingBag className="h-6 w-6 shrink-0" />
+        <ShoppingBag className="h-5 w-5 shrink-0" />
         <span className="truncate">{t('navProGear')}</span>
       </Link>
 
-      <div className="space-y-1">
-        <p className="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+      <div className="space-y-0.5 pt-1">
+        <p className="px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
           {t('navSales')}
         </p>
         {salesItems.map((item) => {
@@ -125,6 +130,7 @@ export function AppSidebarNav({ premium }: { premium: boolean }) {
               key={`${item.href}-${item.labelKey}`}
               href={item.href}
               className={navLinkClass(isActive)}
+              prefetch={false}
             >
               <Icon className="h-5 w-5 shrink-0" />
               <span className="truncate">{t(item.labelKey)}</span>
@@ -133,8 +139,8 @@ export function AppSidebarNav({ premium }: { premium: boolean }) {
         })}
       </div>
 
-      <div className="space-y-1">
-        <p className="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+      <div className="space-y-0.5 pt-1">
+        <p className="px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
           {t('navOperations')}
         </p>
         {operationsItems.map((item) => {
@@ -145,6 +151,7 @@ export function AppSidebarNav({ premium }: { premium: boolean }) {
               key={`${item.href}-${item.labelKey}`}
               href={item.href}
               className={navLinkClass(isActive)}
+              prefetch={false}
             >
               <Icon className="h-5 w-5 shrink-0" />
               <span className="truncate">{t(item.labelKey)}</span>
@@ -153,10 +160,11 @@ export function AppSidebarNav({ premium }: { premium: boolean }) {
         })}
       </div>
 
-      <div className="pt-2 border-t border-border space-y-1">
+      <div className="pt-1.5 mt-1 border-t border-border space-y-0.5">
         <Link
           href="/app/settings"
           className={navLinkClass(pathname.startsWith('/app/settings'))}
+          prefetch={false}
         >
           <Settings className="h-5 w-5 shrink-0" />
           <span className="truncate">{t('navSettings')}</span>

@@ -3,7 +3,9 @@ import { requireOrg } from '@/lib/auth';
 import { BrandingSettings } from '@/components/settings/branding-settings';
 import { OrgSwitcher } from '@/components/settings/org-switcher';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Settings, Palette, Upload } from 'lucide-react';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Settings, Palette, Upload, Users } from 'lucide-react';
 
 export default async function SettingsPage() {
   const org = await requireOrg();
@@ -24,6 +26,29 @@ export default async function SettingsPage() {
       </div>
 
       <div className="space-y-6">
+        <BrandingSettings
+          orgId={org.org_id}
+          initialData={{
+            primary_color: organization?.primary_color,
+            secondary_color: organization?.secondary_color,
+            logo_url: organization?.logo_url,
+            custom_branding: organization?.custom_branding,
+          }}
+        />
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Users className="h-5 w-5" />
+              Team
+            </CardTitle>
+            <CardDescription>Invite users, assign roles, disable access, send password reset</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Link href="/app/settings/team">
+              <Button variant="secondary">Manage team</Button>
+            </Link>
+          </CardContent>
+        </Card>
         <Card>
           <CardHeader>
             <CardTitle>Organization</CardTitle>
@@ -47,16 +72,6 @@ export default async function SettingsPage() {
             </div>
           </CardContent>
         </Card>
-
-        <BrandingSettings
-          orgId={org.org_id}
-          initialData={{
-            primary_color: organization?.primary_color,
-            secondary_color: organization?.secondary_color,
-            logo_url: organization?.logo_url,
-            custom_branding: organization?.custom_branding,
-          }}
-        />
       </div>
     </div>
   );

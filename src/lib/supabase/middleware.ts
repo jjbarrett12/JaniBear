@@ -1,3 +1,7 @@
+/**
+ * Auth middleware: refresh Supabase session and protect routes.
+ * See project root AUTH_FLOW.md for the full sign-in flow — change this only with that doc in mind.
+ */
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
@@ -13,6 +17,12 @@ const PUBLIC_PATHS = [
   '/api',
 ];
 
+const AUTH_DEBUG = process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_AUTH_DEBUG === '1';
+
+function debugLog(msg: string, data?: Record<string, unknown>) {
+  if (AUTH_DEBUG) console.log('[auth middleware]', msg, data ?? '');
+}
+
 function isPublicPath(pathname: string): boolean {
   if (pathname === '/') return true;
   return PUBLIC_PATHS.some((p) => pathname.startsWith(p));
@@ -25,21 +35,21 @@ function redirectToApp(pathname: string): string | null {
   return null;
 }
 
+type CookieEntry = { name: string; value: string; options?: Record<string, unknown> };
+
 export async function updateSession(request: NextRequest) {
-  let supabaseResponse = NextResponse.next({
-    request,
-  });
+  let response = NextResponse.next({ request });
+  /** True when Supabase auth called setAll (session refresh). We no longer redirect; we return response with cookies set. */
+  let didSetAuthCookies = false;
+  const authCookiesSet: CookieEntry[] = [];
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   if (!supabaseUrl || !supabaseAnonKey) {
-    if (isPublicPath(request.nextUrl.pathname)) {
-      return supabaseResponse;
-    }
-    const url = request.nextUrl.clone();
-    url.pathname = '/auth/login';
-    return NextResponse.redirect(url);
+    if (isPublicPath(request.nextUrl.pathname)) return response;
+    debugLog('missing env, redirect to login');
+    return NextResponse.redirect(new URL('/auth/login', request.url));
   }
 
   try {
@@ -48,48 +58,53 @@ export async function updateSession(request: NextRequest) {
         getAll() {
           return request.cookies.getAll();
         },
-        setAll(cookiesToSet) {
-          supabaseResponse = NextResponse.next({
-            request,
-          });
+        setAll(cookiesToSet: CookieEntry[]) {
+          didSetAuthCookies = true;
+          authCookiesSet.push(...cookiesToSet);
+          response = NextResponse.next({ request });
           cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
+            response.cookies.set(name, value, options)
           );
         },
       },
     });
 
-    // IMPORTANT: Do NOT use getSession() here - use getUser() instead
-    // getSession() reads from cookies which can be spoofed
-    // getUser() actually validates the session with Supabase
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
+    const { data: { user } } = await supabase.auth.getUser();
     const pathname = request.nextUrl.pathname;
 
-    // Prefetch requests (next/link) may not have cookies; don't redirect or we get reload loops
+    const cookieNames = request.cookies.getAll().map((c) => c.name).filter((n) => n.startsWith('sb-'));
+    if (process.env.NODE_ENV === 'development' && pathname.startsWith('/app/')) {
+      console.log('[REDIRECT] [A] middleware path=', pathname, 'user=', user?.id ?? null, 'authCookieCount=', cookieNames.length);
+    }
+    if (AUTH_DEBUG && pathname.startsWith('/app/')) {
+      debugLog('app route', {
+        pathname,
+        userId: user?.id ?? null,
+        didSetAuthCookies,
+        authCookieCount: cookieNames.length,
+        authCookies: cookieNames,
+      });
+    }
+
     const isPrefetch =
       request.headers.get('Next-Router-Prefetch') === '1' ||
       request.headers.get('purpose') === 'prefetch';
-    if (isPrefetch) {
-      return supabaseResponse;
-    }
+    if (isPrefetch) return response;
 
     const appRedirect = redirectToApp(pathname);
     if (appRedirect) {
-      const url = request.nextUrl.clone();
-      url.pathname = appRedirect;
-      return NextResponse.redirect(url);
+      return NextResponse.redirect(new URL(appRedirect, request.url));
     }
 
     if (!user && !isPublicPath(pathname)) {
-      const url = request.nextUrl.clone();
-      url.pathname = '/auth/login';
-      return NextResponse.redirect(url);
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[REDIRECT] origin=middleware path=', pathname, 'authCookieCount=', cookieNames.length);
+      }
+      debugLog('no user, redirect to login', { pathname, authCookieCount: cookieNames.length });
+      return NextResponse.redirect(new URL('/auth/login', request.url));
     }
 
-    // Set active_org_id if missing when entering /app (stops redirect loops; one less hop)
+    // Set active_org_id when entering /app without it (so layout has org in one hop)
     if (user && pathname.startsWith('/app/')) {
       const hasOrgCookie = request.cookies.get('active_org_id')?.value;
       if (!hasOrgCookie) {
@@ -100,7 +115,7 @@ export async function updateSession(request: NextRequest) {
           .limit(1)
           .maybeSingle();
         if (membership?.org_id) {
-          supabaseResponse.cookies.set('active_org_id', membership.org_id, {
+          response.cookies.set('active_org_id', membership.org_id, {
             path: '/',
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
@@ -111,8 +126,19 @@ export async function updateSession(request: NextRequest) {
       }
     }
 
-    return supabaseResponse;
-  } catch {
-    return supabaseResponse;
+    // When Supabase refreshes the session (setAll), we used to redirect to the same URL so the
+    // layout would see new cookies on the next request. That redirect causes client-side
+    // navigation to sometimes lose the session (cookie sync / follow-up request not sending
+    // cookies). So we no longer redirect: return the response with updated cookies; the layout
+    // runs in the same request with the incoming cookies. Supabase refreshes proactively before
+    // expiry, so getUser() in the layout typically still succeeds with the existing cookies.
+    if (didSetAuthCookies && pathname.startsWith('/app/')) {
+      debugLog('auth refresh (no redirect)', { pathname, cookiesSet: authCookiesSet.length });
+    }
+
+    return response;
+  } catch (e) {
+    debugLog('catch', { error: String(e) });
+    return response;
   }
 }

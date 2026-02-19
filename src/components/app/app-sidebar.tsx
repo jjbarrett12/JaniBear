@@ -32,15 +32,15 @@ export async function AppSidebar() {
       {/* Desktop Sidebar - w-56 so it doesn't overlap main content */}
       <aside className="hidden lg:flex fixed left-0 top-0 z-40 h-screen w-56 shrink-0 overflow-hidden border-r border-border bg-card">
         <div className="flex h-full min-w-0 flex-1 flex-col">
-          <div className="flex h-12 shrink-0 items-center border-b border-border px-2 py-1 bg-[hsl(220,30%,97%)] dark:bg-card">
-            <Link href="/app/dashboard" className="flex h-full w-full min-w-0 items-center justify-center bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block [&>span]:!relative [&>span]:h-full [&>span]:w-full">
+          <div className="flex flex-col shrink-0 border-b border-border px-3 py-3 bg-[hsl(220,30%,97%)] dark:bg-card">
+            <Link href="/app/dashboard" prefetch={false} className="flex h-16 w-full min-w-0 items-center justify-center bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block [&>span]:!relative [&>span]:h-full [&>span]:w-full">
               {orgData?.logo_url ? (
                 <Image
                   src={orgData.logo_url}
                   alt="Company Logo"
-                  width={200}
-                  height={48}
-                  className="h-full max-h-8 w-full object-contain object-center bg-transparent"
+                  width={220}
+                  height={72}
+                  className="h-14 w-full max-h-14 object-contain object-center bg-transparent"
                   priority
                   unoptimized
                 />
@@ -48,9 +48,9 @@ export async function AppSidebar() {
                 <Image
                   src="/logo.png"
                   alt="JANIBEAR Logo"
-                  width={200}
-                  height={48}
-                  className="h-full max-h-8 w-full object-contain object-center bg-transparent [&>img]:bg-transparent"
+                  width={220}
+                  height={72}
+                  className="h-14 w-full max-h-14 object-contain object-center bg-transparent [&>img]:bg-transparent dark:[&>img]:drop-shadow-[0_0_8px_rgba(255,255,255,0.15)] dark:[&>img]:brightness-110"
                   priority
                   unoptimized
                 />
@@ -58,7 +58,7 @@ export async function AppSidebar() {
             </Link>
           </div>
           
-          <div className="min-w-0 shrink-0 space-y-3 border-b border-border p-3">
+          <div className="min-w-0 shrink-0 space-y-2 border-b border-border px-3 py-2">
             <div className="min-w-0">
               <GlobalSearch />
             </div>

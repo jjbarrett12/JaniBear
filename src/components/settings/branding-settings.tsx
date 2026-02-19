@@ -168,13 +168,13 @@ export function BrandingSettings({ orgId, initialData }: BrandingSettingsProps) 
       <CardHeader>
         <CardTitle>Branding & Customization</CardTitle>
         <CardDescription>
-          Customize your organization&apos;s colors and logo
+          Your logo appears in the sidebar. Upload your own to replace the default JANIBEAR logo, or remove it to use the default.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-8">
         {/* Logo Upload */}
         <div className="space-y-2">
-          <Label>Company Logo</Label>
+          <Label>Company Logo (sidebar)</Label>
           <div className="flex items-center gap-4">
             {logoUrl ? (
               <div className="relative">
@@ -222,7 +222,7 @@ export function BrandingSettings({ orgId, initialData }: BrandingSettingsProps) 
                 {isUploading ? 'Uploading...' : logoUrl ? 'Change Logo' : 'Upload Logo'}
               </Button>
               <p className="text-xs text-gray-500 mt-1">
-                PNG, JPG, or SVG. Max 5MB. Recommended: 200x60px
+                PNG, JPG, or SVG. Max 5MB. Recommended: 200x60px. Leave empty to keep the default JANIBEAR logo.
               </p>
             </div>
           </div>

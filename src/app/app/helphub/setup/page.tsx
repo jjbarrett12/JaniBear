@@ -1,5 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { requireOrg } from '@/lib/auth';
+import { getEffectiveAccessForCurrentUser, hasFeature } from '@/lib/access';
+import { FeatureGate } from '@/components/access/feature-gate';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -13,6 +15,7 @@ const baseUrl =
 
 export default async function HelpHubSetupPage() {
   const org = await requireOrg();
+  const access = await getEffectiveAccessForCurrentUser();
   const supabase = await createClient();
 
   const { data: locations } = await supabase
@@ -22,6 +25,11 @@ export default async function HelpHubSetupPage() {
     .order('name');
 
   return (
+    <FeatureGate feature="helphub_qr" allowed={hasFeature(access, 'helphub_qr')} fallback={
+      <div className="rounded-md border bg-card p-6 text-center text-muted-foreground">
+        <p>HelpHub QR is not enabled for your plan. Upgrade or enable the HelpHub QR add-on.</p>
+      </div>
+    }>
     <div className="space-y-6">
       <div className="flex items-center gap-4">
         <Link href="/app/helphub">
@@ -106,5 +114,6 @@ export default async function HelpHubSetupPage() {
         </Card>
       )}
     </div>
+    </FeatureGate>
   );
 }

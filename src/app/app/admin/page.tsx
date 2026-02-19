@@ -14,6 +14,7 @@ import {
   TrendingUp,
   Clock,
   CheckCircle2,
+  Palette,
 } from 'lucide-react';
 
 // Demo counts for marketing screenshots (?demo=1)
@@ -50,6 +51,9 @@ export default async function AdminPage(props: { searchParams?: Promise<{ demo?:
   if (!member || !['owner', 'admin', 'manager'].includes(member.role)) {
     redirect('/app/dashboard');
   }
+
+  const { data: profile } = await supabase.from('profiles').select('is_platform_admin').eq('id', userId).single();
+  const isPlatformAdmin = profile?.is_platform_admin === true;
 
   // Get quick stats
   const [employeesCount, complianceCount, sdsCount, poCount, invoiceCount, phoneCallsCount] = await Promise.all([
@@ -141,6 +145,33 @@ export default async function AdminPage(props: { searchParams?: Promise<{ demo?:
         <h1 className="text-3xl font-bold text-foreground">Admin Dashboard</h1>
         <p className="text-muted-foreground mt-2">Manage employees, compliance, invoicing, and AI features</p>
       </div>
+
+      {isPlatformAdmin && (
+        <Link href="/app/admin/platform">
+          <Card className="hover:shadow-lg transition-shadow cursor-pointer border-amber-500/30 bg-amber-500/5">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">Platform Admin</CardTitle>
+              <CardDescription>Manage tenants, plans, add-ons, and user access (superadmin only)</CardDescription>
+            </CardHeader>
+          </Card>
+        </Link>
+      )}
+
+      <Link href="/app/settings">
+        <Card className="hover:shadow-md transition-shadow cursor-pointer border-muted">
+          <CardHeader className="py-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-lg bg-muted">
+                <Palette className="h-5 w-5 text-muted-foreground" />
+              </div>
+              <div>
+                <CardTitle className="text-base">Logo & branding</CardTitle>
+                <CardDescription>Change your organization logo, colors, and branding (Settings)</CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+        </Card>
+      </Link>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {adminFeatures.map((feature) => {

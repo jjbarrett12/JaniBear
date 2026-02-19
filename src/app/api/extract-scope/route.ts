@@ -2,11 +2,14 @@ import { NextResponse } from 'next/server';
 import { extractScope } from '@/lib/ai';
 import { createClient } from '@/lib/supabase/server';
 import { requireApiOrg } from '@/lib/api-guard';
+import { requireFeature, guardToResponse } from '@/lib/access';
 
 export async function POST(req: Request) {
   try {
     const guard = await requireApiOrg();
     if (!guard.ok) return guard.response;
+    const featureGuard = await requireFeature('lidar');
+    if (!featureGuard.ok) return guardToResponse(featureGuard);
 
     const body = await req.json().catch(() => ({}));
     const walkthrough_id = body?.walkthrough_id ?? null;

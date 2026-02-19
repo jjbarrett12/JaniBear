@@ -1,5 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { requireOrg } from '@/lib/auth';
+import { getEffectiveAccessForCurrentUser, hasFeature } from '@/lib/access';
+import { FeatureGate } from '@/components/access/feature-gate';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Plus } from 'lucide-react';
@@ -16,6 +18,7 @@ import { format } from 'date-fns';
 
 export default async function WalkthroughsPage() {
   const org = await requireOrg();
+  const access = await getEffectiveAccessForCurrentUser();
   const supabase = await createClient();
 
   const { data: walkthroughs } = await supabase
@@ -29,6 +32,11 @@ export default async function WalkthroughsPage() {
     .order('scheduled_at', { ascending: false });
 
   return (
+    <FeatureGate feature="lidar" allowed={hasFeature(access, 'lidar')} fallback={
+      <div className="rounded-md border bg-card p-6 text-center text-muted-foreground">
+        <p>Walkthroughs and LiDAR are not enabled for your plan. Upgrade or enable the LiDAR add-on.</p>
+      </div>
+    }>
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-foreground">Walkthroughs</h1>
@@ -81,5 +89,6 @@ export default async function WalkthroughsPage() {
         </Table>
       </div>
     </div>
+    </FeatureGate>
   );
 }

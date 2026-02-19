@@ -2,16 +2,29 @@ import { createClient } from './supabase/server';
 import { redirect } from 'next/navigation';
 import { getActiveOrgIdFromCookie } from './user-context';
 
+const AUTH_DEBUG = process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_AUTH_DEBUG === '1';
+
 export async function getCurrentUser() {
   const supabase = await createClient();
-  // Use getUser() only: validates session with Supabase (same as middleware).
-  // getSession() can be stale or empty when middleware refreshed the session but
-  // the response wasn't updated, causing redirect loops.
   const { data: { user }, error } = await supabase.auth.getUser();
-  if (error || !user) {
-    return null;
+  if (user) return user;
+  // Fallback: on client-side nav the RSC request can have cookies but getUser() may fail (validation/network).
+  // Use getSession() so we don't kick to login when the session exists in the cookie.
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session?.user) return session.user;
+  if (process.env.NODE_ENV === 'development' && (error || !session?.user)) {
+    const { cookies } = await import('next/headers');
+    const store = await cookies();
+    const authNames = store.getAll().map((c) => c.name).filter((n) => n.startsWith('sb-'));
+    console.log('[REDIRECT] [B] getCurrentUser null in layout', { error: error?.message ?? null, authCookieCount: authNames.length });
   }
-  return user;
+  if (AUTH_DEBUG) {
+    const { cookies } = await import('next/headers');
+    const store = await cookies();
+    const authNames = store.getAll().map((c) => c.name).filter((n) => n.startsWith('sb-'));
+    console.log('[auth getCurrentUser]', { error: error?.message ?? null, authCookieCount: authNames.length, authCookies: authNames });
+  }
+  return null;
 }
 
 /** Returns current user id or null. Use in admin/role checks to avoid duplicate getUser() and undefined. */
@@ -23,6 +36,7 @@ export async function getCurrentUserId(): Promise<string | null> {
 export async function requireAuth() {
   const user = await getCurrentUser();
   if (!user) {
+    if (process.env.NODE_ENV === 'development') console.log('[REDIRECT] origin=layout (requireAuth)');
     redirect('/auth/login');
   }
   return user;
@@ -64,6 +78,7 @@ export async function getCurrentOrg() {
 export async function requireOrg() {
   const user = await getCurrentUser();
   if (!user) {
+    if (process.env.NODE_ENV === 'development') console.log('[REDIRECT] origin=layout (requireOrg getCurrentUser null)');
     redirect('/auth/login');
   }
 

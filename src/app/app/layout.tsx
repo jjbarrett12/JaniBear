@@ -6,11 +6,18 @@ import { ThemeProvider } from '@/lib/theme-provider';
 import { ThemeApplier } from '@/components/app/theme-applier';
 import { createClient } from '@/lib/supabase/server';
 
+// Ensure layout always runs with current request (cookies) on client-side navigation
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function AppLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[REDIRECT] [B] app layout running (before requireOrg)');
+  }
   const org = await requireOrg();
   const supabase = await createClient();
 

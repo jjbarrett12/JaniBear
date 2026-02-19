@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
-import { signInWithPasswordAction } from '@/app/auth/login/actions';
 
 function GoogleIcon({ className }: { className?: string }) {
   return (
@@ -50,9 +49,15 @@ export function LoginForm({ defaultEmail = '' }: LoginFormProps) {
       ? 'Session could not be established. Please sign in again.'
       : searchParams.get('error') === 'oauth'
         ? searchParams.get('message') || 'OAuth sign in failed. Please try again.'
-        : null;
+        : searchParams.get('error') === 'invalid'
+          ? 'Invalid email or password. Please try again.'
+          : searchParams.get('error') === 'missing'
+            ? 'Email and password are required.'
+            : searchParams.get('error') === 'unconfirmed'
+              ? 'Your email is not confirmed yet. Check your inbox (and spam) for the confirmation link.'
+              : null;
   const error = submitError?.error ?? urlError;
-  const errorCode = submitError?.code ?? null;
+  const errorCode = submitError?.code ?? (searchParams.get('error') === 'invalid' ? 'invalid_credentials' : null);
 
   const handleOAuthSignIn = async (provider: 'google' | 'facebook') => {
     setOauthLoading(provider);
@@ -83,28 +88,6 @@ export function LoginForm({ defaultEmail = '' }: LoginFormProps) {
     }
   }, [defaultEmail]);
 
-  const handlePasswordSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setSubmitError(null);
-    setIsSubmitting(true);
-    const formData = new FormData();
-    formData.set('email', email);
-    formData.set('password', password);
-    formData.set('remember_me', rememberMe ? '1' : '0');
-    try {
-      const result = await signInWithPasswordAction(null, formData);
-      if (result?.error) {
-        setSubmitError({ error: result.error, code: result.code ?? undefined });
-      } else if (result?.redirect) {
-        window.location.href = result.redirect;
-        return;
-      }
-    } catch {
-      setSubmitError({ error: 'An unexpected error occurred. Please try again.' });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
   const handleMagicLinkSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -208,17 +191,17 @@ export function LoginForm({ defaultEmail = '' }: LoginFormProps) {
           </Button>
         </form>
       ) : (
-        <form onSubmit={handlePasswordSubmit} className="space-y-4">
+        <form action="/api/auth/login" method="POST" className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="login-email" className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Email</Label>
             <Input
               id="login-email"
+              name="email"
               type="email"
               placeholder="you@company.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              disabled={isSubmitting}
               autoComplete="email"
               className="h-12 rounded-xl border-zinc-200 dark:border-zinc-600 bg-zinc-100 dark:bg-zinc-800 focus:bg-white dark:focus:bg-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-500 dark:placeholder:text-zinc-400 focus-visible:ring-2 focus-visible:ring-amber-500/30"
             />
@@ -228,12 +211,12 @@ export function LoginForm({ defaultEmail = '' }: LoginFormProps) {
             <div className="relative">
               <Input
                 id="login-password"
+                name="password"
                 type={showPassword ? 'text' : 'password'}
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                disabled={isSubmitting}
                 autoComplete="current-password"
                 className="h-12 rounded-xl border-zinc-200 dark:border-zinc-600 bg-zinc-100 dark:bg-zinc-800 focus:bg-white dark:focus:bg-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-500 dark:placeholder:text-zinc-400 pr-12 focus-visible:ring-2 focus-visible:ring-amber-500/30"
               />
@@ -254,7 +237,6 @@ export function LoginForm({ defaultEmail = '' }: LoginFormProps) {
                 type="checkbox"
                 checked={rememberMe}
                 onChange={(e) => setRememberMe(e.target.checked)}
-                disabled={isSubmitting}
                 className="w-4 h-4 rounded border-zinc-300 text-amber-500 focus:ring-2 focus:ring-amber-500/20"
               />
               <span className="text-sm font-medium text-zinc-600 dark:text-zinc-400">Remember me</span>
@@ -298,9 +280,8 @@ export function LoginForm({ defaultEmail = '' }: LoginFormProps) {
           <Button
             type="submit"
             className="w-full h-12 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-semibold text-[15px] shadow-sm"
-            disabled={isSubmitting || !!oauthLoading}
+            disabled={!!oauthLoading}
           >
-            {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
             Sign in
           </Button>
         </form>

@@ -196,14 +196,13 @@ export default function Home() {
         {/* Backdrop: scrubber.png/jpg in public, or fallback to Unsplash */}
         <div className="absolute inset-0 pointer-events-none" aria-hidden>
           <HeroBackdropImage />
-          {/* Lighter overlay so scrubber background stays visible */}
-          <div className="absolute inset-0 bg-black/45 backdrop-blur-[1px]" />
+          {/* Overlay for contrast (no blur so scrubber stays sharp) */}
+          <div className="absolute inset-0 bg-black/45" />
           <div className="absolute inset-0 bg-gradient-to-b from-zinc-950/70 via-black/55 to-black/80" />
         </div>
-        {/* Radial glow + grid */}
+        {/* Radial glow only (no grid) */}
         <div className="absolute inset-0 pointer-events-none" aria-hidden>
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[160%] max-w-6xl h-[90%] bg-gradient-radial-hero opacity-50" />
-          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.025)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.025)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_75%_55%_at_50%_20%,black_30%,transparent_70%)]" />
         </div>
         <div className="absolute inset-0 pointer-events-none opacity-[0.05] hero-noise" aria-hidden />
 
@@ -227,10 +226,10 @@ export default function Home() {
               <BrandName /> combines sales growth and operational control into one platform — helping commercial cleaning companies win contracts, prove quality, and scale without adding supervisors.
             </p>
             <p
-              className={`mt-4 font-heading text-lg md:text-xl font-bold transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+              className={`mt-5 font-heading text-xl md:text-2xl font-bold transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
               style={{ transitionDelay: '120ms' }}
             >
-              <span className="bg-gradient-to-r from-amber-200 via-amber-400 to-yellow-400 bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(251,191,36,0.3)]">
+              <span className="bg-gradient-to-r from-amber-100 via-amber-300 to-yellow-300 bg-clip-text text-transparent drop-shadow-[0_0_24px_rgba(251,191,36,0.45)]">
                 Two managers&apos; worth of output. One platform.
               </span>
             </p>

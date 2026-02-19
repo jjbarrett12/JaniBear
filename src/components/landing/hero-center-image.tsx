@@ -3,8 +3,13 @@
 import Image from 'next/image';
 import { useState } from 'react';
 
-/** Hero foreground: transparent PNG first, then fallbacks (place transparent image as hero-devices-transparent.png) */
-const DEVICES_PATHS = ['/hero-devices-transparent.png', '/hero-devices.png', '/Laptop%20and%20phone%20display%20.png'];
+/** Hero foreground: transparent devices image (ChatGPT Image ... or hero-devices-transparent.png) */
+const DEVICES_PATHS = [
+  '/ChatGPT%20Image%20Feb%2019%2C%202026%2C%2012_40_33%20AM.png',
+  '/hero-devices-transparent.png',
+  '/hero-devices.png',
+  '/Laptop%20and%20phone%20display%20.png',
+];
 
 export function HeroCenterImage() {
   const [idx, setIdx] = useState(0);

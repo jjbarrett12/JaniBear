@@ -4,7 +4,7 @@
  * Permission model: effective role = roleEnum ?? role (single source of truth). See PERMISSIONS_MODEL.md.
  */
 import { createClient } from '@/lib/supabase/server';
-import { cookies } from 'next/headers';
+import { cookies, headers } from 'next/headers';
 
 const ACTIVE_ORG_COOKIE = 'active_org_id';
 
@@ -27,11 +27,18 @@ export type UserContext = {
 
 /**
  * Read active org id from httpOnly cookie (set by API or client after switch).
+ * Falls back to Cookie header when cookies() is empty (e.g. on client-side nav).
  */
 export async function getActiveOrgIdFromCookie(): Promise<string | null> {
   const cookieStore = await cookies();
-  const c = cookieStore.get(ACTIVE_ORG_COOKIE);
-  return c?.value ?? null;
+  let c = cookieStore.get(ACTIVE_ORG_COOKIE);
+  if (c?.value) return c.value;
+  const headersList = await headers();
+  const cookieHeader = headersList.get('cookie');
+  if (!cookieHeader) return null;
+  const match = cookieHeader.match(new RegExp(`${ACTIVE_ORG_COOKIE}=([^;]+)`));
+  const raw = match?.[1]?.trim();
+  return raw?.replace(/^"|"$/g, '') ?? null;
 }
 
 /**
@@ -42,8 +49,18 @@ export async function getUserContext(): Promise<{
   context: UserContext;
 }> {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) {
+  const headersList = await headers();
+
+  let resolvedUser = (await supabase.auth.getUser()).data.user;
+  if (!resolvedUser) {
+    const { data: { session } } = await supabase.auth.getSession();
+    resolvedUser = session?.user ?? null;
+  }
+
+  const middlewareUserId = headersList.get('x-middleware-user-id');
+  const userId = resolvedUser?.id ?? middlewareUserId;
+
+  if (!userId) {
     return {
       user: null,
       context: {
@@ -59,6 +76,8 @@ export async function getUserContext(): Promise<{
       },
     };
   }
+
+  const user = { id: userId };
 
   const activeOrgId = await getActiveOrgIdFromCookie();
 

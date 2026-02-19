@@ -3,21 +3,25 @@
 import Image from 'next/image';
 import { useState } from 'react';
 
-const UNSPLASH_BACKDROP = 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1920&q=80';
+/** Hero background: scrubber image in public/ (scrubber.png or "scrubber .png") */
+const SCRUBBER_PATHS = ['/scrubber.png', '/scrubber%20.png'];
 
-/** Tries /scrubber.png, then /scrubber.jpg; falls back to Unsplash if both 404. */
 export function HeroBackdropImage() {
-  const [src, setSrc] = useState('/scrubber.png');
-  const [triedJpg, setTriedJpg] = useState(false);
+  const [idx, setIdx] = useState(0);
+  const [failed, setFailed] = useState(false);
+  const src = SCRUBBER_PATHS[idx];
 
   const handleError = () => {
-    if (!triedJpg && src === '/scrubber.png') {
-      setTriedJpg(true);
-      setSrc('/scrubber.jpg');
+    if (idx + 1 < SCRUBBER_PATHS.length) {
+      setIdx((i) => i + 1);
     } else {
-      setSrc(UNSPLASH_BACKDROP);
+      setFailed(true);
     }
   };
+
+  if (failed) {
+    return <div className="absolute inset-0 bg-black" aria-hidden />;
+  }
 
   return (
     <Image
@@ -27,7 +31,7 @@ export function HeroBackdropImage() {
       className="object-cover object-center scale-105"
       priority
       sizes="100vw"
-      unoptimized={src.startsWith('http')}
+      unoptimized
       onError={handleError}
     />
   );

@@ -2,32 +2,37 @@
 
 import Image from 'next/image';
 import { useState } from 'react';
-import { HeroMacbookDashboard } from '@/components/landing/hero-macbook-dashboard';
 
-/**
- * Tries /hero-devices.png, then /hero-devices.jpg; falls back to MacBook dashboard mock if both 404.
- */
+/** Hero foreground: laptop + phone image in public/ (hero-devices.png or "Laptop and phone display .png") */
+const DEVICES_PATHS = ['/hero-devices.png', '/Laptop%20and%20phone%20display%20.png'];
+
 export function HeroCenterImage() {
-  const [src, setSrc] = useState<string | null>('/hero-devices.png');
-  const [triedJpg, setTriedJpg] = useState(false);
+  const [idx, setIdx] = useState(0);
+  const [failed, setFailed] = useState(false);
+  const src = DEVICES_PATHS[idx];
 
   const handleError = () => {
-    if (!triedJpg && src === '/hero-devices.png') {
-      setTriedJpg(true);
-      setSrc('/hero-devices.jpg');
+    if (idx + 1 < DEVICES_PATHS.length) {
+      setIdx((i) => i + 1);
     } else {
-      setSrc(null);
+      setFailed(true);
     }
   };
 
-  if (src === null) {
-    return <HeroMacbookDashboard />;
+  if (failed) {
+    return (
+      <div
+        className="w-[280px] sm:w-[340px] md:w-[400px] h-[180px] sm:h-[220px] rounded-xl bg-black/40 border border-white/10 flex items-center justify-center text-zinc-500 text-sm"
+        aria-hidden
+      >
+        Add hero-devices.png to public/
+      </div>
+    );
   }
 
   return (
     <>
       <div className="absolute -inset-4 bg-amber-400/10 rounded-3xl blur-2xl" aria-hidden />
-      {/* Semi-transparent so scrubber background shows through */}
       <div className="relative w-[280px] sm:w-[340px] md:w-[400px] opacity-[0.88]">
         <Image
           src={src}

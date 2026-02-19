@@ -195,7 +195,7 @@ export function MobileSidebar({ logoUrl }: MobileSidebarProps) {
                   </p>
                   {salesItemKeys.map((item) => {
                     const Icon = item.icon;
-                    const isActive = pathname.startsWith(item.href);
+                    const isActive = pathname === item.href;
                     return (
                       <AppLink
                         key={`${item.href}-${item.labelKey}`}
@@ -219,7 +219,7 @@ export function MobileSidebar({ logoUrl }: MobileSidebarProps) {
                   </p>
                   {operationsItemKeys.map((item) => {
                     const Icon = item.icon;
-                    const isActive = pathname.startsWith(item.href);
+                    const isActive = pathname === item.href;
                     return (
                       <AppLink
                         key={`${item.href}-${item.labelKey}`}

@@ -20,7 +20,6 @@ import {
   TrendingUp,
   ListChecks,
   Repeat,
-  KeyRound,
   Award,
   FileSearch,
   Package,
@@ -30,13 +29,6 @@ import {
   Wallet,
   BarChart3,
   ShoppingBag,
-  CreditCard,
-  Wrench,
-  Mail,
-  Star,
-  Route,
-  Zap,
-  RefreshCw,
 } from 'lucide-react';
 
 const salesItems = [
@@ -47,21 +39,15 @@ const salesItems = [
   { href: '/app/draft-review', labelKey: 'navProposalDraftReview' as const, icon: FileText },
   { href: '/app/sales/cadence', labelKey: 'navFollowUp' as const, icon: Repeat },
   { href: '/app/sales', labelKey: 'navPipelineManagement' as const, icon: TrendingUp },
-  { href: '/app/marketing', labelKey: 'navMarketing' as const, icon: Mail },
-  { href: '/app/contract-renewals', labelKey: 'navContractRenewals' as const, icon: RefreshCw },
 ];
 
 const operationsItems = [
   { href: '/app/map', labelKey: 'navMap' as const, icon: Map },
-  { href: '/app/territory-map', labelKey: 'navTerritoryMap' as const, icon: MapPin },
   { href: '/app/accounts', labelKey: 'navAccounts' as const, icon: MapPin },
   { href: '/app/crews', labelKey: 'navCrewManagement' as const, icon: Users },
   { href: '/app/templates', labelKey: 'navBrandStandards' as const, icon: Award },
   { href: '/app/schedules', labelKey: 'navSchedules' as const, icon: Calendar },
-  { href: '/app/work-orders', labelKey: 'navWorkOrders' as const, icon: Wrench },
-  { href: '/app/routes', labelKey: 'navRoutes' as const, icon: Route },
   { href: '/app/inspections', labelKey: 'navInspections' as const, icon: ClipboardCheck },
-  { href: '/app/surveys', labelKey: 'navSurveys' as const, icon: Star },
   { href: '/app/issues', labelKey: 'navIssues' as const, icon: AlertCircle },
   { href: '/app/tasks', labelKey: 'navMyTasks' as const, icon: ClipboardCheck },
   { href: '/app/supplies', labelKey: 'navSupplies' as const, icon: Package },
@@ -69,8 +55,6 @@ const operationsItems = [
   { href: '/app/helphub', labelKey: 'navHelpHubQR' as const, icon: Ticket },
   { href: '/app/messages', labelKey: 'navMessages' as const, icon: MessageCircle },
   { href: '/app/qc-assign', labelKey: 'navQcTaskAssign' as const, icon: ListChecks },
-  { href: '/app/workflows', labelKey: 'navWorkflows' as const, icon: Zap },
-  { href: '/app/billing', labelKey: 'navBilling' as const, icon: CreditCard },
   { href: '/app/admin', labelKey: 'navAdmin' as const, icon: Settings },
 ];
 
@@ -134,7 +118,7 @@ export function AppSidebarNav({ premium }: { premium: boolean }) {
         </p>
         {salesItems.map((item) => {
           const Icon = item.icon;
-          const isActive = pathname.startsWith(item.href);
+          const isActive = pathname === item.href;
           return (
             <AppLink
               key={`${item.href}-${item.labelKey}`}
@@ -154,7 +138,7 @@ export function AppSidebarNav({ premium }: { premium: boolean }) {
         </p>
         {operationsItems.map((item) => {
           const Icon = item.icon;
-          const isActive = pathname.startsWith(item.href);
+          const isActive = pathname === item.href;
           return (
             <AppLink
               key={`${item.href}-${item.labelKey}`}

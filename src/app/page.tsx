@@ -33,7 +33,6 @@ import {
   Star,
 } from 'lucide-react';
 import { BrandName } from '@/components/ui/brand-name';
-import { HeroMacbookDashboard } from '@/components/landing/hero-macbook-dashboard';
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -192,15 +191,16 @@ export default function Home() {
 
       {/* Hero: billion-dollar aesthetic — headline, MacBook dashboard, dual engines, CTAs */}
       <section className="relative w-full overflow-hidden pt-16 md:pt-20 pb-16 md:pb-24 min-h-[90vh] flex flex-col">
-        {/* Backdrop: large venue / cleaning (replace with /hero-backdrop.jpg for ride-on scrubber shot) */}
+        {/* Backdrop: ride-on scrubber in large venue (public/scrubber) */}
         <div className="absolute inset-0 pointer-events-none" aria-hidden>
           <Image
-            src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1920&q=80"
+            src="/scrubber.png"
             alt=""
             fill
-            className="object-cover scale-105"
+            className="object-cover object-center scale-105"
             priority
             sizes="100vw"
+            unoptimized
           />
           <div className="absolute inset-0 bg-black/75 backdrop-blur-[2px]" />
           <div className="absolute inset-0 bg-gradient-to-b from-zinc-950/95 via-black/90 to-black" />
@@ -264,9 +264,20 @@ export default function Home() {
               <p className="mt-3 text-xs text-zinc-400 leading-snug">Win contracts without hiring a sales manager.</p>
             </div>
 
-            {/* MacBook with admin dashboard — center */}
-            <div className="order-1 lg:order-2">
-              <HeroMacbookDashboard />
+            {/* Laptop + phone software display — center (public/hero-devices.png) */}
+            <div className="order-1 lg:order-2 relative flex-shrink-0">
+              <div className="absolute -inset-4 bg-amber-400/15 rounded-3xl blur-2xl" aria-hidden />
+              <div className="relative w-[280px] sm:w-[340px] md:w-[400px]">
+                <Image
+                  src="/hero-devices.png"
+                  alt="JANIBEAR on laptop and phone"
+                  width={800}
+                  height={500}
+                  className="w-full h-auto object-contain drop-shadow-2xl"
+                  priority
+                  unoptimized
+                />
+              </div>
             </div>
 
             {/* Quality Control Engine — right */}

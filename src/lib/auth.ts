@@ -1,6 +1,9 @@
 import { createClient } from './supabase/server';
 import { redirect } from 'next/navigation';
+import { headers } from 'next/headers';
 import { getActiveOrgIdFromCookie } from './user-context';
+
+const MIDDLEWARE_USER_ID_HEADER = 'x-middleware-user-id';
 
 const AUTH_DEBUG = process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_AUTH_DEBUG === '1';
 
@@ -42,32 +45,35 @@ export async function requireAuth() {
   return user;
 }
 
+/** Get org membership for a user id (used when layout trusts middleware via header). */
+export async function getOrgForUserId(userId: string) {
+  const supabase = await createClient();
+  const activeOrgId = await getActiveOrgIdFromCookie();
+  if (activeOrgId) {
+    const { data: membership } = await supabase
+      .from('org_members')
+      .select('org_id, role, organizations(*)')
+      .eq('user_id', userId)
+      .eq('org_id', activeOrgId)
+      .maybeSingle();
+    if (membership) return membership;
+  }
+  const { data: membership } = await supabase
+    .from('org_members')
+    .select('org_id, role, organizations(*)')
+    .eq('user_id', userId)
+    .limit(1)
+    .maybeSingle();
+  return membership;
+}
+
 export async function getCurrentOrg() {
   const supabase = await createClient();
   const user = await getCurrentUser();
   
   if (!user) return null;
 
-  const activeOrgId = await getActiveOrgIdFromCookie();
-  if (activeOrgId) {
-    const { data: membership } = await supabase
-      .from('org_members')
-      .select('org_id, role, organizations(*)')
-      .eq('user_id', user.id)
-      .eq('org_id', activeOrgId)
-      .maybeSingle();
-    if (membership) return membership;
-  }
-
-  // Fallback: first org membership
-  const { data: membership } = await supabase
-    .from('org_members')
-    .select('org_id, role, organizations(*)')
-    .eq('user_id', user.id)
-    .limit(1)
-    .maybeSingle();
-  
-  return membership;
+  return getOrgForUserId(user.id);
 }
 
 /**
@@ -76,6 +82,13 @@ export async function getCurrentOrg() {
  * Only redirects to /onboarding when the user has zero org memberships (initial signup). Once they have an org, always dashboard.
  */
 export async function requireOrg() {
+  const headersList = await headers();
+  const middlewareUserId = headersList.get(MIDDLEWARE_USER_ID_HEADER);
+  if (middlewareUserId) {
+    const org = await getOrgForUserId(middlewareUserId);
+    if (org) return org;
+  }
+
   const user = await getCurrentUser();
   if (!user) {
     if (process.env.NODE_ENV === 'development') console.log('[REDIRECT] origin=layout (requireOrg getCurrentUser null)');

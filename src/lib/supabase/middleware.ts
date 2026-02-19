@@ -136,6 +136,17 @@ export async function updateSession(request: NextRequest) {
       debugLog('auth refresh (no redirect)', { pathname, cookiesSet: authCookiesSet.length });
     }
 
+    // Pass user id to layout via header so layout can trust middleware auth when cookies() is empty on client nav
+    if (user && pathname.startsWith('/app/')) {
+      const requestHeaders = new Headers(request.headers);
+      requestHeaders.set('x-middleware-user-id', user.id);
+      const resWithHeader = NextResponse.next({
+        request: { headers: requestHeaders },
+      });
+      response.cookies.getAll().forEach((c) => resWithHeader.cookies.set(c.name, c.value));
+      return resWithHeader;
+    }
+
     return response;
   } catch (e) {
     debugLog('catch', { error: String(e) });

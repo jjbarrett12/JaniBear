@@ -46,8 +46,8 @@ const salesItemKeys: { href: string; labelKey: AppTranslationKey; icon: React.Co
   { href: '/app/sales-dashboard', labelKey: 'navCommandCenter', icon: BarChart3 },
   { href: '/app/sales', labelKey: 'navLeads', icon: TrendingUp },
   { href: '/app/walkthroughs', labelKey: 'navSalesAppointment', icon: FileSearch },
-  { href: '/app/bids', labelKey: 'navProposalBuilding', icon: Calculator },
-  { href: '/app/bids', labelKey: 'navProposalDraftReview', icon: FileText },
+  { href: '/app/proposals/build', labelKey: 'navProposalBuilding', icon: Calculator },
+  { href: '/app/draft-review', labelKey: 'navProposalDraftReview', icon: FileText },
   { href: '/app/sales/cadence', labelKey: 'navFollowUp', icon: Repeat },
   { href: '/app/sales', labelKey: 'navPipelineManagement', icon: TrendingUp },
 ];

@@ -33,6 +33,8 @@ import {
   Star,
 } from 'lucide-react';
 import { BrandName } from '@/components/ui/brand-name';
+import { HeroBackdropImage } from '@/components/landing/hero-backdrop-image';
+import { HeroCenterImage } from '@/components/landing/hero-center-image';
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -191,19 +193,12 @@ export default function Home() {
 
       {/* Hero: billion-dollar aesthetic — headline, MacBook dashboard, dual engines, CTAs */}
       <section className="relative w-full overflow-hidden pt-16 md:pt-20 pb-16 md:pb-24 min-h-[90vh] flex flex-col">
-        {/* Backdrop: ride-on scrubber in large venue (public/scrubber) */}
+        {/* Backdrop: scrubber.png/jpg in public, or fallback to Unsplash */}
         <div className="absolute inset-0 pointer-events-none" aria-hidden>
-          <Image
-            src="/scrubber.png"
-            alt=""
-            fill
-            className="object-cover object-center scale-105"
-            priority
-            sizes="100vw"
-            unoptimized
-          />
-          <div className="absolute inset-0 bg-black/75 backdrop-blur-[2px]" />
-          <div className="absolute inset-0 bg-gradient-to-b from-zinc-950/95 via-black/90 to-black" />
+          <HeroBackdropImage />
+          {/* Lighter overlay so scrubber background stays visible */}
+          <div className="absolute inset-0 bg-black/45 backdrop-blur-[1px]" />
+          <div className="absolute inset-0 bg-gradient-to-b from-zinc-950/70 via-black/55 to-black/80" />
         </div>
         {/* Radial glow + grid */}
         <div className="absolute inset-0 pointer-events-none" aria-hidden>
@@ -264,20 +259,9 @@ export default function Home() {
               <p className="mt-3 text-xs text-zinc-400 leading-snug">Win contracts without hiring a sales manager.</p>
             </div>
 
-            {/* Laptop + phone software display — center (public/hero-devices.png) */}
+            {/* Laptop + phone: hero-devices.png/jpg in public, or fallback to MacBook mock */}
             <div className="order-1 lg:order-2 relative flex-shrink-0">
-              <div className="absolute -inset-4 bg-amber-400/15 rounded-3xl blur-2xl" aria-hidden />
-              <div className="relative w-[280px] sm:w-[340px] md:w-[400px]">
-                <Image
-                  src="/hero-devices.png"
-                  alt="JANIBEAR on laptop and phone"
-                  width={800}
-                  height={500}
-                  className="w-full h-auto object-contain drop-shadow-2xl"
-                  priority
-                  unoptimized
-                />
-              </div>
+              <HeroCenterImage />
             </div>
 
             {/* Quality Control Engine — right */}

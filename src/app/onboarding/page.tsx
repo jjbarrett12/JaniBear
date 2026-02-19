@@ -40,9 +40,9 @@ export default async function OnboardingPage() {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-50 to-gray-100">
       <div className="flex justify-end px-4 py-3 border-b border-gray-200 bg-white/80">
-        <Link href="/auth/logout" className="text-sm font-medium text-amber-600 hover:text-amber-700">
+        <a href="/auth/logout" className="text-sm font-medium text-amber-600 hover:text-amber-700">
           Sign out
-        </Link>
+        </a>
       </div>
       <div className="flex-1 flex flex-col items-center justify-center px-4 py-8">
         <div className="w-full max-w-md space-y-5">

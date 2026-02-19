@@ -254,7 +254,7 @@ export function MobileSidebar({ logoUrl }: MobileSidebarProps) {
 
               <div className="border-t dark:border-gray-800 p-4">
                 <Button asChild variant="outline" className="w-full h-12 text-base">
-                  <Link href="/auth/logout">{t('signOut')}</Link>
+                  <a href="/auth/logout">{t('signOut')}</a>
                 </Button>
               </div>
             </div>

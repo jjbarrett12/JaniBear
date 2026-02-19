@@ -1,6 +1,6 @@
 'use client';
 
-import Link from 'next/link';
+
 import { useLanguage } from '@/contexts/language-context';
 import { getAppT } from '@/lib/app-translations';
 
@@ -19,12 +19,12 @@ export function AppSidebarFooter({
           {userEmail}
         </p>
       )}
-      <Link
+      <a
         href="/auth/logout"
         className="text-xs font-medium text-muted-foreground hover:text-foreground transition-colors px-1 block"
       >
         {t('signOut')}
-      </Link>
+      </a>
     </div>
   );
 }

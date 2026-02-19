@@ -303,9 +303,9 @@ export function LoginForm({ defaultEmail = '' }: LoginFormProps) {
         </p>
         <p className="text-sm text-zinc-500">
           Stuck or can&apos;t sign in?{' '}
-          <Link href="/auth/logout" className="text-amber-600 hover:text-amber-700 underline">
+          <a href="/auth/logout" className="text-amber-600 hover:text-amber-700 underline">
             Sign out and try again
-          </Link>
+          </a>
         </p>
       </div>
     </div>

@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import {
   ArrowRight,
+  ArrowLeft,
   Camera,
   Check,
   Clock,
@@ -227,14 +228,28 @@ export default function Home() {
               <BrandName /> combines sales growth and operational control into one platform — helping commercial cleaning companies win contracts, prove quality, and scale without adding supervisors.
             </p>
             <p
-              className={`mt-4 font-heading text-lg md:text-xl font-bold text-white transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+              className={`mt-4 font-heading text-lg md:text-xl font-bold transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
               style={{ transitionDelay: '120ms' }}
             >
-              Two managers&apos; worth of output.{' '}
-              <span className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-400 bg-clip-text text-transparent drop-shadow-[0_0_16px_rgba(251,191,36,0.25)]">
-                One platform.
+              <span className="bg-gradient-to-r from-amber-200 via-amber-400 to-yellow-400 bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(251,191,36,0.3)]">
+                Two managers&apos; worth of output. One platform.
               </span>
             </p>
+            {/* Arrows pointing to Sales (left) and Ops (right) cards */}
+            <div
+              className={`mt-4 flex items-center justify-center gap-8 md:gap-16 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+              style={{ transitionDelay: '140ms' }}
+              aria-hidden
+            >
+              <span className="flex items-center gap-2 text-amber-400/90">
+                <ArrowLeft className="h-6 w-6 md:h-7 md:w-7" />
+                <span className="text-sm font-medium text-amber-300/90">Sales Engine</span>
+              </span>
+              <span className="flex items-center gap-2 text-amber-400/90">
+                <span className="text-sm font-medium text-amber-300/90">Quality Control</span>
+                <ArrowRight className="h-6 w-6 md:h-7 md:w-7" />
+              </span>
+            </div>
           </div>
 
           {/* Laptop + side callouts: grid on large, stack on small */}

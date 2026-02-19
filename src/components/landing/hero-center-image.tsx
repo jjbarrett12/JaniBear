@@ -32,14 +32,15 @@ export function HeroCenterImage() {
 
   return (
     <>
-      <div className="absolute -inset-4 bg-amber-400/10 rounded-3xl blur-2xl" aria-hidden />
-      <div className="relative w-[280px] sm:w-[340px] md:w-[400px] opacity-[0.88]">
+      <div className="absolute -inset-6 bg-amber-400/10 rounded-3xl blur-2xl" aria-hidden />
+      {/* Larger centerpiece; mix-blend-multiply makes black background show scrubber through */}
+      <div className="relative w-[360px] sm:w-[440px] md:w-[520px] lg:w-[580px]">
         <Image
           src={src}
           alt="JANIBEAR on laptop and phone"
-          width={800}
-          height={500}
-          className="w-full h-auto object-contain drop-shadow-2xl"
+          width={900}
+          height={560}
+          className="w-full h-auto object-contain drop-shadow-2xl mix-blend-multiply"
           priority
           unoptimized
           onError={handleError}

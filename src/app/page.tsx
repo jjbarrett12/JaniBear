@@ -6,7 +6,6 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import {
   ArrowRight,
-  ArrowLeft,
   Camera,
   Check,
   Clock,
@@ -235,21 +234,6 @@ export default function Home() {
                 Two managers&apos; worth of output. One platform.
               </span>
             </p>
-            {/* Arrows pointing to Sales (left) and Ops (right) cards */}
-            <div
-              className={`mt-4 flex items-center justify-center gap-8 md:gap-16 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
-              style={{ transitionDelay: '140ms' }}
-              aria-hidden
-            >
-              <span className="flex items-center gap-2 text-amber-400/90">
-                <ArrowLeft className="h-6 w-6 md:h-7 md:w-7" />
-                <span className="text-sm font-medium text-amber-300/90">Sales Engine</span>
-              </span>
-              <span className="flex items-center gap-2 text-amber-400/90">
-                <span className="text-sm font-medium text-amber-300/90">Quality Control</span>
-                <ArrowRight className="h-6 w-6 md:h-7 md:w-7" />
-              </span>
-            </div>
           </div>
 
           {/* Laptop + side callouts: grid on large, stack on small */}

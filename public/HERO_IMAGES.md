@@ -4,13 +4,7 @@ The hero uses a **backdrop image** and a **foreground devices image**.
 
 ## Backdrop (background)
 
-The hero tries these in order; the first one found is used:
-
-1. **stadium-hero3.png** – Stadium / arena backdrop (e.g. basketball court, cleaning crew). **Preferred.**
-2. **scrubber.png** (or scrubber.jpg) – Ride-on scrubber / large venue photo.
-3. **scrubber .png** – Alternate scrubber filename.
-
-Put your chosen backdrop file in this `public` folder. For the stadium hero, name it `stadium-hero3.png`.
+**stadium-hero3.png** – Basketball court in a dimly lit arena, empty blue seats, cleaning crew in the distance. Optional: same image can include laptop + phone on the court (composite). Save your chosen hero background as `stadium-hero3.png` in this `public` folder. If the file is missing, the hero shows a dark background.
 
 ## Foreground (devices)
 

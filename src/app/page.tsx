@@ -191,45 +191,50 @@ export default function Home() {
         </Link>
       </div>
 
-      {/* Hero: headline, device focal, CTAs */}
-      <section className="relative w-full overflow-hidden pt-16 md:pt-20 pb-20 md:pb-24 min-h-[90vh] flex flex-col">
-        {/* Backdrop */}
+      {/* Hero: headline, device, CTAs — compact so Demo button is above the fold */}
+      <section className="relative w-full overflow-hidden pt-12 md:pt-16 pb-20 md:pb-24 min-h-[100vh] flex flex-col">
+        {/* Backdrop: image + overlays so content owns the fold */}
         <div className="absolute inset-0 pointer-events-none" aria-hidden>
           <HeroBackdropImage />
-          <div className="absolute inset-0 bg-black/25" />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/70" />
+          <div className="absolute inset-0 bg-black/35" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/35 to-black/80" />
         </div>
         <div className="absolute inset-0 pointer-events-none" aria-hidden>
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[160%] max-w-6xl h-[90%] bg-gradient-radial-hero opacity-30" />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[180%] max-w-7xl h-[95%] bg-gradient-radial-hero opacity-50" />
         </div>
-        <div className="absolute inset-0 pointer-events-none opacity-[0.05] hero-noise" aria-hidden />
+        <div className="absolute inset-0 pointer-events-none opacity-[0.06] hero-noise" aria-hidden />
 
-        <div className="relative container mx-auto px-4 flex-1 flex flex-col items-center justify-center">
-          {/* Headline — compact so device dominates */}
+        <div className="relative container mx-auto px-4 flex-1 flex flex-col items-center justify-center py-4">
+          {/* Headline — hero dominates with clear value prop */}
           <h1
-            className={`text-center max-w-4xl mx-auto font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight leading-tight transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            className={`text-center max-w-4xl mx-auto font-heading text-3xl sm:text-4xl md:text-5xl font-bold text-white tracking-tight leading-tight hero-headline transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '0ms' }}
           >
             Commercial Janitorial Software That Runs Like{' '}
-            <span className="hero-headline-gradient">Two Managers</span>
-            {' '}— Without the Payroll
+            <span className="hero-headline-gradient">Two Managers — Without the Payroll</span>
           </h1>
+          <p
+            className={`text-center max-w-xl mx-auto mt-3 md:mt-4 text-zinc-300 text-base md:text-lg hero-subhead transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            style={{ transitionDelay: '40ms' }}
+          >
+            Schedule crews, inspect quality, and win more bids—all in one place.
+          </p>
 
-          {/* Laptop + phone — focal point, larger */}
+          {/* Laptop + phone — focal point, just above CTAs */}
           <div
-            className={`w-full flex justify-center mt-8 md:mt-10 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
-            style={{ transitionDelay: '80ms' }}
+            className={`w-full flex justify-center mt-5 md:mt-8 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            style={{ transitionDelay: '120ms' }}
           >
             <HeroCenterImage />
           </div>
 
-          {/* CTAs */}
+          {/* CTAs — visible above the fold just under the laptop */}
           <div
-            className={`flex flex-col sm:flex-row gap-4 sm:gap-5 justify-center items-center mt-8 md:mt-10 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
-            style={{ transitionDelay: '160ms' }}
+            className={`flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center mt-5 md:mt-8 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            style={{ transitionDelay: '200ms' }}
           >
             <Link href="/demo">
-              <Button size="lg" className="landing-cta landing-cta-lg text-base font-semibold px-8 h-12 rounded-xl shadow-[0_4px_24px_rgba(251,191,36,0.35)] hover:shadow-[0_6px_32px_rgba(251,191,36,0.45)] transition-shadow">
+              <Button size="lg" className="landing-cta landing-cta-lg text-base font-semibold px-8 h-14 rounded-xl shadow-[0_4px_28px_rgba(250,204,21,0.45)] hover:shadow-[0_8px_36px_rgba(250,204,21,0.55)] transition-all hover:scale-[1.02]">
                 Book a 15-Minute Demo
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>

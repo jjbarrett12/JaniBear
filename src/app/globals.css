@@ -55,28 +55,29 @@
     max-height: 8rem !important;
   }
 }
+/* CTA: neon yellow to match logo yellow (#FACC15) */
 .landing-page .landing-cta {
-  background: #fbbf24 !important;
+  background: #facc15 !important;
   color: #000 !important;
   border: none !important;
-  box-shadow: 0 4px 14px rgba(251, 191, 36, 0.4);
+  box-shadow: 0 4px 14px rgba(250, 204, 21, 0.45);
   transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 .landing-page .landing-cta:hover {
-  background: #fcd34d !important;
+  background: #fde047 !important;
   color: #000 !important;
   transform: translateY(-1px);
-  box-shadow: 0 8px 24px rgba(251, 191, 36, 0.45);
+  box-shadow: 0 8px 24px rgba(250, 204, 21, 0.5);
 }
 .landing-page .landing-cta-lg {
   font-size: 1.125rem;
   padding-left: 2rem;
   padding-right: 2rem;
   height: 3.5rem;
-  box-shadow: 0 4px 14px rgba(251, 191, 36, 0.4);
+  box-shadow: 0 4px 14px rgba(250, 204, 21, 0.45);
 }
 .landing-page .landing-cta-lg:hover {
-  box-shadow: 0 8px 28px rgba(251, 191, 36, 0.5);
+  box-shadow: 0 8px 28px rgba(250, 204, 21, 0.55);
 }
 .landing-page .landing-outline {
   background: transparent !important;
@@ -108,13 +109,13 @@
   background: rgba(255, 255, 255, 0.04) !important;
 }
 
-/* Hero: subtle radial glow (premium depth) */
+/* Hero: radial glow so headline + device dominate the fold */
 .bg-gradient-radial-hero {
   background: radial-gradient(
-    ellipse 80% 70% at 50% 0%,
-    rgba(251, 191, 36, 0.08) 0%,
-    rgba(251, 191, 36, 0.02) 40%,
-    transparent 70%
+    ellipse 85% 75% at 50% 38%,
+    rgba(251, 191, 36, 0.12) 0%,
+    rgba(251, 191, 36, 0.04) 35%,
+    transparent 65%
   );
 }
 
@@ -157,13 +158,13 @@
   letter-spacing: -0.02em;
   line-height: 1.08;
 }
-/* Hero headline: gradient text to make it pop */
+/* Hero headline: gradient text so key phrase dominates */
 .landing-page .hero-headline-gradient {
-  background: linear-gradient(135deg, #fef3c7 0%, #fcd34d 25%, #f59e0b 50%, #fbbf24 75%, #fde68a 100%);
+  background: linear-gradient(135deg, #fef08a 0%, #fde047 25%, #facc15 50%, #fde047 75%, #fef08a 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  filter: drop-shadow(0 0 24px rgba(251, 191, 36, 0.25));
+  filter: drop-shadow(0 0 28px rgba(250, 204, 21, 0.4)) drop-shadow(0 2px 4px rgba(0,0,0,0.3));
 }
 /* Hero tagline: bold gold gradient so it pops (inline-block required for clip) */
 .landing-page .hero-tagline-gradient {

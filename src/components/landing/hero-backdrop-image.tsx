@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { useState } from 'react';
 
-/** Hero background: stadium hero 3 only */
+/** Hero background: stadium hero only */
 const BACKDROP_PATHS = ['/stadium-hero3.png'];
 
 export function HeroBackdropImage() {

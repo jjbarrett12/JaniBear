@@ -248,6 +248,35 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Highlight: Built by Operators — two columns on desktop */}
+      <section className="relative border-t border-zinc-800/50 bg-zinc-900/60 py-14 md:py-20">
+        <div className="container mx-auto px-4">
+          <div className="grid md:grid-cols-2 gap-10 md:gap-16 items-start max-w-6xl mx-auto">
+            <div className="md:sticky md:top-24">
+              <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight leading-tight">
+                Built by Operators.
+                <br />
+                Not Software Guys.
+              </h2>
+            </div>
+            <div className="space-y-5 text-zinc-300 text-base md:text-lg leading-relaxed">
+              <p>
+                <BrandName /> wasn&apos;t built in a boardroom. It was built inside a commercial cleaning company.
+              </p>
+              <p>
+                For over 20 years, we&apos;ve bid buildings, managed crews, fixed failed inspections, and lost sleep over client expectations. We&apos;ve lost bids. We&apos;ve battled scope creep. We&apos;ve chased down crews when quality slipped.
+              </p>
+              <p>
+                We didn&apos;t need another generic software tool. We needed a system that wins contracts, enforces accountability, and protects client relationships long term.
+              </p>
+              <p className="font-semibold text-white">
+                So we built it.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section id="features" className="relative pt-16 md:pt-20 pb-20 md:pb-24 bg-zinc-950/80 border-t border-zinc-800/50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-14 md:mb-16">

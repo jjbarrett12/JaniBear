@@ -34,6 +34,7 @@ import {
 } from 'lucide-react';
 import { BrandName } from '@/components/ui/brand-name';
 import { HeroBackdropImage } from '@/components/landing/hero-backdrop-image';
+import { HeroCenterImage } from '@/components/landing/hero-center-image';
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -190,8 +191,8 @@ export default function Home() {
         </Link>
       </div>
 
-      {/* Hero: headline, device, CTAs — compact so Demo button is above the fold */}
-      <section className="relative w-full overflow-hidden pt-12 md:pt-16 pb-20 md:pb-24 min-h-[100vh] flex flex-col">
+      {/* Hero: headline, laptop (shifted up), CTA below laptop — all above the fold */}
+      <section className="relative w-full overflow-hidden pt-10 md:pt-14 pb-16 md:pb-20 min-h-[100vh] flex flex-col">
         {/* Backdrop: image + overlays so content owns the fold */}
         <div className="absolute inset-0 pointer-events-none" aria-hidden>
           <HeroBackdropImage />
@@ -203,8 +204,8 @@ export default function Home() {
         </div>
         <div className="absolute inset-0 pointer-events-none opacity-[0.06] hero-noise" aria-hidden />
 
-        <div className="relative container mx-auto px-4 flex-1 flex flex-col items-center justify-center py-4">
-          {/* Headline — hero dominates with clear value prop */}
+        <div className="relative container mx-auto px-4 flex-1 flex flex-col items-center justify-start pt-2 md:pt-4">
+          {/* Headline — compact */}
           <h1
             className={`text-center max-w-4xl mx-auto font-heading text-3xl sm:text-4xl md:text-5xl font-bold text-white tracking-tight leading-tight hero-headline transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '0ms' }}
@@ -213,16 +214,24 @@ export default function Home() {
             <span className="hero-headline-gradient">Two Managers — Without the Payroll</span>
           </h1>
           <p
-            className={`text-center max-w-xl mx-auto mt-3 md:mt-4 text-zinc-300 text-base md:text-lg hero-subhead transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            className={`text-center max-w-xl mx-auto mt-2 md:mt-3 text-zinc-300 text-base md:text-lg hero-subhead transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '40ms' }}
           >
             Schedule crews, inspect quality, and win more bids—all in one place.
           </p>
 
-          {/* CTAs — visible above the fold */}
+          {/* Laptop — shifted up so CTA fits above the fold */}
           <div
-            className={`flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center mt-8 md:mt-10 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
-            style={{ transitionDelay: '120ms' }}
+            className={`w-full flex justify-center mt-2 md:mt-3 transition-all duration-700 ${mounted ? 'opacity-100 -translate-y-4 md:-translate-y-6' : 'opacity-0 translate-y-4'}`}
+            style={{ transitionDelay: '80ms' }}
+          >
+            <HeroCenterImage />
+          </div>
+
+          {/* CTAs — just below laptop, visible above the fold */}
+          <div
+            className={`flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center mt-3 md:mt-5 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            style={{ transitionDelay: '160ms' }}
           >
             <Link href="/demo">
               <Button size="lg" className="landing-cta landing-cta-lg text-base font-semibold px-8 h-14 rounded-xl shadow-[0_4px_28px_rgba(250,204,21,0.45)] hover:shadow-[0_8px_36px_rgba(250,204,21,0.55)] transition-all hover:scale-[1.02]">

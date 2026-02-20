@@ -16,6 +16,7 @@ export function ProGearProductEditForm({ product }: { product: ProGearProduct })
   const [form, setForm] = useState({
     name: product.name,
     slug: product.slug,
+    sku: product.sku ?? '',
     brand: product.brand ?? '',
     description: product.description ?? '',
     retail_price_cents: product.retail_price_cents ?? '',
@@ -36,6 +37,7 @@ export function ProGearProductEditForm({ product }: { product: ProGearProduct })
       const ok = await updateProGearProductAction(product.id, {
         name: form.name,
         slug: form.slug || undefined,
+        sku: form.sku || null,
         brand: form.brand || null,
         description: form.description || null,
         retail_price_cents:
@@ -89,6 +91,15 @@ export function ProGearProductEditForm({ product }: { product: ProGearProduct })
               id="slug"
               value={form.slug}
               onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))}
+            />
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="sku">SKU / Product code</Label>
+            <Input
+              id="sku"
+              value={form.sku}
+              onChange={(e) => setForm((f) => ({ ...f, sku: e.target.value }))}
+              placeholder="e.g. CLN-30012-00"
             />
           </div>
           <div className="grid gap-2">

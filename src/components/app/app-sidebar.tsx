@@ -1,5 +1,5 @@
-import Link from 'next/link';
 import Image from 'next/image';
+import { AppLink } from '@/components/app/app-link';
 import { createClient } from '@/lib/supabase/server';
 import { requireOrg } from '@/lib/auth';
 import { isPremiumPlan } from '@/lib/is-premium';
@@ -33,7 +33,7 @@ export async function AppSidebar() {
       <aside className="hidden lg:flex fixed left-0 top-0 z-40 h-screen w-56 shrink-0 overflow-hidden border-r border-border bg-card">
         <div className="flex h-full min-w-0 flex-1 flex-col">
           <div className="flex flex-col shrink-0 border-b border-border px-3 py-3 bg-[hsl(220,30%,97%)] dark:bg-card">
-            <Link href="/app/dashboard" prefetch={false} className="flex h-16 w-full min-w-0 items-center justify-center bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block [&>span]:!relative [&>span]:h-full [&>span]:w-full">
+            <AppLink href="/app/dashboard" className="flex h-16 w-full min-w-0 items-center justify-center bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block [&>span]:!relative [&>span]:h-full [&>span]:w-full">
               {orgData?.logo_url ? (
                 <Image
                   src={orgData.logo_url}
@@ -55,7 +55,7 @@ export async function AppSidebar() {
                   unoptimized
                 />
               )}
-            </Link>
+            </AppLink>
           </div>
           
           <div className="min-w-0 shrink-0 space-y-2 border-b border-border px-3 py-2">

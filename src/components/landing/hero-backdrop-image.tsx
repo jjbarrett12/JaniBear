@@ -3,16 +3,16 @@
 import Image from 'next/image';
 import { useState } from 'react';
 
-/** Hero background: scrubber image in public/ (scrubber.png or "scrubber .png") */
-const SCRUBBER_PATHS = ['/scrubber.png', '/scrubber%20.png'];
+/** Hero background: stadium hero 3 only */
+const BACKDROP_PATHS = ['/stadium-hero3.png'];
 
 export function HeroBackdropImage() {
   const [idx, setIdx] = useState(0);
   const [failed, setFailed] = useState(false);
-  const src = SCRUBBER_PATHS[idx];
+  const src = BACKDROP_PATHS[idx];
 
   const handleError = () => {
-    if (idx + 1 < SCRUBBER_PATHS.length) {
+    if (idx + 1 < BACKDROP_PATHS.length) {
       setIdx((i) => i + 1);
     } else {
       setFailed(true);

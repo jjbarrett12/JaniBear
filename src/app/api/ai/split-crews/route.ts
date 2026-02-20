@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server';
 import { requireOperatorOrg } from '@/lib/api-guard';
-import OpenAI from 'openai';
-
-const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
+import { getAIService } from '@/lib/ai/openai-service';
 
 interface Location {
   name: string;
@@ -14,19 +12,12 @@ interface Location {
   special_requirements?: string;
 }
 
-interface CrewCapacity {
-  id: string;
-  name: string;
-  max_sqft_per_night?: number;
-  max_locations_per_night?: number;
-  available_days?: string[];
-}
-
 export async function POST(request: Request) {
   try {
     const guard = await requireOperatorOrg();
     if (!guard.ok) return guard.response;
 
+    const orgId = guard.context.activeOrgId!;
     const body = await request.json();
     const { locations, numCrews, crewCapacities, optimizeFor = 'balanced' } = body;
 
@@ -44,8 +35,9 @@ export async function POST(request: Request) {
       );
     }
 
-    // If we have OpenAI, use AI for smarter splitting
-    if (openai) {
+    const aiService = await getAIService(orgId);
+
+    if (aiService) {
       const systemPrompt = `You are an expert at optimizing janitorial crew schedules for efficiency.
 
 Given a list of locations with their service requirements and ${numCrews} crews available, create an optimized assignment plan.
@@ -90,25 +82,7 @@ ${crewCapacities ? `\nCrew capacities:\n${JSON.stringify(crewCapacities, null, 2
 
 Optimize for: ${optimizeFor}`;
 
-      const response = await openai.chat.completions.create({
-        model: 'gpt-4o-mini',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userPrompt },
-        ],
-        response_format: { type: 'json_object' },
-        temperature: 0.4,
-      });
-
-      const content = response.choices[0]?.message?.content;
-      if (!content) {
-        return NextResponse.json(
-          { error: 'Failed to generate crew assignments' },
-          { status: 500 }
-        );
-      }
-
-      const aiResult = JSON.parse(content);
+      const aiResult = await aiService.generateJson(systemPrompt, userPrompt, { temperature: 0.4 });
       return NextResponse.json({
         success: true,
         data: aiResult,
@@ -116,7 +90,7 @@ Optimize for: ${optimizeFor}`;
       });
     }
 
-    // Fallback: Simple round-robin distribution
+    // Fallback: Simple round-robin distribution when AI not configured
     const assignments: Array<{
       crew_id: string;
       crew_name: string;
@@ -128,28 +102,26 @@ Optimize for: ${optimizeFor}`;
     for (let i = 0; i < numCrews; i++) {
       assignments.push({
         crew_id: `crew_${i + 1}`,
-        crew_name: crewCapacities?.[i]?.name || `Crew ${i + 1}`,
+        crew_name: (crewCapacities as Array<{ name?: string }>)?.[i]?.name || `Crew ${i + 1}`,
         locations: [],
         total_sqft: 0,
         total_hours_per_week: 0,
       });
     }
 
-    // Sort locations by square footage (largest first) for better distribution
     const sortedLocations = [...locations].sort(
-      (a, b) => (b.square_footage || 0) - (a.square_footage || 0)
+      (a: Location, b: Location) => (b.square_footage || 0) - (a.square_footage || 0)
     );
 
-    // Assign to crew with lowest current workload
     for (const location of sortedLocations) {
       const minWorkloadCrew = assignments.reduce((min, crew) =>
         crew.total_sqft < min.total_sqft ? crew : min
       );
-
       const sqft = location.square_footage || 5000;
-      const estimatedHours = sqft / 3000; // ~3000 sqft per hour estimate
-      const daysPerWeek = location.service_days?.length || 
-        (location.frequency?.match(/(\d+)x/)?.[1] ? parseInt(location.frequency.match(/(\d+)x/)![1]) : 3);
+      const estimatedHours = sqft / 3000;
+      const daysPerWeek =
+        location.service_days?.length ||
+        (location.frequency?.match(/(\d+)x/)?.[1] ? parseInt(location.frequency.match(/(\d+)x/)![1], 10) : 3);
 
       minWorkloadCrew.locations.push(location);
       minWorkloadCrew.total_sqft += sqft;

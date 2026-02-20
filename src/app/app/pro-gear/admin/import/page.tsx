@@ -9,7 +9,7 @@ export default function ProGearAdminImportPage() {
         <CardHeader>
           <CardTitle className="text-base">Upload CSV</CardTitle>
           <p className="text-sm text-muted-foreground">
-            Upsert by slug. Columns: slug, name, category (gloves|equipment),
+            Upsert by slug. Columns: slug, sku, name, category (gloves|equipment),
             brand, description, retail_price_cents, member_price_cents,
             savings_percent, shipping_estimate_days, featured (true|false),
             active (true|false), private_label_available, private_label_moq_units,

@@ -28,6 +28,7 @@ export interface EquipmentFields {
 export interface ProGearProduct {
   id: string;
   slug: string;
+  sku: string | null;
   name: string;
   category: ProGearCategory;
   brand: string | null;
@@ -95,4 +96,19 @@ export interface ProGearPrivateLabelInquiry {
   created_at: string;
   updated_at?: string;
   products?: ProGearProduct | null;
+}
+
+export interface ProGearContactRequest {
+  id: string;
+  user_id: string | null;
+  contact_name: string;
+  email: string;
+  company_name: string | null;
+  phone: string | null;
+  estimated_quantity: string | null;
+  estimated_value_cents: number | null;
+  message: string | null;
+  status: 'new' | 'contacted' | 'closed';
+  created_at: string;
+  updated_at?: string;
 }

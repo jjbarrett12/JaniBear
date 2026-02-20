@@ -33,8 +33,8 @@ import {
 
 const salesItems = [
   { href: '/app/sales-dashboard', labelKey: 'navCommandCenter' as const, icon: BarChart3 },
+  { href: '/app/map', labelKey: 'navMap' as const, icon: Map },
   { href: '/app/sales', labelKey: 'navLeads' as const, icon: TrendingUp },
-  { href: '/app/walkthroughs', labelKey: 'navSalesAppointment' as const, icon: FileSearch },
   { href: '/app/proposals/build', labelKey: 'navProposalBuilding' as const, icon: Calculator },
   { href: '/app/draft-review', labelKey: 'navProposalDraftReview' as const, icon: FileText },
   { href: '/app/sales/cadence', labelKey: 'navFollowUp' as const, icon: Repeat },

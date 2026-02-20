@@ -29,7 +29,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    const result = await extractScope(transcript.text);
+    const result = await extractScope(transcript.text, guard.context.activeOrgId ?? undefined);
 
     await supabase.from('scope_models').insert({
       walkthrough_id,

@@ -9,21 +9,13 @@ import { TodaysSchedule } from '@/components/dashboard/todays-schedule';
 import { InspectionChart } from '@/components/dashboard/charts/inspection-chart';
 import { getOperatorDashboardData } from '@/lib/dashboard-data';
 
-export default async function OwnerOperatorDashboardPage(props: {
-  searchParams?: Promise<{ demo?: string }> | { demo?: string };
-}) {
+export default async function OwnerOperatorDashboardPage() {
   const { context } = await getUserContext();
   if (context.orgType === 'franchisee') redirect('/app/dashboard/franchisee');
   if (context.orgType === 'franchisor') redirect('/franchisor');
 
-  const searchParams =
-    typeof props.searchParams === 'object' && props.searchParams !== null && 'then' in props.searchParams
-      ? await props.searchParams
-      : (props.searchParams ?? {});
-  const explicitDemo = searchParams?.demo === '1';
-
   const org = await requireOrg();
-  const data = await getOperatorDashboardData(org.org_id, { demo: explicitDemo });
+  const data = await getOperatorDashboardData(org.org_id);
 
   return (
     <div className="space-y-6 pb-8">

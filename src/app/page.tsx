@@ -191,108 +191,51 @@ export default function Home() {
         </Link>
       </div>
 
-      {/* Hero: billion-dollar aesthetic — headline, MacBook dashboard, dual engines, CTAs */}
-      <section className="relative w-full overflow-hidden pt-16 md:pt-20 pb-16 md:pb-24 min-h-[90vh] flex flex-col">
-        {/* Backdrop: scrubber.png/jpg in public, or fallback to Unsplash */}
+      {/* Hero: headline, device focal, CTAs */}
+      <section className="relative w-full overflow-hidden pt-16 md:pt-20 pb-20 md:pb-24 min-h-[90vh] flex flex-col">
+        {/* Backdrop */}
         <div className="absolute inset-0 pointer-events-none" aria-hidden>
           <HeroBackdropImage />
-          {/* Overlay for contrast (no blur so scrubber stays sharp) */}
-          <div className="absolute inset-0 bg-black/45" />
-          <div className="absolute inset-0 bg-gradient-to-b from-zinc-950/70 via-black/55 to-black/80" />
+          <div className="absolute inset-0 bg-black/25" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/70" />
         </div>
-        {/* Radial glow only (no grid) */}
         <div className="absolute inset-0 pointer-events-none" aria-hidden>
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[160%] max-w-6xl h-[90%] bg-gradient-radial-hero opacity-50" />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[160%] max-w-6xl h-[90%] bg-gradient-radial-hero opacity-30" />
         </div>
         <div className="absolute inset-0 pointer-events-none opacity-[0.05] hero-noise" aria-hidden />
 
-        <div className="relative container mx-auto px-4 flex-1 flex flex-col items-center">
-          {/* Headline + subtitle + tagline */}
-          <div className="text-center max-w-4xl mx-auto">
-            <h1
-              className={`font-heading text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-[2.75rem] font-bold text-white tracking-tight leading-[1.1] transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
-              style={{ transitionDelay: '0ms' }}
-            >
-              Commercial Janitorial Software That Runs Like{' '}
-              <span className="hero-headline-gradient">
-                Two Managers
-              </span>
-              {' '}— Without the Payroll
-            </h1>
-            <p
-              className={`mt-5 text-base md:text-lg text-zinc-300 max-w-3xl mx-auto leading-relaxed transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
-              style={{ transitionDelay: '80ms' }}
-            >
-              <BrandName /> combines sales growth and operational control into one platform — helping commercial cleaning companies win contracts, prove quality, and scale without adding supervisors.
-            </p>
-            <p
-              className={`mt-5 font-heading text-xl md:text-2xl font-bold transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
-              style={{ transitionDelay: '120ms' }}
-            >
-              <span className="bg-gradient-to-r from-amber-100 via-amber-300 to-yellow-300 bg-clip-text text-transparent drop-shadow-[0_0_24px_rgba(251,191,36,0.45)]">
-                Two managers&apos; worth of output. One platform.
-              </span>
-            </p>
+        <div className="relative container mx-auto px-4 flex-1 flex flex-col items-center justify-center">
+          {/* Headline — compact so device dominates */}
+          <h1
+            className={`text-center max-w-4xl mx-auto font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight leading-tight transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            style={{ transitionDelay: '0ms' }}
+          >
+            Commercial Janitorial Software That Runs Like{' '}
+            <span className="hero-headline-gradient">Two Managers</span>
+            {' '}— Without the Payroll
+          </h1>
+
+          {/* Laptop + phone — focal point, larger */}
+          <div
+            className={`w-full flex justify-center mt-8 md:mt-10 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            style={{ transitionDelay: '80ms' }}
+          >
+            <HeroCenterImage />
           </div>
 
-          {/* Laptop + side callouts: grid on large, stack on small */}
+          {/* CTAs */}
           <div
-            className={`w-full max-w-6xl mx-auto mt-10 md:mt-14 flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-4 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            className={`flex flex-col sm:flex-row gap-4 sm:gap-5 justify-center items-center mt-8 md:mt-10 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '160ms' }}
           >
-            {/* Sales Engine — left */}
-            <div className="w-full lg:max-w-[240px] order-2 lg:order-1 rounded-xl border border-amber-400/40 bg-zinc-900/80 backdrop-blur p-5 shadow-[0_0_40px_rgba(251,191,36,0.08)]">
-              <div className="w-10 h-10 rounded-lg bg-amber-500/20 border border-amber-400/30 flex items-center justify-center mb-4 text-amber-300">
-                <Briefcase className="h-5 w-5" />
-              </div>
-              <h3 className="text-white font-semibold text-base mb-3">Sales Engine</h3>
-              <ul className="space-y-2 text-sm text-zinc-300">
-                {['Professional proposals', 'Bid tracking', 'Scope builder', 'Close analytics'].map((item) => (
-                  <li key={item} className="flex items-center gap-2">
-                    <Check className="h-4 w-4 text-amber-400 shrink-0" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-              <p className="mt-3 text-xs text-zinc-400 leading-snug">Win contracts without hiring a sales manager.</p>
-            </div>
-
-            {/* Laptop + phone: hero-devices.png/jpg in public, or fallback to MacBook mock */}
-            <div className="order-1 lg:order-2 relative flex-shrink-0">
-              <HeroCenterImage />
-            </div>
-
-            {/* Quality Control Engine — right */}
-            <div className="w-full lg:max-w-[240px] order-3 rounded-xl border border-amber-400/40 bg-zinc-900/80 backdrop-blur p-5 shadow-[0_0_40px_rgba(251,191,36,0.08)]">
-              <div className="w-10 h-10 rounded-lg bg-amber-500/20 border border-amber-400/30 flex items-center justify-center mb-4 text-amber-300">
-                <ClipboardCheck className="h-5 w-5" />
-              </div>
-              <h3 className="text-white font-semibold text-base mb-3">Quality Control Engine</h3>
-              <ul className="space-y-2 text-sm text-zinc-300">
-                {['QR inspections', 'Photo documentation', 'Building scorecards', 'Crew accountability'].map((item) => (
-                  <li key={item} className="flex items-center gap-2">
-                    <Check className="h-4 w-4 text-amber-400 shrink-0" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-              <p className="mt-3 text-xs text-zinc-400 leading-snug">Standardize quality without adding supervisors.</p>
-            </div>
-          </div>
-
-          {/* Bottom CTAs */}
-          <div
-            className={`flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center mt-8 md:mt-10 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
-            style={{ transitionDelay: '240ms' }}
-          >
             <Link href="/demo">
-              <Button size="lg" className="landing-cta landing-cta-lg text-base px-8 h-12">
+              <Button size="lg" className="landing-cta landing-cta-lg text-base font-semibold px-8 h-12 rounded-xl shadow-[0_4px_24px_rgba(251,191,36,0.35)] hover:shadow-[0_6px_32px_rgba(251,191,36,0.45)] transition-shadow">
                 Book a 15-Minute Demo
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
             <Link href="/demo">
-              <Button variant="outline" size="lg" className="landing-cta-secondary border-amber-400/50 text-zinc-300 hover:bg-white/5 hover:border-amber-400/70 h-12 px-6">
+              <Button variant="outline" size="lg" className="landing-cta-secondary border-2 border-amber-400/50 text-zinc-200 hover:bg-white/5 hover:border-amber-400/70 h-12 px-6 rounded-xl font-medium">
                 See a Real Inspection Report
               </Button>
             </Link>

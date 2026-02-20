@@ -219,3 +219,31 @@ export async function createPrivateLabelInquiryAction(
   revalidatePath('/app/pro-gear/admin/private-label-inquiries');
   return true;
 }
+
+export async function submitLargeOpportunityAction(data: {
+  contact_name: string;
+  email: string;
+  company_name?: string;
+  phone?: string;
+  estimated_quantity?: string;
+  estimated_value_cents?: number;
+  message?: string;
+}) {
+  const user = await getCurrentUser();
+  const supabase = await createClient();
+  const { error } = await supabase.from('pro_gear_contact_requests').insert({
+    user_id: user?.id ?? null,
+    contact_name: data.contact_name.trim(),
+    email: data.email.trim(),
+    company_name: data.company_name?.trim() || null,
+    phone: data.phone?.trim() || null,
+    estimated_quantity: data.estimated_quantity?.trim() || null,
+    estimated_value_cents: data.estimated_value_cents ?? null,
+    message: data.message?.trim() || null,
+    status: 'new',
+  });
+  if (error) return false;
+  revalidatePath('/app/pro-gear');
+  revalidatePath('/app/pro-gear/admin/contact-requests');
+  return true;
+}

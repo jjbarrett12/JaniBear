@@ -26,6 +26,9 @@ export default async function ProGearAdminLayout({
         <Link href="/app/pro-gear/admin/private-label-inquiries" className="hover:underline">
           Private label inquiries
         </Link>
+        <Link href="/app/pro-gear/admin/contact-requests" className="hover:underline">
+          Large opportunity requests
+        </Link>
       </nav>
       {children}
     </div>

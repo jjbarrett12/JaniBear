@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { 
   LayoutDashboard, 
   MapPin, 
+  Map,
   FileText, 
   Calendar, 
   ClipboardCheck, 
@@ -44,6 +45,7 @@ interface MobileSidebarProps {
 
 const salesItemKeys: { href: string; labelKey: AppTranslationKey; icon: React.ComponentType<{ className?: string }> }[] = [
   { href: '/app/sales-dashboard', labelKey: 'navCommandCenter', icon: BarChart3 },
+  { href: '/app/map', labelKey: 'navMap', icon: Map },
   { href: '/app/sales', labelKey: 'navLeads', icon: TrendingUp },
   { href: '/app/walkthroughs', labelKey: 'navSalesAppointment', icon: FileSearch },
   { href: '/app/proposals/build', labelKey: 'navProposalBuilding', icon: Calculator },
@@ -52,7 +54,9 @@ const salesItemKeys: { href: string; labelKey: AppTranslationKey; icon: React.Co
   { href: '/app/sales', labelKey: 'navPipelineManagement', icon: TrendingUp },
 ];
 const operationsItemKeys: { href: string; labelKey: AppTranslationKey; icon: React.ComponentType<{ className?: string }> }[] = [
+  { href: '/app/map', labelKey: 'navMap', icon: Map },
   { href: '/app/locations', labelKey: 'navSiteHandover', icon: KeyRound },
+  { href: '/app/accounts', labelKey: 'navAccounts', icon: MapPin },
   { href: '/app/crews', labelKey: 'navCrewManagement', icon: Users },
   { href: '/app/templates', labelKey: 'navBrandStandards', icon: Award },
   { href: '/app/schedules', labelKey: 'navSchedules', icon: Calendar },

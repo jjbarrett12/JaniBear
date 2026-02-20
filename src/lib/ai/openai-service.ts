@@ -60,6 +60,41 @@ export class OpenAIService {
     }
   }
 
+  /** Custom system + user messages, JSON response. Used for schedule extraction and crew split. */
+  async generateJson(
+    systemPrompt: string,
+    userPrompt: string,
+    options?: { temperature?: number; max_tokens?: number }
+  ): Promise<Record<string, unknown>> {
+    const response = await fetch(`${this.baseUrl}/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${this.apiKey}`,
+      },
+      body: JSON.stringify({
+        model: this.model,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userPrompt },
+        ],
+        temperature: options?.temperature ?? 0.3,
+        max_tokens: options?.max_tokens ?? 2000,
+        response_format: { type: 'json_object' },
+      }),
+    });
+
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error(err.error?.message || 'AI request failed');
+    }
+
+    const data = await response.json();
+    const content = data.choices[0]?.message?.content;
+    if (!content) throw new Error('Empty AI response');
+    return JSON.parse(content) as Record<string, unknown>;
+  }
+
   async analyzeSDS(documentText: string): Promise<{
     summary: string;
     keyHazards: string[];
@@ -258,6 +293,80 @@ Return valid JSON only, no markdown.`;
     }
   }
 
+  /** Extract structured scope (rooms, sqft, surfaces) from a walk-through transcript. */
+  async extractScopeFromTranscript(transcriptText: string): Promise<{
+    scope_json: Record<string, unknown>;
+    confidence: number;
+    missing_fields: string[];
+  }> {
+    const prompt = `Extract janitorial scope of work from this walk-through transcript.
+
+Return valid JSON only (no markdown):
+{
+  "scope_json": {
+    "rooms": [ { "name": "string", "sqft": number, "floor": "tile"|"carpet"|"hardwood"|"other", "notes": "string" } ],
+    "total_sqft": number or null,
+    "special_requirements": "string or null",
+    "frequency": "string or null"
+  },
+  "confidence": number between 0 and 1,
+  "missing_fields": ["list of required fields that could not be determined"]
+}
+
+Transcript:
+${transcriptText.substring(0, 12000)}`;
+
+    const response = await this.generateText({
+      prompt,
+      feature: 'general',
+    });
+
+    try {
+      const raw = response.replace(/^```\w*\n?|\n?```$/g, '').trim();
+      const parsed = JSON.parse(raw);
+      return {
+        scope_json: parsed.scope_json ?? { rooms: [], total_sqft: null, special_requirements: null, frequency: null },
+        confidence: typeof parsed.confidence === 'number' ? Math.min(1, Math.max(0, parsed.confidence)) : 0.8,
+        missing_fields: Array.isArray(parsed.missing_fields) ? parsed.missing_fields : [],
+      };
+    } catch {
+      return {
+        scope_json: { rooms: [], total_sqft: null, special_requirements: null, frequency: null },
+        confidence: 0.5,
+        missing_fields: ['structured extraction failed'],
+      };
+    }
+  }
+
+  /** Extract customer pain points / concerns from a walk-through transcript. */
+  async extractPainPoints(transcriptText: string): Promise<{ pain_points: string[]; summary: string }> {
+    const prompt = `From this janitorial walk-through transcript, extract:
+1. Customer pain points or concerns (list as JSON array of strings)
+2. A one-paragraph summary of what the customer cares about most
+
+Return valid JSON only:
+{ "pain_points": ["string", ...], "summary": "string" }
+
+Transcript:
+${transcriptText.substring(0, 8000)}`;
+
+    const response = await this.generateText({
+      prompt,
+      feature: 'general',
+    });
+
+    try {
+      const raw = response.replace(/^```\w*\n?|\n?```$/g, '').trim();
+      const parsed = JSON.parse(raw);
+      return {
+        pain_points: Array.isArray(parsed.pain_points) ? parsed.pain_points : [],
+        summary: typeof parsed.summary === 'string' ? parsed.summary : '',
+      };
+    } catch {
+      return { pain_points: [], summary: '' };
+    }
+  }
+
   private getSystemPrompt(feature: string): string {
     const prompts: Record<string, string> = {
       compliance: 'You are a compliance expert helping janitorial businesses maintain regulatory compliance. Provide clear, actionable advice.',
@@ -284,7 +393,8 @@ Return valid JSON only, no markdown.`;
 }
 
 /**
- * Get AI service instance for an organization
+ * Get AI service instance for an organization.
+ * Uses org-level ai_config first; falls back to OPENAI_API_KEY env for testing.
  */
 export async function getAIService(orgId: string): Promise<OpenAIService | null> {
   try {
@@ -299,19 +409,25 @@ export async function getAIService(orgId: string): Promise<OpenAIService | null>
       .eq('enabled', true)
       .single();
 
-    if (!config || !config.api_key_encrypted) {
-      return null;
+    if (config?.api_key_encrypted) {
+      return new OpenAIService({
+        apiKey: config.api_key_encrypted,
+        model: config.model || 'gpt-4-turbo-preview',
+        orgId,
+      });
     }
 
-    // In production, decrypt the API key
-    // For now, assuming it's stored (should be encrypted)
-    const apiKey = config.api_key_encrypted;
+    // Fallback: use env key so dev/single-tenant can test without ai_config
+    const envKey = process.env.OPENAI_API_KEY;
+    if (envKey?.startsWith('sk-')) {
+      return new OpenAIService({
+        apiKey: envKey,
+        model: process.env.OPENAI_MODEL || 'gpt-4-turbo-preview',
+        orgId,
+      });
+    }
 
-    return new OpenAIService({
-      apiKey,
-      model: config.model || 'gpt-4-turbo-preview',
-      orgId,
-    });
+    return null;
   } catch (error) {
     console.error('Failed to get AI service:', error);
     return null;

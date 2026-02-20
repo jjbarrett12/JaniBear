@@ -10,16 +10,13 @@ import { RecentActivity } from '@/components/dashboard/recent-activity';
 import { TodaysSchedule } from '@/components/dashboard/todays-schedule';
 import { InspectionChart } from '@/components/dashboard/charts/inspection-chart';
 import { getOperatorDashboardData } from '@/lib/dashboard-data';
-import { SeedSampleDataBanner } from '@/components/dashboard/seed-sample-data-banner';
 import { Award } from 'lucide-react';
 
 /**
  * Dashboard: layout already ran requireOrg(), so we have an org. Only redirect franchisors to /franchisor.
  * Do not redirect to /api/auth/landing here — that can cause a redirect loop when the cookie isn't set yet.
  */
-export default async function DashboardPage(props: {
-  searchParams?: Promise<{ demo?: string }> | { demo?: string };
-}) {
+export default async function DashboardPage() {
   const org = await requireOrg();
   const { context } = await getUserContext();
 
@@ -29,12 +26,7 @@ export default async function DashboardPage(props: {
   if (isSalesRepRole(context.role, context.roleEnum)) {
     redirect('/app/sales-dashboard');
   }
-  const searchParams =
-    typeof props.searchParams === 'object' && props.searchParams !== null && 'then' in props.searchParams
-      ? await props.searchParams
-      : (props.searchParams ?? {});
-  const explicitDemo = (searchParams as { demo?: string })?.demo === '1';
-  const data = await getOperatorDashboardData(org.org_id, { demo: explicitDemo });
+  const data = await getOperatorDashboardData(org.org_id);
   const safeData = {
     userName: data.userName,
     stats: data.stats,
@@ -55,9 +47,6 @@ export default async function DashboardPage(props: {
             : "Here's what's happening with your business today."
         }
       />
-      {data.useSampleData && (
-        <SeedSampleDataBanner />
-      )}
       {isFranchisee && (
         <div className="rounded-lg border border-border bg-muted/40 px-4 py-3 flex items-center justify-between gap-4 flex-wrap">
           <p className="text-sm text-muted-foreground">

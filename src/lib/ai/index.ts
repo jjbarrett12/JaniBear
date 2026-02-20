@@ -1,4 +1,6 @@
-// Stub for AI services
+// AI services: stubs + optional LLM via getAIService
+
+import { getAIService } from './openai-service';
 
 export interface TranscriptionResult {
   text: string;
@@ -6,7 +8,7 @@ export interface TranscriptionResult {
 }
 
 export interface ScopeExtractionResult {
-  scope_json: any;
+  scope_json: Record<string, unknown>;
   confidence: number;
   missing_fields: string[];
 }
@@ -25,13 +27,24 @@ export async function transcribeAudio(storagePath: string): Promise<Transcriptio
   };
 }
 
-export async function extractScope(transcriptText: string): Promise<ScopeExtractionResult> {
-  // TODO: Call LLM to extract structured data
-  console.log('Stub: Extracting scope from text');
+/**
+ * Extract scope (rooms, sqft, surfaces) from a walk-through transcript.
+ * If orgId is provided and AI is configured (ai_config or OPENAI_API_KEY), uses LLM; otherwise returns stub.
+ */
+export async function extractScope(
+  transcriptText: string,
+  orgId?: string
+): Promise<ScopeExtractionResult> {
+  if (orgId) {
+    const service = await getAIService(orgId);
+    if (service) {
+      return service.extractScopeFromTranscript(transcriptText);
+    }
+  }
   return {
-    scope_json: { rooms: [{ name: "Lobby", sqft: 500, floor: "tile" }] },
+    scope_json: { rooms: [{ name: 'Lobby', sqft: 500, floor: 'tile' }] },
     confidence: 0.95,
-    missing_fields: []
+    missing_fields: [],
   };
 }
 

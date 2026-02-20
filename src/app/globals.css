@@ -156,14 +156,16 @@
 }
 .landing-page .hero-headline {
   letter-spacing: -0.02em;
-  line-height: 1.08;
+  line-height: 1.2;
 }
-/* Hero headline: gradient text so key phrase dominates */
+/* Hero headline: gradient neon yellow — webkit for Safari */
 .landing-page .hero-headline-gradient {
+  display: inline-block;
   background: linear-gradient(135deg, #fef08a 0%, #fde047 25%, #facc15 50%, #fde047 75%, #fef08a 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  -webkit-text-fill-color: transparent;
   filter: drop-shadow(0 0 28px rgba(250, 204, 21, 0.4)) drop-shadow(0 2px 4px rgba(0,0,0,0.3));
 }
 /* Hero tagline: bold gold gradient so it pops (inline-block required for clip) */
@@ -186,8 +188,8 @@
   display: inline-block;
 }
 .landing-page .hero-subhead {
-  font-weight: 400;
-  letter-spacing: 0.04em;
+  font-weight: 600;
+  letter-spacing: 0.02em;
 }
 .landing-page .hero-micro {
   letter-spacing: 0.035em;

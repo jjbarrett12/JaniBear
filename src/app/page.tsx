@@ -34,7 +34,6 @@ import {
 } from 'lucide-react';
 import { BrandName } from '@/components/ui/brand-name';
 import { HeroBackdropImage } from '@/components/landing/hero-backdrop-image';
-import { HeroCenterImage } from '@/components/landing/hero-center-image';
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -220,18 +219,10 @@ export default function Home() {
             Schedule crews, inspect quality, and win more bids—all in one place.
           </p>
 
-          {/* Laptop + phone — focal point, just above CTAs */}
+          {/* CTAs — visible above the fold */}
           <div
-            className={`w-full flex justify-center mt-5 md:mt-8 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            className={`flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center mt-8 md:mt-10 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '120ms' }}
-          >
-            <HeroCenterImage />
-          </div>
-
-          {/* CTAs — visible above the fold just under the laptop */}
-          <div
-            className={`flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center mt-5 md:mt-8 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
-            style={{ transitionDelay: '200ms' }}
           >
             <Link href="/demo">
               <Button size="lg" className="landing-cta landing-cta-lg text-base font-semibold px-8 h-14 rounded-xl shadow-[0_4px_28px_rgba(250,204,21,0.45)] hover:shadow-[0_8px_36px_rgba(250,204,21,0.55)] transition-all hover:scale-[1.02]">

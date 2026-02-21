@@ -57,4 +57,33 @@ export interface KpiTileData {
   /** Optional: national or regional rank for context (e.g. rank 4 of 47) */
   rank?: number;
   rankOutOf?: number;
+  /** Optional: benchmark text (e.g. "Target: 95%") for strategic dashboard */
+  targetBenchmark?: string;
 }
+
+/** Strategic dashboard: health includes Opportunity (blue) */
+export type StrategicHealth = 'green' | 'amber' | 'red' | 'blue' | 'neutral';
+
+/** Executive Snapshot / large card: primary metric, change vs prior period, target, sparkline */
+export interface ExecutiveCardData {
+  id: string;
+  label: string;
+  value: string | number;
+  delta?: number;
+  deltaLabel?: string;
+  targetBenchmark?: string;
+  sparkline?: number[];
+  health?: StrategicHealth;
+}
+
+/** Attention Required: one alert type with count and optional link */
+export interface AttentionAlert {
+  id: string;
+  label: string;
+  count: number;
+  href?: string;
+  severity?: 'warning' | 'critical';
+}
+
+/** Timeframe for strategic dashboard */
+export type StrategicTimeframe = '30d' | '90d' | 'ytd';

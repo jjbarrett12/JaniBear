@@ -18,9 +18,14 @@ const PUBLIC_PATHS = [
 ];
 
 const AUTH_DEBUG = process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_AUTH_DEBUG === '1';
+const GUARD_DEBUG = process.env.NODE_ENV === 'development' && (process.env.NEXT_PUBLIC_AUTH_DEBUG === '1' || process.env.NEXT_PUBLIC_GUARD_DEBUG === '1');
 
 function debugLog(msg: string, data?: Record<string, unknown>) {
   if (AUTH_DEBUG) console.log('[auth middleware]', msg, data ?? '');
+}
+
+function guardLog(pathname: string, data: Record<string, unknown>) {
+  if (GUARD_DEBUG) console.log('[GUARD]', { path: pathname, ...data });
 }
 
 function isPublicPath(pathname: string): boolean {
@@ -90,8 +95,8 @@ export async function updateSession(request: NextRequest) {
     const allCookies = getCookiesForRequest(request);
     const cookieNames = allCookies.map((c) => c.name).filter((n) => n.startsWith('sb-'));
 
-    if (process.env.NODE_ENV === 'development' && pathname.startsWith('/app/')) {
-      console.log('[REDIRECT] [A] middleware path=', pathname, 'user=', user?.id ?? null, 'authCookieCount=', cookieNames.length);
+    if (GUARD_DEBUG && pathname.startsWith('/app/')) {
+      guardLog(pathname, { session: !!user, authCookieCount: cookieNames.length });
     }
     if (AUTH_DEBUG && pathname.startsWith('/app/')) {
       debugLog('app route', {
@@ -106,7 +111,10 @@ export async function updateSession(request: NextRequest) {
     const isPrefetch =
       request.headers.get('Next-Router-Prefetch') === '1' ||
       request.headers.get('purpose') === 'prefetch';
-    if (isPrefetch) return response;
+    if (isPrefetch) {
+      guardLog(pathname, { session: !!user, isPrefetch: true, reason: 'prefetch passthrough' });
+      return response;
+    }
 
     const appRedirect = redirectToApp(pathname);
     if (appRedirect) {
@@ -128,8 +136,8 @@ export async function updateSession(request: NextRequest) {
     }
 
     // Set active_org_id when entering /app without it (so layout has org in one hop)
+    const hasOrgCookie = user && pathname.startsWith('/app/') ? allCookies.find((c) => c.name === 'active_org_id')?.value : undefined;
     if (user && pathname.startsWith('/app/')) {
-      const hasOrgCookie = allCookies.find((c) => c.name === 'active_org_id')?.value;
       if (!hasOrgCookie) {
         const { data: membership } = await supabase
           .from('org_members')
@@ -137,6 +145,12 @@ export async function updateSession(request: NextRequest) {
           .eq('user_id', user.id)
           .limit(1)
           .maybeSingle();
+        guardLog(pathname, {
+          session: true,
+          org_id: membership?.org_id ?? null,
+          onboarded: !!membership?.org_id,
+          reason: membership?.org_id ? 'set cookie on response' : 'no membership in middleware',
+        });
         if (membership?.org_id) {
           response.cookies.set('active_org_id', membership.org_id, {
             path: '/',
@@ -164,6 +178,11 @@ export async function updateSession(request: NextRequest) {
     // current URL (e.g. /app/dashboard). Otherwise the browser only sends them for that path and session
     // is lost on client-side navigation to e.g. /app/settings.
     if (user && pathname.startsWith('/app/')) {
+      guardLog(pathname, {
+        session: true,
+        org_cookie_set: !!hasOrgCookie,
+        reason: 'set x-middleware-user-id',
+      });
       const requestHeaders = new Headers(request.headers);
       requestHeaders.set('x-middleware-user-id', user.id);
       const resWithHeader = NextResponse.next({

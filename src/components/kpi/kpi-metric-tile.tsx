@@ -93,6 +93,9 @@ export function KpiMetricTile({ tile }: { tile: KpiTileData }) {
             </span>
           )}
         </div>
+        {tile.targetBenchmark && (
+          <p className="text-xs text-muted-foreground mt-0.5">{tile.targetBenchmark}</p>
+        )}
         {tile.sparkline && tile.sparkline.length > 0 && (
           <div className="mt-1.5 flex justify-end">
             <Sparkline data={tile.sparkline} health={tile.health} />

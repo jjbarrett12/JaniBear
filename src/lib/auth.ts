@@ -6,6 +6,7 @@ import { getActiveOrgIdFromCookie } from './user-context';
 const MIDDLEWARE_USER_ID_HEADER = 'x-middleware-user-id';
 
 const AUTH_DEBUG = process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_AUTH_DEBUG === '1';
+const GUARD_DEBUG = process.env.NODE_ENV === 'development' && (process.env.NEXT_PUBLIC_AUTH_DEBUG === '1' || process.env.NEXT_PUBLIC_GUARD_DEBUG === '1');
 
 export async function getCurrentUser() {
   const supabase = await createClient();
@@ -86,11 +87,27 @@ export async function requireOrg() {
   const middlewareUserId = headersList.get(MIDDLEWARE_USER_ID_HEADER);
   if (middlewareUserId) {
     const org = await getOrgForUserId(middlewareUserId);
-    if (org) return org;
+    if (org) {
+      if (GUARD_DEBUG) console.log('[GUARD] requireOrg path=layout session=true org_id=' + org.org_id + ' reason=header+getOrgForUserId');
+      return org;
+    }
+    // Fallback: resolve first membership by userId so layout works when cookie not yet on request (e.g. first load of /app/financial-health).
+    const supabase = await createClient();
+    const { data: firstByUserId } = await supabase
+      .from('org_members')
+      .select('org_id, role, organizations(*)')
+      .eq('user_id', middlewareUserId)
+      .limit(1)
+      .maybeSingle();
+    if (firstByUserId) {
+      if (GUARD_DEBUG) console.log('[GUARD] requireOrg path=layout session=true org_id=' + firstByUserId.org_id + ' reason=header+firstMembership fallback');
+      return firstByUserId;
+    }
   }
 
   const user = await getCurrentUser();
   if (!user) {
+    if (GUARD_DEBUG) console.log('[GUARD] requireOrg path=layout session=false org_id=null reason=no user redirect=login');
     if (process.env.NODE_ENV === 'development') console.log('[REDIRECT] origin=layout (requireOrg getCurrentUser null)');
     redirect('/auth/login');
   }
@@ -109,8 +126,10 @@ export async function requireOrg() {
     }
   }
   if (!org) {
+    if (GUARD_DEBUG) console.log('[GUARD] requireOrg path=layout session=true org_id=null onboarded=false reason=no org redirect=landing');
     redirect('/api/auth/landing');
   }
+  if (GUARD_DEBUG) console.log('[GUARD] requireOrg path=layout session=true org_id=' + org.org_id + ' reason=currentUser+getCurrentOrg');
   return org;
 }
 

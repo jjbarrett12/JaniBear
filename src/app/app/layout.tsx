@@ -15,9 +15,6 @@ export default async function AppLayout({
 }: {
   children: React.ReactNode;
 }) {
-  if (process.env.NODE_ENV === 'development') {
-    console.log('[REDIRECT] [B] app layout running (before requireOrg)');
-  }
   const org = await requireOrg();
   const supabase = await createClient();
 

@@ -7,12 +7,14 @@ import { NextRequest, NextResponse } from 'next/server';
 
 const ACTIVE_ORG_COOKIE = 'active_org_id';
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
+const GUARD_DEBUG = process.env.NODE_ENV === 'development' && (process.env.NEXT_PUBLIC_AUTH_DEBUG === '1' || process.env.NEXT_PUBLIC_GUARD_DEBUG === '1');
 
 async function handleLanding(request: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
+    if (GUARD_DEBUG) console.log('[GUARD] landing path=/api/auth/landing session=false reason=no user redirect=login');
     return NextResponse.redirect(new URL('/auth/login', request.url));
   }
 
@@ -24,9 +26,11 @@ async function handleLanding(request: NextRequest) {
     .maybeSingle();
 
   if (!membership?.org_id) {
+    if (GUARD_DEBUG) console.log('[GUARD] landing path=/api/auth/landing session=true org_id=null onboarded=false reason=zero memberships redirect=onboarding');
     return NextResponse.redirect(new URL('/onboarding', request.url));
   }
 
+  if (GUARD_DEBUG) console.log('[GUARD] landing path=/api/auth/landing session=true org_id=' + membership.org_id + ' onboarded=true reason=set cookie redirect=dashboard');
   const res = NextResponse.redirect(new URL('/app/dashboard', request.url));
   res.cookies.set(ACTIVE_ORG_COOKIE, membership.org_id, {
     path: '/',

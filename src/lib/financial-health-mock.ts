@@ -5,6 +5,42 @@
 
 export const DATE_RANGES = ['Last 30 days', 'Last 90 days', 'Last 12 months', 'Custom'] as const;
 
+/** Date range presets for Financial Health header (30D | 90D | YTD | Custom) */
+export const FINANCE_DATE_PRESETS = ['30D', '90D', 'YTD', 'Custom'] as const;
+
+/** Overview tab: executive finance KPI card */
+export interface OverviewKpiCard {
+  id: string;
+  label: string;
+  value: string | number;
+  delta?: number;
+  sparkline: number[];
+  health: 'green' | 'amber' | 'red' | 'neutral';
+  target?: string;
+}
+
+/** Overview tab: attention required alert tile */
+export interface FinanceAttentionAlert {
+  id: string;
+  type: 'low_margin' | 'overdue' | 'labor_overrun' | 'supply_spike' | 'scope_creep';
+  label: string;
+  count: number;
+  amount?: number;
+  href?: string;
+  severity: 'red' | 'amber' | 'yellow' | 'blue' | 'purple';
+}
+
+/** Site profitability row with "why" tag for Overview tables */
+export interface SiteProfitabilityRow {
+  siteId: string;
+  siteName: string;
+  clientName: string;
+  revenue: number;
+  directCosts: number;
+  gmPct: number;
+  whyTag?: 'Overtime' | 'Travel heavy' | 'Supplies spike' | 'Scope creep' | 'On target' | 'Labor variance';
+}
+
 export interface KpiTileData {
   label: string;
   value: string | number;
@@ -362,5 +398,75 @@ export function getMockFranchiseeLeaderboard(): FranchiseeScore[] {
     { id: 'f3', name: 'Coast Cleaning', score: 65, health: 'amber', marginPct: 45, cashRunwayMonths: 3, laborPct: 60, arDays: 40 },
     { id: 'f4', name: 'Inland Services', score: 54, health: 'red', marginPct: 38, cashRunwayMonths: 1.8, laborPct: 68, arDays: 48 },
     { id: 'f5', name: 'Northern Star', score: 78, health: 'green', marginPct: 52, cashRunwayMonths: 4.2, laborPct: 55, arDays: 32 },
+  ];
+}
+
+/** Overview tab: 6 executive KPI cards for selected date range */
+export function getMockOverviewKpis(): OverviewKpiCard[] {
+  const spark = [38, 40, 39, 42, 41, 43, 44, 45, 44, 46, 45, 42.8];
+  const marginSpark = [48, 50, 51, 52, 51, 53, 52, 52, 51, 52, 52, 52];
+  return [
+    { id: 'revenue', label: 'Revenue', value: '$42,800', delta: 4.2, sparkline: spark, health: 'green', target: 'Target: grow 3% MoM' },
+    { id: 'gross_margin', label: 'Gross Margin %', value: '52%', delta: -1, sparkline: marginSpark, health: 'amber', target: 'Target: 55%' },
+    { id: 'direct_cost_ratio', label: 'Direct Cost Ratio', value: '67%', delta: 2, sparkline: [66, 65, 66, 67, 66, 67, 67, 67, 67, 67, 67, 67], health: 'amber', target: 'Labor+Supplies % of revenue' },
+    { id: 'ar_outstanding', label: 'AR Outstanding', value: '$37,200', delta: 3, sparkline: [32, 33, 34, 35, 36, 36, 37, 37, 37, 37, 37, 37.2], health: 'amber' },
+    { id: 'overdue', label: 'Overdue $', value: '$8,400', delta: -5, sparkline: [10, 9.5, 9, 9, 8.5, 8.5, 8.4, 8.4, 8.4, 8.4, 8.4, 8.4], health: 'amber' },
+    { id: 'cash_collected', label: 'Cash Collected', value: '$41,200', delta: 2.1, sparkline: [38, 39, 40, 40, 41, 41, 41.2, 41.2, 41.2, 41.2, 41.2, 41.2], health: 'green' },
+  ];
+}
+
+/** Overview tab: attention required alerts (clickable, apply filters) */
+export function getMockFinanceAttentionAlerts(): FinanceAttentionAlert[] {
+  return [
+    { id: '1', type: 'low_margin', label: 'Low-margin contracts', count: 3, amount: 4200, severity: 'red', href: '#profitability' },
+    { id: '2', type: 'overdue', label: 'Overdue invoices', count: 5, amount: 8400, severity: 'amber', href: '#ar' },
+    { id: '3', type: 'labor_overrun', label: 'Labor overruns (hours > estimate)', count: 4, severity: 'yellow', href: '#costs' },
+    { id: '4', type: 'supply_spike', label: 'Supply spikes', count: 2, severity: 'blue', href: '#costs' },
+    { id: '5', type: 'scope_creep', label: 'Unpriced scope creep signals', count: 1, severity: 'purple', href: '#pricing' },
+  ].filter((a) => a.count > 0);
+}
+
+/** Overview tab: most profitable sites (top 10) */
+export function getMockMostProfitableSites(): SiteProfitabilityRow[] {
+  return [
+    { siteId: 's1', siteName: 'Municipal Building', clientName: 'City of Riverside', revenue: 2500, directCosts: 1250, gmPct: 50, whyTag: 'On target' },
+    { siteId: 's2', siteName: 'Industrial Complex', clientName: 'IndCorp', revenue: 3900, directCosts: 1950, gmPct: 50, whyTag: 'On target' },
+    { siteId: 's3', siteName: 'Downtown Financial', clientName: 'First Bank', revenue: 4200, directCosts: 2310, gmPct: 45, whyTag: 'On target' },
+    { siteId: 's4', siteName: 'Medical Plaza Suite', clientName: 'MedGroup', revenue: 4800, directCosts: 2688, gmPct: 44, whyTag: 'Supplies spike' },
+    { siteId: 's5', siteName: 'Riverside Office Park', clientName: 'Riverside LLC', revenue: 8200, directCosts: 4510, gmPct: 45, whyTag: 'Overtime' },
+  ];
+}
+
+/** Overview tab: worst margin leaks (top 10) */
+export function getMockWorstMarginLeaks(): SiteProfitabilityRow[] {
+  return [
+    { siteId: 's6', siteName: 'Tech Campus West', clientName: 'TechCo', revenue: 5100, directCosts: 3315, gmPct: 35, whyTag: 'Overtime' },
+    { siteId: 's7', siteName: 'Retail Strip Mall', clientName: 'MallCo', revenue: 3200, directCosts: 1920, gmPct: 40, whyTag: 'Travel heavy' },
+    { siteId: 's8', siteName: 'School District #7', clientName: 'District 7', revenue: 2800, directCosts: 1540, gmPct: 45, whyTag: 'Scope creep' },
+    { siteId: 's9', siteName: 'Hotel North', clientName: 'StayWell', revenue: 2100, directCosts: 1260, gmPct: 40, whyTag: 'Supplies spike' },
+    { siteId: 's10', siteName: 'Warehouse Logistics', clientName: 'LogiCorp', revenue: 1900, directCosts: 1140, gmPct: 40, whyTag: 'Labor variance' },
+  ];
+}
+
+/** Invoice row for AR tab */
+export interface InvoiceRow {
+  id: string;
+  invoiceNumber: string;
+  clientName: string;
+  siteName: string;
+  issueDate: string;
+  dueDate: string;
+  status: 'draft' | 'sent' | 'paid' | 'overdue' | 'partial';
+  total: number;
+  paid: number;
+  balance: number;
+  daysPastDue: number | null;
+}
+
+export function getMockInvoiceTable(): InvoiceRow[] {
+  return [
+    { id: 'inv1', invoiceNumber: 'INV-2024-081', clientName: 'TechCo', siteName: 'Tech Campus West', issueDate: '2024-01-05', dueDate: '2024-01-20', status: 'overdue', total: 5100, paid: 0, balance: 5100, daysPastDue: 12 },
+    { id: 'inv2', invoiceNumber: 'INV-2024-082', clientName: 'Riverside LLC', siteName: 'Riverside Office Park', issueDate: '2024-01-08', dueDate: '2024-02-07', status: 'sent', total: 8200, paid: 0, balance: 8200, daysPastDue: null },
+    { id: 'inv3', invoiceNumber: 'INV-2024-079', clientName: 'MallCo', siteName: 'Retail Strip Mall', issueDate: '2023-12-15', dueDate: '2024-01-14', status: 'overdue', total: 3200, paid: 0, balance: 3200, daysPastDue: 37 },
   ];
 }

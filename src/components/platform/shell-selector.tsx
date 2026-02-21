@@ -4,7 +4,7 @@ import { useTransition } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { setOrgShell } from '@/actions/platform';
-import { SHELL_LABELS, type ShellKey } from '@/lib/shell';
+import { SHELL_LABELS, type ShellKey } from '@/lib/shell-constants';
 import { Building2, Briefcase, LayoutDashboard } from 'lucide-react';
 import { cn } from '@/lib/utils';
 

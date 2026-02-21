@@ -1,12 +1,15 @@
 /**
  * Shell = dashboard experience. Single source of truth from organizations.shell.
  * Do not infer shell from org_type, membership, or anything else.
+ * For types/constants only (client-safe), use shell-constants.ts.
  */
 import { createClient } from '@/lib/supabase/server';
-
-export type ShellKey = 'owner_operator' | 'franchisee' | 'franchisor';
+import type { ShellKey } from '@/lib/shell-constants';
 
 const DEFAULT_SHELL: ShellKey = 'owner_operator';
+
+export type { ShellKey } from '@/lib/shell-constants';
+export { SHELL_LABELS } from '@/lib/shell-constants';
 
 /**
  * Resolve the shell for an org. Used by app shell, nav, and route guards.
@@ -40,9 +43,3 @@ export async function isFranchiseeEnrolled(orgId: string): Promise<boolean> {
     .maybeSingle();
   return !!data;
 }
-
-export const SHELL_LABELS: Record<ShellKey, string> = {
-  owner_operator: 'Owner/Operator (Independent Cleaning Company)',
-  franchisee: 'Franchisee (Unit Operator — receives Network Opportunities)',
-  franchisor: 'Franchisor (Brand HQ — Placement Board)',
-};

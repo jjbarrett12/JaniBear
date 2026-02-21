@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { createOrg } from '@/actions/platform';
-import { SHELL_LABELS, type ShellKey } from '@/lib/shell';
+import { SHELL_LABELS, type ShellKey } from '@/lib/shell-constants';
 import { Building2, Briefcase, LayoutDashboard } from 'lucide-react';
 import { cn } from '@/lib/utils';
 

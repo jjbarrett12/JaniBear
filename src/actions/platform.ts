@@ -77,5 +77,3 @@ export async function setOrgShell(orgId: string, shell: ShellKey): Promise<{ err
   revalidatePath('/', 'layout');
   return { label: SHELL_LABELS[shell] };
 }
-
-export { IMPERSONATE_COOKIE };

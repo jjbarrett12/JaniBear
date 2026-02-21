@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { createAccountWithFacilities, createBuildingAsAccountBatch } from '@/actions/accounts';
 
-type Step = 'choose' | 'multi' | 'single';
+type Step = 'choose' | 'franchisor' | 'multi' | 'single';
 
 export function AccountOnboardingForm() {
   const router = useRouter();
@@ -126,6 +126,46 @@ export function AccountOnboardingForm() {
             <span className="font-medium block">Each building is treated as its own account</span>
             <span className="text-sm text-muted-foreground">One account per building; good when each site is billed separately.</span>
           </button>
+          <button
+            type="button"
+            onClick={() => setStep('franchisor')}
+            className="w-full text-left p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors"
+          >
+            <span className="font-medium block">I&apos;m a franchisor — choose based on franchisee setup</span>
+            <span className="text-sm text-muted-foreground">One account when one franchisee covers all buildings in close proximity; multiple accounts when different franchisees cover different sites.</span>
+          </button>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (step === 'franchisor') {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>How do your franchisees cover these buildings?</CardTitle>
+          <CardDescription>
+            As a franchisor, you may use one account when one franchisee cleans all buildings in close proximity, or split into multiple accounts when different franchisees cover different sites.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <button
+            type="button"
+            onClick={() => setStep('multi')}
+            className="w-full text-left p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors"
+          >
+            <span className="font-medium block">One franchisee covers all these buildings</span>
+            <span className="text-sm text-muted-foreground">Close proximity, same franchisee — set up as one account with multiple facilities.</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setStep('single')}
+            className="w-full text-left p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors"
+          >
+            <span className="font-medium block">Multiple franchisees cover different buildings</span>
+            <span className="text-sm text-muted-foreground">Different franchise units, each site billed or managed separately — one account per building.</span>
+          </button>
+          <Button variant="ghost" onClick={() => setStep('choose')}>Back</Button>
         </CardContent>
       </Card>
     );

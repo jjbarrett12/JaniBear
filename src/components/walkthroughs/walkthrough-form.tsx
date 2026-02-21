@@ -138,14 +138,14 @@ export function WalkthroughForm({ orgId, userId, userName }: WalkthroughFormProp
 
       if (siteError) throw new Error(`Site: ${siteError.message}`);
 
-      // 4. Create opportunity
+      // 4. Create opportunity (location_id canonical; do not set site_id)
       const estimatedMRR = calculateMonthlyEstimate();
       const { data: opportunity, error: oppError } = await supabase
         .from('opportunities')
         .insert({
           org_id: orgId,
           client_id: client.id,
-          site_id: site.id,
+          location_id: site.id,
           stage: 'new',
           est_mrr: estimatedMRR,
           est_value: estimatedMRR * 12,
@@ -167,7 +167,7 @@ export function WalkthroughForm({ orgId, userId, userName }: WalkthroughFormProp
         .insert({
           org_id: orgId,
           opportunity_id: opportunity.id,
-          site_id: site.id,
+          location_id: site.id,
           scheduled_at: scheduledAt.toISOString(),
           status: 'scheduled',
           created_by: userId,

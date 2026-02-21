@@ -473,3 +473,6 @@ export interface Database {
     };
   };
 }
+
+/** UI alias: "Site" = one row from public.locations. All writes use locations + location_id; public.sites is read-only legacy. */
+export type Site = Database['public']['Tables']['locations']['Row'];

@@ -60,7 +60,7 @@ export function HeroMacbookDashboard() {
                   {/* Stat cards row */}
                   <div className="grid grid-cols-4 gap-1 sm:gap-1.5 mb-2">
                     {[
-                      { icon: MapPin, label: 'Locations', value: '12', color: 'from-cyan-500 to-blue-600' },
+                      { icon: MapPin, label: 'Sites', value: '12', color: 'from-cyan-500 to-blue-600' },
                       { icon: ClipboardCheck, label: 'Inspections', value: '24', color: 'from-emerald-500 to-green-600' },
                       { icon: AlertCircle, label: 'Open Issues', value: '3', color: 'from-red-500 to-rose-600' },
                       { icon: Users, label: 'Crews', value: '8', color: 'from-violet-500 to-purple-600' },

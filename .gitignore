@@ -31,6 +31,7 @@ yarn-error.log*
 
 # vercel
 .vercel
+.vercel-token
 
 # optional: your live URL (one line) - used by deploy-easy.ps1 to open after deploy
 .deploy-url

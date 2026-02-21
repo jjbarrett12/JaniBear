@@ -94,7 +94,7 @@ const PLATFORM_OPTIONS_FRANCHISOR: Array<{
       'Franchise outcome & performance visibility',
       'Brand compliance & suggested standards',
       'Self-reported quality & trend dashboards',
-      'Multi-location operations reporting',
+      'Multi-site operations reporting',
       'No labor control—oversight only',
     ],
   },
@@ -210,7 +210,7 @@ const TIERS_OWNER_OPERATOR: Record<PlatformOption, TierDef[]> = {
       features: [
         'Advanced inspections & scoring',
         'Issue escalation workflows',
-        'Performance tracking by crew/location',
+        'Performance tracking by crew/site',
         'Proof-of-work history',
       ],
       bestFor: '6–15 employees, recurring contracts',
@@ -225,7 +225,7 @@ const TIERS_OWNER_OPERATOR: Record<PlatformOption, TierDef[]> = {
       features: [
         'Enterprise QA & audit trails',
         'SLA & compliance tracking',
-        'Cross-location performance dashboards',
+        'Cross-site performance dashboards',
         'Corporate / franchisor visibility',
       ],
       bestFor: '15–30 employees, franchises, SLAs matter',
@@ -333,7 +333,7 @@ const TIERS_AREA_FRANCHISOR: Record<PlatformOption, TierDef[]> = {
       id: 'cub',
       name: 'Cub',
       price: 79,
-      userLimit: 'Up to 10 locations',
+      userLimit: 'Up to 10 sites',
       features: [
         'Franchise outcome visibility (recommended)',
         'Brand compliance & suggested standards',
@@ -348,11 +348,11 @@ const TIERS_AREA_FRANCHISOR: Record<PlatformOption, TierDef[]> = {
       id: 'grizzly',
       name: 'Grizzly',
       price: 199,
-      userLimit: 'Up to 50 locations',
+      userLimit: 'Up to 50 sites',
       features: [
         'Franchise performance & operations dashboards',
         'Suggested standards & outcome review',
-        'Cross-location trend analytics',
+        'Cross-site trend analytics',
         'Brand services visibility',
       ],
       bestFor: '6–15 franchisees, operations & brand visibility',
@@ -363,7 +363,7 @@ const TIERS_AREA_FRANCHISOR: Record<PlatformOption, TierDef[]> = {
       id: 'kodiak',
       name: 'Kodiak',
       price: 399,
-      userLimit: 'Unlimited locations',
+      userLimit: 'Unlimited sites',
       features: [
         'Enterprise operations & audit visibility',
         'SLA & brand compliance tracking',
@@ -380,7 +380,7 @@ const TIERS_AREA_FRANCHISOR: Record<PlatformOption, TierDef[]> = {
       id: 'cub',
       name: 'Cub',
       price: 99,
-      userLimit: 'Up to 3 sales · Up to 10 locations',
+      userLimit: 'Up to 3 sales · Up to 10 sites',
       features: [
         'Lead management & franchisee visibility',
         'Proposal-to-outcome alignment',
@@ -394,7 +394,7 @@ const TIERS_AREA_FRANCHISOR: Record<PlatformOption, TierDef[]> = {
       id: 'grizzly',
       name: 'Grizzly',
       price: 249,
-      userLimit: 'Up to 10 sales · Up to 50 locations',
+      userLimit: 'Up to 10 sales · Up to 50 sites',
       features: [
         'Sales enablement + operations visibility',
         'Franchisee performance dashboards',
@@ -408,7 +408,7 @@ const TIERS_AREA_FRANCHISOR: Record<PlatformOption, TierDef[]> = {
       id: 'kodiak',
       name: 'Kodiak',
       price: 499,
-      userLimit: 'Unlimited sales & locations',
+      userLimit: 'Unlimited sales & sites',
       features: [
         'End-to-end franchise visibility',
         'Multi-entity & region reporting',
@@ -465,7 +465,7 @@ const TIERS_UNIT_FRANCHISEE: Record<PlatformOption, TierDef[]> = {
         'Executive dashboards',
         'Franchisor / corporate reporting',
       ],
-      bestFor: '15–30 employees, multi-location franchisee',
+      bestFor: '15–30 employees, multi-site franchisee',
       microcopy: 'Sales visibility at scale.',
       popular: false,
     },
@@ -494,7 +494,7 @@ const TIERS_UNIT_FRANCHISEE: Record<PlatformOption, TierDef[]> = {
       features: [
         'Advanced inspections & scoring',
         'Issue escalation workflows',
-        'Performance by crew/location',
+        'Performance by crew/site',
         'Proof-of-work + franchisor reporting',
       ],
       bestFor: '6–15 employees, recurring contracts',
@@ -509,7 +509,7 @@ const TIERS_UNIT_FRANCHISEE: Record<PlatformOption, TierDef[]> = {
       features: [
         'Enterprise QA & audit trails',
         'SLA & compliance tracking',
-        'Cross-location dashboards',
+        'Cross-site dashboards',
         'Corporate / franchisor reporting',
       ],
       bestFor: '15–30 employees, brand compliance',

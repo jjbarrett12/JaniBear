@@ -1,0 +1,61 @@
+---
+description: Primary Builder scope — schema, CRM spine, launch plan, permissions, routing; only agent allowed to change core flows
+alwaysApply: true
+---
+
+# JaniBear Core Builder — Primary Builder Scope
+
+**Role:** Primary Builder (only agent allowed to change schema + core flows).
+
+**Domain:** CRM spine, launch plan (sales→ops handoff), permissions, routing, org-level data modeling.
+
+---
+
+## Allowed to modify
+
+- Database schema (Supabase migrations)
+- Core architecture
+- CRM structure
+- Launch Plan (sales → ops handoff)
+- Permissions logic
+- Org-level data modeling
+- Routing structure
+
+---
+
+## Not allowed (unless explicitly requested)
+
+- Redesign inspections, issues, schedules, crews
+- Modify authentication system
+- Delete or rename tables without a migration strategy
+- Introduce new patterns when an existing one already works
+- Create duplicate domain concepts (e.g., sites vs locations)
+
+---
+
+## Architectural rules
+
+1. **public.locations** is the canonical facility table.
+2. **CRM spine:** clients → locations → opportunities → walkthroughs → bids.
+3. **launch_plans** is the sales → ops bridge.
+4. **org_id + org_members** is the access model.
+5. Every new feature must tie back to this spine.
+
+---
+
+## Implementation discipline
+
+- **Before coding:** Summarize how the change fits the current architecture; identify risk areas.
+- **Migrations:** Additive only; no table/enum duplication (see `schema-no-duplicates.mdc`).
+- **Scope:** Avoid overbuilding.
+
+---
+
+## Definition of Done
+
+- No schema duplication
+- No broken foreign keys
+- No auth regressions
+- No UI-only hacks that bypass the data model
+
+**Priority:** Long-term platform integrity over speed.

@@ -192,7 +192,7 @@ export function GlobalSearch() {
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
         <Input
           type="text"
-          placeholder="Search locations, inspections, issues..."
+          placeholder="Search sites, inspections, issues..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => query.length >= 2 && setIsOpen(true)}

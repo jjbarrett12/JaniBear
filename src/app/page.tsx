@@ -249,17 +249,17 @@ export default function Home() {
       </section>
 
       {/* Highlight: Built by Operators — two columns on desktop */}
-      <section className="relative border-t border-zinc-800/50 bg-zinc-900/60 py-14 md:py-20">
+      <section className="relative border-t border-zinc-800/50 bg-zinc-900/80 py-14 md:py-20 border-l-4 border-l-amber-400/50">
         <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 gap-10 md:gap-16 items-start max-w-6xl mx-auto">
-            <div className="md:sticky md:top-24">
-              <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight leading-tight">
-                Built by Operators.
+          <div className="grid md:grid-cols-2 gap-10 md:gap-16 max-w-6xl mx-auto md:items-center">
+            <div className="flex flex-col justify-center md:min-h-0 md:py-4">
+              <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight leading-tight">
+                <span className="text-white">Built by Operators.</span>
                 <br />
-                Not Software Guys.
+                <span className="text-amber-400">Not Software Guys.</span>
               </h2>
             </div>
-            <div className="space-y-5 text-zinc-300 text-base md:text-lg leading-relaxed">
+            <div className="space-y-5 text-zinc-300 text-base md:text-lg leading-relaxed border-l border-zinc-700/80 pl-8 md:pl-10">
               <p>
                 <BrandName /> wasn&apos;t built in a boardroom. It was built inside a commercial cleaning company.
               </p>
@@ -334,14 +334,14 @@ export default function Home() {
               <BrandName /> Keeps Clients Longer
             </h2>
             <p className="text-lg md:text-xl text-zinc-400 max-w-2xl mx-auto leading-relaxed">
-              Deliver consistently, catch issues before the customer does, and keep every location on track—automatically.
+              Deliver consistently, catch issues before the customer does, and keep every site on track—automatically.
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {[
               { icon: ClipboardCheck, badge: 'AI Quality', title: 'Consistent Inspections & Scoring', desc: 'Run quality checks that actually get completed. AI supports consistent scoring, photo documentation, and trend tracking so you catch issues before the customer does.', features: ['Consistent scoring', 'Issue detection', 'Photo documentation', 'Trend tracking'], color: 'gold' },
-              { icon: CalendarDays, badge: 'AI Scheduling', title: 'Smarter Crews & Coverage', desc: 'Put the right crew on the right job. AI helps match crews to locations, surface coverage gaps, and reduce missed cleans so service stays reliable.', features: ['Crew-to-location matching', 'Coverage visibility', 'Schedule optimization', 'Missed-clean alerts'], color: 'cyan' },
+              { icon: CalendarDays, badge: 'AI Scheduling', title: 'Smarter Crews & Coverage', desc: 'Put the right crew on the right job. AI helps match crews to sites, surface coverage gaps, and reduce missed cleans so service stays reliable.', features: ['Crew-to-site matching', 'Coverage visibility', 'Schedule optimization', 'Missed-clean alerts'], color: 'cyan' },
               { icon: AlertCircle, badge: 'AI Issue Resolution', title: 'Fast Response & Resolution', desc: 'When something goes wrong, fix it before it becomes a complaint. AI tracks work orders, prioritizes by urgency, and keeps resolution and communication in one place.', features: ['Priority routing', 'Status tracking', 'Quick resolution', 'Customer communication'], color: 'emerald' },
             ].map((item, index) => {
               const Icon = item.icon;

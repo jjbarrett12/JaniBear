@@ -42,7 +42,7 @@ export default async function HelpHubSetupPage() {
             HelpHubQR — Setup by customer
           </h1>
           <p className="text-gray-600 dark:text-gray-400 mt-1">
-            Use the link or QR for each location so that customer can submit service requests
+            Use the link or QR for each site so that customer can submit service requests
           </p>
         </div>
       </div>
@@ -93,7 +93,7 @@ export default async function HelpHubSetupPage() {
                       />
                     </div>
                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                      Print or display at this location so visitors can scan to submit a request.
+                      Print or display at this site so visitors can scan to submit a request.
                     </p>
                   </div>
                 </CardContent>
@@ -104,10 +104,10 @@ export default async function HelpHubSetupPage() {
       ) : (
         <Card>
           <CardContent className="py-10 text-center text-gray-600 dark:text-gray-400">
-            <p>No locations yet. Add locations first, then return here to get ticket links and QR codes.</p>
-            <Link href="/app/locations">
+            <p>No sites yet. Add sites first, then return here to get ticket links and QR codes.</p>
+            <Link href="/app/sites">
               <Button variant="secondary" className="mt-4">
-                Go to Locations
+                Go to Sites
               </Button>
             </Link>
           </CardContent>

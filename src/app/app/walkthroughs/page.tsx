@@ -25,6 +25,7 @@ export default async function WalkthroughsPage() {
     .from('walkthroughs')
     .select(`
       *,
+      locations (name, address),
       sites (name, address),
       opportunities (client_id, clients(name))
     `)
@@ -64,7 +65,7 @@ export default async function WalkthroughsPage() {
                 <TableCell>{w.scheduled_at ? format(new Date(w.scheduled_at), 'PPP p') : 'Unscheduled'}</TableCell>
                 <TableCell>
                   <div className="font-medium">{w.opportunities?.clients?.name || 'Unknown Client'}</div>
-                  <div className="text-sm text-muted-foreground">{w.sites?.name || w.sites?.address}</div>
+                  <div className="text-sm text-muted-foreground">{w.locations?.name || w.locations?.address || w.sites?.name || w.sites?.address}</div>
                 </TableCell>
                 <TableCell>
                   <Badge variant={w.status === 'completed' ? 'secondary' : 'default'}>

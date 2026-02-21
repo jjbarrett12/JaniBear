@@ -55,7 +55,7 @@ const salesItemKeys: { href: string; labelKey: AppTranslationKey; icon: React.Co
 ];
 const operationsItemKeys: { href: string; labelKey: AppTranslationKey; icon: React.ComponentType<{ className?: string }> }[] = [
   { href: '/app/map', labelKey: 'navMap', icon: Map },
-  { href: '/app/locations', labelKey: 'navSiteHandover', icon: KeyRound },
+  { href: '/app/sites', labelKey: 'navSiteHandover', icon: KeyRound },
   { href: '/app/accounts', labelKey: 'navAccounts', icon: MapPin },
   { href: '/app/crews', labelKey: 'navCrewManagement', icon: Users },
   { href: '/app/templates', labelKey: 'navBrandStandards', icon: Award },

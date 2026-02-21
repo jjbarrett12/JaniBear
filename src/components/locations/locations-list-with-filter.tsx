@@ -80,7 +80,7 @@ export function LocationsListWithFilter({
           {filtered.map((location) => {
             const status = location.status ?? 'active';
             return (
-              <Link key={location.id} href={`/app/locations/${location.id}`}>
+              <Link key={location.id} href={`/app/sites/${location.id}`}>
                 <Card className="hover:shadow-md transition-shadow cursor-pointer h-full dark:bg-gray-800 dark:border-gray-700">
                   <CardHeader className="pb-2">
                     <div className="flex items-start justify-between gap-2">

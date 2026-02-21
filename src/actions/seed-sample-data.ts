@@ -164,6 +164,7 @@ export async function seedSampleData(): Promise<SeedResult> {
 
     revalidatePath('/app/dashboard');
     revalidatePath('/app/locations');
+    revalidatePath('/app/sites');
     revalidatePath('/app/inspections');
     revalidatePath('/app/issues');
     revalidatePath('/app/crews');

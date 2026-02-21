@@ -238,10 +238,10 @@ export function LocationForm({ initialData }: LocationFormProps) {
         const { error: insertError } = await supabase.from('locations').insert(locationData);
         if (insertError) throw insertError;
       }
-      router.push(initialData?.id ? `/app/locations/${initialData.id}` : '/app/locations');
+      router.push(initialData?.id ? `/app/sites/${initialData.id}` : '/app/sites');
       router.refresh();
     } catch (err: any) {
-      setError(err.message || 'Failed to save location');
+      setError(err.message || 'Failed to save site');
     } finally {
       setIsLoading(false);
     }
@@ -257,7 +257,7 @@ export function LocationForm({ initialData }: LocationFormProps) {
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <Label htmlFor="name">Location name *</Label>
+            <Label htmlFor="name">Site name *</Label>
             <Input
               id="name"
               value={formData.name}
@@ -576,7 +576,7 @@ export function LocationForm({ initialData }: LocationFormProps) {
 
       <div className="flex gap-4">
         <Button type="submit" disabled={isLoading} size="lg" className="flex-1">
-          {isLoading ? 'Saving...' : initialData ? 'Update location' : 'Create location'}
+          {isLoading ? 'Saving...' : initialData ? 'Update site' : 'Create site'}
         </Button>
         <Button type="button" variant="outline" onClick={() => router.back()} disabled={isLoading} size="lg" className="flex-1">
           Cancel

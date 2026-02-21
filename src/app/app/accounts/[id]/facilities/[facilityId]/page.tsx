@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, Edit, ArrowLeft, Key, FileText, ClipboardList, QrCode } from 'lucide-react';
+import { MapPin, Edit, ArrowLeft, Key, FileText, ClipboardList, QrCode, Rocket } from 'lucide-react';
 
 function InfoRow({
   label,
@@ -54,6 +54,15 @@ export default async function FacilityDetailPage({
     .single();
 
   if (!account || !facility) notFound();
+
+  const { data: launchPlan } = await supabase
+    .from('launch_plans')
+    .select('id, opportunity_id, status, start_date')
+    .eq('org_id', org.org_id)
+    .eq('location_id', facilityId)
+    .order('updated_at', { ascending: false })
+    .limit(1)
+    .maybeSingle();
 
   const addressLine = [facility.address_line1, facility.city, facility.state, facility.zip]
     .filter(Boolean)
@@ -115,6 +124,34 @@ export default async function FacilityDetailPage({
           </CardContent>
         </Card>
       </div>
+
+      {launchPlan && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Rocket className="h-5 w-5" />
+              Launch Plan
+            </CardTitle>
+            <CardDescription>
+              Sales → Ops handoff for this location
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <p className="text-sm">
+              <span className="font-medium">Status:</span>{' '}
+              <Badge variant="secondary">{launchPlan.status.replace('_', ' ')}</Badge>
+              {launchPlan.start_date && (
+                <span className="text-muted-foreground ml-2">Start: {launchPlan.start_date}</span>
+              )}
+            </p>
+            <Link href={`/app/crm/opportunities/${launchPlan.opportunity_id}?tab=launch_plan`}>
+              <Button variant="outline" size="sm">
+                Open launch plan
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
+      )}
 
       <Card>
         <CardHeader>

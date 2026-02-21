@@ -29,10 +29,14 @@ import {
   Wallet,
   BarChart3,
   ShoppingBag,
+  Rocket,
 } from 'lucide-react';
 
 const salesItems = [
   { href: '/app/sales-dashboard', labelKey: 'navCommandCenter' as const, icon: BarChart3 },
+  { href: '/app/crm', labelKey: 'navCrm' as const, icon: Users },
+  { href: '/app/crm/pipeline', labelKey: 'navPipeline' as const, icon: LayoutDashboard },
+  { href: '/app/sites', labelKey: 'navLocations' as const, icon: MapPin },
   { href: '/app/map', labelKey: 'navMap' as const, icon: Map },
   { href: '/app/sales', labelKey: 'navLeads' as const, icon: TrendingUp },
   { href: '/app/proposals/build', labelKey: 'navProposalBuilding' as const, icon: Calculator },
@@ -44,6 +48,7 @@ const salesItems = [
 const operationsItems = [
   { href: '/app/map', labelKey: 'navMap' as const, icon: Map },
   { href: '/app/accounts', labelKey: 'navAccounts' as const, icon: MapPin },
+  { href: '/app/ops/launches', labelKey: 'navLaunches' as const, icon: Rocket },
   { href: '/app/crews', labelKey: 'navCrewManagement' as const, icon: Users },
   { href: '/app/templates', labelKey: 'navBrandStandards' as const, icon: Award },
   { href: '/app/schedules', labelKey: 'navSchedules' as const, icon: Calendar },
@@ -118,7 +123,11 @@ export function AppSidebarNav({ premium }: { premium: boolean }) {
         </p>
         {salesItems.map((item) => {
           const Icon = item.icon;
-          const isActive = pathname === item.href;
+          const isActive =
+            pathname === item.href ||
+            (item.href === '/app/crm/pipeline' && pathname.startsWith('/app/crm/pipeline')) ||
+            (item.href === '/app/crm' && (pathname === '/app/crm' || (pathname.startsWith('/app/crm/') && !pathname.startsWith('/app/crm/pipeline')))) ||
+            (item.href === '/app/sites' && pathname.startsWith('/app/sites'));
           return (
             <AppLink
               key={`${item.href}-${item.labelKey}`}
@@ -138,7 +147,7 @@ export function AppSidebarNav({ premium }: { premium: boolean }) {
         </p>
         {operationsItems.map((item) => {
           const Icon = item.icon;
-          const isActive = pathname === item.href;
+          const isActive = pathname === item.href || (item.href === '/app/ops/launches' && pathname.startsWith('/app/ops/launches'));
           return (
             <AppLink
               key={`${item.href}-${item.labelKey}`}

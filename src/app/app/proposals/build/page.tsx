@@ -48,6 +48,7 @@ export default async function ProposalBuildPage() {
       .from('walkthroughs')
       .select(`
         id, status, scheduled_at, completed_at, created_at,
+        locations (name, address),
         sites (name, address),
         opportunities (client_id, clients(name)),
         scope_models (id, extracted_json, confidence)
@@ -101,7 +102,7 @@ export default async function ProposalBuildPage() {
             {needsProposal.map((w) => {
               const scope = (w.scope_models as { extracted_json?: ScopeJson }[])?.[0]?.extracted_json;
               const clientName = w.opportunities?.clients?.name ?? scope?.customer?.company_name ?? 'Unknown Client';
-              const siteName = w.sites?.name ?? scope?.site?.name ?? 'Site';
+              const siteName = w.locations?.name ?? w.sites?.name ?? scope?.site?.name ?? 'Site';
               const sqft = scope?.site?.square_footage;
               const confidence = (w.scope_models as { confidence?: number }[])?.[0]?.confidence;
 

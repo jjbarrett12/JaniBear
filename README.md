@@ -44,9 +44,25 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
 
 ### 2. Database Migrations
 
-Run the SQL migrations in Supabase SQL Editor in order:
-1. `supabase/migrations/001_initial_schema.sql` (and 002-009 if not already run)
-2. **`supabase/migrations/010_foundation_update.sql`** (Critical: Adds new SaaS foundation tables)
+The app needs all migrations applied so tables like `accounts` and `facilities` exist. If you see **"Could not find the table 'public.accounts' in the schema cache"** when saving a new account, your database is missing these migrations.
+
+**Option A – Supabase CLI (recommended)**  
+From the project root, link your project (if not already), then push all migrations:
+
+```bash
+npx supabase link   # use your project ref and database password
+npx supabase db push
+```
+
+**Option B – SQL Editor**  
+In [Supabase Dashboard](https://supabase.com/dashboard) → your project → **SQL Editor**, run the migration files in **numeric order** from `supabase/migrations/`:
+
+1. `001_initial_schema.sql` through `009_*.sql` (if not already run)
+2. **`010_foundation_update.sql`** (critical: organizations, org_members, etc.)
+3. Continue through **`037_accounts_facilities.sql`** (creates `accounts` and `facilities`)
+4. Then **`041_account_users_and_limits.sql`** (account invites and user limits)
+
+Run each file’s full contents once, in order; skip any that you’ve already applied.
 
 ### 3. Storage Setup
 

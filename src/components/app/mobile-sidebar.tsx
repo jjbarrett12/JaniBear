@@ -31,6 +31,7 @@ import {
   FileSearch,
   MessageCircle,
   Rocket,
+  Wallet,
 } from 'lucide-react';
 import { GlobalSearch } from '@/components/search/global-search';
 import { DarkModeToggle } from '@/components/app/dark-mode-toggle';
@@ -44,6 +45,8 @@ import { Badge } from '@/components/ui/badge';
 interface MobileSidebarProps {
   logoUrl?: string | null;
   navAlerts?: NavAlertCounts | null;
+  shell?: 'owner_operator' | 'franchisee' | 'franchisor';
+  franchiseeEnrolled?: boolean;
 }
 
 /** Shared by Sales and Operations */
@@ -83,7 +86,7 @@ const operationsItemKeys: { href: string; labelKey: AppTranslationKey; icon: Rea
 
 const MOBILE_ALERT_BADGE_CLASS = 'ml-auto text-[10px] min-w-[18px] h-5 px-1.5 justify-center shrink-0 bg-destructive text-destructive-foreground border-0';
 
-export function MobileSidebar({ logoUrl, navAlerts }: MobileSidebarProps) {
+export function MobileSidebar({ logoUrl, navAlerts, shell, franchiseeEnrolled }: MobileSidebarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const { locale } = useLanguage();
@@ -193,6 +196,28 @@ export function MobileSidebar({ logoUrl, navAlerts }: MobileSidebarProps) {
                 >
                   <LayoutDashboard className="h-5 w-5 shrink-0" />
                   {t('navDashboard')}
+                </AppLink>
+                <AppLink
+                  href="/app/financial-health"
+                  className={`flex items-center gap-3 rounded-lg px-4 py-3 text-base font-medium transition-colors min-h-[48px] ${
+                    pathname.startsWith('/app/financial-health')
+                      ? 'bg-primary text-primary-foreground'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                  }`}
+                >
+                  <Wallet className="h-5 w-5 shrink-0" />
+                  {t('navFinancialHealth')}
+                </AppLink>
+                <AppLink
+                  href="/app/kpis"
+                  className={`flex items-center gap-3 rounded-lg px-4 py-3 text-base font-medium transition-colors min-h-[48px] ${
+                    pathname.startsWith('/app/kpis')
+                      ? 'bg-primary text-primary-foreground'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                  }`}
+                >
+                  <BarChart3 className="h-5 w-5 shrink-0" />
+                  {t('navKpiDashboard')}
                 </AppLink>
                 <AppLink
                   href="/app/university"

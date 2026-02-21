@@ -185,6 +185,7 @@ export async function updateSession(request: NextRequest) {
       });
       const requestHeaders = new Headers(request.headers);
       requestHeaders.set('x-middleware-user-id', user.id);
+      requestHeaders.set('x-pathname', pathname);
       const resWithHeader = NextResponse.next({
         request: { headers: requestHeaders },
       });

@@ -75,7 +75,7 @@ export function RecentActivity({ activities }: RecentActivityProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2, duration: 0.3 }}
     >
-      <Card className="rounded-2xl border border-border bg-card shadow-sm h-full">
+      <Card className="rounded-2xl border border-border bg-card shadow-[0_1px_3px_rgba(0,0,0,0.3)] h-full">
         <CardHeader className="pb-2">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-muted/60 text-muted-foreground">

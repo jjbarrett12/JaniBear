@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { AppLink } from '@/components/app/app-link';
 import { usePathname } from 'next/navigation';
 import { useLanguage } from '@/contexts/language-context';
@@ -8,112 +8,19 @@ import { getAppT } from '@/lib/app-translations';
 import { Badge } from '@/components/ui/badge';
 import type { NavAlertCounts } from '@/actions/nav-alerts';
 import type { AppTranslationKey } from '@/lib/app-translations';
+import type { ShellKey } from '@/lib/shell';
+import { getNavSectionsForShell } from '@/lib/nav/shellNav';
+import type { NavSection } from '@/lib/nav/shellNav';
 import {
-  LayoutDashboard,
-  MapPin,
-  FileText,
-  Calendar,
-  ClipboardCheck,
-  AlertCircle,
-  Users,
-  FileUp,
-  Calculator,
-  Settings,
-  TrendingUp,
-  ListChecks,
-  Repeat,
-  Award,
-  FileSearch,
-  Package,
-  Wallet,
-  BarChart3,
-  Rocket,
-  Building2,
   ChevronDown,
   ChevronRight,
-  Sparkles,
-  ShieldAlert,
-  GraduationCap,
-  ShoppingBag,
-  Map,
+  Settings,
 } from 'lucide-react';
-
-type NavItem = {
-  href: string;
-  labelKey: AppTranslationKey;
-  icon: React.ComponentType<{ className?: string }>;
-  alertKey?: keyof NavAlertCounts;
-};
-
-type NavSection = {
-  id: string;
-  labelKey: AppTranslationKey;
-  items: NavItem[];
-};
-
-const SECTIONS: NavSection[] = [
-  {
-    id: 'executive',
-    labelKey: 'navExecutive',
-    items: [
-      { href: '/app/dashboard', labelKey: 'navOverview', icon: LayoutDashboard },
-      { href: '/app/financial-health', labelKey: 'navFinancialHealth', icon: Wallet },
-      { href: '/app/kpis', labelKey: 'navAccountHealth', icon: BarChart3 },
-      { href: '/app/kpis', labelKey: 'navRiskLeakage', icon: ShieldAlert },
-      { href: '/app/admin/ai-settings', labelKey: 'navAiInsights', icon: Sparkles },
-      { href: '/app/university', labelKey: 'navUniversity', icon: GraduationCap },
-      { href: '/app/pro-gear', labelKey: 'navProGear', icon: ShoppingBag },
-    ],
-  },
-  {
-    id: 'growth',
-    labelKey: 'navGrowth',
-    items: [
-      { href: '/app/sales', labelKey: 'navLeads', icon: TrendingUp },
-      { href: '/app/crm/pipeline', labelKey: 'navPipeline', icon: LayoutDashboard },
-      { href: '/app/walkthroughs', labelKey: 'navWalkthroughs', icon: FileSearch },
-      { href: '/app/proposals/build', labelKey: 'navProposals', icon: Calculator },
-      { href: '/app/territory-map', labelKey: 'navTerritories', icon: MapPin },
-      { href: '/app/sales-dashboard', labelKey: 'navPipelineAnalytics', icon: BarChart3 },
-      { href: '/app/crm', labelKey: 'navCrm', icon: Users },
-    ],
-  },
-  {
-    id: 'operations',
-    labelKey: 'navOperations',
-    items: [
-      { href: '/app/accounts', labelKey: 'navAccounts', icon: Building2 },
-      { href: '/app/sites', labelKey: 'navLocations', icon: MapPin },
-      { href: '/app/map', labelKey: 'navMap', icon: Map },
-      { href: '/app/crews', labelKey: 'navCrewManagement', icon: Users },
-      { href: '/app/inspections', labelKey: 'navInspections', icon: ClipboardCheck },
-      { href: '/app/schedules', labelKey: 'navServiceSchedules', icon: Calendar, alertKey: 'missedTaskCount' },
-      { href: '/app/qc-assign', labelKey: 'navQualityControl', icon: ListChecks },
-      { href: '/app/issues', labelKey: 'navSlaTracking', icon: AlertCircle, alertKey: 'openIssuesCount' },
-      { href: '/app/ops/launches', labelKey: 'navLaunches', icon: Rocket, alertKey: 'handoffsCount' },
-      { href: '/app/tasks', labelKey: 'navMyTasks', icon: ClipboardCheck },
-      { href: '/app/templates', labelKey: 'navBrandStandards', icon: Award },
-      { href: '/app/supplies', labelKey: 'navSupplies', icon: Package },
-      { href: '/app/contracts', labelKey: 'navContracts', icon: FileUp },
-    ],
-  },
-  {
-    id: 'system',
-    labelKey: 'navSystem',
-    items: [
-      { href: '/app/admin/ai-settings', labelKey: 'navAiSettings', icon: Sparkles },
-      { href: '/app/settings', labelKey: 'navOrganization', icon: Settings },
-      { href: '/app/admin', labelKey: 'navUsersRoles', icon: Users },
-      { href: '/app/admin', labelKey: 'navIntegrations', icon: Settings },
-      { href: '/app/admin', labelKey: 'navAuditLogs', icon: FileText },
-    ],
-  },
-];
 
 const STORAGE_KEY = 'janibear-nav-collapsed';
 
-function getSectionIdForPath(pathname: string): string {
-  for (const section of SECTIONS) {
+function getSectionIdForPath(sections: NavSection[], pathname: string): string {
+  for (const section of sections) {
     for (const item of section.items) {
       if (pathname === item.href) return section.id;
       if (item.href !== '/app/dashboard' && pathname.startsWith(item.href + '/')) return section.id;
@@ -121,7 +28,7 @@ function getSectionIdForPath(pathname: string): string {
       if (item.href === '/app/sales' && (pathname === '/app/sales' || pathname.startsWith('/app/sales/'))) return section.id;
     }
   }
-  return 'executive';
+  return sections[0]?.id ?? 'executive';
 }
 
 function navLinkClass(active: boolean) {
@@ -132,13 +39,49 @@ function navLinkClass(active: boolean) {
 
 const ALERT_BADGE_CLASS = 'ml-auto text-[10px] min-w-[18px] h-5 px-1.5 justify-center shrink-0 bg-destructive text-destructive-foreground border-0';
 
-export function AppSidebarNav({ premium, navAlerts }: { premium: boolean; navAlerts?: NavAlertCounts | null }) {
+function sectionHeaderColor(sectionId: string, isActive: boolean): string {
+  const base = 'hover:opacity-90 ';
+  if (isActive) {
+    const active: Record<string, string> = {
+      executive: 'bg-blue-500/15 text-blue-700 dark:text-blue-300',
+      growth: 'bg-amber-500/15 text-amber-700 dark:text-amber-300',
+      operations: 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300',
+      system: 'bg-violet-500/15 text-violet-700 dark:text-violet-300',
+      franchisor: 'bg-blue-500/15 text-blue-700 dark:text-blue-300',
+    };
+    return base + (active[sectionId] ?? 'bg-muted text-foreground');
+  }
+  const inactive: Record<string, string> = {
+    executive: 'text-blue-600 dark:text-blue-400',
+    growth: 'text-amber-600 dark:text-amber-400',
+    operations: 'text-emerald-600 dark:text-emerald-400',
+    system: 'text-violet-600 dark:text-violet-400',
+    franchisor: 'text-blue-600 dark:text-blue-400',
+  };
+  return base + (inactive[sectionId] ?? 'text-muted-foreground hover:bg-muted/60 hover:text-foreground');
+}
+
+export function AppSidebarNav({
+  premium,
+  navAlerts,
+  shell = 'owner_operator',
+  franchiseeEnrolled = false,
+}: {
+  premium: boolean;
+  navAlerts?: NavAlertCounts | null;
+  shell?: ShellKey;
+  franchiseeEnrolled?: boolean;
+}) {
   const pathname = usePathname();
   const { locale } = useLanguage();
   const t = getAppT(locale);
   const alerts = navAlerts ?? { handoffsCount: 0, openIssuesCount: 0, missedTaskCount: 0 };
 
-  const activeSectionId = getSectionIdForPath(pathname);
+  const sections = useMemo(
+    () => getNavSectionsForShell(shell, franchiseeEnrolled),
+    [shell, franchiseeEnrolled]
+  );
+  const activeSectionId = getSectionIdForPath(sections, pathname);
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
@@ -153,12 +96,12 @@ export function AppSidebarNav({ premium, navAlerts }: { premium: boolean; navAle
   useEffect(() => {
     setCollapsed((prev) => {
       const next = { ...prev };
-      SECTIONS.forEach((s) => {
+      sections.forEach((s) => {
         if (s.id === activeSectionId && next[s.id] !== false) next[s.id] = false;
       });
       return next;
     });
-  }, [activeSectionId]);
+  }, [activeSectionId, sections]);
 
   const toggle = (id: string) => {
     setCollapsed((prev) => {
@@ -181,6 +124,8 @@ export function AppSidebarNav({ premium, navAlerts }: { premium: boolean; navAle
     if (item.href === '/app/accounts' && pathname.startsWith('/app/accounts')) return true;
     if (item.href === '/app/sales' && (pathname === '/app/sales' || pathname.startsWith('/app/sales/'))) return true;
     if (item.href === '/app/ops/launches' && pathname.startsWith('/app/ops/launches')) return true;
+    if (item.href === '/app/franchise' && (pathname === '/app/franchise' || pathname.startsWith('/app/franchise/'))) return true;
+    if (item.href === '/app/opportunities/network' && pathname.startsWith('/app/opportunities/network')) return true;
     if (item.href !== '/app/dashboard' && pathname.startsWith(item.href + '/')) return true;
     return false;
   };
@@ -193,7 +138,7 @@ export function AppSidebarNav({ premium, navAlerts }: { premium: boolean; navAle
 
   return (
     <nav className="min-w-0 flex-1 space-y-0.5 overflow-y-auto p-2">
-      {SECTIONS.map((section) => {
+      {sections.map((section) => {
         const isOpen = collapsed[section.id] !== true;
         const isActiveSection = section.id === activeSectionId;
 
@@ -202,9 +147,7 @@ export function AppSidebarNav({ premium, navAlerts }: { premium: boolean; navAle
             <button
               type="button"
               onClick={() => toggle(section.id)}
-              className={`flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-[11px] font-semibold uppercase tracking-wider transition-colors min-h-[36px] ${
-                isActiveSection ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted/60 hover:text-foreground'
-              }`}
+              className={`flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider transition-colors min-h-[36px] ${sectionHeaderColor(section.id, isActiveSection)}`}
             >
               {isOpen ? <ChevronDown className="h-4 w-4 shrink-0" /> : <ChevronRight className="h-4 w-4 shrink-0" />}
               <span className="truncate">{t(section.labelKey)}</span>

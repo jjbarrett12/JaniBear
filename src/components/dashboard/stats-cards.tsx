@@ -156,7 +156,7 @@ export function StatsCards({ stats }: StatsCardsProps) {
             variants={cardVariants}
           >
             <Link href={card.href}>
-              <Card className="group rounded-2xl border border-border bg-card shadow-sm hover:shadow-md transition-shadow duration-150 cursor-pointer h-full">
+              <Card className="group rounded-2xl border border-border bg-card shadow-[0_1px_3px_rgba(0,0,0,0.3)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.35)] transition-shadow duration-150 cursor-pointer h-full">
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-muted/60 text-muted-foreground">

@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { requireOrg } from '@/lib/auth';
 import { getUserContext, isFranchisor } from '@/lib/user-context';
 import { isSalesRepRole } from '@/types/sales';
+import { resolveShellForOrg } from '@/lib/shell';
 import { PageLayout, ContentGrid, PrimaryPanel, ContextPanel } from '@/components/enterprise';
 import { DashboardHeader } from '@/components/dashboard/dashboard-header';
 import { StatsCards } from '@/components/dashboard/stats-cards';
@@ -19,10 +20,14 @@ import { Award } from 'lucide-react';
  */
 export default async function DashboardPage() {
   const org = await requireOrg();
+  const shell = await resolveShellForOrg(org.org_id);
+  if (shell === 'franchisor') {
+    redirect('/app/franchise');
+  }
   const { context } = await getUserContext();
 
   if (isFranchisor(context)) {
-    redirect('/franchisor');
+    redirect('/app/franchise');
   }
   if (isSalesRepRole(context.role, context.roleEnum)) {
     redirect('/app/sales-dashboard');

@@ -12,11 +12,12 @@ import { ArTab } from '@/components/financial-health/ar-tab';
 import { CostsTab } from '@/components/financial-health/costs-tab';
 import { PricingLeakageTab } from '@/components/financial-health/pricing-leakage-tab';
 import { ContractsAtRiskTab } from '@/components/financial-health/contracts-at-risk-tab';
+import { ExpensesTab } from '@/components/financial-health/expenses-tab';
 import { SiteFinanceDrawer } from '@/components/financial-health/site-finance-drawer';
 import type { SiteProfitabilityRow } from '@/lib/financial-health-mock';
 import type { EmployeeLaborSummary } from '@/lib/employee-labor-summary';
 
-type FinanceTabId = 'overview' | 'profitability' | 'ar' | 'costs' | 'pricing' | 'risk';
+type FinanceTabId = 'overview' | 'profitability' | 'ar' | 'costs' | 'pricing' | 'risk' | 'expenses';
 
 const TABS: { id: FinanceTabId; label: string }[] = [
   { id: 'overview', label: 'Overview' },
@@ -25,10 +26,17 @@ const TABS: { id: FinanceTabId; label: string }[] = [
   { id: 'costs', label: 'Costs' },
   { id: 'pricing', label: 'Pricing & Leakage' },
   { id: 'risk', label: 'Contracts at Risk' },
+  { id: 'expenses', label: 'Expenses' },
 ];
 
 /** Operator (franchisee + owner/operator) Financial Health dashboard. No franchisor content. */
-export function OperatorFinancialHealthDashboard({ laborSummary }: { laborSummary?: EmployeeLaborSummary | null }) {
+export function OperatorFinancialHealthDashboard({
+  orgId,
+  laborSummary,
+}: {
+  orgId: string;
+  laborSummary?: EmployeeLaborSummary | null;
+}) {
   const [headerFilters, setHeaderFilters] = useState<FinancialHealthHeaderFilters>(defaultHeaderFilters);
   const [activeTab, setActiveTab] = useState<FinanceTabId>('overview');
   const [drawerSite, setDrawerSite] = useState<SiteProfitabilityRow | null>(null);
@@ -63,6 +71,9 @@ export function OperatorFinancialHealthDashboard({ laborSummary }: { laborSummar
           {activeTab === 'costs' && <CostsTab />}
           {activeTab === 'pricing' && <PricingLeakageTab />}
           {activeTab === 'risk' && <ContractsAtRiskTab />}
+          {activeTab === 'expenses' && (
+            <ExpensesTab orgId={orgId} laborSummary={laborSummary} />
+          )}
         </main>
         {drawerSite && <SiteFinanceDrawer site={drawerSite} onClose={closeDrawer} />}
       </div>

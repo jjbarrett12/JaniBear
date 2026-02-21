@@ -28,7 +28,7 @@ export function InspectionChart({ data }: InspectionChartProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.1, duration: 0.3 }}
     >
-      <Card className="rounded-2xl border border-border bg-card shadow-sm">
+      <Card className="rounded-2xl border border-border bg-card shadow-[0_1px_3px_rgba(0,0,0,0.3)]">
         <CardHeader className="pb-2">
           <CardTitle className="text-lg font-semibold tracking-tight text-foreground">
             Inspection Performance

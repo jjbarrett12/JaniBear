@@ -234,13 +234,13 @@
     --health-red: 0 72% 51%;
   }
 
-  /* Dark mode: Enterprise — Deep Navy #0B1220, Charcoal #111827, Card #1F2937, JANIBEAR Yellow #F5C400 */
+  /* Dark mode: Enterprise — Deep Navy page, card surface lighter so tiles read as elevated */
   .dark {
-    --background: 222 47% 8%;
+    --background: 222 50% 6%;
     --foreground: 210 20% 96%;
-    --card: 217 33% 17%;
+    --card: 218 28% 22%;
     --card-foreground: 210 20% 96%;
-    --popover: 217 33% 17%;
+    --popover: 218 28% 22%;
     --popover-foreground: 210 20% 96%;
     --primary: 45 100% 49%;
     --primary-foreground: 222 47% 8%;
@@ -252,7 +252,7 @@
     --accent-foreground: 222 47% 8%;
     --destructive: 0 72% 51%;
     --destructive-foreground: 210 20% 96%;
-    --border: 215 20% 25%;
+    --border: 215 18% 28%;
     --input: 215 20% 25%;
     --ring: 45 100% 49%;
     --chart-1: 45 100% 49%;

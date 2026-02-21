@@ -52,8 +52,8 @@ export default async function AdminPage(props: { searchParams?: Promise<{ demo?:
     redirect('/app/dashboard');
   }
 
-  const { data: profile } = await supabase.from('profiles').select('is_platform_admin').eq('id', userId).single();
-  const isPlatformAdmin = profile?.is_platform_admin === true;
+  const { isPlatformAdmin: checkPlatformAdmin } = await import('@/lib/platform-guard');
+  const isPlatformAdmin = await checkPlatformAdmin();
 
   // Get quick stats
   const [employeesCount, complianceCount, sdsCount, poCount, invoiceCount, phoneCallsCount] = await Promise.all([
@@ -147,7 +147,7 @@ export default async function AdminPage(props: { searchParams?: Promise<{ demo?:
       </div>
 
       {isPlatformAdmin && (
-        <Link href="/app/admin/platform">
+        <Link href="/platform/overview">
           <Card className="hover:shadow-lg transition-shadow cursor-pointer border-amber-500/30 bg-amber-500/5">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">Platform Admin</CardTitle>

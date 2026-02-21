@@ -20,12 +20,12 @@ export function QuickActions() {
   const t = getAppT(locale);
 
   const actions = [
-    { labelKey: 'quickNewWalkthrough' as const, descKey: 'quickNewWalkthroughDesc' as const, href: '/app/walkthroughs/new', icon: Camera, gradient: 'from-amber-500 to-rose-500', primary: true },
-    { labelKey: 'quickStartInspection' as const, descKey: 'quickStartInspectionDesc' as const, href: '/app/inspections/start', icon: ClipboardCheck, gradient: 'from-emerald-500 to-teal-500', primary: false },
-    { labelKey: 'quickAddLocation' as const, descKey: 'quickAddLocationDesc' as const, href: '/app/accounts/new', icon: MapPin, gradient: 'from-blue-500 to-indigo-500', primary: false },
-    { labelKey: 'quickCreateCrew' as const, descKey: 'quickCreateCrewDesc' as const, href: '/app/crews/new', icon: Users, gradient: 'from-violet-500 to-purple-500', primary: false },
-    { labelKey: 'quickNewSchedule' as const, descKey: 'quickNewScheduleDesc' as const, href: '/app/schedules/new', icon: Calendar, gradient: 'from-cyan-500 to-blue-500', primary: false },
-    { labelKey: 'quickNewProposal' as const, descKey: 'quickNewProposalDesc' as const, href: '/app/sales/leads/new', icon: FileText, gradient: 'from-amber-500 to-orange-500', primary: false },
+    { labelKey: 'quickNewWalkthrough' as const, descKey: 'quickNewWalkthroughDesc' as const, href: '/app/walkthroughs/new', icon: Camera, gradient: 'from-amber-500 to-rose-500', tint: 'bg-amber-500/15', primary: true },
+    { labelKey: 'quickStartInspection' as const, descKey: 'quickStartInspectionDesc' as const, href: '/app/inspections/start', icon: ClipboardCheck, gradient: 'from-emerald-500 to-teal-500', tint: 'bg-emerald-500/15', primary: false },
+    { labelKey: 'quickAddLocation' as const, descKey: 'quickAddLocationDesc' as const, href: '/app/accounts/new', icon: MapPin, gradient: 'from-blue-500 to-indigo-500', tint: 'bg-blue-500/15', primary: false },
+    { labelKey: 'quickCreateCrew' as const, descKey: 'quickCreateCrewDesc' as const, href: '/app/crews/new', icon: Users, gradient: 'from-violet-500 to-purple-500', tint: 'bg-violet-500/15', primary: false },
+    { labelKey: 'quickNewSchedule' as const, descKey: 'quickNewScheduleDesc' as const, href: '/app/schedules/new', icon: Calendar, gradient: 'from-cyan-500 to-blue-500', tint: 'bg-cyan-500/15', primary: false },
+    { labelKey: 'quickNewProposal' as const, descKey: 'quickNewProposalDesc' as const, href: '/app/sales/leads/new', icon: FileText, gradient: 'from-amber-500 to-orange-500', tint: 'bg-amber-500/12', primary: false },
   ];
 
   return (
@@ -34,7 +34,7 @@ export function QuickActions() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.1, duration: 0.3 }}
     >
-      <Card className="rounded-2xl border border-border bg-card shadow-sm">
+      <Card className="rounded-2xl border border-border bg-card shadow-[0_1px_3px_rgba(0,0,0,0.3)]">
         <CardHeader className="pb-3">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
@@ -46,9 +46,15 @@ export function QuickActions() {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {actions.map((action, index) => {
               const Icon = action.icon;
+              const tileBg = action.primary
+                ? 'bg-primary text-primary-foreground border-primary hover:opacity-95'
+                : `${action.tint} border-border hover:shadow-md hover:opacity-95`;
+              const iconBox = action.primary
+                ? 'bg-primary-foreground/20 text-primary-foreground'
+                : `bg-gradient-to-br ${action.gradient} text-white shadow-sm`;
               return (
                 <Link key={action.href} href={action.href}>
                   <motion.div
@@ -56,23 +62,17 @@ export function QuickActions() {
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.15 + index * 0.03, duration: 0.2 }}
                     className={`
-                      relative group p-4 rounded-2xl border transition-all duration-150 cursor-pointer
-                      ${action.primary
-                        ? 'bg-primary text-primary-foreground border-primary hover:opacity-95'
-                        : 'bg-card border-border hover:border-muted-foreground/30 hover:shadow-sm'
-                      }
+                      relative group p-5 md:p-6 rounded-2xl border min-h-[128px] md:min-h-[148px] flex flex-col transition-all duration-150 cursor-pointer
+                      ${tileBg}
                     `}
                   >
-                    <div className={`
-                      w-10 h-10 rounded-xl flex items-center justify-center mb-3
-                      ${action.primary ? 'bg-primary-foreground/20' : 'bg-muted/60 text-muted-foreground'}
-                    `}>
-                      <Icon className="h-5 w-5" />
+                    <div className={`w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center mb-3 shrink-0 ${iconBox}`}>
+                      <Icon className="h-6 w-6 md:h-7 md:w-7" />
                     </div>
-                    <p className={`font-semibold text-sm ${action.primary ? 'text-primary-foreground' : 'text-foreground'}`}>
+                    <p className={`font-semibold text-base md:text-lg leading-tight ${action.primary ? 'text-primary-foreground' : 'text-foreground'}`}>
                       {t(action.labelKey)}
                     </p>
-                    <p className={`text-xs mt-0.5 ${action.primary ? 'text-primary-foreground/85' : 'text-muted-foreground'}`}>
+                    <p className={`text-sm mt-1 ${action.primary ? 'text-primary-foreground/90' : 'text-muted-foreground'}`}>
                       {t(action.descKey)}
                     </p>
                   </motion.div>

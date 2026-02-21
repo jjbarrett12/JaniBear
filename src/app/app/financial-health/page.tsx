@@ -19,5 +19,7 @@ export default async function FinancialHealthPage() {
 
   const laborSummary = await getEmployeeLaborSummary(org.org_id);
 
-  return <OperatorFinancialHealthDashboard laborSummary={laborSummary} />;
+  return (
+    <OperatorFinancialHealthDashboard orgId={org.org_id} laborSummary={laborSummary} />
+  );
 }

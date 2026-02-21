@@ -4,7 +4,7 @@
  *
  * TODO: Wire to real API when backend supports:
  * - Executive metrics (MRR, retention, win rate, inspection score)
- * - Attention alerts (sites below threshold, uninspected contracts, SLA, NPS drop, stalled opps)
+ * - Attention alerts (accounts below threshold, uninspected contracts, SLA, NPS drop, stalled opps)
  * - Sales engine (pipeline, deal size, closing rate, days to close, stage breakdown)
  * - Operational health (inspection completion, SLA, schedule adherence, issue recurrence, supervisor visits)
  * - Crew performance (revenue per crew/supervisor, sites per crew, overtime %, task variance, efficiency index)
@@ -100,10 +100,10 @@ export function getExecutiveSnapshot(timeframe: StrategicTimeframe): ExecutiveCa
 
 /** 2. Attention Required — only show if count > 0. Placeholder; TODO: API */
 export function getAttentionAlerts(): AttentionAlert[] {
-  // TODO: Query sites below inspection threshold (e.g. <85), contracts not inspected 14+ days,
+  // TODO: Query accounts below inspection threshold (e.g. <85), contracts not inspected 14+ days,
   // open issues past SLA, clients with NPS drop >10%, opportunities stalled 30+ days
   const alerts: AttentionAlert[] = [
-    { id: 'sites_below_threshold', label: 'Sites below inspection threshold (<85)', count: 3, severity: 'warning', href: '/app/sites?filter=below_threshold' },
+    { id: 'accounts_below_threshold', label: 'Accounts below inspection threshold (<85)', count: 3, severity: 'warning', href: '/app/accounts?filter=below_threshold' },
     { id: 'contracts_not_inspected', label: 'Contracts not inspected in 14+ days', count: 2, severity: 'warning' },
     { id: 'issues_past_sla', label: 'Open issues past SLA', count: 1, severity: 'critical', href: '/app/issues' },
     { id: 'nps_declining', label: 'Clients with declining NPS (drop >10%)', count: 0, severity: 'warning' },

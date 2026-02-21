@@ -6,6 +6,7 @@ import { useLanguage } from '@/contexts/language-context';
 import { getAppT } from '@/lib/app-translations';
 import type { AppTranslationKey } from '@/lib/app-translations';
 import type { NavAlertCounts } from '@/actions/nav-alerts';
+import type { ShellKey } from '@/lib/shell';
 import { 
   LayoutDashboard, 
   ClipboardCheck, 
@@ -14,7 +15,7 @@ import {
   Settings
 } from 'lucide-react';
 
-const bottomNavKeys = [
+const bottomNavKeysOperator = [
   { href: '/app/dashboard', labelKey: 'navDashboard', icon: LayoutDashboard },
   { href: '/app/inspections', labelKey: 'navInspections', icon: ClipboardCheck },
   { href: '/app/issues', labelKey: 'navIssues', icon: AlertCircle },
@@ -22,18 +23,24 @@ const bottomNavKeys = [
   { href: '/app/settings', labelKey: 'navSettings', icon: Settings },
 ] as const;
 
-export function BottomNav({ navAlerts }: { navAlerts?: NavAlertCounts | null }) {
+const bottomNavKeysFranchisor = [
+  { href: '/app/franchise', labelKey: 'navPlacementBoard', icon: LayoutDashboard },
+  { href: '/app/settings', labelKey: 'navSettings', icon: Settings },
+] as const;
+
+export function BottomNav({ navAlerts, shell }: { navAlerts?: NavAlertCounts | null; shell?: ShellKey }) {
   const pathname = usePathname();
   const { locale } = useLanguage();
   const t = getAppT(locale);
   const openIssuesCount = navAlerts?.openIssuesCount ?? 0;
+  const bottomNavKeys = shell === 'franchisor' ? bottomNavKeysFranchisor : bottomNavKeysOperator;
 
   return (
     <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-border shadow-lg safe-bottom pb-[env(safe-area-inset-bottom)]">
       <div className="flex items-center justify-around h-16">
         {bottomNavKeys.map((item) => {
           const Icon = item.icon;
-          const isActive = pathname === item.href || (item.href !== '/app/dashboard' && pathname.startsWith(item.href));
+          const isActive = pathname === item.href || (item.href !== '/app/dashboard' && item.href !== '/app/franchise' && pathname.startsWith(item.href)) || (item.href === '/app/franchise' && (pathname === '/app/franchise' || pathname.startsWith('/app/franchise/')));
           const showBadge = item.href === '/app/issues' && openIssuesCount > 0;
 
           return (

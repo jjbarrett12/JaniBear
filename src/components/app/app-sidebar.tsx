@@ -5,6 +5,7 @@ import { requireOrg } from '@/lib/auth';
 import { isPremiumPlan } from '@/lib/is-premium';
 import { getNavAlertCounts } from '@/actions/nav-alerts';
 import type { NavAlertCounts } from '@/actions/nav-alerts';
+import type { ShellKey } from '@/lib/shell';
 import { GlobalSearch } from '@/components/search/global-search';
 import { NotificationBell } from '@/components/notifications/notification-bell';
 import { MobileSidebar } from '@/components/app/mobile-sidebar';
@@ -14,7 +15,11 @@ import { LanguageSwitcher } from '@/components/app/language-switcher';
 import { AppSidebarNav } from '@/components/app/app-sidebar-nav';
 import { AppSidebarFooter } from '@/components/app/app-sidebar-footer';
 
-export async function AppSidebar({ navAlerts: navAlertsProp }: { navAlerts?: NavAlertCounts | null } = {}) {
+export async function AppSidebar({
+  navAlerts: navAlertsProp,
+  shell,
+  franchiseeEnrolled,
+}: { navAlerts?: NavAlertCounts | null; shell?: ShellKey; franchiseeEnrolled?: boolean } = {}) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   const org = await requireOrg();
@@ -30,7 +35,7 @@ export async function AppSidebar({ navAlerts: navAlertsProp }: { navAlerts?: Nav
   return (
     <>
       {/* Mobile Sidebar */}
-      <MobileSidebar logoUrl={orgData?.logo_url} navAlerts={navAlerts} />
+      <MobileSidebar logoUrl={orgData?.logo_url} navAlerts={navAlerts} shell={shell} franchiseeEnrolled={franchiseeEnrolled} />
 
       {/* Desktop Sidebar - w-56 so it doesn't overlap main content */}
       <aside className="hidden lg:flex fixed left-0 top-0 z-40 h-screen w-56 shrink-0 overflow-hidden border-r border-border bg-card">
@@ -72,7 +77,7 @@ export async function AppSidebar({ navAlerts: navAlertsProp }: { navAlerts?: Nav
             </div>
           </div>
           
-          <AppSidebarNav premium={premium} navAlerts={navAlerts} />
+          <AppSidebarNav premium={premium} navAlerts={navAlerts} shell={shell} franchiseeEnrolled={franchiseeEnrolled} />
 
           <AppSidebarFooter userEmail={user?.email} />
         </div>

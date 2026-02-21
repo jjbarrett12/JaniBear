@@ -48,17 +48,17 @@ export function TodaysSchedule({ items }: TodaysScheduleProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.15, duration: 0.3 }}
     >
-      <Card className="rounded-xl border-0 shadow-sm hover:shadow-md transition-shadow h-full bg-card">
+      <Card className="rounded-2xl border border-border bg-card shadow-sm h-full">
         <CardHeader className="pb-2">
-          <div className="flex items-center gap-2">
-            <div className="p-2 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 shadow-md">
-              <Calendar className="h-5 w-5 text-white" />
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-muted/60 text-muted-foreground">
+              <Calendar className="h-5 w-5" />
             </div>
             <div>
-              <CardTitle className="text-lg font-semibold text-foreground dark:text-white">
+              <CardTitle className="text-lg font-semibold tracking-tight text-foreground">
                 {t('todaysSchedule')}
               </CardTitle>
-              <p className="text-sm text-gray-500 dark:text-gray-400">{today}</p>
+              <p className="text-sm text-muted-foreground">{today}</p>
             </div>
           </div>
         </CardHeader>
@@ -79,7 +79,7 @@ export function TodaysSchedule({ items }: TodaysScheduleProps) {
                           {getStatusLabel(item.status)}
                         </Badge>
                       </div>
-                      <div className="flex items-center gap-3 mt-1 text-xs text-gray-500 dark:text-gray-400">
+                      <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
                         {item.crew_name && (
                           <span className="flex items-center gap-1">
                             <Users className="h-3 w-3" />

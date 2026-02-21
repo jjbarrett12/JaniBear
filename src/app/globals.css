@@ -234,30 +234,30 @@
     --health-red: 0 72% 51%;
   }
 
-  /* Dark mode: #121B3A bg, #F3F4F6 text, #F28C28 accent, #3B4FA3 dividers */
+  /* Dark mode: Enterprise — Deep Navy #0B1220, Charcoal #111827, Card #1F2937, JANIBEAR Yellow #F5C400 */
   .dark {
-    --background: 227 53% 15%;
-    --foreground: 220 20% 96%;
-    --card: 227 53% 15%;
-    --card-foreground: 220 20% 96%;
-    --popover: 227 53% 15%;
-    --popover-foreground: 220 20% 96%;
-    --primary: 31 89% 55%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 227 47% 22%;
-    --secondary-foreground: 220 20% 96%;
-    --muted: 227 47% 22%;
-    --muted-foreground: 220 15% 70%;
-    --accent: 31 89% 55%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 220 20% 96%;
-    --border: 227 47% 44%;
-    --input: 227 47% 44%;
-    --ring: 31 89% 55%;
-    --chart-1: 31 89% 55%;
+    --background: 222 47% 8%;
+    --foreground: 210 20% 96%;
+    --card: 217 33% 17%;
+    --card-foreground: 210 20% 96%;
+    --popover: 217 33% 17%;
+    --popover-foreground: 210 20% 96%;
+    --primary: 45 100% 49%;
+    --primary-foreground: 222 47% 8%;
+    --secondary: 217 33% 22%;
+    --secondary-foreground: 210 20% 96%;
+    --muted: 217 25% 25%;
+    --muted-foreground: 215 16% 57%;
+    --accent: 45 100% 49%;
+    --accent-foreground: 222 47% 8%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 210 20% 96%;
+    --border: 215 20% 25%;
+    --input: 215 20% 25%;
+    --ring: 45 100% 49%;
+    --chart-1: 45 100% 49%;
     --chart-2: 160 60% 45%;
-    --chart-3: 227 47% 44%;
+    --chart-3: 217 33% 35%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
     --health-green: 142 70% 45%;

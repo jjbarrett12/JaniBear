@@ -10,17 +10,21 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 
 export function InspectionStarter() {
   const router = useRouter();
-  const [locationId, setLocationId] = useState('');
-  const [templateId, setTemplateId] = useState('');
+  const [locationId, setLocationId] = useState<string | undefined>(undefined);
+  const [templateId, setTemplateId] = useState<string | undefined>(undefined);
   const [locations, setLocations] = useState<Array<{ id: string; name: string }>>([]);
   const [templates, setTemplates] = useState<Array<{ id: string; name: string }>>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadData() {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) return;
+
+      if (!user) {
+        setLoading(false);
+        return;
+      }
 
       const { data: membership } = await supabase
         .from('org_members')
@@ -29,22 +33,27 @@ export function InspectionStarter() {
         .limit(1)
         .single();
 
-      if (!membership) return;
+      if (!membership) {
+        setLoading(false);
+        return;
+      }
 
-      const { data: locs } = await supabase
-        .from('locations')
-        .select('id, name')
-        .eq('org_id', membership.org_id)
-        .order('name');
+      const [{ data: locs }, { data: tmpls }] = await Promise.all([
+        supabase
+          .from('locations')
+          .select('id, name')
+          .eq('org_id', membership.org_id)
+          .order('name'),
+        supabase
+          .from('templates')
+          .select('id, name')
+          .eq('org_id', membership.org_id)
+          .eq('is_active', true)
+          .order('name'),
+      ]);
       if (locs) setLocations(locs);
-
-      const { data: tmpls } = await supabase
-        .from('templates')
-        .select('id, name')
-        .eq('org_id', membership.org_id)
-        .eq('is_active', true)
-        .order('name');
       if (tmpls) setTemplates(tmpls);
+      setLoading(false);
     }
 
     loadData();
@@ -64,38 +73,54 @@ export function InspectionStarter() {
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="location">Location *</Label>
-          <Select value={locationId} onValueChange={setLocationId}>
-            <SelectTrigger>
+          <Label htmlFor="inspection-location">Location *</Label>
+          <Select
+            value={locationId ?? ''}
+            onValueChange={(v) => setLocationId(v || undefined)}
+            disabled={loading}
+          >
+            <SelectTrigger id="inspection-location">
               <SelectValue placeholder="Select location" />
             </SelectTrigger>
             <SelectContent>
-              {locations.map((loc) => (
-                <SelectItem key={loc.id} value={loc.id}>
-                  {loc.name}
-                </SelectItem>
-              ))}
+              {locations.length === 0 && !loading ? (
+                <div className="py-4 text-center text-sm text-muted-foreground">No locations found. Add sites first.</div>
+              ) : (
+                locations.map((loc) => (
+                  <SelectItem key={loc.id} value={loc.id}>
+                    {loc.name}
+                  </SelectItem>
+                ))
+              )}
             </SelectContent>
           </Select>
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="template">Template *</Label>
-          <Select value={templateId} onValueChange={setTemplateId}>
-            <SelectTrigger>
+          <Label htmlFor="inspection-template">Template *</Label>
+          <Select
+            value={templateId ?? ''}
+            onValueChange={(v) => setTemplateId(v || undefined)}
+            disabled={loading}
+          >
+            <SelectTrigger id="inspection-template">
               <SelectValue placeholder="Select template" />
             </SelectTrigger>
             <SelectContent>
-              {templates.map((tmpl) => (
-                <SelectItem key={tmpl.id} value={tmpl.id}>
-                  {tmpl.name}
-                </SelectItem>
-              ))}
+              {templates.length === 0 && !loading ? (
+                <div className="py-4 text-center text-sm text-muted-foreground">No templates found. Create one under Brand Standards.</div>
+              ) : (
+                templates.map((tmpl) => (
+                  <SelectItem key={tmpl.id} value={tmpl.id}>
+                    {tmpl.name}
+                  </SelectItem>
+                ))
+              )}
             </SelectContent>
           </Select>
         </div>
 
-        <Button onClick={handleStart} className="w-full" disabled={!locationId || !templateId}>
+        <Button onClick={handleStart} className="w-full" disabled={!locationId || !templateId || loading}>
           Start Inspection
         </Button>
       </CardContent>

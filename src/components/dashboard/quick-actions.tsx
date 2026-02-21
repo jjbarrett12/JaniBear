@@ -34,13 +34,13 @@ export function QuickActions() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.1, duration: 0.3 }}
     >
-      <Card className="rounded-xl border-0 shadow-sm hover:shadow-md transition-shadow bg-card">
+      <Card className="rounded-2xl border border-border bg-card shadow-sm">
         <CardHeader className="pb-3">
-          <div className="flex items-center gap-2">
-            <div className="p-2 rounded-lg bg-gradient-to-br from-amber-500 to-rose-500 shadow-md">
-              <Zap className="h-5 w-5 text-white" />
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              <Zap className="h-5 w-5" />
             </div>
-            <CardTitle className="text-lg font-semibold text-gray-900 dark:text-white">
+            <CardTitle className="text-lg font-semibold tracking-tight text-foreground">
               {t('quickActions')}
             </CardTitle>
           </div>
@@ -52,30 +52,27 @@ export function QuickActions() {
               return (
                 <Link key={action.href} href={action.href}>
                   <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
+                    initial={{ opacity: 0, scale: 0.98 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.15 + index * 0.03 }}
+                    transition={{ delay: 0.15 + index * 0.03, duration: 0.2 }}
                     className={`
-                      relative group p-4 rounded-xl border transition-all duration-200 cursor-pointer
-                      ${action.primary 
-                        ? 'bg-gradient-to-br from-amber-500 to-rose-500 border-transparent text-white hover:shadow-lg hover:shadow-amber-500/25' 
-                        : 'bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500 hover:shadow-md'
+                      relative group p-4 rounded-2xl border transition-all duration-150 cursor-pointer
+                      ${action.primary
+                        ? 'bg-primary text-primary-foreground border-primary hover:opacity-95'
+                        : 'bg-card border-border hover:border-muted-foreground/30 hover:shadow-sm'
                       }
                     `}
                   >
                     <div className={`
-                      w-10 h-10 rounded-lg flex items-center justify-center mb-3
-                      ${action.primary 
-                        ? 'bg-white/20' 
-                        : `bg-gradient-to-br ${action.gradient} shadow-md`
-                      }
+                      w-10 h-10 rounded-xl flex items-center justify-center mb-3
+                      ${action.primary ? 'bg-primary-foreground/20' : 'bg-muted/60 text-muted-foreground'}
                     `}>
-                      <Icon className={`h-5 w-5 ${action.primary ? 'text-white' : 'text-white'}`} />
+                      <Icon className="h-5 w-5" />
                     </div>
-                    <p className={`font-semibold text-sm ${action.primary ? 'text-white' : 'text-gray-900 dark:text-white'}`}>
+                    <p className={`font-semibold text-sm ${action.primary ? 'text-primary-foreground' : 'text-foreground'}`}>
                       {t(action.labelKey)}
                     </p>
-                    <p className={`text-xs mt-0.5 ${action.primary ? 'text-white/80' : 'text-gray-500 dark:text-gray-400'}`}>
+                    <p className={`text-xs mt-0.5 ${action.primary ? 'text-primary-foreground/85' : 'text-muted-foreground'}`}>
                       {t(action.descKey)}
                     </p>
                   </motion.div>

@@ -13,7 +13,20 @@ const config: Config = {
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
         heading: ["var(--font-heading)", "var(--font-sans)", "system-ui", "sans-serif"],
       },
+      // Enterprise palette: use via CSS vars so dark mode can override
+      boxShadow: {
+        'enterprise': '0 1px 3px 0 rgb(0 0 0 / 0.06), 0 1px 2px -1px rgb(0 0 0 / 0.06)',
+        'enterprise-md': '0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05)',
+      },
+      borderRadius: {
+        '2xl': '12px',
+      },
       colors: {
+        // Enterprise design tokens (optional direct use)
+        navy: '#0B1220',
+        charcoal: '#111827',
+        'card-surface': '#1F2937',
+        'accent-yellow': '#F5C400',
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {

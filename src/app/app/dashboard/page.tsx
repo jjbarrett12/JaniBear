@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { requireOrg } from '@/lib/auth';
 import { getUserContext, isFranchisor } from '@/lib/user-context';
 import { isSalesRepRole } from '@/types/sales';
+import { PageLayout, ContentGrid, PrimaryPanel, ContextPanel } from '@/components/enterprise';
 import { DashboardHeader } from '@/components/dashboard/dashboard-header';
 import { StatsCards } from '@/components/dashboard/stats-cards';
 import { QuickActions } from '@/components/dashboard/quick-actions';
@@ -13,8 +14,8 @@ import { getOperatorDashboardData } from '@/lib/dashboard-data';
 import { Award } from 'lucide-react';
 
 /**
- * Dashboard: layout already ran requireOrg(), so we have an org. Only redirect franchisors to /franchisor.
- * Do not redirect to /api/auth/landing here — that can cause a redirect loop when the cookie isn't set yet.
+ * Dashboard: enterprise module structure — header, KPI row, 70/30 content grid.
+ * Layout already ran requireOrg(); redirect franchisors / sales-rep as needed.
  */
 export default async function DashboardPage() {
   const org = await requireOrg();
@@ -38,7 +39,7 @@ export default async function DashboardPage() {
   const isFranchisee = context.orgType === 'franchisee';
 
   return (
-    <div className="space-y-6 pb-8">
+    <PageLayout>
       <DashboardHeader
         userName={safeData.userName}
         subtitle={
@@ -48,7 +49,7 @@ export default async function DashboardPage() {
         }
       />
       {isFranchisee && (
-        <div className="rounded-lg border border-border bg-muted/40 px-4 py-3 flex items-center justify-between gap-4 flex-wrap">
+        <div className="rounded-2xl border border-border bg-muted/30 px-6 py-4 flex items-center justify-between gap-4 flex-wrap">
           <p className="text-sm text-muted-foreground">
             You&apos;re viewing your franchise location. Compare outcomes and optional standards in KPI Dashboard and Financial Health.
           </p>
@@ -56,24 +57,28 @@ export default async function DashboardPage() {
             href="/app/templates"
             className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
           >
-            <Award className="h-4 w-4" />
+            <Award className="h-4 w-4 shrink-0" />
             View suggested brand standards
           </Link>
         </div>
       )}
       <StatsCards stats={safeData.stats} />
       <QuickActions />
-      <div className="grid gap-6 lg:grid-cols-3">
-        <div className="lg:col-span-2 space-y-6">
-          <InspectionChart data={safeData.chartData} />
-          <div className="grid gap-6 md:grid-cols-2">
-            <TodaysSchedule items={safeData.schedules} />
-          </div>
-        </div>
-        <div className="lg:col-span-1">
-          <RecentActivity activities={safeData.activities} />
-        </div>
-      </div>
-    </div>
+      <ContentGrid
+        primary={
+          <PrimaryPanel>
+            <InspectionChart data={safeData.chartData} />
+            <div className="grid gap-6 md:grid-cols-2">
+              <TodaysSchedule items={safeData.schedules} />
+            </div>
+          </PrimaryPanel>
+        }
+        context={
+          <ContextPanel>
+            <RecentActivity activities={safeData.activities} />
+          </ContextPanel>
+        }
+      />
+    </PageLayout>
   );
 }

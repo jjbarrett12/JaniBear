@@ -28,12 +28,12 @@ export function InspectionChart({ data }: InspectionChartProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.1, duration: 0.3 }}
     >
-      <Card className="rounded-xl border-0 shadow-sm hover:shadow-md transition-shadow bg-card">
+      <Card className="rounded-2xl border border-border bg-card shadow-sm">
         <CardHeader className="pb-2">
-          <CardTitle className="text-lg font-semibold text-gray-900 dark:text-white">
+          <CardTitle className="text-lg font-semibold tracking-tight text-foreground">
             Inspection Performance
           </CardTitle>
-          <p className="text-sm text-gray-500 dark:text-gray-400">Average scores over time</p>
+          <p className="text-sm text-muted-foreground">Average scores over time</p>
         </CardHeader>
         <CardContent>
           <div className="h-[200px] min-h-[200px] w-full min-w-[200px]">

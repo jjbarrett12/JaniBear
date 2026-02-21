@@ -75,13 +75,13 @@ export function RecentActivity({ activities }: RecentActivityProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2, duration: 0.3 }}
     >
-      <Card className="rounded-xl border-0 shadow-sm hover:shadow-md transition-shadow h-full bg-card">
+      <Card className="rounded-2xl border border-border bg-card shadow-sm h-full">
         <CardHeader className="pb-2">
-          <div className="flex items-center gap-2">
-            <div className="p-2 rounded-lg bg-gradient-to-br from-gray-700 to-gray-900 shadow-md">
-              <Activity className="h-5 w-5 text-white" />
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-muted/60 text-muted-foreground">
+              <Activity className="h-5 w-5" />
             </div>
-            <CardTitle className="text-lg font-semibold text-foreground dark:text-white">
+            <CardTitle className="text-lg font-semibold tracking-tight text-foreground">
               {t('recentActivity')}
             </CardTitle>
           </div>

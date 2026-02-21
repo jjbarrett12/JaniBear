@@ -1,93 +1,67 @@
-import { createClient } from '@/lib/supabase/server';
 import { requireOrg } from '@/lib/auth';
-import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { ClientsSearchFilter } from '@/components/crm/clients-search-filter';
+import { PageLayout, PageHeader } from '@/components/enterprise';
+import { CrmSubNav } from '@/components/crm/crm-sub-nav';
+import { AccountsFilterBar } from '@/components/crm/accounts-filter-bar';
+import { AccountsTable } from '@/components/crm/accounts-table';
+import { getAccountListData, getCrmOwners } from '@/actions/crm';
 
 export default async function CrmPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; status?: string }>;
+  searchParams: Promise<{ q?: string; status?: string; owner_id?: string; tag?: string; city?: string; zip?: string }>;
 }) {
   const org = await requireOrg();
-  const supabase = await createClient();
-  const { q = '', status } = await searchParams;
+  const params = await searchParams;
+  const filters = {
+    q: typeof params.q === 'string' ? params.q : undefined,
+    status: typeof params.status === 'string' ? params.status : undefined,
+    owner_id: typeof params.owner_id === 'string' ? params.owner_id : undefined,
+    tag: typeof params.tag === 'string' ? params.tag : undefined,
+    city: typeof params.city === 'string' ? params.city : undefined,
+    zip: typeof params.zip === 'string' ? params.zip : undefined,
+  };
 
-  let query = supabase
-    .from('clients')
-    .select('id, name, status, created_at')
-    .eq('org_id', org.org_id)
-    .order('created_at', { ascending: false });
-
-  if (typeof status === 'string' && ['lead', 'active', 'paused', 'former'].includes(status)) {
-    query = query.eq('status', status);
-  }
-  if (typeof q === 'string' && q.trim()) {
-    query = query.ilike('name', `%${q.trim()}%`);
-  }
-
-  const { data: clients } = await query;
+  const [listData, owners] = await Promise.all([
+    getAccountListData(org.org_id, filters),
+    getCrmOwners(org.org_id),
+  ]);
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-foreground">CRM</h1>
-        <Link href="/app/crm/clients/new">
-          <Button>
-            <Plus className="mr-2 h-4 w-4" />
-            New Client
-          </Button>
-        </Link>
-      </div>
+    <div className="flex flex-col h-full">
+      <CrmSubNav />
+      <PageLayout className="flex-1 min-h-0">
+        <PageHeader
+          title="CRM"
+          description="Accounts, opportunities, and pipeline"
+          actions={
+            <Button asChild className="rounded-xl">
+              <Link href="/app/crm/clients/new">
+                <Plus className="mr-2 h-4 w-4" />
+                New Account
+              </Link>
+            </Button>
+          }
+        />
 
-      <ClientsSearchFilter initialQ={typeof q === 'string' ? q : ''} initialStatus={typeof status === 'string' ? status : undefined} />
+        <AccountsFilterBar
+          initialQ={filters.q}
+          initialStatus={filters.status}
+          initialOwner={filters.owner_id}
+          initialTag={filters.tag}
+          initialCity={filters.city}
+          initialZip={filters.zip}
+          owners={owners}
+        />
 
-      <div className="rounded-md border bg-card text-card-foreground">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Created</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {clients?.map((client) => (
-              <TableRow key={client.id}>
-                <TableCell className="font-medium">
-                  <Link href={`/app/crm/clients/${client.id}`} className="hover:underline">
-                    {client.name}
-                  </Link>
-                </TableCell>
-                <TableCell>{(client as { status?: string }).status ?? '—'}</TableCell>
-                <TableCell>{new Date(client.created_at).toLocaleDateString()}</TableCell>
-                <TableCell className="text-right">
-                  <Link href={`/app/crm/clients/${client.id}`}>
-                    <Button variant="ghost" size="sm">View</Button>
-                  </Link>
-                </TableCell>
-              </TableRow>
-            ))}
-            {!clients?.length && (
-              <TableRow>
-                <TableCell colSpan={4} className="h-24 text-center">
-                  No clients found.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
+        <AccountsTable
+          accounts={listData.accounts}
+          kpis={listData.kpis}
+          orgId={org.org_id}
+        />
+      </PageLayout>
     </div>
   );
 }

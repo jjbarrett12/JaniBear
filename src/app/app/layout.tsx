@@ -1,10 +1,11 @@
-import { redirect } from 'next/navigation';
 import { requireOrg } from '@/lib/auth';
 import { AppSidebar } from '@/components/app/app-sidebar';
+import { AppMainWithHeader } from '@/components/app/app-main-with-header';
 import { BottomNav } from '@/components/app/bottom-nav';
 import { ThemeProvider } from '@/lib/theme-provider';
 import { ThemeApplier } from '@/components/app/theme-applier';
 import { createClient } from '@/lib/supabase/server';
+import { getNavAlertCounts } from '@/actions/nav-alerts';
 
 // Ensure layout always runs with current request (cookies) on client-side navigation
 export const dynamic = 'force-dynamic';
@@ -18,24 +19,22 @@ export default async function AppLayout({
   const org = await requireOrg();
   const supabase = await createClient();
 
-  // Get organization branding (maybeSingle so layout never throws if RLS/row missing)
-  const { data: organization } = await supabase
-    .from('organizations')
-    .select('primary_color, secondary_color, logo_url, custom_branding')
-    .eq('id', org.org_id)
-    .maybeSingle();
+  const [organization, navAlerts] = await Promise.all([
+    supabase.from('organizations').select('name, primary_color, secondary_color, logo_url, custom_branding').eq('id', org.org_id).maybeSingle(),
+    getNavAlertCounts(),
+  ]);
+
+  const orgName = organization?.data?.name ?? null;
 
   return (
-    <ThemeProvider orgId={org.org_id} initialTheme={organization ?? undefined}>
+    <ThemeProvider orgId={org.org_id} initialTheme={organization?.data ?? undefined}>
       <ThemeApplier />
       <div className="min-h-screen bg-background">
-        <AppSidebar />
-        <main className="lg:pl-56 pt-16 lg:pt-0 pb-20 lg:pb-0 min-h-screen">
-          <div className="p-4 md:p-6 lg:p-8 max-w-[1600px] mx-auto w-full">
-            {children}
-          </div>
-        </main>
-        <BottomNav />
+        <AppSidebar navAlerts={navAlerts} />
+        <AppMainWithHeader orgName={orgName} navAlerts={navAlerts}>
+          {children}
+        </AppMainWithHeader>
+        <BottomNav navAlerts={navAlerts} />
       </div>
     </ThemeProvider>
   );

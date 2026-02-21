@@ -52,6 +52,7 @@ const enApp = {
     navSettings: 'Settings',
     navCommandCenter: 'Command Center',
     navCrm: 'CRM',
+    navCrmAndLocations: 'CRM & locations',
     navPipeline: 'Pipeline',
     navLeads: 'Leads',
     navSalesAppointment: 'Sales appointment',
@@ -88,6 +89,28 @@ const enApp = {
     navMarketing: 'Marketing',
     navContractRenewals: 'Renewals',
     navTerritoryMap: 'Territory Map',
+
+    // Enterprise domains
+    navExecutive: 'Executive',
+    navGrowth: 'Growth',
+    navSystem: 'System',
+    navOverview: 'Overview',
+    navAccountHealth: 'Account Health',
+    navRiskLeakage: 'Risk & Leakage',
+    navAiInsights: 'AI Insights',
+    navTerritories: 'Territories',
+    navPipelineAnalytics: 'Pipeline Analytics',
+    navServiceSchedules: 'Service Schedules',
+    navQualityControl: 'Quality Control',
+    navSlaTracking: 'Issues & SLA',
+    navAiSettings: 'AI Settings',
+    navOrganization: 'Organization',
+    navUsersRoles: 'Users & Roles',
+    navIntegrations: 'Integrations',
+    navAuditLogs: 'Audit Logs',
+    navWalkthroughs: 'Walkthroughs',
+    navProposals: 'Proposals',
+    itemsRequireAttention: '{{count}} items require attention',
 
     // Dashboard
     dashboardWelcomeBack: 'Welcome back',
@@ -137,9 +160,8 @@ const enApp = {
     statusInProgress: 'In Progress',
   };
 
-export const appTranslations = {
-  en: enApp,
-  es: {
+/** Spanish overrides; any key not listed here falls back to en in getAppT. */
+const esOverrides: Partial<typeof enApp> = {
     myTasks: 'Mis tareas',
     yourAssignedCleaningTasks: 'Tus tareas de limpieza asignadas',
     upcomingTasks: 'Próximas tareas',
@@ -183,6 +205,7 @@ export const appTranslations = {
     navSettings: 'Configuración',
     navCommandCenter: 'Centro de mando',
     navCrm: 'CRM',
+    navCrmAndLocations: 'CRM y ubicaciones',
     navLeads: 'Leads',
     navSalesAppointment: 'Cita de ventas',
     navProposalBuilding: 'Elaborar propuesta',
@@ -219,6 +242,26 @@ export const appTranslations = {
     navMarketing: 'Marketing',
     navContractRenewals: 'Renovaciones',
     navTerritoryMap: 'Mapa de territorios',
+    navExecutive: 'Ejecutivo',
+    navGrowth: 'Crecimiento',
+    navSystem: 'Sistema',
+    navOverview: 'Resumen',
+    navAccountHealth: 'Salud de cuentas',
+    navRiskLeakage: 'Riesgo y fuga',
+    navAiInsights: 'Información IA',
+    navTerritories: 'Territorios',
+    navPipelineAnalytics: 'Análisis de pipeline',
+    navServiceSchedules: 'Calendarios de servicio',
+    navQualityControl: 'Control de calidad',
+    navSlaTracking: 'Incidencias y SLA',
+    navAiSettings: 'Configuración IA',
+    navOrganization: 'Organización',
+    navUsersRoles: 'Usuarios y roles',
+    navIntegrations: 'Integraciones',
+    navAuditLogs: 'Registro de auditoría',
+    navWalkthroughs: 'Visitas',
+    navProposals: 'Propuestas',
+    itemsRequireAttention: '{{count}} elementos requieren atención',
 
     dashboardWelcomeBack: 'Bienvenido de nuevo',
     dashboardHeresWhatsHappening: 'Esto es lo que pasa en tu negocio hoy',
@@ -265,8 +308,12 @@ export const appTranslations = {
     statusClosed: 'Cerrado',
     statusActive: 'Activo',
     statusInProgress: 'En curso',
-  },
-  // Fallback to English for now; replace with localized strings as needed
+};
+
+export const appTranslations = {
+  en: enApp,
+  es: { ...enApp, ...esOverrides },
+  // Other locales use English until translations are added; getAppT falls back to en for any missing key
   pt: enApp,
   it: enApp,
   ru: enApp,
@@ -281,7 +328,13 @@ export const appTranslations = {
 
 export type AppTranslationKey = keyof (typeof appTranslations)['en'];
 
+/** Get app translator for locale. Always returns a string: uses English fallback for missing keys so every module works in every language. */
 export function getAppT(locale: Locale) {
-  const t = appTranslations[locale] ?? appTranslations.en;
-  return (key: AppTranslationKey): string => t[key];
+  const localeMap = appTranslations[locale] ?? appTranslations.en;
+  const enMap = appTranslations.en as Record<AppTranslationKey, string>;
+  return (key: AppTranslationKey): string => {
+    const value = (localeMap as Record<AppTranslationKey, string | undefined>)[key];
+    if (value != null && value !== '') return value;
+    return enMap[key] ?? (key as string);
+  };
 }

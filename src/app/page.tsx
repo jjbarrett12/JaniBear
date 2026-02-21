@@ -101,6 +101,16 @@ export default function Home() {
                 Plans
               </Button>
             </Link>
+            <Link href="/#what-janibear-does">
+              <Button variant="ghost" size="sm" className="landing-nav-link shrink-0 h-9 px-3">
+                What It Does
+              </Button>
+            </Link>
+            <Link href="/#see-it-in-action">
+              <Button variant="ghost" size="sm" className="landing-nav-link shrink-0 h-9 px-3">
+                See It In Action
+              </Button>
+            </Link>
             <Link href="/#features">
               <Button variant="ghost" size="sm" className="landing-nav-link shrink-0 h-9 px-3">
                 Features
@@ -119,7 +129,7 @@ export default function Home() {
             </Link>
             <Link href="/demo">
               <Button size="sm" className="landing-cta shrink-0 h-10 px-4 md:px-5 font-semibold">
-                Book a 15-Minute Demo
+                See the Command Center
               </Button>
             </Link>
           </div>
@@ -161,6 +171,12 @@ export default function Home() {
               </button>
             </div>
             <nav className="flex flex-col p-4 gap-1">
+              <Link href="/#what-janibear-does" onClick={() => setMenuOpen(false)} className="px-3 py-3 text-white font-medium rounded-lg hover:bg-white/10">
+                What It Does
+              </Link>
+              <Link href="/#see-it-in-action" onClick={() => setMenuOpen(false)} className="px-3 py-3 text-white font-medium rounded-lg hover:bg-white/10">
+                See It In Action
+              </Link>
               <Link href="/#features" onClick={() => setMenuOpen(false)} className="px-3 py-3 text-white font-medium rounded-lg hover:bg-white/10">
                 Features
               </Link>
@@ -185,7 +201,7 @@ export default function Home() {
       <div className="fixed bottom-0 left-0 right-0 z-50 p-3 safe-bottom bg-black/95 border-t border-amber-400/30 backdrop-blur md:hidden">
         <Link href="/demo" className="block w-full">
           <Button className="landing-cta w-full h-12 text-base font-semibold rounded-lg">
-            Book a 15-Minute Demo
+            See the Command Center
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         </Link>
@@ -205,19 +221,20 @@ export default function Home() {
         <div className="absolute inset-0 pointer-events-none opacity-[0.06] hero-noise" aria-hidden />
 
         <div className="relative container mx-auto px-4 flex flex-col items-center pt-0 md:pt-1">
-          {/* Headline — one line, gradient on payoff phrase */}
+          {/* Headline — category: operating system, not "software" */}
           <h1
             className={`text-center max-w-4xl mx-auto font-heading text-3xl sm:text-4xl md:text-5xl font-bold text-white tracking-tight hero-headline transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '0ms' }}
           >
-            Commercial Janitorial Software That Runs Like{' '}
-            <span className="hero-headline-gradient">Two Managers — Without the Payroll</span>
+            The{' '}
+            <span className="hero-headline-gradient">Operating System</span>
+            {' '}for Commercial Cleaning Companies
           </h1>
           <p
             className={`text-center max-w-xl mx-auto mt-2 md:mt-3 text-zinc-100 text-base md:text-lg font-semibold hero-subhead transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '40ms' }}
           >
-            Schedule crews, inspect quality, and win more bids—all in one place.
+            Win bids. Keep accounts. Catch margin leaks. One command center.
           </p>
 
           {/* Laptop — tight to CTAs below */}
@@ -235,13 +252,13 @@ export default function Home() {
           >
             <Link href="/demo">
               <Button size="lg" className="landing-cta landing-cta-lg text-base font-semibold px-8 h-14 rounded-xl shadow-[0_4px_28px_rgba(250,204,21,0.45)] hover:shadow-[0_8px_36px_rgba(250,204,21,0.55)] transition-all hover:scale-[1.02]">
-                Book a 15-Minute Demo
+                See the Command Center
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
             <Link href="/demo">
               <Button variant="outline" size="lg" className="landing-cta-secondary border-2 border-amber-400/50 text-zinc-200 hover:bg-white/5 hover:border-amber-400/70 h-12 px-6 rounded-xl font-medium">
-                See a Real Inspection Report
+                Get a Live Walkthrough
               </Button>
             </Link>
           </div>
@@ -277,6 +294,106 @@ export default function Home() {
         </div>
       </section>
 
+      {/* What JANIBEAR Actually Does — 3 pillars: Sales, Ops, Executive */}
+      <section id="what-janibear-does" className="relative py-16 md:py-24 bg-black border-t border-zinc-800/50">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12 md:mb-16">
+            <h2 className="font-heading text-3xl md:text-5xl font-bold text-white mb-4 tracking-tight">
+              What <BrandName /> Actually Does
+            </h2>
+            <p className="text-lg md:text-xl text-zinc-400 max-w-2xl mx-auto">
+              One platform. Three engines. From first walkthrough to margin protection.
+            </p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">
+            {/* Sales Engine — yellow */}
+            <div className={`rounded-2xl border-2 border-amber-400/40 bg-zinc-900/60 p-6 md:p-8 transition-all duration-300 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`} style={{ transitionDelay: '0ms' }}>
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-300 text-xs font-semibold uppercase tracking-wider mb-6">
+                <span className="w-2 h-2 rounded-full bg-amber-400" aria-hidden /> Sales Engine
+              </div>
+              <ul className="space-y-3 text-zinc-300 text-sm md:text-base">
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-amber-400 shrink-0" /> AI Walkthrough Capture</li>
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-amber-400 shrink-0" /> Auto Scope Extraction</li>
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-amber-400 shrink-0" /> Proposal Builder</li>
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-amber-400 shrink-0" /> Territory Mapping</li>
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-amber-400 shrink-0" /> Bid Win Tracking</li>
+              </ul>
+            </div>
+            {/* Operations Engine — blue */}
+            <div className={`rounded-2xl border-2 border-cyan-400/40 bg-zinc-900/60 p-6 md:p-8 transition-all duration-300 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`} style={{ transitionDelay: '80ms' }}>
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-500/20 border border-cyan-400/40 text-cyan-300 text-xs font-semibold uppercase tracking-wider mb-6">
+                <span className="w-2 h-2 rounded-full bg-cyan-400" aria-hidden /> Operations Engine
+              </div>
+              <ul className="space-y-3 text-zinc-300 text-sm md:text-base">
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-cyan-400 shrink-0" /> Crew Scheduling</li>
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-cyan-400 shrink-0" /> Site Health Score</li>
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-cyan-400 shrink-0" /> Inspections</li>
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-cyan-400 shrink-0" /> Issue Escalation</li>
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-cyan-400 shrink-0" /> Client Visibility Portal</li>
+              </ul>
+            </div>
+            {/* Executive Command — green */}
+            <div className={`rounded-2xl border-2 border-emerald-400/40 bg-zinc-900/60 p-6 md:p-8 transition-all duration-300 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`} style={{ transitionDelay: '160ms' }}>
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-xs font-semibold uppercase tracking-wider mb-6">
+                <span className="w-2 h-2 rounded-full bg-emerald-400" aria-hidden /> Executive Command
+              </div>
+              <ul className="space-y-3 text-zinc-300 text-sm md:text-base">
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-emerald-400 shrink-0" /> Financial Health Module</li>
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-emerald-400 shrink-0" /> Account Decay Model</li>
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-emerald-400 shrink-0" /> Margin Protection</li>
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-emerald-400 shrink-0" /> At-Risk Contracts</li>
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-emerald-400 shrink-0" /> KPI Dashboard</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* See It In Action — lifecycle flow */}
+      <section id="see-it-in-action" className="relative py-16 md:py-24 bg-zinc-950/80 border-t border-zinc-800/50">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12 md:mb-16">
+            <h2 className="font-heading text-3xl md:text-5xl font-bold text-white mb-4 tracking-tight">
+              See It In Action
+            </h2>
+            <p className="text-lg md:text-xl text-zinc-400 max-w-2xl mx-auto">
+              This is how it works. One workflow from walkthrough to account health.
+            </p>
+          </div>
+          <div className="max-w-4xl mx-auto">
+            <div className="flex flex-wrap items-center justify-center gap-3 md:gap-4">
+              {[
+                { step: 1, label: 'Capture walkthrough with phone', icon: Camera },
+                { step: 2, label: 'AI extracts scope', icon: Wand2 },
+                { step: 3, label: 'Proposal generated', icon: FileSpreadsheet },
+                { step: 4, label: 'Crew assigned', icon: Users },
+                { step: 5, label: 'Inspections logged', icon: ClipboardCheck },
+                { step: 6, label: 'Account health tracked', icon: TrendingUp },
+              ].map((item, index) => {
+                const Icon = item.icon;
+                return (
+                  <div key={item.step} className="flex items-center gap-2 md:gap-3">
+                    <div className="flex flex-col items-center gap-2 rounded-2xl border border-zinc-700/80 bg-zinc-900/60 px-4 py-4 md:px-5 md:py-4 min-w-[140px] md:min-w-[160px] hover:border-amber-400/40 transition-colors">
+                      <div className="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-400/30 flex items-center justify-center text-amber-300">
+                        <Icon className="h-5 w-5" />
+                      </div>
+                      <span className="text-xs font-medium text-zinc-400 text-center">Step {item.step}</span>
+                      <span className="text-sm font-medium text-white text-center leading-tight">{item.label}</span>
+                    </div>
+                    {index < 5 && (
+                      <ArrowRight className="h-5 w-5 text-zinc-500 shrink-0 hidden md:block" aria-hidden />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+            <p className="text-center text-sm text-zinc-500 mt-8">
+              You&apos;re not just buying software. You&apos;re replacing disconnected spreadsheets and guesswork with one lifecycle.
+            </p>
+          </div>
+        </div>
+      </section>
+
       <section id="features" className="relative pt-16 md:pt-20 pb-20 md:pb-24 bg-zinc-950/80 border-t border-zinc-800/50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-14 md:mb-16">
@@ -285,10 +402,10 @@ export default function Home() {
               <span>Powered by AI</span>
             </div>
             <h2 className="font-heading text-3xl md:text-5xl font-bold text-white mb-4 tracking-tight">
-              <BrandName /> Wins More Bids
+              Win More Bids
             </h2>
             <p className="text-lg md:text-xl text-zinc-400 max-w-2xl mx-auto leading-relaxed">
-              From walkthrough to closed deal—AI handles the heavy lifting so you can focus on relationships.
+              AI handles scope and proposals so you focus on winning bids and keeping accounts.
             </p>
           </div>
 
@@ -331,10 +448,10 @@ export default function Home() {
               <span>Operations & QA</span>
             </div>
             <h2 className="font-heading text-3xl md:text-5xl font-bold text-white mb-4 tracking-tight">
-              <BrandName /> Keeps Clients Longer
+              Keep Clients Longer
             </h2>
             <p className="text-lg md:text-xl text-zinc-400 max-w-2xl mx-auto leading-relaxed">
-              Deliver consistently, catch issues before the customer does, and keep every site on track—automatically.
+              Catch issues before the customer does. Fewer surprises, less churn.
             </p>
           </div>
 
@@ -369,14 +486,110 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Social proof — even if early */}
+      <section className="py-12 md:py-16 bg-black border-t border-zinc-800/50">
+        <div className="container mx-auto px-4">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-4xl mx-auto text-center">
+            <div className="flex flex-col items-center gap-2">
+              <Building2 className="h-8 w-8 text-amber-400" />
+              <p className="text-white font-semibold">Built in a 20-year commercial cleaning operation</p>
+              <p className="text-zinc-400 text-sm">Not in a boardroom.</p>
+            </div>
+            <div className="flex flex-col items-center gap-2">
+              <DollarSign className="h-8 w-8 text-amber-400" />
+              <p className="text-white font-semibold">Designed for companies from $500K to $20M</p>
+              <p className="text-zinc-400 text-sm">One platform scales with you.</p>
+            </div>
+            <div className="flex flex-col items-center gap-2 sm:col-span-2 lg:col-span-1">
+              <Target className="h-8 w-8 text-amber-400" />
+              <p className="text-white font-semibold">Trusted by operators managing 10+ sites</p>
+              <p className="text-zinc-400 text-sm">From first site to hundreds.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* For Who — make them feel seen */}
+      <section className="py-16 md:py-24 bg-zinc-950/80 border-t border-zinc-800/50">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12 md:mb-16">
+            <h2 className="font-heading text-3xl md:text-5xl font-bold text-white mb-4 tracking-tight">
+              Built For
+            </h2>
+            <p className="text-lg md:text-xl text-zinc-400 max-w-2xl mx-auto">
+              Commercial janitorial companies. 5–500 employees. Managing 10–500 sites.
+            </p>
+          </div>
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+            {[
+              { icon: Building2, line: 'Owners tired of babysitting', sub: 'Scale without hiring more supervisors' },
+              { icon: Briefcase, line: 'Sales teams bidding weekly', sub: 'Win more. Close faster.' },
+              { icon: ClipboardCheck, line: 'Ops managers drowning in inspections', sub: 'One place for quality and issues' },
+            ].map((item, index) => {
+              const Icon = item.icon;
+              return (
+                <div key={index} className="rounded-2xl border border-zinc-700/80 bg-zinc-900/50 p-6 text-center hover:border-amber-400/40 transition-colors">
+                  <div className="w-12 h-12 rounded-xl bg-amber-500/15 border border-amber-400/30 flex items-center justify-center mx-auto mb-3 text-amber-300">
+                    <Icon className="h-6 w-6" />
+                  </div>
+                  <p className="font-semibold text-white mb-1">{item.line}</p>
+                  <p className="text-sm text-zinc-400">{item.sub}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Competitive positioning — why JANIBEAR vs generic */}
+      <section className="py-16 md:py-24 bg-black border-t border-zinc-800/50">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12 md:mb-16">
+            <h2 className="font-heading text-3xl md:text-5xl font-bold text-white mb-4 tracking-tight">
+              Why <BrandName /> vs Generic CRM or Scheduling Software
+            </h2>
+            <p className="text-lg md:text-xl text-zinc-400 max-w-2xl mx-auto">
+              We&apos;re not a CRM with a calendar. We&apos;re the command center for commercial cleaning.
+            </p>
+          </div>
+          <div className="overflow-x-auto max-w-4xl mx-auto">
+            <table className="w-full border-collapse rounded-2xl overflow-hidden border border-zinc-700/80">
+              <thead>
+                <tr className="bg-zinc-900/80">
+                  <th className="text-left py-4 px-4 md:px-6 text-sm font-semibold text-zinc-400 border-b border-zinc-700/80">Feature</th>
+                  <th className="text-center py-4 px-4 md:px-6 text-sm font-semibold text-zinc-400 border-b border-zinc-700/80">Generic CRM</th>
+                  <th className="text-center py-4 px-4 md:px-6 text-sm font-semibold text-zinc-400 border-b border-zinc-700/80">Scheduling Software</th>
+                  <th className="text-center py-4 px-4 md:px-6 text-sm font-semibold text-amber-300 border-b border-zinc-700/80"><BrandName /></th>
+                </tr>
+              </thead>
+              <tbody className="bg-zinc-900/40">
+                {[
+                  { feature: 'AI Scope Extraction', crm: false, sched: false, jb: true },
+                  { feature: 'Account Health Decay', crm: false, sched: false, jb: true },
+                  { feature: 'Walkthrough to Proposal', crm: false, sched: false, jb: true },
+                  { feature: 'Sales + Ops in One', crm: false, sched: false, jb: true },
+                ].map((row, i) => (
+                  <tr key={i} className="border-b border-zinc-700/50 last:border-b-0">
+                    <td className="py-3 px-4 md:px-6 text-sm font-medium text-white">{row.feature}</td>
+                    <td className="py-3 px-4 md:px-6 text-center text-zinc-500">{row.crm ? <Check className="h-5 w-5 inline text-emerald-400" /> : <span className="text-red-400/80">—</span>}</td>
+                    <td className="py-3 px-4 md:px-6 text-center text-zinc-500">{row.sched ? <Check className="h-5 w-5 inline text-emerald-400" /> : <span className="text-red-400/80">—</span>}</td>
+                    <td className="py-3 px-4 md:px-6 text-center"><Check className="h-5 w-5 inline text-amber-400" /></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
       <section className="py-20 md:py-24 bg-zinc-950/80 border-t border-zinc-800/50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-14 md:mb-16">
             <h2 className="font-heading text-3xl md:text-5xl font-bold text-white mb-4 tracking-tight">
-              Measurable Results for Janitorial Companies
+              Measurable Results
             </h2>
             <p className="text-lg md:text-xl text-zinc-400 max-w-2xl mx-auto">
-              See why janitorial sales teams choose <BrandName /> to win more bids.
+              Win more bids. Catch issues before the customer does. Protect margin.
             </p>
           </div>
           <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto">
@@ -406,17 +619,17 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-14 md:mb-16">
             <h2 className="font-heading text-3xl md:text-5xl font-bold text-white mb-4 tracking-tight">
-              Built by Janitorial Operators, For Janitorial Operators
+              Who Runs <BrandName />
             </h2>
             <p className="text-lg md:text-xl text-zinc-400 max-w-xl mx-auto">
-              Designed by janitorial industry experts to not only win business, but keep it.
+              Sales reps who close. Ops who deliver. Owners who stop babysitting.
             </p>
           </div>
           <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
             {[
-              { icon: UserCheck, label: 'Janitorial Sales Reps', desc: 'Close more deals faster' },
-              { icon: Building2, label: 'Owner-Operators', desc: 'Scale without hiring' },
-              { icon: Users, label: 'Franchise Operators', desc: '', note: 'We cater to both Area Franchisors and Unit Franchisees' },
+              { icon: UserCheck, label: 'Sales Reps', desc: 'Close more deals faster' },
+              { icon: Building2, label: 'Owner-Operators', desc: 'Scale without hiring more supervisors' },
+              { icon: Users, label: 'Franchise Operators', desc: '', note: 'Area franchisors and unit franchisees' },
               { icon: Target, label: 'Facility Services', desc: 'Expand into janitorial' },
             ].map((item, index) => {
               const Icon = item.icon;
@@ -523,16 +736,21 @@ export default function Home() {
         <div className="container mx-auto px-4 text-center">
           <div className="max-w-2xl mx-auto">
             <h2 className="font-heading text-3xl md:text-5xl font-bold text-white mb-5 tracking-tight">
-              Ready to Book a 15-Minute Demo?
+              See the Command Center
             </h2>
             <p className="text-lg md:text-xl text-zinc-400 mb-10 leading-relaxed">
-              Get a personalized demo. We&apos;ll show you how <BrandName /> handles bids, proposals, and operations—and configure pricing for your team.
+              Get a live walkthrough. We&apos;ll show you how <BrandName /> wins contracts, keeps accounts, and protects margin—and configure pricing for your team.
             </p>
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center flex-wrap">
               <Link href="/demo" className="w-full sm:w-auto">
                 <Button size="lg" className="landing-cta landing-cta-lg text-base px-8 h-12 w-full sm:w-auto">
-                  Book a 15-Minute Demo
+                  See the Command Center
                   <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+              <Link href="/demo">
+                <Button variant="outline" size="lg" className="landing-cta-secondary shrink-0">
+                  Watch How It Wins Contracts
                 </Button>
               </Link>
               <Link href="/pricing">
@@ -554,15 +772,17 @@ export default function Home() {
             <div className="[&>span]:bg-transparent [&>span]:shadow-none [&>span]:block">
               <Image src="/logo.png" alt="JANIBEAR" width={220} height={72} className="h-14 md:h-16 w-auto mb-4 object-contain bg-transparent" unoptimized />
               <p className="text-sm text-zinc-500">
-                AI-powered bidding, proposals, and follow-up automation for janitorial companies. Win more bids, close more deals.
+                The operating system for commercial cleaning companies. Win bids. Keep accounts. Catch margin leaks.
               </p>
             </div>
             <div>
               <h4 className="text-white font-semibold mb-4 text-sm">Product</h4>
               <ul className="space-y-2 text-sm">
-                <li><Link href="/demo" className="hover:text-white transition-colors">Book a 15-Minute Demo</Link></li>
+                <li><Link href="/demo" className="hover:text-white transition-colors">See the Command Center</Link></li>
                 <li><Link href="/pricing" className="hover:text-white transition-colors">See Plans</Link></li>
                 <li><Link href="/survey" className="hover:text-white transition-colors">Find Your Plan</Link></li>
+                <li><Link href="/#what-janibear-does" className="hover:text-white transition-colors">What It Does</Link></li>
+                <li><Link href="/#see-it-in-action" className="hover:text-white transition-colors">See It In Action</Link></li>
                 <li><Link href="/#features" className="hover:text-white transition-colors">Features</Link></li>
                 <li><Link href="/contact" className="hover:text-white transition-colors">Contact</Link></li>
                 <li><Link href="/auth/login" className="hover:text-white transition-colors">Sign In</Link></li>

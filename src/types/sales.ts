@@ -60,6 +60,39 @@ export interface StalledDeal {
   last_activity_at: string | null;
 }
 
+/** Pipeline health row for Command Center: stage with count, value, avg days, conversion %, bottleneck flag */
+export interface PipelineStageHealth {
+  stage: string;
+  stageLabel: string;
+  count: number;
+  totalValue: number;
+  avgDaysInStage: number;
+  conversionPct: number | null;
+  isBottleneck: boolean;
+}
+
+/** Single action for the Action Queue (follow-up, proposal not viewed, etc.) */
+export interface SalesActionItem {
+  id: string;
+  type: 'follow_up_due' | 'proposal_not_viewed' | 'walkthrough_not_scheduled' | 'no_activity' | 'high_value_near_close';
+  title: string;
+  subtitle: string;
+  href?: string;
+  revenueImpact?: number;
+  urgency: 'high' | 'medium' | 'low';
+  stage?: string;
+  dueDate?: string;
+}
+
+/** Revenue leakage signal for Command Center */
+export interface RevenueLeakageSignal {
+  id: string;
+  type: 'lost_pricing' | 'lost_scope' | 'walkthrough_not_converted' | 'proposal_sitting';
+  label: string;
+  count: number;
+  amount?: number;
+}
+
 export function isSalesRepRole(role: string | null, roleEnum: string | null): boolean {
   const effective = roleEnum ?? role ?? '';
   return (

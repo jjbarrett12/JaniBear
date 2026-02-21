@@ -6,13 +6,13 @@ import Image from 'next/image';
 import { AppLink } from '@/components/app/app-link';
 import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { 
-  LayoutDashboard, 
-  MapPin, 
+import {
+  LayoutDashboard,
+  MapPin,
   Map,
-  FileText, 
-  Calendar, 
-  ClipboardCheck, 
+  FileText,
+  Calendar,
+  ClipboardCheck,
   AlertCircle,
   Users,
   FileUp,
@@ -27,10 +27,10 @@ import {
   GraduationCap,
   Ticket,
   Repeat,
-  KeyRound,
   Award,
   FileSearch,
-  MessageCircle
+  MessageCircle,
+  Rocket,
 } from 'lucide-react';
 import { GlobalSearch } from '@/components/search/global-search';
 import { DarkModeToggle } from '@/components/app/dark-mode-toggle';
@@ -38,14 +38,24 @@ import { LanguageSwitcher } from '@/components/app/language-switcher';
 import { useLanguage } from '@/contexts/language-context';
 import { getAppT } from '@/lib/app-translations';
 import type { AppTranslationKey } from '@/lib/app-translations';
+import type { NavAlertCounts } from '@/actions/nav-alerts';
+import { Badge } from '@/components/ui/badge';
 
 interface MobileSidebarProps {
   logoUrl?: string | null;
+  navAlerts?: NavAlertCounts | null;
 }
 
+/** Shared by Sales and Operations */
+const sharedCrmAndLocationsItemKeys: { href: string; labelKey: AppTranslationKey; icon: React.ComponentType<{ className?: string }> }[] = [
+  { href: '/app/crm', labelKey: 'navCrm', icon: Users },
+  { href: '/app/crm/pipeline', labelKey: 'navPipeline', icon: LayoutDashboard },
+  { href: '/app/sites', labelKey: 'navLocations', icon: MapPin },
+  { href: '/app/map', labelKey: 'navMap', icon: Map },
+];
+/** Sales-only */
 const salesItemKeys: { href: string; labelKey: AppTranslationKey; icon: React.ComponentType<{ className?: string }> }[] = [
   { href: '/app/sales-dashboard', labelKey: 'navCommandCenter', icon: BarChart3 },
-  { href: '/app/map', labelKey: 'navMap', icon: Map },
   { href: '/app/sales', labelKey: 'navLeads', icon: TrendingUp },
   { href: '/app/walkthroughs', labelKey: 'navSalesAppointment', icon: FileSearch },
   { href: '/app/proposals/build', labelKey: 'navProposalBuilding', icon: Calculator },
@@ -53,10 +63,10 @@ const salesItemKeys: { href: string; labelKey: AppTranslationKey; icon: React.Co
   { href: '/app/sales/cadence', labelKey: 'navFollowUp', icon: Repeat },
   { href: '/app/sales', labelKey: 'navPipelineManagement', icon: TrendingUp },
 ];
+/** Operations-only */
 const operationsItemKeys: { href: string; labelKey: AppTranslationKey; icon: React.ComponentType<{ className?: string }> }[] = [
-  { href: '/app/map', labelKey: 'navMap', icon: Map },
-  { href: '/app/sites', labelKey: 'navSiteHandover', icon: KeyRound },
   { href: '/app/accounts', labelKey: 'navAccounts', icon: MapPin },
+  { href: '/app/ops/launches', labelKey: 'navLaunches', icon: Rocket },
   { href: '/app/crews', labelKey: 'navCrewManagement', icon: Users },
   { href: '/app/templates', labelKey: 'navBrandStandards', icon: Award },
   { href: '/app/schedules', labelKey: 'navSchedules', icon: Calendar },
@@ -71,11 +81,14 @@ const operationsItemKeys: { href: string; labelKey: AppTranslationKey; icon: Rea
   { href: '/app/admin', labelKey: 'navAdmin', icon: Settings },
 ];
 
-export function MobileSidebar({ logoUrl }: MobileSidebarProps) {
+const MOBILE_ALERT_BADGE_CLASS = 'ml-auto text-[10px] min-w-[18px] h-5 px-1.5 justify-center shrink-0 bg-destructive text-destructive-foreground border-0';
+
+export function MobileSidebar({ logoUrl, navAlerts }: MobileSidebarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const { locale } = useLanguage();
   const t = getAppT(locale);
+  const alerts = navAlerts ?? { handoffsCount: 0, openIssuesCount: 0, missedTaskCount: 0 };
 
   useEffect(() => {
     setIsOpen(false);
@@ -195,11 +208,42 @@ export function MobileSidebar({ logoUrl }: MobileSidebarProps) {
 
                 <div className="space-y-1">
                   <p className="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                    {t('navCrmAndLocations')}
+                  </p>
+                  {sharedCrmAndLocationsItemKeys.map((item) => {
+                    const Icon = item.icon;
+                    const isActive =
+                      pathname === item.href ||
+                      (item.href === '/app/crm' && (pathname === '/app/crm' || (pathname.startsWith('/app/crm/') && !pathname.startsWith('/app/crm/pipeline')))) ||
+                      (item.href === '/app/crm/pipeline' && pathname.startsWith('/app/crm/pipeline')) ||
+                      (item.href === '/app/sites' && pathname.startsWith('/app/sites')) ||
+                      (item.href === '/app/map' && pathname.startsWith('/app/map'));
+                    return (
+                      <AppLink
+                        key={`${item.href}-${item.labelKey}`}
+                        href={item.href}
+                        className={`flex items-center gap-3 rounded-lg px-4 py-3 text-base font-medium transition-colors min-h-[44px] ${
+                          isActive
+                            ? 'bg-primary text-primary-foreground'
+                            : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                        }`}
+                      >
+                        <Icon className="h-5 w-5 shrink-0" />
+                        {t(item.labelKey)}
+                      </AppLink>
+                    );
+                  })}
+                </div>
+
+                <div className="space-y-1">
+                  <p className="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
                     {t('navSales')}
                   </p>
                   {salesItemKeys.map((item) => {
                     const Icon = item.icon;
-                    const isActive = pathname === item.href;
+                    const isActive =
+                      pathname === item.href ||
+                      (item.href === '/app/sales' && (pathname === '/app/sales' || pathname.startsWith('/app/sales/')));
                     return (
                       <AppLink
                         key={`${item.href}-${item.labelKey}`}
@@ -223,7 +267,15 @@ export function MobileSidebar({ logoUrl }: MobileSidebarProps) {
                   </p>
                   {operationsItemKeys.map((item) => {
                     const Icon = item.icon;
-                    const isActive = pathname === item.href;
+                    const isActive =
+                      pathname === item.href ||
+                      (item.href === '/app/ops/launches' && pathname.startsWith('/app/ops/launches')) ||
+                      (item.href === '/app/accounts' && pathname.startsWith('/app/accounts'));
+                    const alertCount =
+                      item.href === '/app/ops/launches' ? alerts.handoffsCount
+                      : item.href === '/app/issues' ? alerts.openIssuesCount
+                      : item.href === '/app/schedules' ? alerts.missedTaskCount
+                      : 0;
                     return (
                       <AppLink
                         key={`${item.href}-${item.labelKey}`}
@@ -236,6 +288,11 @@ export function MobileSidebar({ logoUrl }: MobileSidebarProps) {
                       >
                         <Icon className="h-5 w-5 shrink-0" />
                         {t(item.labelKey)}
+                        {alertCount > 0 && (
+                          <Badge variant="destructive" className={MOBILE_ALERT_BADGE_CLASS}>
+                            {alertCount > 99 ? '99+' : alertCount}
+                          </Badge>
+                        )}
                       </AppLink>
                     );
                   })}

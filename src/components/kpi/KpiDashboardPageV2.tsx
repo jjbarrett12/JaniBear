@@ -21,6 +21,7 @@ import {
 } from '@/lib/kpi-dashboard-adapter';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { KpiDashboardLayout } from '@/components/kpi/KpiDashboardLayout';
 
 export function KpiDashboardPageV2() {
   const {
@@ -58,8 +59,7 @@ export function KpiDashboardPageV2() {
     setDetailDrawerOpen(true);
   };
 
-  const content = (
-    <div className="mx-auto max-w-[1360px] px-4 sm:px-6 space-y-8 pb-8">
+  return ( <KpiDashboardLayout>
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
@@ -315,7 +315,6 @@ export function KpiDashboardPageV2() {
       >
         {detailDrawerContent}
       </KpiDetailsDrawer>
-    </div>
+    </KpiDashboardLayout>
   );
-  return content;
 }

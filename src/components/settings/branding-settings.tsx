@@ -77,8 +77,8 @@ export function BrandingSettings({ orgId, initialData }: BrandingSettingsProps) 
         });
 
       if (uploadError) {
-        if (uploadError.message?.includes('Bucket not found') || uploadError.message?.includes('not found') || uploadError.message?.includes('bucket')) {
-          throw new Error('Logo storage is not set up. In Supabase Dashboard: Storage → New bucket → name "organization-logos", set Public. Or run migration 005_create_logo_storage_bucket.sql in SQL Editor.');
+        if (uploadError.message?.includes('Bucket not found') || uploadError.message?.includes('not found') || uploadError.message?.includes('bucket') || uploadError.message?.includes('storage')) {
+          throw new Error('Logo storage is not set up. In Supabase SQL Editor run migration 005_create_logo_storage_bucket.sql (creates bucket "organization-logos" and policies).');
         }
         throw uploadError;
       }
@@ -148,12 +148,15 @@ export function BrandingSettings({ orgId, initialData }: BrandingSettingsProps) 
     } catch (error: any) {
       console.error('Error saving branding:', error);
       const msg = error.message || 'Failed to save settings';
-      const hint = error.code === '42501' || msg.includes('policy') || msg.includes('row-level security')
-        ? ' Only org owners and managers can save branding. If you are a manager, ask your admin to run migration 055_org_branding_update_policy.sql in Supabase.'
-        : '';
+      const schemaCache = msg.includes('custom_branding') || msg.includes('schema cache');
+      const hint = schemaCache
+        ? ' Run migration 070_organizations_branding_columns_ensure.sql in Supabase SQL Editor (Dashboard → SQL Editor → New query → paste file contents → Run).'
+        : error.code === '42501' || msg.includes('policy') || msg.includes('row-level security')
+          ? ' Only org owners and managers can save branding. If you are a manager, ask your admin to run migration 055_org_branding_update_policy.sql in Supabase.'
+          : '';
       toast({
         title: 'Save failed',
-        description: msg + hint,
+        description: (schemaCache ? 'Database is missing branding columns. ' : '') + msg + hint,
         variant: 'destructive',
       });
     } finally {

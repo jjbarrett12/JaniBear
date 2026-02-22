@@ -1,0 +1,169 @@
+'use server';
+
+import { createClient } from '@/lib/supabase/server';
+import { requireOrg, getCurrentUserId } from '@/lib/auth';
+import { revalidatePath } from 'next/cache';
+
+export type LeadForDrawer = {
+  lead: {
+    id: string;
+    contact_name: string | null;
+    company: string | null;
+    email: string | null;
+    phone: string | null;
+    address: string | null;
+    city: string | null;
+    state: string | null;
+    zip: string | null;
+    source: string;
+    status: string;
+    notes: string | null;
+    raw_text: string | null;
+    created_at: string;
+    updated_at: string;
+    converted_opportunity_id: string | null;
+  } | null;
+  touchLog: { id: string; completed_at: string | null; channel: string; notes: string | null }[];
+  nextTouchAt: string | null;
+};
+
+export async function getLeadForDrawer(orgId: string, leadId: string): Promise<LeadForDrawer> {
+  const supabase = await createClient();
+  const { data: lead } = await supabase
+    .from('leads')
+    .select('id, contact_name, company, email, phone, address, city, state, zip, source, status, notes, raw_text, created_at, updated_at, converted_opportunity_id')
+    .eq('id', leadId)
+    .eq('org_id', orgId)
+    .single();
+
+  const [touchRes, enrollmentRes] = await Promise.all([
+    supabase.from('lead_touch_log').select('id, completed_at, channel, notes').eq('lead_id', leadId).order('completed_at', { ascending: false, nullsFirst: false }).limit(20),
+    supabase.from('lead_cadence_enrollments').select('next_touch_at').eq('lead_id', leadId).maybeSingle(),
+  ]);
+
+  const touchLog = (touchRes.data ?? []) as { id: string; completed_at: string | null; channel: string; notes: string | null }[];
+  const nextTouchAt = enrollmentRes.data?.next_touch_at ?? null;
+
+  return { lead: lead ?? null, touchLog, nextTouchAt };
+}
+
+export type ConvertLeadToOpportunityInput = {
+  leadId: string;
+  /** Use existing account (id). */
+  accountId?: string | null;
+  /** Create new account; name required. */
+  createNewAccount?: boolean;
+  accountName?: string;
+  stage?: string;
+  expectedValueCents?: number | null;
+  closeDate?: string | null;
+};
+
+export type ConvertLeadToOpportunityResult =
+  | { ok: true; opportunityId: string; accountId: string }
+  | { ok: false; error: string };
+
+/** Convert a lead to an opportunity: create/link account, create opportunity, update lead. */
+export async function convertLeadToOpportunity(
+  input: ConvertLeadToOpportunityInput
+): Promise<ConvertLeadToOpportunityResult> {
+  const org = await requireOrg();
+  const userId = await getCurrentUserId();
+  const supabase = await createClient();
+
+  const { data: lead } = await supabase
+    .from('leads')
+    .select('id, org_id, company, contact_name, converted_opportunity_id')
+    .eq('id', input.leadId)
+    .eq('org_id', org.org_id)
+    .single();
+
+  if (!lead) return { ok: false, error: 'Lead not found' };
+  if (lead.converted_opportunity_id) return { ok: false, error: 'Lead already converted to an opportunity' };
+
+  let accountId: string;
+
+  if (input.createNewAccount && input.accountName?.trim()) {
+    const name = input.accountName.trim();
+    const { data: newAccount, error: accountError } = await supabase
+      .from('accounts')
+      .insert({
+        org_id: org.org_id,
+        name,
+        status: 'inactive',
+      })
+      .select('id')
+      .single();
+    if (accountError || !newAccount) return { ok: false, error: accountError?.message ?? 'Failed to create account' };
+    accountId = newAccount.id;
+  } else if (input.accountId) {
+    const { data: existing } = await supabase
+      .from('accounts')
+      .select('id')
+      .eq('id', input.accountId)
+      .eq('org_id', org.org_id)
+      .single();
+    if (!existing) return { ok: false, error: 'Account not found' };
+    accountId = existing.id;
+  } else {
+    return { ok: false, error: 'Select an account or create a new one' };
+  }
+
+  const stage = (input.stage?.trim() || 'qualified').toLowerCase().replace(/\s+/g, '_');
+  const estValue = input.expectedValueCents != null ? input.expectedValueCents / 100 : null;
+
+  const { data: opportunity, error: oppError } = await supabase
+    .from('opportunities')
+    .insert({
+      org_id: org.org_id,
+      account_id: accountId,
+      stage: stage || 'qualified',
+      est_value: estValue,
+      owner_id: userId ?? undefined,
+      created_by: userId ?? undefined,
+    })
+    .select('id')
+    .single();
+
+  if (oppError || !opportunity) return { ok: false, error: oppError?.message ?? 'Failed to create opportunity' };
+
+  const { error: updateError } = await supabase
+    .from('leads')
+    .update({
+      converted_opportunity_id: opportunity.id,
+      converted_account_id: accountId,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', input.leadId)
+    .eq('org_id', org.org_id);
+
+  if (updateError) return { ok: false, error: updateError.message };
+
+  if (process.env.NODE_ENV === 'development') {
+    console.warn('[convertLeadToOpportunity]', { leadId: input.leadId, opportunityId: opportunity.id, accountId });
+  }
+
+  revalidatePath('/app/sales/leads');
+  revalidatePath(`/app/sales/leads/${input.leadId}`);
+  revalidatePath('/app/sales/pipeline');
+  revalidatePath('/app/crm/pipeline');
+  revalidatePath(`/app/crm/opportunities/${opportunity.id}`);
+  return { ok: true, opportunityId: opportunity.id, accountId };
+}
+
+/** Set lead status (e.g. 'lost' for Disqualify). */
+export async function setLeadStatusAction(leadId: string, status: string): Promise<{ ok: boolean; error?: string }> {
+  const org = await requireOrg();
+  const supabase = await createClient();
+  const allowed = ['new', 'contacted', 'walkthrough_scheduled', 'walkthrough_done', 'proposal_sent', 'won', 'lost'];
+  if (!allowed.includes(status)) return { ok: false, error: 'Invalid status' };
+  const { error } = await supabase
+    .from('leads')
+    .update({ status, updated_at: new Date().toISOString() })
+    .eq('id', leadId)
+    .eq('org_id', org.org_id);
+  if (error) return { ok: false, error: error.message };
+  revalidatePath('/app/sales/leads');
+  revalidatePath(`/app/sales/leads/${leadId}`);
+  return { ok: true };
+}

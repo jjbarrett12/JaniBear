@@ -7,7 +7,7 @@ import type { ShellKey } from '@/lib/shell';
 import type { NavSection } from '@/lib/nav/navFactory';
 import { buildNavSections } from '@/lib/nav/navFactory';
 
-export type { NavItem, NavSection } from '@/lib/nav/navFactory';
+export type { NavItem, NavSection, NavGroup } from '@/lib/nav/navFactory';
 
 function shellToOrgType(shell: ShellKey): 'independent' | 'franchisee' | 'franchisor' {
   switch (shell) {

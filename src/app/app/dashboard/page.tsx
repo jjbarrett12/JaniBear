@@ -10,7 +10,6 @@ import { DashboardWithExecutiveToggle } from '@/components/dashboard/DashboardWi
 import { DashboardDataProvider } from '@/contexts/dashboard-data-context';
 import { getCommandCenterData } from '@/lib/command-center-data';
 import { getExecutiveMode } from '@/actions/executive-mode';
-import { dashboardWidgetRegistry } from '@/lib/widgets/registry/dashboard-widgets';
 import { Award } from 'lucide-react';
 
 export const revalidate = 60;
@@ -69,7 +68,6 @@ export default async function DashboardPage() {
           isExecutiveEligible={isExecutiveEligible}
           widgetGridProps={{
             moduleKey: 'dashboard',
-            widgets: dashboardWidgetRegistry,
             role: context.role,
             roleEnum: context.roleEnum,
             isAdmin: isExecutiveEligible,

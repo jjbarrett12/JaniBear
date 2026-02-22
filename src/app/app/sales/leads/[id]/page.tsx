@@ -8,6 +8,7 @@ import { ArrowLeft, Mail, Phone, MapPin, Building2, User } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
 import { LeadDetailClient } from '@/components/sales/lead-detail-client';
 import { LeadCadenceActions } from '@/components/sales/lead-cadence-actions';
+import { ConvertLeadToOpportunityModal } from '@/components/sales/convert-lead-to-opportunity-modal';
 
 export default async function LeadDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -30,12 +31,14 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
     { count: touchLogCount },
     { data: topTarget },
     { data: defaultTemplate },
+    { data: accounts },
   ] = await Promise.all([
     supabase.from('walkthrough_appointments').select('*').eq('lead_id', id).order('scheduled_at', { ascending: true }),
     supabase.from('lead_cadence_enrollments').select('id, current_step, next_touch_at, status, template_id').eq('lead_id', id).maybeSingle(),
     supabase.from('lead_touch_log').select('*', { count: 'exact', head: true }).eq('lead_id', id),
     user ? supabase.from('top_targets').select('id, rank').eq('lead_id', id).eq('user_id', user.id).maybeSingle() : { data: null },
     supabase.from('sales_cadence_templates').select('id').eq('org_id', org.org_id).eq('is_default', true).limit(1).maybeSingle(),
+    supabase.from('accounts').select('id, name').eq('org_id', org.org_id).order('name').limit(100),
   ]);
 
   const enrollmentRow = enrollment ?? null;
@@ -46,9 +49,9 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-4">
         <div className="flex items-center gap-4">
-          <Link href="/app/sales">
+          <Link href="/app/sales/leads">
             <Button variant="ghost" size="icon">
               <ArrowLeft className="h-4 w-4" />
             </Button>
@@ -60,6 +63,13 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
             </p>
           </div>
         </div>
+        {!(lead as { converted_opportunity_id?: string | null }).converted_opportunity_id && (
+          <ConvertLeadToOpportunityModal
+            leadId={lead.id}
+            defaultAccountName={lead.company?.trim() || lead.contact_name?.trim() || ''}
+            accounts={(accounts ?? []).map((a) => ({ id: a.id, name: a.name }))}
+          />
+        )}
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">

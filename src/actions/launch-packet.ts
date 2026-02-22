@@ -33,6 +33,9 @@ export async function sendLaunchPacketToOps(packetId: string): Promise<{ error?:
     .eq('org_id', org.org_id);
 
   if (error) return { error: error.message };
+  if (process.env.NODE_ENV === 'development') {
+    console.warn('[sendLaunchPacketToOps]', { packetId, org_id: org.org_id });
+  }
   revalidatePath('/app/sales/launch-packets');
   revalidatePath('/app/ops/launch-intake');
   return {};

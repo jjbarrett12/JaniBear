@@ -52,11 +52,11 @@ export function AcceptRejectLaunchForm({ packetId }: { packetId: string }) {
           className="gap-2"
         >
           <CheckCircle2 className="h-4 w-4" />
-          {loading === 'accept' ? 'Accepting…' : 'Accept Launch'}
+          {loading === 'accept' ? 'Accepting…' : 'Accept Intake'}
         </Button>
         <div className="flex flex-col gap-1">
           <Textarea
-            placeholder="Rejection reason (required for Reject)"
+            placeholder="Reason for requesting changes (required)"
             value={rejectReason}
             onChange={(e) => setRejectReason(e.target.value)}
             rows={2}
@@ -69,7 +69,7 @@ export function AcceptRejectLaunchForm({ packetId }: { packetId: string }) {
             className="gap-2 self-start"
           >
             <XCircle className="h-4 w-4" />
-            {loading === 'reject' ? 'Rejecting…' : 'Reject Launch'}
+            {loading === 'reject' ? 'Sending…' : 'Request Changes'}
           </Button>
         </div>
       </div>

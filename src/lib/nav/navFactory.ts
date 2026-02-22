@@ -44,10 +44,18 @@ export type NavItem = {
   alertKey?: keyof NavAlertCounts;
 };
 
+export type NavGroup = {
+  labelKey: AppTranslationKey;
+  items: NavItem[];
+};
+
 export type NavSection = {
   id: string;
   labelKey: AppTranslationKey;
-  items: NavItem[];
+  /** Flat list (legacy). When absent, use groups. */
+  items?: NavItem[];
+  /** Grouped subsections (e.g. Sales: Prospecting / Active Deals / Conversion). */
+  groups?: NavGroup[];
 };
 
 export type NavFactoryInput = {
@@ -60,26 +68,44 @@ export type NavFactoryInput = {
   franchiseeEnrolled?: boolean;
 };
 
-/** Sales section: Lead → Launch. Label "Sales" (not Growth). */
+/** Sales section: grouped as Prospecting → Active Deals → Conversion. Label "Sales" (not Growth). */
 function buildSalesSection(input: NavFactoryInput): NavSection {
-  const { featureFlags } = input;
-  const items: NavItem[] = [
-    { href: '/app/sales/leads', labelKey: 'navLeads', icon: TrendingUp },
-    { href: '/app/sales/pipeline', labelKey: 'navPipeline', icon: LayoutDashboard },
-    { href: '/app/sales/accounts', labelKey: 'navAccountsProspects', icon: Building2 },
-    { href: '/app/sales/walkthroughs', labelKey: 'navWalkthroughs', icon: FileSearch },
-    { href: '/app/sales/scope', labelKey: 'navScope', icon: FileText },
-    { href: '/app/sales/proposals', labelKey: 'navProposals', icon: Calculator },
+  const { featureFlags, franchiseeEnrolled } = input;
+  const conversionItems: NavItem[] = [
     { href: '/app/sales/win-loss', labelKey: 'navWinLoss', icon: BarChart3 },
-    { href: '/app/sales/launch-packets', labelKey: 'navLaunchPacket', icon: Rocket },
+    { href: '/app/sales/launch-packets', labelKey: 'navContractLaunch', icon: Rocket },
   ];
   if (featureFlags?.approvals_enabled) {
-    items.splice(7, 0, { href: '/app/sales/approvals', labelKey: 'navApprovals', icon: ListChecks });
+    conversionItems.splice(1, 0, { href: '/app/sales/approvals', labelKey: 'navApprovals', icon: ListChecks });
+  }
+  if (franchiseeEnrolled) {
+    conversionItems.push({ href: '/app/opportunities/network', labelKey: 'navNetworkOpportunities', icon: Briefcase });
   }
   return {
     id: 'sales',
-    labelKey: 'navGrowth', // "Sales" in UI
-    items,
+    labelKey: 'navGrowth',
+    groups: [
+      {
+        labelKey: 'navProspecting',
+        items: [
+          { href: '/app/sales/leads', labelKey: 'navLeads', icon: TrendingUp },
+          { href: '/app/sales/pipeline', labelKey: 'navPipeline', icon: LayoutDashboard },
+        ],
+      },
+      {
+        labelKey: 'navActiveDeals',
+        items: [
+          { href: '/app/sales/accounts', labelKey: 'navAccountsProspects', icon: Building2 },
+          { href: '/app/sales/walkthroughs', labelKey: 'navWalkthroughs', icon: FileSearch },
+          { href: '/app/sales/scope', labelKey: 'navScope', icon: FileText },
+          { href: '/app/sales/proposals', labelKey: 'navProposals', icon: Calculator },
+        ],
+      },
+      {
+        labelKey: 'navConversion',
+        items: conversionItems,
+      },
+    ],
   };
 }
 
@@ -198,17 +224,6 @@ export function buildNavSections(input: NavFactoryInput): NavSection[] {
     buildOperationsSection(input),
     buildSystemSection(input),
   ];
-
-  if (orgType === 'franchisee' && franchiseeEnrolled) {
-    const sales = sections.find((s) => s.id === 'sales');
-    if (sales) {
-      sales.items.push({
-        href: '/app/opportunities/network',
-        labelKey: 'navNetworkOpportunities',
-        icon: Briefcase,
-      });
-    }
-  }
 
   return sections;
 }

@@ -1,24 +1,25 @@
 import { requireOrg } from '@/lib/auth';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { SalesPageShell } from '@/components/sales/page-shell';
+import { PageHeader } from '@/components/sales/page-header';
+import { ScopeBuilderSplitView } from '@/components/sales/scope-builder-split-view';
 
 export default async function ScopeBuilderPage() {
   await requireOrg();
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-foreground">Scope Builder</h1>
-        <p className="text-muted-foreground text-sm mt-1">
-          Define service scope and requirements for proposals.
-        </p>
+    <SalesPageShell
+      breadcrumb={
+        <span className="text-muted-foreground">
+          Sales <span className="text-foreground/80">/ Scope Builder</span>
+        </span>
+      }
+    >
+      <div className="p-4 md:p-6 space-y-6">
+        <PageHeader
+          title="Scope Builder"
+          description="Define areas, frequencies, tasks, staffing, and supplies. Generate proposal when ready."
+        />
+        <ScopeBuilderSplitView />
       </div>
-      <Card>
-        <CardHeader>
-          <CardTitle>Scope Builder</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground">Scope builder content coming soon.</p>
-        </CardContent>
-      </Card>
-    </div>
+    </SalesPageShell>
   );
 }

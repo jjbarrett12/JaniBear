@@ -242,6 +242,7 @@ export async function getClientDetail(org_id: string, client_id: string): Promis
 export type OpportunityDetail = {
   opportunity: { id: string; stage: string; est_mrr?: number | null; est_value?: number | null; owner_id?: string | null; created_at: string } | null;
   client: { id: string; name: string } | null;
+  account: { id: string; name: string } | null;
   location: { id: string; name: string; address?: string | null; city?: string | null } | null;
   bids: { id: string; status: string; total_estimated_cost?: number | null; created_at: string }[];
   walkthroughs: { id: string; status: string; scheduled_at?: string | null }[];
@@ -253,17 +254,21 @@ export async function getOpportunityDetail(org_id: string, opportunity_id: strin
 
   const { data: opportunity } = await supabase
     .from('opportunities')
-    .select('id, stage, est_mrr, est_value, owner_id, client_id, location_id, site_id, created_at')
+    .select('id, stage, est_mrr, est_value, owner_id, client_id, account_id, location_id, site_id, created_at')
     .eq('id', opportunity_id)
     .eq('org_id', org_id)
     .single();
 
   if (!opportunity) {
-    return { opportunity: null, client: null, location: null, bids: [], walkthroughs: [], activities: [] };
+    return { opportunity: null, client: null, account: null, location: null, bids: [], walkthroughs: [], activities: [] };
   }
 
   const clientRes = opportunity.client_id
     ? await supabase.from('clients').select('id, name').eq('id', opportunity.client_id).eq('org_id', org_id).single()
+    : { data: null };
+  const accountId = (opportunity as { account_id?: string | null }).account_id;
+  const accountRes = accountId
+    ? await supabase.from('accounts').select('id, name').eq('id', accountId).eq('org_id', org_id).single()
     : { data: null };
   // Canonical: use location_id and locations. Legacy fallback: if only site_id set, fetch site for display only (no new sites created).
   let locationRes: { data: { id: string; name: string; address?: string | null; city?: string | null } | null };
@@ -282,6 +287,7 @@ export async function getOpportunityDetail(org_id: string, opportunity_id: strin
   return {
     opportunity: { id: opportunity.id, stage: opportunity.stage, est_mrr: opportunity.est_mrr, est_value: opportunity.est_value, owner_id: opportunity.owner_id, created_at: opportunity.created_at },
     client: clientRes.data ?? null,
+    account: accountRes.data ?? null,
     location: locationRes.data ?? null,
     bids: Array.isArray(bidsRes.data) ? bidsRes.data : [],
     walkthroughs: walkthroughsRes.data ?? [],

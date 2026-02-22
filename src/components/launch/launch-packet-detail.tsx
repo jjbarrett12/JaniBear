@@ -36,6 +36,16 @@ export function LaunchPacketDetail({ packet, mode, children }: Props) {
     risk_flags?: unknown[];
   };
 
+  const checklist = {
+    contract_signed: payload.scope != null,
+    scope_finalized: payload.scope != null,
+    schedule_set: payload.schedule_draft != null && Array.isArray(payload.schedule_draft) ? (payload.schedule_draft as unknown[]).length > 0 : !!payload.schedule_draft,
+    contacts: true,
+    supplies: payload.supplies != null,
+  };
+  const checklistCount = Object.values(checklist).filter(Boolean).length;
+  const checklistTotal = Object.keys(checklist).length;
+
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center gap-2">
@@ -46,6 +56,38 @@ export function LaunchPacketDetail({ packet, mode, children }: Props) {
           <span className="text-sm text-muted-foreground">Account: {packet.account.name}</span>
         )}
       </div>
+
+      {mode === 'sales' && (packet.status === 'draft' || packet.status === 'review') && (
+        <Card className="border-primary/30 bg-primary/5">
+          <CardHeader>
+            <CardTitle className="text-base">Ready for Launch</CardTitle>
+            <p className="text-sm text-muted-foreground">
+              {checklistCount === checklistTotal
+                ? 'Checklist complete. Submit to Operations when ready.'
+                : `${checklistCount} of ${checklistTotal} items complete.`}
+            </p>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <ul className="text-sm space-y-1">
+              <li className={checklist.contract_signed ? 'text-muted-foreground' : ''}>
+                {checklist.contract_signed ? '✓' : '○'} Contract signed / scope locked
+              </li>
+              <li className={checklist.scope_finalized ? 'text-muted-foreground' : ''}>
+                {checklist.scope_finalized ? '✓' : '○'} Scope finalized
+              </li>
+              <li className={checklist.schedule_set ? 'text-muted-foreground' : ''}>
+                {checklist.schedule_set ? '✓' : '○'} Schedule set
+              </li>
+              <li className={checklist.contacts ? 'text-muted-foreground' : ''}>
+                {checklist.contacts ? '✓' : '○'} Contacts confirmed
+              </li>
+              <li className={checklist.supplies ? 'text-muted-foreground' : ''}>
+                {checklist.supplies ? '✓' : '○'} Supplies / docs referenced
+              </li>
+            </ul>
+          </CardContent>
+        </Card>
+      )}
 
       <Card>
         <CardHeader>

@@ -47,6 +47,7 @@ interface MobileSidebarProps {
   navAlerts?: NavAlertCounts | null;
   shell?: 'owner_operator' | 'franchisee' | 'franchisor';
   franchiseeEnrolled?: boolean;
+  proGearEnabled?: boolean;
 }
 
 /** Shared by Sales and Operations */

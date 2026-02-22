@@ -1,11 +1,13 @@
 import { createClient } from '@/lib/supabase/server';
 import { getCurrentUser } from '@/lib/auth';
+import { requireOrg } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { formatPrice } from '@/components/pro-gear/product-card';
+import { ReorderButton } from '@/components/pro-gear/reorder-button';
 
 export default async function ProGearOrdersPage({
   searchParams,
@@ -14,13 +16,15 @@ export default async function ProGearOrdersPage({
 }) {
   const user = await getCurrentUser();
   if (!user) redirect('/auth/login');
+  const org = await requireOrg();
 
   const { submitted, paid, financed } = await searchParams;
   const supabase = await createClient();
   const { data: orders } = await supabase
     .from('pro_gear_orders')
-    .select('id, status, total_cents, payment_type, financing_months, created_at')
+    .select('id, status, total_cents, savings_total_cents, payment_type, financing_months, created_at')
     .eq('user_id', user.id)
+    .or(`org_id.eq.${org.org_id},org_id.is.null`)
     .neq('status', 'draft')
     .order('created_at', { ascending: false });
 
@@ -86,7 +90,7 @@ export default async function ProGearOrdersPage({
         </Card>
       ) : (
         <div className="space-y-4">
-          {list.map((order: { id: string; status: string; total_cents: number; payment_type: string | null; financing_months: number | null; created_at: string }) => (
+          {list.map((order: { id: string; status: string; total_cents: number; savings_total_cents?: number | null; payment_type: string | null; financing_months: number | null; created_at: string }) => (
             <Card key={order.id}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-base">
@@ -114,7 +118,7 @@ export default async function ProGearOrdersPage({
                   </Badge>
                 </div>
               </CardHeader>
-              <CardContent>
+              <CardContent className="space-y-3">
                 <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
                   <span className="text-muted-foreground">
                     {new Date(order.created_at).toLocaleDateString('en-US', {
@@ -125,6 +129,12 @@ export default async function ProGearOrdersPage({
                     {formatPrice(order.total_cents)}
                   </span>
                 </div>
+                {order.savings_total_cents != null && order.savings_total_cents > 0 && (
+                  <p className="text-sm text-green-600 dark:text-green-400">
+                    You saved {formatPrice(order.savings_total_cents)}
+                  </p>
+                )}
+                <ReorderButton orderId={order.id} />
               </CardContent>
             </Card>
           ))}

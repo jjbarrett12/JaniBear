@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { getCurrentUser } from '@/lib/auth';
+import { requireOrg } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,13 +11,15 @@ import { CartActions, SubmitOrderButton } from '@/components/pro-gear/cart-actio
 export default async function ProGearCartPage() {
   const user = await getCurrentUser();
   if (!user) redirect('/auth/login');
+  const org = await requireOrg();
 
   const supabase = await createClient();
   const { data: order } = await supabase
     .from('pro_gear_orders')
-    .select('id, status, subtotal_cents, shipping_cents, total_cents')
+    .select('id, status, subtotal_cents, shipping_cents, total_cents, savings_total_cents')
     .eq('user_id', user.id)
     .eq('status', 'draft')
+    .or(`org_id.eq.${org.org_id},org_id.is.null`)
     .order('created_at', { ascending: false })
     .limit(1)
     .maybeSingle();

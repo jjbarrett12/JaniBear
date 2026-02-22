@@ -72,7 +72,7 @@ export default async function OpportunityDetailPage({
             <div className="grid gap-4 md:grid-cols-2">
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-base">Client & site</CardTitle>
+                  <CardTitle className="text-base">Account / client & site</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2">
                   {data.client ? (
@@ -80,8 +80,13 @@ export default async function OpportunityDetailPage({
                       <User className="h-4 w-4 text-muted-foreground" />
                       <Link href={`/app/crm/clients/${data.client.id}`} className="hover:underline font-medium">{data.client.name}</Link>
                     </p>
+                  ) : data.account ? (
+                    <p className="flex items-center gap-2">
+                      <User className="h-4 w-4 text-muted-foreground" />
+                      <Link href={`/app/accounts/${data.account.id}`} className="hover:underline font-medium">{data.account.name}</Link>
+                    </p>
                   ) : (
-                    <p className="text-muted-foreground text-sm">No client linked</p>
+                    <p className="text-muted-foreground text-sm">No account or client linked</p>
                   )}
                   {data.location ? (
                     <p className="flex items-center gap-2 text-sm text-muted-foreground">

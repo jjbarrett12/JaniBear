@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useLayoutEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
@@ -40,9 +40,22 @@ export default function Home() {
   const [mounted, setMounted] = useState(false);
   const [navScrolled, setNavScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [statementInView, setStatementInView] = useState(false);
+  const statementRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    const el = statementRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([e]) => setStatementInView(e.isIntersecting),
+      { threshold: 0.15, rootMargin: '0px 0px -80px 0px' }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
   }, []);
 
   // If Supabase sent a password-reset or auth link to the Site URL (homepage), send to the right place
@@ -265,29 +278,158 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Highlight: Built by Operators — two columns on desktop */}
-      <section className="relative border-t border-zinc-800/50 bg-zinc-900/80 py-14 md:py-20 border-l-4 border-l-amber-400/50">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 gap-10 md:gap-16 max-w-6xl mx-auto md:items-center">
-            <div className="flex flex-col justify-center md:min-h-0 md:py-4">
+      {/* Statement: Built by Operators — defined chapter, accent bar, structured copy, motion */}
+      <section
+        ref={statementRef}
+        className="relative border-t border-zinc-800/50 py-14 md:py-20 overflow-hidden"
+        style={{ backgroundColor: '#0F1420' }}
+      >
+        {/* Subtle grain overlay for depth */}
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+          }}
+          aria-hidden
+        />
+        <div className="container relative mx-auto px-4">
+          <div className="grid md:grid-cols-[1fr_auto_1fr] gap-0 max-w-6xl mx-auto md:items-center md:gap-12 lg:gap-16">
+            {/* Left: headline with hierarchy */}
+            <div
+              className={`flex flex-col justify-center md:min-h-0 md:py-4 transition-all duration-700 ease-out ${
+                statementInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
+              }`}
+            >
               <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight leading-tight">
                 <span className="text-white">Built by Operators.</span>
                 <br />
-                <span className="text-amber-400">Not Software Guys.</span>
+                <span className="text-white" style={{ opacity: 0.65, fontSize: '0.9em' }}>
+                  Not Venture Capital.
+                </span>
               </h2>
             </div>
-            <div className="space-y-5 text-zinc-300 text-base md:text-lg leading-relaxed border-l border-zinc-700/80 pl-8 md:pl-10">
-              <p>
+
+            {/* Vertical accent bar: neon yellow, gradient, animates height into view */}
+            <div
+              className="hidden md:flex flex-col items-center self-stretch min-h-[280px]"
+              aria-hidden
+            >
+              <div
+                className={`w-[3px] flex-1 min-h-[200px] rounded-full transition-all duration-1000 ease-out origin-top ${
+                  statementInView ? 'scale-y-100 opacity-100' : 'scale-y-0 opacity-0'
+                }`}
+                style={{
+                  background: 'linear-gradient(180deg, rgba(250,204,21,0.95) 0%, rgba(250,204,21,0.35) 70%, transparent 100%)',
+                  boxShadow: '0 0 24px rgba(250,204,21,0.35)',
+                }}
+              />
+            </div>
+
+            {/* Right: structured copy, max-width, spacing, punchline, authority */}
+            <div
+              className="max-w-[600px] space-y-7 text-zinc-300 text-lg leading-[1.7] pl-0 md:pl-0"
+              style={{ transitionDelay: '100ms' }}
+            >
+              <p
+                className={`transition-all duration-700 ease-out ${
+                  statementInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+                }`}
+                style={{ transitionDelay: '150ms' }}
+              >
                 <BrandName /> wasn&apos;t built in a boardroom. It was built inside a commercial cleaning company.
               </p>
-              <p>
-                For over 20 years, we&apos;ve bid buildings, managed crews, fixed failed inspections, and lost sleep over client expectations. We&apos;ve lost bids. We&apos;ve battled scope creep. We&apos;ve chased down crews when quality slipped.
-              </p>
-              <p>
+
+              <div
+                className={`space-y-3 transition-all duration-700 ease-out ${
+                  statementInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+                }`}
+                style={{ transitionDelay: '250ms' }}
+              >
+                <h3 className="text-sm font-semibold uppercase tracking-wider text-amber-400/90">
+                  20+ Years in the Field.
+                </h3>
+                <p className="text-zinc-300">
+                  We&apos;ve bid buildings.<br />
+                  Managed crews.<br />
+                  Fixed failed inspections.<br />
+                  Lost sleep over client expectations.
+                </p>
+              </div>
+
+              <div
+                className={`space-y-2 transition-all duration-700 ease-out ${
+                  statementInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+                }`}
+                style={{ transitionDelay: '350ms' }}
+              >
+                <p className="text-zinc-300 font-medium">We&apos;ve:</p>
+                <ul className="list-none space-y-1.5 text-zinc-400">
+                  <li className="flex items-center gap-2">
+                    <span className="text-amber-400" aria-hidden>•</span>
+                    Lost bids
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="text-amber-400" aria-hidden>•</span>
+                    Battled scope creep
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="text-amber-400" aria-hidden>•</span>
+                    Chased down crews when quality slipped
+                  </li>
+                </ul>
+              </div>
+
+              <p
+                className={`transition-all duration-700 ease-out ${
+                  statementInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+                }`}
+                style={{ transitionDelay: '450ms' }}
+              >
                 We didn&apos;t need another generic software tool. We needed a system that wins contracts, enforces accountability, and protects client relationships long term.
               </p>
-              <p className="font-semibold text-white">
-                So we built it.
+
+              {/* Punchline: larger, bold, yellow underline */}
+              <p
+                className={`font-bold text-white text-xl md:text-2xl tracking-tight transition-all duration-700 ease-out ${
+                  statementInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+                }`}
+                style={{ transitionDelay: '550ms' }}
+              >
+                So we built it
+                <span className="text-amber-400" aria-hidden>.</span>
+                <span
+                  className="block mt-1 h-0.5 w-16 rounded-full bg-amber-400"
+                  aria-hidden
+                />
+              </p>
+
+              {/* Micro authority */}
+              <div
+                className={`flex flex-wrap gap-x-6 gap-y-2 pt-2 text-sm text-zinc-400 transition-all duration-700 ease-out ${
+                  statementInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+                }`}
+                style={{ transitionDelay: '650ms' }}
+              >
+                <span className="flex items-center gap-2">
+                  <Check className="h-4 w-4 text-amber-400 shrink-0" />
+                  20+ Years Operating
+                </span>
+                <span className="flex items-center gap-2">
+                  <Check className="h-4 w-4 text-amber-400 shrink-0" />
+                  Built Inside a Cleaning Company
+                </span>
+                <span className="flex items-center gap-2">
+                  <Check className="h-4 w-4 text-amber-400 shrink-0" />
+                  Designed for Commercial Contracts
+                </span>
+              </div>
+              <p
+                className={`text-sm text-zinc-500 italic transition-all duration-700 ease-out ${
+                  statementInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+                }`}
+                style={{ transitionDelay: '750ms' }}
+              >
+                Trusted by operators who actually clean buildings.
               </p>
             </div>
           </div>
@@ -517,7 +659,7 @@ export default function Home() {
               Built For
             </h2>
             <p className="text-lg md:text-xl text-zinc-400 max-w-2xl mx-auto">
-              Commercial janitorial companies. 5–500 employees. Managing 10–500 sites.
+              Commercial janitorial companies. 5–500 employees. Managing 10–500 accounts.
             </p>
           </div>
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 max-w-4xl mx-auto">

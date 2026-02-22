@@ -32,14 +32,22 @@ function getSectionIdForPath(sections: NavSection[], pathname: string): string {
     const exec = sections.find((s) => s.id === 'executive');
     if (exec) return 'executive';
   }
+  const flatItems = (s: NavSection) =>
+    s.groups ? s.groups.flatMap((g) => g.items) : (s.items ?? []);
   for (const section of sections) {
-    for (const item of section.items) {
+    for (const item of flatItems(section)) {
       if (pathname === item.href) return section.id;
       if (item.href !== '/app/dashboard' && pathname.startsWith(item.href + '/')) return section.id;
+      if (item.href === '/app/sales/launch-packets' && (pathname === '/app/sales/contract-launch' || pathname.startsWith('/app/sales/contract-launch/') || pathname === '/app/sales/launch-packet' || pathname.startsWith('/app/sales/launch-packet/'))) return section.id;
+      if (item.href === '/app/sales/scope' && (pathname === '/app/sales/scope-builder' || pathname.startsWith('/app/sales/scope-builder/'))) return section.id;
       if (item.href === '/app/crm' && (pathname === '/app/crm' || pathname.startsWith('/app/crm/'))) return section.id;
       if (pathname.startsWith('/app/sales/') || pathname === '/app/sales') return section.id;
       if (pathname.startsWith('/app/ops/')) return section.id;
     }
+  }
+  if (pathname.startsWith('/app/sales/') || pathname === '/app/sales') {
+    const sales = sections.find((s) => s.id === 'sales');
+    if (sales) return sales.id;
   }
   return sections[0]?.id ?? 'executive';
 }
@@ -85,21 +93,27 @@ export function AppSidebarNav({
   navAlerts,
   shell = 'owner_operator',
   franchiseeEnrolled = false,
+  proGearEnabled = false,
 }: {
   premium: boolean;
   navAlerts?: NavAlertCounts | null;
   shell?: ShellKey;
   franchiseeEnrolled?: boolean;
+  proGearEnabled?: boolean;
 }) {
   const pathname = usePathname();
   const { locale } = useLanguage();
   const t = getAppT(locale);
   const alerts = navAlerts ?? { handoffsCount: 0, openIssuesCount: 0, missedTaskCount: 0 };
 
-  const sections = useMemo(
-    () => getNavSectionsForShell(shell, franchiseeEnrolled),
-    [shell, franchiseeEnrolled]
-  );
+  const sections = useMemo(() => {
+    const raw = getNavSectionsForShell(shell, franchiseeEnrolled);
+    if (proGearEnabled) return raw;
+    return raw.map((s) => ({
+      ...s,
+      items: s.items.filter((item) => item.href !== '/app/pro-gear'),
+    }));
+  }, [shell, franchiseeEnrolled, proGearEnabled]);
   const activeSectionId = getSectionIdForPath(sections, pathname);
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
 
@@ -136,12 +150,15 @@ export function AppSidebarNav({
 
   const isItemActive = (item: NavItem) => {
     if (pathname === item.href) return true;
+    if (item.href === '/app/sales/launch-packets' && (pathname === '/app/sales/contract-launch' || pathname.startsWith('/app/sales/contract-launch/') || pathname === '/app/sales/launch-packet' || pathname.startsWith('/app/sales/launch-packet/'))) return true;
+    if (item.href === '/app/sales/scope' && (pathname === '/app/sales/scope-builder' || pathname.startsWith('/app/sales/scope-builder/'))) return true;
     if (item.href === '/app/kpis' && (pathname === '/app/kpis' || pathname.startsWith('/app/kpis/'))) return true;
     if (item.href === '/app/crm/pipeline' && pathname.startsWith('/app/crm/pipeline')) return true;
     if (item.href === '/app/crm' && (pathname === '/app/crm' || (pathname.startsWith('/app/crm/') && !pathname.startsWith('/app/crm/pipeline')))) return true;
     if (item.href === '/app/ops/map' && pathname.startsWith('/app/ops/map')) return true;
     if (item.href === '/app/ops/accounts' && pathname.startsWith('/app/ops/accounts')) return true;
     if (item.href === '/app/accounts' && pathname.startsWith('/app/accounts')) return true;
+    if (item.href === '/app/sales/accounts' && (pathname === '/app/sales/accounts' || pathname.startsWith('/app/sales/accounts/'))) return true;
     if (item.href.startsWith('/app/sales/') && (pathname === item.href || pathname.startsWith(item.href + '/'))) return true;
     if (item.href.startsWith('/app/ops/') && (pathname === item.href || pathname.startsWith(item.href + '/'))) return true;
     if (item.href === '/app/franchise' && (pathname === '/app/franchise' || pathname.startsWith('/app/franchise/'))) return true;
@@ -181,29 +198,62 @@ export function AppSidebarNav({
 
               {isOpen && (
                 <div className="space-y-0.5 pl-1">
-                  {section.items.map((item) => {
-                    const Icon = item.icon;
-                    const active = isItemActive(item);
-                    const alertCount = getAlertCount(item.alertKey);
-                    return (
-                      <AppLink
-                        key={`${item.href}-${item.labelKey}`}
-                        href={item.href}
-                        className={navLinkClass(active)}
-                      >
-                        <Icon
-                          className={`h-5 w-5 shrink-0 ${active ? 'opacity-100' : 'opacity-70'}`}
-                          aria-hidden
-                        />
-                        <span className="truncate">{t(item.labelKey)}</span>
-                        {alertCount > 0 && (
-                          <Badge variant="destructive" className={ALERT_BADGE_CLASS} title="Requires attention">
-                            {alertCount > 99 ? '99+' : alertCount}
-                          </Badge>
-                        )}
-                      </AppLink>
-                    );
-                  })}
+                  {section.groups ? (
+                    section.groups.map((group) => (
+                      <div key={group.labelKey} className="space-y-0.5">
+                        <p className="px-3 py-1.5 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                          {t(group.labelKey)}
+                        </p>
+                        {group.items.map((item) => {
+                          const Icon = item.icon;
+                          const active = isItemActive(item);
+                          const alertCount = getAlertCount(item.alertKey);
+                          return (
+                            <AppLink
+                              key={`${item.href}-${item.labelKey}`}
+                              href={item.href}
+                              className={navLinkClass(active)}
+                            >
+                              <Icon
+                                className={`h-5 w-5 shrink-0 ${active ? 'opacity-100' : 'opacity-70'}`}
+                                aria-hidden
+                              />
+                              <span className="truncate">{t(item.labelKey)}</span>
+                              {alertCount > 0 && (
+                                <Badge variant="destructive" className={ALERT_BADGE_CLASS} title="Requires attention">
+                                  {alertCount > 99 ? '99+' : alertCount}
+                                </Badge>
+                              )}
+                            </AppLink>
+                          );
+                        })}
+                      </div>
+                    ))
+                  ) : (
+                    (section.items ?? []).map((item) => {
+                      const Icon = item.icon;
+                      const active = isItemActive(item);
+                      const alertCount = getAlertCount(item.alertKey);
+                      return (
+                        <AppLink
+                          key={`${item.href}-${item.labelKey}`}
+                          href={item.href}
+                          className={navLinkClass(active)}
+                        >
+                          <Icon
+                            className={`h-5 w-5 shrink-0 ${active ? 'opacity-100' : 'opacity-70'}`}
+                            aria-hidden
+                          />
+                          <span className="truncate">{t(item.labelKey)}</span>
+                          {alertCount > 0 && (
+                            <Badge variant="destructive" className={ALERT_BADGE_CLASS} title="Requires attention">
+                              {alertCount > 99 ? '99+' : alertCount}
+                            </Badge>
+                          )}
+                        </AppLink>
+                      );
+                    })
+                  )}
                 </div>
               )}
             </div>

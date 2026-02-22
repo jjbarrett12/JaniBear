@@ -1,16 +1,42 @@
 import { requireOrg } from '@/lib/auth';
 import { requireProGearAccess } from '@/lib/pro-gear-auth';
+import { getProGearEnabled } from '@/lib/pro-gear-enabled';
 import { createClient } from '@/lib/supabase/server';
 import Link from 'next/link';
 import { ChevronRight, ShoppingCart, Package, Store } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 
 export default async function ProGearLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  await requireOrg();
-  await requireProGearAccess();
+  const org = await requireOrg();
+  const [enabled, _] = await Promise.all([
+    getProGearEnabled(org.org_id),
+    requireProGearAccess(),
+  ]);
+
+  if (!enabled) {
+    return (
+      <div className="mx-auto max-w-md py-12 px-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>Member Pro Gear</CardTitle>
+            <CardDescription>
+              Pro Gear is not enabled for your organization. Contact your admin to enable Member Pro Gear.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button asChild variant="outline">
+              <Link href="/app/dashboard">Back to Dashboard</Link>
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   const supabase = await createClient();
   const { data: products } = await supabase
@@ -51,7 +77,7 @@ export default async function ProGearLayout({
                   className="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-muted"
                 >
                   <Package className="h-4 w-4" />
-                  Gloves ({gloves.length})
+                  Gloves{gloves.length > 0 ? ` (${gloves.length})` : ''}
                 </Link>
               </li>
               <li>
@@ -60,7 +86,7 @@ export default async function ProGearLayout({
                   className="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-muted"
                 >
                   <Store className="h-4 w-4" />
-                  Equipment ({equipment.length})
+                  Equipment{equipment.length > 0 ? ` (${equipment.length})` : ''}
                 </Link>
               </li>
             </ul>
@@ -77,6 +103,18 @@ export default async function ProGearLayout({
             className="flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm hover:bg-muted"
           >
             Order history
+          </Link>
+          <Link
+            href="/app/pro-gear/reorders"
+            className="flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm hover:bg-muted"
+          >
+            Recurring orders
+          </Link>
+          <Link
+            href="/app/pro-gear/optimization"
+            className="flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm hover:bg-muted"
+          >
+            Optimization
           </Link>
         </aside>
         <div className="min-w-0 flex-1">{children}</div>

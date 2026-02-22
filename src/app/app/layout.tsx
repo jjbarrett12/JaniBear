@@ -11,6 +11,7 @@ import { createClient } from '@/lib/supabase/server';
 import { getNavAlertCounts } from '@/actions/nav-alerts';
 import { getImpersonateOrgId } from '@/actions/platform';
 import { resolveShellForOrg, isFranchiseeEnrolled } from '@/lib/shell';
+import { getProGearEnabled } from '@/lib/pro-gear-enabled';
 
 // Ensure layout always runs with current request (cookies) on client-side navigation
 export const dynamic = 'force-dynamic';
@@ -25,11 +26,12 @@ export default async function AppLayout({
   const supabase = await createClient();
   const impersonateOrgId = await getImpersonateOrgId();
 
-  const [organization, navAlerts, shell, franchiseeEnrolled] = await Promise.all([
+  const [organization, navAlerts, shell, franchiseeEnrolled, proGearEnabled] = await Promise.all([
     supabase.from('organizations').select('name, primary_color, secondary_color, logo_url').eq('id', org.org_id).maybeSingle(),
     getNavAlertCounts(),
     resolveShellForOrg(org.org_id),
     isFranchiseeEnrolled(org.org_id),
+    getProGearEnabled(org.org_id),
   ]);
 
   const orgName = organization?.data?.name ?? (org.organizations as { name?: string } | null)?.name ?? null;
@@ -45,7 +47,7 @@ export default async function AppLayout({
       <ThemeApplier />
       <ShellGuard shell={shell} />
       <div className="min-h-screen bg-background">
-        <AppSidebar navAlerts={navAlerts} shell={shell} franchiseeEnrolled={franchiseeEnrolled} />
+        <AppSidebar navAlerts={navAlerts} shell={shell} franchiseeEnrolled={franchiseeEnrolled} proGearEnabled={proGearEnabled} />
         <AppMainWithHeader orgName={orgName} navAlerts={navAlerts} impersonatingOrgName={impersonatingOrgName}>
           {children}
         </AppMainWithHeader>

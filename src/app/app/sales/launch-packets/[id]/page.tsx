@@ -3,9 +3,12 @@ import { requireOrg } from '@/lib/auth';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
-import { LaunchPacketDetail, type LaunchPacketRecord } from '@/components/launch/launch-packet-detail';
+import { SalesPageShell } from '@/components/sales/page-shell';
+import { PageHeader } from '@/components/sales/page-header';
+import { ContractLaunchThreeColumn } from '@/components/launch/contract-launch-three-column';
 import { SendToOpsButton } from '@/components/launch/send-to-ops-button';
+import type { LaunchPacketRecord } from '@/components/launch/launch-packet-detail';
+import { Lock } from 'lucide-react';
 
 export default async function LaunchPacketSalesDetailPage({
   params,
@@ -49,28 +52,40 @@ export default async function LaunchPacketSalesDetailPage({
   };
 
   const canSendToOps = record.status === 'draft' || record.status === 'review';
+  const submitted = record.status === 'sent_to_ops' || record.status === 'accepted' || record.status === 'rejected';
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-4">
-        <Link href="/app/sales/launch-packets">
-          <Button variant="outline" size="icon">
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-        </Link>
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">Launch Packet</h1>
-          <p className="text-muted-foreground text-sm">Sales handoff — send to Ops when ready.</p>
-        </div>
-      </div>
-
-      <LaunchPacketDetail packet={record} mode="sales">
-        {canSendToOps && (
-          <div className="flex gap-2">
-            <SendToOpsButton packetId={id} />
+    <SalesPageShell
+      breadcrumb={
+        <span className="text-muted-foreground">
+          Sales <span className="text-foreground/80">/ Contract Launch</span>
+        </span>
+      }
+    >
+      <div className="p-4 md:p-6 space-y-6">
+        <PageHeader
+          title="Contract Launch"
+          description="Deal handoff to Operations. Complete the checklist, then Submit to Operations. Status: Draft → Ready → Submitted."
+          primaryCta={
+            canSendToOps ? (
+              <SendToOpsButton packetId={id} />
+            ) : (
+              <Link href="/app/ops/launch-intake">
+                <Button variant="outline">View in Launch Intake</Button>
+              </Link>
+            )
+          }
+        />
+        {submitted && (
+          <div className="flex items-start gap-2 rounded-lg border border-amber-500/50 bg-amber-500/10 p-3 text-sm">
+            <Lock className="h-4 w-4 shrink-0 mt-0.5" />
+            <p className="text-muted-foreground">
+              This launch has been submitted to Ops. Scope and proposal edits are locked; contact Ops to request changes.
+            </p>
           </div>
         )}
-      </LaunchPacketDetail>
-    </div>
+        <ContractLaunchThreeColumn packet={record} />
+      </div>
+    </SalesPageShell>
   );
 }

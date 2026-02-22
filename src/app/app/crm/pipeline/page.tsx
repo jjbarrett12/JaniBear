@@ -20,8 +20,10 @@ export default async function PipelinePage() {
       est_value,
       created_at,
       client_id,
+      account_id,
       location_id,
       clients (id, name),
+      accounts (id, name),
       locations (id, name)
     `)
     .eq('org_id', org.org_id)
@@ -76,14 +78,15 @@ export default async function PipelinePage() {
                 <p className="text-xs text-muted-foreground">{list.length} deal{list.length !== 1 ? 's' : ''}</p>
               </div>
               <div className="flex-1 overflow-y-auto p-2 space-y-2 min-h-[120px]">
-                {list.map((opp: { id: string; stage?: string; est_mrr?: number; est_value?: number; client_id?: string; location_id?: string; clients?: { id: string; name: string } | null; locations?: { id: string; name: string } | null }) => {
+                {list.map((opp: { id: string; stage?: string; est_mrr?: number; est_value?: number; client_id?: string; account_id?: string; location_id?: string; clients?: { id: string; name: string } | null; accounts?: { id: string; name: string } | null; locations?: { id: string; name: string } | null }) => {
                   const next = nextActivityByOpp.get(opp.id);
+                  const name = (opp.clients as { name: string } | null)?.name ?? (opp.accounts as { name: string } | null)?.name ?? 'No client';
                   return (
                     <Link key={opp.id} href={`/app/crm/opportunities/${opp.id}`}>
                       <Card className="hover:bg-muted/50 transition-colors cursor-pointer">
                         <CardContent className="p-3">
                           <p className="font-medium text-sm truncate">
-                            {(opp.clients as { name: string })?.name ?? 'No client'}
+                            {name}
                           </p>
                           <p className="text-xs text-muted-foreground truncate">
                             {(opp.locations as { name: string })?.name ?? 'No site'}

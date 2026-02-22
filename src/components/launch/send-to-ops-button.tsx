@@ -22,13 +22,14 @@ export function SendToOpsButton({ packetId }: { packetId: string }) {
     }
     router.refresh();
     setLoading(false);
+    router.push(`/app/ops/launch-intake?highlight=${encodeURIComponent(packetId)}`);
   };
 
   return (
     <div className="flex flex-col gap-2">
       <Button onClick={handleSend} disabled={loading} className="gap-2">
         <Send className="h-4 w-4" />
-        {loading ? 'Sending…' : 'Send to Ops'}
+        {loading ? 'Sending…' : 'Submit to Operations'}
       </Button>
       {error && <p className="text-sm text-destructive">{error}</p>}
     </div>

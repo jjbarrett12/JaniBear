@@ -4,12 +4,17 @@ A comprehensive, multi-tenant SaaS for janitorial businesses, featuring AI-power
 
 ## 🚀 Key Modules
 
-### 1. Sales & AI Proposals
-- **Walkthroughs**: Mobile-friendly capture (text, photo, video, audio)
-- **AI Extraction**: Auto-generates scope of work from walkthrough data (stubbed)
-- **Proposals**: Create, edit, and send professional proposals with e-sign/approval
-- **CRM**: Manage Clients, Sites, Leads, and Opportunities
-- **Public Proposal Links**: Client-facing view for acceptance
+### 1. Sales & AI Proposals (“Deal Machine”)
+- **Leads** (`/app/sales/leads`): Table + right-drawer quick view; Convert to Opportunity (existing or new Account) → Pipeline
+- **Pipeline** (`/app/sales/pipeline`): Board/Table by stage; opportunity drawer with walkthrough/scope/proposal actions
+- **Accounts** (`/app/sales/accounts`): Saved views (Prospects/Customers); account detail tabs: Overview, Walkthroughs, Scope, Proposals, Activity
+- **Walkthroughs** (`/app/sales/walkthroughs`): Table/Calendar; “Create Scope from Walkthrough” → Scope Builder
+- **Scope Builder** (`/app/sales/scope-builder` → `/app/sales/scope`): Split view; Generate Proposal; Lock/Unlock
+- **Proposals** (`/app/sales/proposals`): Table (account, amount, status); accepted → “Open Contract Launch”
+- **Win/Loss** (`/app/sales/win-loss`): KPI strip + closed-opportunities table
+- **Contract Launch** (`/app/sales/contract-launch` → `/app/sales/launch-packets`): 3-column (Deal summary, Checklist, Ops preview); Submit to Ops → redirect to Launch Intake with item highlighted
+- **Operations → Launch Intake** (`/app/ops/launch-intake`): Incoming launches list (missing-item badges); detail: Accept Intake / Request Changes
+- **Backward compatibility**: `/app/sales/launch-packet` and `/app/sales/scope-builder` redirect to the canonical routes; nav label “Contract Launch” (UI) vs “Launch Packet” (route) preserved
 
 ### 2. QC & Retention
 - **Inspections**: Customizable templates, scoring, and mobile execution
@@ -92,6 +97,12 @@ npm run deploy
 
 This script stages all changes, commits (if any), and pushes to `main`. Vercel builds and deploys to https://janibear.com in 1–2 minutes. Use this when you’re ready for your local changes to go live.
 
+**Verify Sales → Ops handoff (smoke check):**  
+1) Open every Sales nav item (Leads, Pipeline, Accounts, Walkthroughs, Scope Builder, Proposals, Win/Loss, Contract Launch).  
+2) Create a lead → Convert to Opportunity (select or create account) → confirm it appears in Pipeline.  
+3) From Contract Launch, open a packet (or create one from account/opportunity flow if available) → complete checklist → Submit to Operations → confirm redirect to `/app/ops/launch-intake` and the new launch is highlighted.  
+4) In Launch Intake, open the launch → Accept Intake or Request Changes.
+
 ## 📁 Project Structure
 
 ```
@@ -131,3 +142,20 @@ Located in `src/lib/ai/`. Connect your providers (OpenAI, Anthropic) here:
 
 For Follow-up Sequences and Monthly Reports, use Supabase Edge Functions invoked by pg_cron or an external scheduler (e.g., Vercel Cron).
 (Stubs provided in database schema for `sequences` and `report_runs`).
+
+## 🛒 Member Pro Gear
+
+Member-only shop for equipment and gloves with negotiated pricing. Gated by org-level feature flag.
+
+**Enable Pro Gear for an organization**
+
+1. In Supabase SQL Editor (or any client), run:
+   ```sql
+   UPDATE organizations
+   SET pro_gear_enabled = true
+   WHERE id = 'your-org-uuid';
+   ```
+2. Replace `your-org-uuid` with the organization’s `id` (from `organizations` table).
+3. Users in that org will see “Member Pro Gear” in the Executive nav and can access `/app/pro-gear`.
+
+When `pro_gear_enabled` is `false` (default), the nav link is hidden and direct visits to Pro Gear show a message to contact the admin.

@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { ExecutiveView } from './ExecutiveView';
 import { WidgetGrid } from '@/components/widgets/WidgetGrid';
 import { setExecutiveMode } from '@/actions/executive-mode';
-import type { WidgetDefinition } from '@/lib/widgets/types';
+import { dashboardWidgetRegistry } from '@/lib/widgets/registry/dashboard-widgets';
 import { LayoutGrid, Sparkles } from 'lucide-react';
 
 export function DashboardWithExecutiveToggle({
@@ -19,12 +19,12 @@ export function DashboardWithExecutiveToggle({
   isExecutiveEligible: boolean;
   widgetGridProps: {
     moduleKey: string;
-    widgets: WidgetDefinition[];
     role?: string | null;
     roleEnum?: string | null;
     isAdmin?: boolean;
   };
 }) {
+  const widgets = dashboardWidgetRegistry;
   const [executiveMode, setExecutiveModeState] = useState(initialExecutiveMode);
   const [isPending, startTransition] = useTransition();
 
@@ -41,7 +41,7 @@ export function DashboardWithExecutiveToggle({
       <WidgetGrid
         moduleKey={widgetGridProps.moduleKey}
         orgId={orgId}
-        widgets={widgetGridProps.widgets}
+        widgets={widgets}
         role={widgetGridProps.role}
         roleEnum={widgetGridProps.roleEnum}
         header={null}
@@ -83,7 +83,7 @@ export function DashboardWithExecutiveToggle({
         <WidgetGrid
           moduleKey={widgetGridProps.moduleKey}
           orgId={orgId}
-          widgets={widgetGridProps.widgets}
+          widgets={widgets}
           role={widgetGridProps.role}
           roleEnum={widgetGridProps.roleEnum}
           header={null}

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useKpiData } from '@/contexts/kpi-data-context';
 import { StrategicTimeframeToggle } from '@/components/kpi/strategic-timeframe-toggle';
 import { KpiSection } from '@/components/kpi/KpiSection';
@@ -60,8 +60,7 @@ export function KpiDashboardPageV2Content() {
     setDetailDrawerOpen(true);
   };
 
-  return (
-    <KpiDashboardLayout>
+  const inner = (<>
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
@@ -317,6 +316,7 @@ export function KpiDashboardPageV2Content() {
       >
         {detailDrawerContent}
       </KpiDetailsDrawer>
-    </KpiDashboardLayout>
+    </>
   );
+  return React.createElement(KpiDashboardLayout, null, inner);
 }

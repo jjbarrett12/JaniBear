@@ -22,14 +22,6 @@ import {
 import { ChevronDown, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-function KpiDashboardLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="mx-auto max-w-[1360px] px-4 sm:px-6 space-y-8 pb-8">
-      {children}
-    </div>
-  );
-}
-
 export function KpiDashboardPageV2() {
   const {
     timeframe,
@@ -67,7 +59,7 @@ export function KpiDashboardPageV2() {
   };
 
   const content = (
-    <KpiDashboardLayout>
+    <div className="mx-auto max-w-[1360px] px-4 sm:px-6 space-y-8 pb-8">
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
@@ -323,7 +315,7 @@ export function KpiDashboardPageV2() {
       >
         {detailDrawerContent}
       </KpiDetailsDrawer>
-    </KpiDashboardLayout>
+    </div>
   );
   return content;
 }

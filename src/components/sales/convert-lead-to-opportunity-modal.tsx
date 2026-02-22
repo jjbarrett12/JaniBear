@@ -2,15 +2,6 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -21,8 +12,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { convertLeadToOpportunity } from '@/actions/leads';
-import { TrendingUp } from 'lucide-react';
+import { TrendingUp, X } from 'lucide-react';
 
 const STAGES = [
   { value: 'qualified', label: 'Qualified' },
@@ -77,103 +69,125 @@ export function ConvertLeadToOpportunityModal({
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant="default" className="gap-2">
-          <TrendingUp className="h-4 w-4" />
-          Convert to Opportunity
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
-        <form onSubmit={handleSubmit}>
-          <DialogHeader>
-            <DialogTitle>Convert to Opportunity</DialogTitle>
-            <DialogDescription>
-              Create or link an Account (prospect) and add this lead to the Pipeline.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
-              <Label>Account</Label>
-              <div className="flex gap-2">
-                <Button
-                  type="button"
-                  variant={useNewAccount ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setUseNewAccount(true)}
-                >
-                  New
-                </Button>
-                <Button
-                  type="button"
-                  variant={!useNewAccount ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setUseNewAccount(false)}
-                >
-                  Existing
-                </Button>
-              </div>
-              {useNewAccount ? (
-                <Input
-                  value={accountName}
-                  onChange={(e) => setAccountName(e.target.value)}
-                  placeholder="Account name"
-                  required
-                />
-              ) : (
-                <Select value={accountId} onValueChange={setAccountId} required={!useNewAccount}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select account" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {accounts.map((a) => (
-                      <SelectItem key={a.id} value={a.id}>
-                        {a.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
-            </div>
-            <div className="grid gap-2">
-              <Label>Initial stage</Label>
-              <Select value={stage} onValueChange={setStage}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {STAGES.map((s) => (
-                    <SelectItem key={s.value} value={s.value}>
-                      {s.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="expected-value">Expected value (optional)</Label>
-              <Input
-                id="expected-value"
-                type="number"
-                min="0"
-                step="0.01"
-                placeholder="0.00"
-                value={expectedValue}
-                onChange={(e) => setExpectedValue(e.target.value)}
-              />
-            </div>
-            {error && <p className="text-sm text-destructive">{error}</p>}
-          </div>
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => setOpen(false)}>
-              Cancel
-            </Button>
-            <Button type="submit" disabled={pending}>
-              {pending ? 'Converting…' : 'Convert & open in Pipeline'}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+    <>
+      <Button
+        type="button"
+        variant="default"
+        className="gap-2"
+        onClick={() => setOpen(true)}
+      >
+        <TrendingUp className="h-4 w-4" />
+        Convert to Opportunity
+      </Button>
+      {open && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="convert-dialog-title"
+        >
+          <Card className="w-full max-w-md">
+            <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
+              <CardTitle id="convert-dialog-title">Convert to Opportunity</CardTitle>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
+                onClick={() => setOpen(false)}
+                aria-label="Close"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <p className="text-sm text-muted-foreground">
+                  Create or link an Account (prospect) and add this lead to the Pipeline.
+                </p>
+                <div className="grid gap-2">
+                  <Label>Account</Label>
+                  <div className="flex gap-2">
+                    <Button
+                      type="button"
+                      variant={useNewAccount ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setUseNewAccount(true)}
+                    >
+                      New
+                    </Button>
+                    <Button
+                      type="button"
+                      variant={!useNewAccount ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setUseNewAccount(false)}
+                    >
+                      Existing
+                    </Button>
+                  </div>
+                  {useNewAccount ? (
+                    <Input
+                      value={accountName}
+                      onChange={(e) => setAccountName(e.target.value)}
+                      placeholder="Account name"
+                      required
+                    />
+                  ) : (
+                    <Select value={accountId} onValueChange={setAccountId} required={!useNewAccount}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select account" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {accounts.map((a) => (
+                          <SelectItem key={a.id} value={a.id}>
+                            {a.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                </div>
+                <div className="grid gap-2">
+                  <Label>Initial stage</Label>
+                  <Select value={stage} onValueChange={setStage}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {STAGES.map((s) => (
+                        <SelectItem key={s.value} value={s.value}>
+                          {s.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="expected-value">Expected value (optional)</Label>
+                  <Input
+                    id="expected-value"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    placeholder="0.00"
+                    value={expectedValue}
+                    onChange={(e) => setExpectedValue(e.target.value)}
+                  />
+                </div>
+                {error && <p className="text-sm text-destructive">{error}</p>}
+                <div className="flex justify-end gap-2 pt-2">
+                  <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+                    Cancel
+                  </Button>
+                  <Button type="submit" disabled={pending}>
+                    {pending ? 'Converting…' : 'Convert & open in Pipeline'}
+                  </Button>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+    </>
   );
 }

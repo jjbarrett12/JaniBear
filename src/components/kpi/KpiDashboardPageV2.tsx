@@ -58,7 +58,7 @@ export function KpiDashboardPageV2() {
     setDetailDrawerOpen(true);
   };
 
-  return (
+  const content = (
     <div className="mx-auto max-w-[1360px] px-4 sm:px-6 space-y-8 pb-8">
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -317,4 +317,5 @@ export function KpiDashboardPageV2() {
       </KpiDetailsDrawer>
     </div>
   );
+  return content;
 }

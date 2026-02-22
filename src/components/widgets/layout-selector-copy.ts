@@ -91,12 +91,12 @@ export const LAYOUT_LOCKED_BANNER = 'Layout locked by your admin.';
 // --- Legacy (used by SaveAsOrgTemplateModal, ApplyToTeamModal) ---
 export const SAVE_AS_ORG_TEMPLATE_TITLE = 'Save as org template';
 export const SAVE_AS_ORG_TEMPLATE_DESCRIPTION =
-  'Save the current layout as your organization's standard for this view. Team members can use it via "Org template".';
+  `Save the current layout as your organization's standard for this view. Team members can use it via "Org template".`;
 export const SAVE_AS_ORG_TEMPLATE_NAME_LABEL = 'Template name';
 export const SAVE_AS_ORG_TEMPLATE_CONFIRM = 'Save template';
 export const APPLY_TO_TEAM_TITLE = 'Apply to team';
 export const APPLY_TO_TEAM_DESCRIPTION =
-  'Set the org template as the default for this view. Optionally push this layout to every team member's saved layout.';
+  `Set the org template as the default for this view. Optionally push this layout to every team member's saved layout.`;
 export const APPLY_TO_TEAM_PUSH_LABEL = 'Push layout to all users (overwrite their saved layout)';
 export const APPLY_TO_TEAM_CONFIRM = 'Apply';
 export const LOCKED_BY_ADMIN_BANNER = 'Layout is locked by your admin. You cannot customize widgets.';

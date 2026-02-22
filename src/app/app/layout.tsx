@@ -36,7 +36,7 @@ export default async function AppLayout({
   const impersonatingOrgName = impersonateOrgId && impersonateOrgId === org.org_id ? orgName : null;
 
   const pathname = (await headers()).get('x-pathname') ?? '';
-  if (shell === 'franchisor' && pathname.startsWith('/app/') && !pathname.startsWith('/app/franchise') && pathname !== '/app/settings' && !pathname.startsWith('/app/settings/')) {
+  if (shell === 'franchisor' && pathname.startsWith('/app/') && !pathname.startsWith('/app/franchise') && pathname !== '/app/settings' && !pathname.startsWith('/app/settings/') && pathname !== '/app/kpis' && !pathname.startsWith('/app/kpis/')) {
     redirect('/app/franchise');
   }
 

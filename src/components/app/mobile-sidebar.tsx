@@ -69,7 +69,7 @@ const salesItemKeys: { href: string; labelKey: AppTranslationKey; icon: React.Co
 /** Operations-only */
 const operationsItemKeys: { href: string; labelKey: AppTranslationKey; icon: React.ComponentType<{ className?: string }> }[] = [
   { href: '/app/accounts', labelKey: 'navAccounts', icon: MapPin },
-  { href: '/app/ops/launches', labelKey: 'navLaunches', icon: Rocket },
+  { href: '/app/ops/launch-intake', labelKey: 'navLaunchIntake', icon: Rocket },
   { href: '/app/crews', labelKey: 'navCrewManagement', icon: Users },
   { href: '/app/templates', labelKey: 'navBrandStandards', icon: Award },
   { href: '/app/schedules', labelKey: 'navSchedules', icon: Calendar },
@@ -294,10 +294,10 @@ export function MobileSidebar({ logoUrl, navAlerts, shell, franchiseeEnrolled }:
                     const Icon = item.icon;
                     const isActive =
                       pathname === item.href ||
-                      (item.href === '/app/ops/launches' && pathname.startsWith('/app/ops/launches')) ||
+                      (item.href === '/app/ops/launch-intake' && pathname.startsWith('/app/ops/launch-intake')) ||
                       (item.href === '/app/accounts' && pathname.startsWith('/app/accounts'));
                     const alertCount =
-                      item.href === '/app/ops/launches' ? alerts.handoffsCount
+                      item.href === '/app/ops/launch-intake' ? alerts.handoffsCount
                       : item.href === '/app/issues' ? alerts.openIssuesCount
                       : item.href === '/app/schedules' ? alerts.missedTaskCount
                       : 0;

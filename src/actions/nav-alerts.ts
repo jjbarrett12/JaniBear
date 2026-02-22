@@ -25,11 +25,24 @@ export async function getNavAlertCounts(): Promise<NavAlertCounts> {
   const today = new Date().toISOString().split('T')[0];
 
   const [handoffsRes, issuesRes, missedRes] = await Promise.all([
-    supabase
-      .from('launch_plans')
-      .select('id', { count: 'exact', head: true })
-      .eq('org_id', org.org_id)
-      .eq('status', 'sales_ready'),
+    (async () => {
+      const plansRes = await supabase
+        .from('launch_plans')
+        .select('id', { count: 'exact', head: true })
+        .eq('org_id', org.org_id)
+        .eq('status', 'sales_ready');
+      let packetsCount = 0;
+      const packetsRes = await supabase
+        .from('launch_packets')
+        .select('id', { count: 'exact', head: true })
+        .eq('org_id', org.org_id)
+        .in('status', ['ready', 'sent_to_ops']);
+      if (!(packetsRes as { error?: unknown }).error) {
+        packetsCount = (packetsRes as { count?: number })?.count ?? 0;
+      }
+      const plansCount = (plansRes as { count?: number })?.count ?? 0;
+      return plansCount + packetsCount;
+    })(),
     supabase
       .from('issues')
       .select('id', { count: 'exact', head: true })
@@ -58,7 +71,7 @@ export async function getNavAlertCounts(): Promise<NavAlertCounts> {
   ]);
 
   return {
-    handoffsCount: (handoffsRes as { count?: number })?.count ?? 0,
+    handoffsCount: await handoffsRes,
     openIssuesCount: (issuesRes as { count?: number })?.count ?? 0,
     missedTaskCount: await missedRes,
   };

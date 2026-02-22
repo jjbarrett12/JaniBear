@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Building2, Edit } from 'lucide-react';
 import { AccountDetailTabs } from '@/components/accounts/account-detail-tabs';
+import { AccountLifecycleRibbon } from '@/components/accounts/account-lifecycle-ribbon';
 
 export default async function AccountDetailPage({
   params,
@@ -33,6 +34,23 @@ export default async function AccountDetailPage({
     .eq('org_id', org.org_id)
     .order('is_primary', { ascending: false })
     .order('name');
+
+  const { data: latestPacket } = await supabase
+    .from('launch_packets')
+    .select('status')
+    .eq('account_id', id)
+    .eq('org_id', org.org_id)
+    .order('updated_at', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  const launchPacketStatus = latestPacket?.status ?? null;
+
+  const nextAction =
+    account.status !== 'active' && launchPacketStatus && ['ready', 'sent_to_ops'].includes(launchPacketStatus)
+      ? 'ops'
+      : account.status !== 'active' && launchPacketStatus && ['draft', 'review'].includes(launchPacketStatus)
+        ? 'sales'
+        : null;
 
   return (
     <div className="space-y-6">
@@ -75,6 +93,12 @@ export default async function AccountDetailPage({
           </Button>
         </Link>
       </div>
+
+      <AccountLifecycleRibbon
+        accountStatus={account.status as 'active' | 'inactive'}
+        launchPacketStatus={launchPacketStatus}
+        nextAction={nextAction}
+      />
 
       <AccountDetailTabs account={account} facilities={facilities ?? []} />
     </div>

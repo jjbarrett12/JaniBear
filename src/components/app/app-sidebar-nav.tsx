@@ -10,7 +10,7 @@ import type { NavAlertCounts } from '@/actions/nav-alerts';
 import type { AppTranslationKey } from '@/lib/app-translations';
 import type { ShellKey } from '@/lib/shell';
 import { getNavSectionsForShell } from '@/lib/nav/shellNav';
-import type { NavSection } from '@/lib/nav/shellNav';
+import type { NavSection, NavItem } from '@/lib/nav/shellNav';
 import {
   ChevronDown,
   ChevronRight,
@@ -20,45 +20,56 @@ import {
 const STORAGE_KEY = 'janibear-nav-collapsed';
 
 function getSectionIdForPath(sections: NavSection[], pathname: string): string {
+  if (pathname === '/app/kpis' || pathname.startsWith('/app/kpis/')) {
+    const exec = sections.find((s) => s.id === 'executive');
+    if (exec) return 'executive';
+  }
   for (const section of sections) {
     for (const item of section.items) {
       if (pathname === item.href) return section.id;
       if (item.href !== '/app/dashboard' && pathname.startsWith(item.href + '/')) return section.id;
       if (item.href === '/app/crm' && (pathname === '/app/crm' || pathname.startsWith('/app/crm/'))) return section.id;
-      if (item.href === '/app/sales' && (pathname === '/app/sales' || pathname.startsWith('/app/sales/'))) return section.id;
+      if (pathname.startsWith('/app/sales/') || pathname === '/app/sales') return section.id;
+      if (pathname.startsWith('/app/ops/')) return section.id;
     }
   }
   return sections[0]?.id ?? 'executive';
 }
 
 function navLinkClass(active: boolean) {
-  return `flex items-center gap-2.5 rounded-md px-3 py-2 text-sm font-medium transition-colors min-h-[36px] ${
-    active ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+  return `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors min-h-[40px] border-l-2 ${
+    active
+      ? 'border-l-primary bg-primary/10 text-foreground font-medium'
+      : 'border-l-transparent text-muted-foreground hover:bg-muted/70 hover:text-foreground'
   }`;
 }
 
-const ALERT_BADGE_CLASS = 'ml-auto text-[10px] min-w-[18px] h-5 px-1.5 justify-center shrink-0 bg-destructive text-destructive-foreground border-0';
+const ALERT_BADGE_CLASS =
+  'ml-auto text-[10px] min-w-[18px] h-5 px-1.5 justify-center shrink-0 bg-destructive text-destructive-foreground border-0 rounded-md';
 
+/** Section header: subtle tint by section, readable in light/dark. */
 function sectionHeaderColor(sectionId: string, isActive: boolean): string {
-  const base = 'hover:opacity-90 ';
+  const base = 'rounded-lg transition-colors duration-150 ';
   if (isActive) {
     const active: Record<string, string> = {
-      executive: 'bg-blue-500/15 text-blue-700 dark:text-blue-300',
-      growth: 'bg-amber-500/15 text-amber-700 dark:text-amber-300',
-      operations: 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300',
-      system: 'bg-violet-500/15 text-violet-700 dark:text-violet-300',
-      franchisor: 'bg-blue-500/15 text-blue-700 dark:text-blue-300',
+      executive: 'bg-sky-500/12 text-sky-800 dark:bg-sky-400/15 dark:text-sky-200',
+      sales: 'bg-amber-500/12 text-amber-800 dark:bg-amber-400/15 dark:text-amber-200',
+      growth: 'bg-amber-500/12 text-amber-800 dark:bg-amber-400/15 dark:text-amber-200',
+      operations: 'bg-emerald-500/12 text-emerald-800 dark:bg-emerald-400/15 dark:text-emerald-200',
+      system: 'bg-slate-500/12 text-slate-800 dark:bg-slate-400/15 dark:text-slate-200',
+      franchisor: 'bg-sky-500/12 text-sky-800 dark:bg-sky-400/15 dark:text-sky-200',
     };
     return base + (active[sectionId] ?? 'bg-muted text-foreground');
   }
   const inactive: Record<string, string> = {
-    executive: 'text-blue-600 dark:text-blue-400',
-    growth: 'text-amber-600 dark:text-amber-400',
-    operations: 'text-emerald-600 dark:text-emerald-400',
-    system: 'text-violet-600 dark:text-violet-400',
-    franchisor: 'text-blue-600 dark:text-blue-400',
+    executive: 'text-sky-700 dark:text-sky-300/90 hover:bg-sky-500/8',
+    sales: 'text-amber-700 dark:text-amber-300/90 hover:bg-amber-500/8',
+    growth: 'text-amber-700 dark:text-amber-300/90 hover:bg-amber-500/8',
+    operations: 'text-emerald-700 dark:text-emerald-300/90 hover:bg-emerald-500/8',
+    system: 'text-slate-600 dark:text-slate-400 hover:bg-slate-500/8',
+    franchisor: 'text-sky-700 dark:text-sky-300/90 hover:bg-sky-500/8',
   };
-  return base + (inactive[sectionId] ?? 'text-muted-foreground hover:bg-muted/60 hover:text-foreground');
+  return base + (inactive[sectionId] ?? 'text-muted-foreground hover:bg-muted/60');
 }
 
 export function AppSidebarNav({
@@ -117,13 +128,14 @@ export function AppSidebarNav({
 
   const isItemActive = (item: NavItem) => {
     if (pathname === item.href) return true;
+    if (item.href === '/app/kpis' && (pathname === '/app/kpis' || pathname.startsWith('/app/kpis/'))) return true;
     if (item.href === '/app/crm/pipeline' && pathname.startsWith('/app/crm/pipeline')) return true;
     if (item.href === '/app/crm' && (pathname === '/app/crm' || (pathname.startsWith('/app/crm/') && !pathname.startsWith('/app/crm/pipeline')))) return true;
-    if (item.href === '/app/sites' && pathname.startsWith('/app/sites')) return true;
-    if (item.href === '/app/map' && pathname.startsWith('/app/map')) return true;
+    if (item.href === '/app/ops/map' && pathname.startsWith('/app/ops/map')) return true;
+    if (item.href === '/app/ops/accounts' && pathname.startsWith('/app/ops/accounts')) return true;
     if (item.href === '/app/accounts' && pathname.startsWith('/app/accounts')) return true;
-    if (item.href === '/app/sales' && (pathname === '/app/sales' || pathname.startsWith('/app/sales/'))) return true;
-    if (item.href === '/app/ops/launches' && pathname.startsWith('/app/ops/launches')) return true;
+    if (item.href.startsWith('/app/sales/') && (pathname === item.href || pathname.startsWith(item.href + '/'))) return true;
+    if (item.href.startsWith('/app/ops/') && (pathname === item.href || pathname.startsWith(item.href + '/'))) return true;
     if (item.href === '/app/franchise' && (pathname === '/app/franchise' || pathname.startsWith('/app/franchise/'))) return true;
     if (item.href === '/app/opportunities/network' && pathname.startsWith('/app/opportunities/network')) return true;
     if (item.href !== '/app/dashboard' && pathname.startsWith(item.href + '/')) return true;
@@ -137,53 +149,63 @@ export function AppSidebarNav({
   };
 
   return (
-    <nav className="min-w-0 flex-1 space-y-0.5 overflow-y-auto p-2">
-      {sections.map((section) => {
-        const isOpen = collapsed[section.id] !== true;
-        const isActiveSection = section.id === activeSectionId;
+    <nav className="min-w-0 flex-1 overflow-y-auto px-3 py-4">
+      <div className="space-y-5">
+        {sections.map((section) => {
+          const isOpen = collapsed[section.id] !== true;
+          const isActiveSection = section.id === activeSectionId;
 
-        return (
-          <div key={section.id} className="space-y-0.5">
-            <button
-              type="button"
-              onClick={() => toggle(section.id)}
-              className={`flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider transition-colors min-h-[36px] ${sectionHeaderColor(section.id, isActiveSection)}`}
-            >
-              {isOpen ? <ChevronDown className="h-4 w-4 shrink-0" /> : <ChevronRight className="h-4 w-4 shrink-0" />}
-              <span className="truncate">{t(section.labelKey)}</span>
-            </button>
+          return (
+            <div key={section.id} className="space-y-1">
+              <button
+                type="button"
+                onClick={() => toggle(section.id)}
+                className={`flex w-full items-center gap-2.5 px-3 py-2.5 text-left text-xs font-semibold uppercase tracking-widest transition-colors min-h-[40px] ${sectionHeaderColor(section.id, isActiveSection)}`}
+                aria-expanded={isOpen}
+              >
+                {isOpen ? (
+                  <ChevronDown className="h-4 w-4 shrink-0 opacity-80" aria-hidden />
+                ) : (
+                  <ChevronRight className="h-4 w-4 shrink-0 opacity-80" aria-hidden />
+                )}
+                <span className="truncate">{t(section.labelKey)}</span>
+              </button>
 
-            {isOpen && (
-              <div className="space-y-0.5 pl-1">
-                {section.items.map((item) => {
-                  const Icon = item.icon;
-                  const active = isItemActive(item);
-                  const alertCount = getAlertCount(item.alertKey);
-                  return (
-                    <AppLink
-                      key={`${item.href}-${item.labelKey}`}
-                      href={item.href}
-                      className={navLinkClass(active)}
-                    >
-                      <Icon className="h-5 w-5 shrink-0" />
-                      <span className="truncate">{t(item.labelKey)}</span>
-                      {alertCount > 0 && (
-                        <Badge variant="destructive" className={ALERT_BADGE_CLASS} title="Requires attention">
-                          {alertCount > 99 ? '99+' : alertCount}
-                        </Badge>
-                      )}
-                    </AppLink>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        );
-      })}
+              {isOpen && (
+                <div className="space-y-0.5 pl-1">
+                  {section.items.map((item) => {
+                    const Icon = item.icon;
+                    const active = isItemActive(item);
+                    const alertCount = getAlertCount(item.alertKey);
+                    return (
+                      <AppLink
+                        key={`${item.href}-${item.labelKey}`}
+                        href={item.href}
+                        className={navLinkClass(active)}
+                      >
+                        <Icon
+                          className={`h-5 w-5 shrink-0 ${active ? 'opacity-100' : 'opacity-70'}`}
+                          aria-hidden
+                        />
+                        <span className="truncate">{t(item.labelKey)}</span>
+                        {alertCount > 0 && (
+                          <Badge variant="destructive" className={ALERT_BADGE_CLASS} title="Requires attention">
+                            {alertCount > 99 ? '99+' : alertCount}
+                          </Badge>
+                        )}
+                      </AppLink>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
 
-      <div className="pt-1.5 mt-1 border-t border-border space-y-0.5">
+      <div className="mt-6 pt-4 border-t border-border/80">
         <AppLink href="/app/settings" className={navLinkClass(pathname.startsWith('/app/settings'))}>
-          <Settings className="h-5 w-5 shrink-0" />
+          <Settings className="h-5 w-5 shrink-0 opacity-70" aria-hidden />
           <span className="truncate">{t('navSettings')}</span>
         </AppLink>
       </div>

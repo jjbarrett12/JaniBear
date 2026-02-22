@@ -116,6 +116,13 @@ const enApp = {
     navAwards: 'Awards',
     navMemberships: 'Memberships',
     navNetworkOpportunities: 'Network Opportunities',
+    navScope: 'Scope Builder',
+    navApprovals: 'Approvals',
+    navWinLoss: 'Win/Loss',
+    navLaunchPacket: 'Launch Packet',
+    navLaunchIntake: 'Launch Intake',
+    navAccountsProspects: 'Accounts (Prospects)',
+    navAccountsActive: 'Accounts (Active)',
     itemsRequireAttention: '{{count}} items require attention',
 
     // Dashboard
@@ -273,6 +280,13 @@ const esOverrides: Partial<typeof enApp> = {
     navAwards: 'Premios',
     navMemberships: 'Membresías',
     navNetworkOpportunities: 'Oportunidades de red',
+    navScope: 'Constructor de alcance',
+    navApprovals: 'Aprobaciones',
+    navWinLoss: 'Ganadas/Perdidas',
+    navLaunchPacket: 'Paquete de lanzamiento',
+    navLaunchIntake: 'Recepción de lanzamiento',
+    navAccountsProspects: 'Cuentas (Prospectos)',
+    navAccountsActive: 'Cuentas (Activas)',
     itemsRequireAttention: '{{count}} elementos requieren atención',
 
     dashboardWelcomeBack: 'Bienvenido de nuevo',

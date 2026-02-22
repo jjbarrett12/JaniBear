@@ -59,7 +59,7 @@ export function KpiDashboardPageV2ContentInner() {
     setDetailDrawerOpen(true);
   };
 
-  return (<> {/* Page Header */}
+  return (<div className="flex flex-col gap-6"> {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-heading font-bold text-foreground">KPI Dashboard</h1>
@@ -314,6 +314,6 @@ export function KpiDashboardPageV2ContentInner() {
       >
         {detailDrawerContent}
       </KpiDetailsDrawer>
-    </>
+    </div>
   );
 }

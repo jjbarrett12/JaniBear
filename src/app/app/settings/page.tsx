@@ -1,22 +1,27 @@
 import { createClient } from '@/lib/supabase/server';
 import { requireOrg } from '@/lib/auth';
 import { BrandingSettings } from '@/components/settings/branding-settings';
+import { BenchmarkingSettings } from '@/components/settings/benchmarking-settings';
 import { OrgSwitcher } from '@/components/settings/org-switcher';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Settings, Palette, Upload, Users } from 'lucide-react';
 
+const ADMIN_ROLES = ['owner', 'admin', 'manager'];
+
 export default async function SettingsPage() {
   const org = await requireOrg();
   const supabase = await createClient();
+  const role = (org as { role?: string }).role ?? null;
+  const canManageBenchmarking = role !== null && ADMIN_ROLES.includes(role.toLowerCase());
 
-  // Get organization with branding data
+  // Get organization with branding data (.maybeSingle() so RLS/empty doesn't throw)
   const { data: organization } = await supabase
     .from('organizations')
-    .select('id, name, primary_color, secondary_color, logo_url, custom_branding')
+    .select('id, name, primary_color, secondary_color, logo_url')
     .eq('id', org.org_id)
-    .single();
+    .maybeSingle();
 
   return (
     <div className="space-y-6">
@@ -32,9 +37,9 @@ export default async function SettingsPage() {
             primary_color: organization?.primary_color,
             secondary_color: organization?.secondary_color,
             logo_url: organization?.logo_url,
-            custom_branding: organization?.custom_branding,
           }}
         />
+        {canManageBenchmarking && <BenchmarkingSettings orgId={org.org_id} />}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">

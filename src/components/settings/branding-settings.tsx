@@ -16,7 +16,6 @@ interface BrandingSettingsProps {
     primary_color?: string | null;
     secondary_color?: string | null;
     logo_url?: string | null;
-    custom_branding?: boolean;
   };
 }
 
@@ -78,8 +77,8 @@ export function BrandingSettings({ orgId, initialData }: BrandingSettingsProps) 
         });
 
       if (uploadError) {
-        if (uploadError.message?.includes('Bucket not found') || uploadError.message?.includes('not found')) {
-          throw new Error('Logo storage is not set up. Run migration 005_create_logo_storage_bucket.sql in Supabase SQL Editor.');
+        if (uploadError.message?.includes('Bucket not found') || uploadError.message?.includes('not found') || uploadError.message?.includes('bucket')) {
+          throw new Error('Logo storage is not set up. In Supabase Dashboard: Storage → New bucket → name "organization-logos", set Public. Or run migration 005_create_logo_storage_bucket.sql in SQL Editor.');
         }
         throw uploadError;
       }
@@ -134,7 +133,6 @@ export function BrandingSettings({ orgId, initialData }: BrandingSettingsProps) 
           primary_color: primaryColor,
           secondary_color: secondaryColor,
           logo_url: logoUrl,
-          custom_branding: !!(primaryColor || secondaryColor || logoUrl),
         })
         .eq('id', orgId);
 
@@ -151,7 +149,7 @@ export function BrandingSettings({ orgId, initialData }: BrandingSettingsProps) 
       console.error('Error saving branding:', error);
       const msg = error.message || 'Failed to save settings';
       const hint = error.code === '42501' || msg.includes('policy') || msg.includes('row-level security')
-        ? ' Only org owners and managers can save branding. Run migration 021_org_branding_manager_update.sql in Supabase if you are a manager.'
+        ? ' Only org owners and managers can save branding. If you are a manager, ask your admin to run migration 055_org_branding_update_policy.sql in Supabase.'
         : '';
       toast({
         title: 'Save failed',

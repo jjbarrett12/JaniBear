@@ -24,6 +24,14 @@ function getSectionIdForPath(sections: NavSection[], pathname: string): string {
     const exec = sections.find((s) => s.id === 'executive');
     if (exec) return 'executive';
   }
+  if (pathname === '/app/benchmarks' || pathname.startsWith('/app/benchmarks/')) {
+    const exec = sections.find((s) => s.id === 'executive');
+    if (exec) return 'executive';
+  }
+  if (pathname === '/app/alerts' || pathname.startsWith('/app/alerts/')) {
+    const exec = sections.find((s) => s.id === 'executive');
+    if (exec) return 'executive';
+  }
   for (const section of sections) {
     for (const item of section.items) {
       if (pathname === item.href) return section.id;

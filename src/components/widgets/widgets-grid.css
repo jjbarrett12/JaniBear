@@ -1,0 +1,18 @@
+/* react-grid-layout base styles (package may not ship CSS) */
+.widget-grid-container .react-grid-layout {
+  position: relative;
+}
+.widget-grid-container .react-grid-item {
+  position: absolute;
+  transition: top 0.2s ease, left 0.2s ease, width 0.2s ease, height 0.2s ease;
+}
+.widget-grid-container .react-grid-item.react-draggable-dragging {
+  transition: none;
+  z-index: 3;
+}
+.widget-grid-container .react-grid-item.react-grid-placeholder {
+  z-index: 2;
+  background: hsl(var(--primary) / 0.15);
+  border-radius: 0.5rem;
+  opacity: 0.8;
+}

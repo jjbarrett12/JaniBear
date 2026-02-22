@@ -81,12 +81,22 @@ export async function getUserContext(): Promise<{
 
   const activeOrgId = await getActiveOrgIdFromCookie();
 
-  const { data: memberships } = await supabase
+  // role_enum/capabilities added in 019; if column missing or query fails, fallback so dashboard still loads
+  type MemberRow = { org_id: string; role: string | null; role_enum?: string | null; capabilities?: Record<string, boolean> | null; organizations?: { org_type?: string } | null };
+  let orgs: MemberRow[] = [];
+  const { data: fullData, error: fullError } = await supabase
     .from('org_members')
     .select('org_id, role, role_enum, capabilities, organizations(org_type)')
     .eq('user_id', user.id);
-
-  const orgs = memberships ?? [];
+  if (!fullError && fullData) {
+    orgs = fullData;
+  } else {
+    const { data: fallbackData } = await supabase
+      .from('org_members')
+      .select('org_id, role, organizations(org_type)')
+      .eq('user_id', user.id);
+    orgs = fallbackData ?? [];
+  }
   const firstOrgId = orgs[0]?.org_id ?? null;
   const effectiveOrgId = (activeOrgId && orgs.some((m) => m.org_id === activeOrgId))
     ? activeOrgId

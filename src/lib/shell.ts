@@ -13,18 +13,24 @@ export { SHELL_LABELS } from '@/lib/shell-constants';
 
 /**
  * Resolve the shell for an org. Used by app shell, nav, and route guards.
+ * Returns DEFAULT_SHELL if column is missing (migration not run) or query fails.
  */
 export async function resolveShellForOrg(orgId: string): Promise<ShellKey> {
-  const supabase = await createClient();
-  const { data } = await supabase
-    .from('organizations')
-    .select('shell')
-    .eq('id', orgId)
-    .maybeSingle();
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from('organizations')
+      .select('shell')
+      .eq('id', orgId)
+      .maybeSingle();
 
-  const value = data?.shell as ShellKey | null | undefined;
-  if (value === 'owner_operator' || value === 'franchisee' || value === 'franchisor') {
-    return value;
+    if (error) return DEFAULT_SHELL;
+    const value = data?.shell as ShellKey | null | undefined;
+    if (value === 'owner_operator' || value === 'franchisee' || value === 'franchisor') {
+      return value;
+    }
+  } catch {
+    // Column may not exist yet (migration not run in production)
   }
   return DEFAULT_SHELL;
 }

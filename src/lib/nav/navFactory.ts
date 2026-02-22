@@ -113,6 +113,8 @@ function buildExecutiveSection(): NavSection {
       { href: '/app/dashboard', labelKey: 'navOverview', icon: LayoutDashboard },
       { href: '/app/financial-health', labelKey: 'navFinancialHealth', icon: Wallet },
       { href: '/app/kpis', labelKey: 'navKpiDashboard', icon: BarChart3 },
+      { href: '/app/benchmarks', labelKey: 'navBenchmarks', icon: BarChart3 },
+      { href: '/app/alerts', labelKey: 'navAlerts', icon: AlertCircle },
       { href: '/app/admin/ai-settings', labelKey: 'navAiInsights', icon: Sparkles },
       { href: '/app/university', labelKey: 'navUniversity', icon: GraduationCap },
       { href: '/app/pro-gear', labelKey: 'navProGear', icon: ShoppingBag },
@@ -128,7 +130,7 @@ function buildSystemSection(input: NavFactoryInput): NavSection {
     { href: '/app/settings', labelKey: 'navOrganization', icon: Settings },
     { href: '/app/admin', labelKey: 'navUsersRoles', icon: Users },
     { href: '/app/admin', labelKey: 'navIntegrations', icon: Settings },
-    { href: '/app/admin', labelKey: 'navAuditLogs', icon: FileText },
+    { href: '/app/audit', labelKey: 'navAuditLogs', icon: FileText },
   ];
   const items =
     orgType === 'franchisee'
@@ -154,6 +156,8 @@ function buildFranchisorSections(input: NavFactoryInput): NavSection[] {
         { href: '/app/franchise/awards', labelKey: 'navAwards', icon: Trophy },
         { href: '/app/franchise/memberships', labelKey: 'navMemberships', icon: UserCheck },
         { href: '/app/kpis', labelKey: 'navKpiDashboard', icon: BarChart3 },
+        { href: '/app/benchmarks', labelKey: 'navBenchmarks', icon: BarChart3 },
+        { href: '/app/alerts', labelKey: 'navAlerts', icon: AlertCircle },
       ],
     },
     {

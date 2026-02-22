@@ -153,7 +153,30 @@ const ZERO_AI: AIInsight = {
   hasAlerts: false,
 };
 
+const FALLBACK_DATA: CommandCenterData = {
+  revenue: ZERO_REVENUE,
+  risk: ZERO_RISK,
+  crew: ZERO_CREW,
+  accountHealth: ZERO_ACCOUNT,
+  quality: ZERO_QUALITY,
+  ar: ZERO_AR,
+  pipeline: ZERO_PIPELINE,
+  ai: ZERO_AI,
+  userName: 'there',
+};
+
 export async function getCommandCenterData(orgId: string): Promise<CommandCenterData> {
+  try {
+    return await getCommandCenterDataInner(orgId);
+  } catch (e) {
+    if (process.env.NODE_ENV === 'development') {
+      console.error('[getCommandCenterData]', e);
+    }
+    return FALLBACK_DATA;
+  }
+}
+
+async function getCommandCenterDataInner(orgId: string): Promise<CommandCenterData> {
   const supabase = await createClient();
   const now = new Date();
   const weekStart = startOfWeek(now);

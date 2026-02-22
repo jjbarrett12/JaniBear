@@ -24,15 +24,15 @@ export function ThemeProvider({ children, orgId, initialTheme }: {
     primary_color?: string | null;
     secondary_color?: string | null;
     logo_url?: string | null;
-    custom_branding?: boolean;
   };
 }) {
+  const hasCustomBranding = initialTheme && (initialTheme.primary_color || initialTheme.secondary_color || initialTheme.logo_url);
   const [theme, setTheme] = useState<ThemeColors>(() => {
-    if (initialTheme?.custom_branding) {
+    if (hasCustomBranding) {
       return {
-        primary: initialTheme.primary_color || defaultTheme.primary,
-        secondary: initialTheme.secondary_color || defaultTheme.secondary,
-        logoUrl: initialTheme.logo_url,
+        primary: initialTheme!.primary_color || defaultTheme.primary,
+        secondary: initialTheme!.secondary_color || defaultTheme.secondary,
+        logoUrl: initialTheme!.logo_url,
       };
     }
     return defaultTheme;
@@ -46,11 +46,11 @@ export function ThemeProvider({ children, orgId, initialTheme }: {
         const supabase = createClient();
         const { data } = await supabase
           .from('organizations')
-          .select('primary_color, secondary_color, logo_url, custom_branding')
+          .select('primary_color, secondary_color, logo_url')
           .eq('id', orgId)
           .maybeSingle();
 
-        if (data?.custom_branding) {
+        if (data && (data.primary_color || data.secondary_color || data.logo_url)) {
           setTheme({
             primary: data.primary_color || defaultTheme.primary,
             secondary: data.secondary_color || defaultTheme.secondary,

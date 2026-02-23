@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
+import { useTheme } from '@/lib/theme-provider';
 import { Upload, X, Image as ImageIcon } from 'lucide-react';
 import Image from 'next/image';
 
@@ -21,6 +22,7 @@ interface BrandingSettingsProps {
 
 export function BrandingSettings({ orgId, initialData }: BrandingSettingsProps) {
   const { toast } = useToast();
+  const { setTheme } = useTheme();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [primaryColor, setPrimaryColor] = useState(initialData?.primary_color || '#3b82f6');
   const [secondaryColor, setSecondaryColor] = useState(initialData?.secondary_color || '#64748b');
@@ -138,13 +140,16 @@ export function BrandingSettings({ orgId, initialData }: BrandingSettingsProps) 
 
       if (error) throw error;
 
-      toast({
-        title: 'Settings saved',
-        description: 'Your branding settings have been saved',
+      setTheme({
+        primary: primaryColor,
+        secondary: secondaryColor,
+        logoUrl: logoUrl ?? null,
       });
 
-      // Reload to apply changes
-      setTimeout(() => window.location.reload(), 1000);
+      toast({
+        title: 'Settings saved',
+        description: 'Brand colors and logo are applied across the app.',
+      });
     } catch (error: any) {
       console.error('Error saving branding:', error);
       const msg = error.message || 'Failed to save settings';
@@ -167,9 +172,9 @@ export function BrandingSettings({ orgId, initialData }: BrandingSettingsProps) 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Branding & Customization</CardTitle>
+        <CardTitle>Branding &amp; company colors</CardTitle>
         <CardDescription>
-          Your logo appears in the sidebar. Upload your own to replace the default JANIBEAR logo, or remove it to use the default.
+          Set your company colors and logo. Colors apply app-wide: buttons, links, focus rings, sidebar accents, and primary actions. Logo appears in the sidebar.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-8">
@@ -250,7 +255,7 @@ export function BrandingSettings({ orgId, initialData }: BrandingSettingsProps) 
               />
             </div>
             <p className="text-xs text-gray-500">
-              Used for buttons, links, and primary actions
+              Buttons, links, focus rings, and primary actions across the app
             </p>
           </div>
 
@@ -273,7 +278,7 @@ export function BrandingSettings({ orgId, initialData }: BrandingSettingsProps) 
               />
             </div>
             <p className="text-xs text-gray-500">
-              Used for secondary elements and accents
+              Secondary buttons, borders, and accents app-wide
             </p>
           </div>
         </div>

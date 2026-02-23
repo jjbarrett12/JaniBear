@@ -276,9 +276,9 @@
   body {
     @apply bg-background text-foreground;
   }
-  /* Clear focus ring for mouse users, visible for keyboard */
+  /* Clear focus ring for mouse users, visible for keyboard (uses --ring so brand colors apply) */
   :focus-visible {
-    @apply outline-none ring-2 ring-amber-500/60 ring-offset-2 ring-offset-background;
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
   }
   :focus:not(:focus-visible) {
     @apply outline-none ring-0;
@@ -292,6 +292,19 @@
 .dark main .text-gray-600,
 .dark main .text-gray-500 {
   color: hsl(var(--muted-foreground)) !important;
+}
+
+/* KPI Executive Console: deep navy (dark only), premium cards, accent only for signal */
+.dark .kpi-executive-console {
+  background-color: hsl(222 48% 4%);
+  min-height: 100%;
+}
+.dark .kpi-executive-console .kpi-card-elevated {
+  background-color: hsl(218 28% 18%);
+  border-color: hsl(215 18% 24%);
+}
+.dark .kpi-executive-console .kpi-card-elevated:hover {
+  background-color: hsl(218 28% 20%);
 }
 
 /* Light mode: darker text and borders for better contrast (sidebar, cards, badges, descriptions) */

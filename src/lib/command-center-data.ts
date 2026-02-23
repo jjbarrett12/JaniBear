@@ -67,6 +67,12 @@ export type ARSnapshot = {
   overdue90: number;
 };
 
+/** Overdue amount (30+60+90) and count of invoices past due. For Financial Health and alerts. */
+export type ARSnapshotExtended = ARSnapshot & {
+  overdueTotal: number;
+  overdueInvoiceCount: number;
+};
+
 export type PipelineSnapshot = {
   openBids: number;
   pipelineValue: number;
@@ -383,5 +389,47 @@ async function getCommandCenterDataInner(orgId: string): Promise<CommandCenterDa
     pipeline,
     ai: ZERO_AI,
     userName,
+  };
+}
+
+/**
+ * AR from invoices: outstanding and overdue buckets.
+ * Source: invoices where status NOT IN (paid, cancelled, refunded).
+ * Use for Financial Health Overview and AR tab so they show real data.
+ */
+export async function getARSnapshotForOrg(orgId: string): Promise<ARSnapshotExtended> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from('invoices')
+    .select('total_amount, due_date')
+    .eq('org_id', orgId)
+    .not('status', 'in', '("paid","cancelled","refunded")');
+  const rows = data ?? [];
+  const todayTs = new Date(TODAY).getTime();
+  let totalOutstanding = 0;
+  let overdue30 = 0;
+  let overdue60 = 0;
+  let overdue90 = 0;
+  let overdueInvoiceCount = 0;
+  for (const inv of rows) {
+    const amt = Number(inv.total_amount) || 0;
+    totalOutstanding += amt;
+    const due = new Date(String(inv.due_date ?? '')).getTime();
+    const daysOver = (todayTs - due) / 864e5;
+    if (daysOver > 0) {
+      overdueInvoiceCount += 1;
+      if (daysOver > 90) overdue90 += amt;
+      else if (daysOver > 60) overdue60 += amt;
+      else overdue30 += amt;
+    }
+  }
+  const overdueTotal = overdue30 + overdue60 + overdue90;
+  return {
+    totalOutstanding,
+    overdue30,
+    overdue60,
+    overdue90,
+    overdueTotal,
+    overdueInvoiceCount,
   };
 }

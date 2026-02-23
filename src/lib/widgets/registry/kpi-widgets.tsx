@@ -13,7 +13,7 @@ import { BarChart3, AlertTriangle, TrendingUp, ListOrdered, Heart, Users } from 
 function ExecutiveSnapshotWidget({ orgId: _orgId }: { orgId: string }) {
   const { executiveCards } = useKpiData();
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       {executiveCards.map((card) => (
         <ExecutiveSnapshotCard key={card.id} card={card} />
       ))}
@@ -23,14 +23,14 @@ function ExecutiveSnapshotWidget({ orgId: _orgId }: { orgId: string }) {
 
 function AttentionRequiredWidget({ orgId: _orgId }: { orgId: string }) {
   const { attentionAlerts } = useKpiData();
-  if (attentionAlerts.length === 0) return <p className="text-sm text-muted-foreground">No attention alerts.</p>;
+  if (attentionAlerts.length === 0) return <p className="text-sm text-muted-foreground/80">No items requiring attention.</p>;
   return <AttentionRequiredStrip alerts={attentionAlerts} />;
 }
 
 function SalesEngineWidget({ orgId: _orgId }: { orgId: string }) {
   const { salesMetrics } = useKpiData();
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
       {salesMetrics.map((tile) => (
         <KpiMetricTile key={tile.label} tile={tile} />
       ))}
@@ -41,16 +41,13 @@ function SalesEngineWidget({ orgId: _orgId }: { orgId: string }) {
 function OpportunitiesByStageWidget({ orgId: _orgId }: { orgId: string }) {
   const { opportunitiesByStage } = useKpiData();
   return (
-    <Card className="border-l-4 border-border">
-      <CardContent className="p-3">
-        <span className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
-          Opportunities by Stage
-        </span>
-        <ul className="mt-2 space-y-1 text-sm">
+    <Card className="kpi-card-elevated rounded-lg border shadow-none">
+      <CardContent className="p-4">
+        <ul className="space-y-3 text-sm">
           {opportunitiesByStage.map(({ stage, count }) => (
-            <li key={stage} className="flex justify-between gap-2">
-              <span className="text-muted-foreground truncate">{stage}</span>
-              <span className="font-medium tabular-nums shrink-0">{count}</span>
+            <li key={stage} className="flex justify-between gap-4">
+              <span className="text-muted-foreground truncate capitalize">{stage.replace(/_/g, ' ')}</span>
+              <span className="font-semibold tabular-nums shrink-0 text-foreground">{count}</span>
             </li>
           ))}
         </ul>
@@ -62,7 +59,7 @@ function OpportunitiesByStageWidget({ orgId: _orgId }: { orgId: string }) {
 function OpsHealthWidget({ orgId: _orgId }: { orgId: string }) {
   const { opsHealth } = useKpiData();
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
       {opsHealth.map((card) => (
         <OpsHealthCardTile key={card.id} card={card} />
       ))}
@@ -73,7 +70,7 @@ function OpsHealthWidget({ orgId: _orgId }: { orgId: string }) {
 function CrewPerformanceWidget({ orgId: _orgId }: { orgId: string }) {
   const { crewMetrics } = useKpiData();
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
       {crewMetrics.map((card) => (
         <CrewMetricCardTile key={card.id} card={card} />
       ))}

@@ -10,10 +10,12 @@ export function OpportunityDetailTabs({
   activeTab,
   overviewContent,
   launchPlanContent,
+  showLaunchPlanTab = true,
 }: {
   activeTab: TabId;
   overviewContent: React.ReactNode;
   launchPlanContent: React.ReactNode;
+  showLaunchPlanTab?: boolean;
 }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -38,14 +40,16 @@ export function OpportunityDetailTabs({
           <LayoutGrid className="mr-1.5 h-4 w-4" />
           Overview
         </Button>
-        <Button
-          variant={activeTab === 'launch_plan' ? 'default' : 'ghost'}
-          size="sm"
-          onClick={() => setTab('launch_plan')}
-        >
-          <Rocket className="mr-1.5 h-4 w-4" />
-          Launch Plan
-        </Button>
+        {showLaunchPlanTab && (
+          <Button
+            variant={activeTab === 'launch_plan' ? 'default' : 'ghost'}
+            size="sm"
+            onClick={() => setTab('launch_plan')}
+          >
+            <Rocket className="mr-1.5 h-4 w-4" />
+            Launch Plan
+          </Button>
+        )}
       </div>
       {activeTab === 'overview' && overviewContent}
       {activeTab === 'launch_plan' && launchPlanContent}

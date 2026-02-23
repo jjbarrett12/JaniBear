@@ -22,23 +22,25 @@ export async function AppSidebar({
   const { data: { user } } = await supabase.auth.getUser();
   const org = await requireOrg();
 
-  const [organization, premium, navAlertsFetched] = await Promise.all([
+  const [organization, premium, planType, navAlertsFetched] = await Promise.all([
     supabase.from('organizations').select('logo_url').eq('id', org.org_id).maybeSingle(),
     isPremiumPlan(org.org_id),
+    getPlanType(org.org_id),
     navAlertsProp == null ? getNavAlertCounts() : Promise.resolve(navAlertsProp),
   ]);
   const orgData = organization?.data ?? null;
   const navAlerts = navAlertsFetched ?? navAlertsProp ?? null;
-  
+  const operationsLocked = !premium;
+
   return (
     <>
       {/* Mobile Sidebar */}
-      <MobileSidebar logoUrl={orgData?.logo_url} navAlerts={navAlerts} shell={shell} franchiseeEnrolled={franchiseeEnrolled} proGearEnabled={proGearEnabled} />
+      <MobileSidebar logoUrl={orgData?.logo_url} navAlerts={navAlerts} shell={shell} franchiseeEnrolled={franchiseeEnrolled} proGearEnabled={proGearEnabled} operationsLocked={operationsLocked} />
 
       {/* Desktop Sidebar - w-56 so it doesn't overlap main content */}
-      <aside className="hidden lg:flex fixed left-0 top-0 z-40 h-screen w-56 shrink-0 overflow-hidden border-r border-border bg-card">
+      <aside className="hidden lg:flex fixed left-0 top-0 z-40 h-screen w-56 shrink-0 overflow-hidden border-r border-r-primary/20 border-border bg-card">
         <div className="flex h-full min-w-0 flex-1 flex-col">
-          <div className="flex flex-col shrink-0 border-b border-border px-3 py-4 bg-[hsl(220,30%,97%)] dark:bg-card">
+          <div className="flex flex-col shrink-0 border-b border-border px-3 py-4 bg-primary/5 dark:bg-primary/10">
             <AppLink href="/app/dashboard" className="flex min-h-[5.5rem] w-full min-w-0 items-center justify-center bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block [&>span]:!relative [&>span]:h-full [&>span]:w-full">
               {orgData?.logo_url ? (
                 <Image
@@ -68,7 +70,7 @@ export async function AppSidebar({
             <GlobalSearch />
           </div>
           
-          <AppSidebarNav premium={premium} navAlerts={navAlerts} shell={shell} franchiseeEnrolled={franchiseeEnrolled} />
+          <AppSidebarNav premium={premium} planType={planType} navAlerts={navAlerts} shell={shell} franchiseeEnrolled={franchiseeEnrolled} proGearEnabled={proGearEnabled} operationsLocked={operationsLocked} />
 
           <AppSidebarFooter userEmail={user?.email} />
         </div>

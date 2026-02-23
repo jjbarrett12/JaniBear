@@ -3,7 +3,8 @@ import { getUserContext } from '@/lib/user-context';
 import { KpiDataProvider } from '@/contexts/kpi-data-context';
 import { KpiPageSwitcher } from './kpi-page-switcher';
 
-const useKpiDashboardV2 = process.env.NEXT_PUBLIC_KPI_DASHBOARD_V2 === 'true';
+// V2 is the default KPI dashboard (Executive Snapshot, Performance, etc.). Set NEXT_PUBLIC_KPI_DASHBOARD_V2=false to use the legacy widget grid.
+const useKpiDashboardV2 = process.env.NEXT_PUBLIC_KPI_DASHBOARD_V2 !== 'false';
 
 export default async function KpiDashboardPage() {
   const org = await requireOrg();

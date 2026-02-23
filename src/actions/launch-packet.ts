@@ -3,10 +3,14 @@
 import { createClient } from '@/lib/supabase/server';
 import { requireOrg, getCurrentUserId } from '@/lib/auth';
 import { revalidatePath } from 'next/cache';
+import { isOperationsEnabled } from '@/lib/is-premium';
 
-/** Sales: move packet to ready or sent_to_ops. Only when status is draft or review. */
+/** Sales: move packet to ready or sent_to_ops. Only when status is draft or review. Requires Grizzly+. */
 export async function sendLaunchPacketToOps(packetId: string): Promise<{ error?: string }> {
   const org = await requireOrg();
+  const operationsEnabled = await isOperationsEnabled(org.org_id);
+  if (!operationsEnabled) return { error: 'Launch to Operations is not available on your plan. Upgrade to Grizzly to hand off to Ops.' };
+
   const userId = await getCurrentUserId();
   const supabase = await createClient();
 

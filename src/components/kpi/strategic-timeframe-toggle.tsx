@@ -16,13 +16,13 @@ const OPTIONS: { value: StrategicTimeframe; label: string }[] = [
 
 export function StrategicTimeframeToggle({ value, onChange }: StrategicTimeframeToggleProps) {
   return (
-    <div className="flex rounded-lg border border-border p-0.5 bg-muted/30">
+    <div className="flex gap-0 rounded-md border border-border/80 bg-transparent p-0.5">
       {OPTIONS.map((opt) => (
         <Button
           key={opt.value}
           variant={value === opt.value ? 'secondary' : 'ghost'}
           size="sm"
-          className="rounded-md font-medium"
+          className="h-8 rounded px-3 text-xs font-medium text-muted-foreground hover:text-foreground"
           onClick={() => onChange(opt.value)}
         >
           {opt.label}

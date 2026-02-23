@@ -38,7 +38,7 @@ export default async function AppLayout({
   const impersonatingOrgName = impersonateOrgId && impersonateOrgId === org.org_id ? orgName : null;
 
   const pathname = (await headers()).get('x-pathname') ?? '';
-  if (shell === 'franchisor' && pathname.startsWith('/app/') && !pathname.startsWith('/app/franchise') && pathname !== '/app/settings' && !pathname.startsWith('/app/settings/') && pathname !== '/app/kpis' && !pathname.startsWith('/app/kpis/') && pathname !== '/app/benchmarks' && !pathname.startsWith('/app/benchmarks/')) {
+  if (shell === 'franchisor' && pathname.startsWith('/app/') && !pathname.startsWith('/app/franchise') && pathname !== '/app/settings' && !pathname.startsWith('/app/settings/') && pathname !== '/app/kpis' && !pathname.startsWith('/app/kpis/') && pathname !== '/app/kpi' && !pathname.startsWith('/app/kpi/') && pathname !== '/app/benchmarks' && !pathname.startsWith('/app/benchmarks/')) {
     redirect('/app/franchise');
   }
 

@@ -36,7 +36,7 @@ export function BottomNav({ navAlerts, shell }: { navAlerts?: NavAlertCounts | n
   const bottomNavKeys = shell === 'franchisor' ? bottomNavKeysFranchisor : bottomNavKeysOperator;
 
   return (
-    <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-border shadow-lg safe-bottom pb-[env(safe-area-inset-bottom)]">
+    <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-card border-t-2 border-t-primary/30 border-border shadow-lg safe-bottom pb-[env(safe-area-inset-bottom)]">
       <div className="flex items-center justify-around h-16">
         {bottomNavKeys.map((item) => {
           const Icon = item.icon;

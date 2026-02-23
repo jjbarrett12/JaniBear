@@ -16,6 +16,7 @@ export function ShellGuard({ shell }: { shell: ShellKey }) {
     if (pathname.startsWith('/app/franchise')) return;
     if (pathname === '/app/settings' || pathname.startsWith('/app/settings/')) return;
     if (pathname === '/app/kpis' || pathname.startsWith('/app/kpis/')) return;
+    if (pathname === '/app/kpi' || pathname.startsWith('/app/kpi/')) return;
     if (pathname === '/app/benchmarks' || pathname.startsWith('/app/benchmarks/')) return;
     if (pathname.startsWith('/app/')) {
       router.replace('/app/franchise');

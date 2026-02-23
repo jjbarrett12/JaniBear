@@ -29,6 +29,14 @@ export function BrandingSettings({ orgId, initialData }: BrandingSettingsProps) 
   const [logoUrl, setLogoUrl] = useState(initialData?.logo_url || null);
   const [isUploading, setIsUploading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [showSchemaHelp, setShowSchemaHelp] = useState(false);
+
+  const BRANDING_MIGRATION_SQL = `-- Add branding columns to organizations (run in Supabase SQL Editor)
+ALTER TABLE organizations ADD COLUMN IF NOT EXISTS primary_color TEXT DEFAULT NULL;
+ALTER TABLE organizations ADD COLUMN IF NOT EXISTS secondary_color TEXT DEFAULT NULL;
+ALTER TABLE organizations ADD COLUMN IF NOT EXISTS logo_url TEXT DEFAULT NULL;
+ALTER TABLE organizations ADD COLUMN IF NOT EXISTS custom_branding BOOLEAN DEFAULT false;
+CREATE INDEX IF NOT EXISTS idx_organizations_custom_branding ON organizations(custom_branding) WHERE custom_branding = true;`;
 
   const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -153,15 +161,22 @@ export function BrandingSettings({ orgId, initialData }: BrandingSettingsProps) 
     } catch (error: any) {
       console.error('Error saving branding:', error);
       const msg = error.message || 'Failed to save settings';
-      const schemaCache = msg.includes('custom_branding') || msg.includes('schema cache');
-      const hint = schemaCache
-        ? ' Run migration 070_organizations_branding_columns_ensure.sql in Supabase SQL Editor (Dashboard → SQL Editor → New query → paste file contents → Run).'
+      const isSchemaError =
+        msg.includes('schema cache') ||
+        msg.includes('custom_branding') ||
+        msg.includes("'logo_url'") ||
+        msg.includes("'primary_color'") ||
+        msg.includes("'secondary_color'") ||
+        /Could not find the .* column/.test(msg);
+      if (isSchemaError) setShowSchemaHelp(true);
+      const hint = isSchemaError
+        ? ' Run the SQL below in Supabase SQL Editor (Dashboard → SQL Editor → New query → paste → Run), then try saving again.'
         : error.code === '42501' || msg.includes('policy') || msg.includes('row-level security')
           ? ' Only org owners and managers can save branding. If you are a manager, ask your admin to run migration 055_org_branding_update_policy.sql in Supabase.'
           : '';
       toast({
         title: 'Save failed',
-        description: (schemaCache ? 'Database is missing branding columns. ' : '') + msg + hint,
+        description: (isSchemaError ? 'Database is missing branding columns. ' : '') + msg + hint,
         variant: 'destructive',
       });
     } finally {
@@ -325,6 +340,31 @@ export function BrandingSettings({ orgId, initialData }: BrandingSettingsProps) 
         >
           {isSaving ? 'Saving...' : 'Save Branding Settings'}
         </Button>
+
+        {showSchemaHelp && (
+          <div className="rounded-lg border border-amber-500/50 bg-amber-500/10 p-4 space-y-3">
+            <p className="text-sm font-medium text-amber-800 dark:text-amber-200">
+              Fix: run this SQL in Supabase
+            </p>
+            <p className="text-xs text-muted-foreground">
+              Supabase Dashboard → SQL Editor → New query → paste the SQL below → Run. Then try saving again.
+            </p>
+            <pre className="text-xs bg-muted p-3 rounded overflow-x-auto whitespace-pre-wrap font-mono">
+              {BRANDING_MIGRATION_SQL}
+            </pre>
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              onClick={() => {
+                navigator.clipboard.writeText(BRANDING_MIGRATION_SQL);
+                toast({ title: 'SQL copied', description: 'Paste in Supabase SQL Editor and run.' });
+              }}
+            >
+              Copy SQL
+            </Button>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

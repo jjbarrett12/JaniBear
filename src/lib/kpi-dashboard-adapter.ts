@@ -169,6 +169,48 @@ export interface MicroPillItem {
   status?: KpiStatus;
 }
 
+/** Business Pulse: max 8 cards for Strategic Performance. Primary value, trend %, 30d comparison, sparkline, status. */
+export interface BusinessPulseCard {
+  id: string;
+  label: string;
+  value: string | number;
+  trendPct?: number;
+  comparison30d?: string;
+  sparkline?: number[];
+  status: KpiStatus;
+}
+
+export function mapBusinessPulseCards(
+  executiveCards: ExecutiveCardData[],
+  salesMetrics: KpiTileData[],
+  opsCards: OpsHealthCard[]
+): BusinessPulseCard[] {
+  const byId: Record<string, ExecutiveCardData> = {};
+  executiveCards.forEach((c) => { byId[c.id] = c; });
+  const pipeline = salesMetrics.find((m) => m.label.toLowerCase().includes('pipeline'));
+  const closing = salesMetrics.find((m) => m.label.toLowerCase().includes('closing rate'));
+  const sla = opsCards.find((c) => c.id === 'sla_compliance');
+  const inspection = opsCards.find((c) => c.id === 'inspection_completion');
+  const order: { id: string; label: string; value: string | number; delta?: number; target?: string; sparkline?: number[]; health?: StrategicHealth }[] = [];
+  if (byId['active_contracts']) order.push({ id: 'active_contracts', ...byId['active_contracts'] });
+  if (byId['mrr']) order.push({ id: 'mrr', ...byId['mrr'] });
+  if (byId['client_retention']) order.push({ id: 'client_retention', ...byId['client_retention'] });
+  if (byId['net_revenue_growth']) order.push({ id: 'net_revenue_growth', ...byId['net_revenue_growth'] });
+  if (pipeline) order.push({ id: 'pipeline', label: pipeline.label, value: pipeline.value, delta: pipeline.delta, target: pipeline.targetBenchmark, sparkline: pipeline.sparkline, health: pipeline.health });
+  if (closing) order.push({ id: 'closing_rate', label: closing.label, value: closing.value, delta: closing.delta, target: closing.targetBenchmark, health: closing.health });
+  if (sla) order.push({ id: sla.id, label: sla.label, value: sla.value, delta: sla.delta, target: sla.target, sparkline: sla.sparkline, health: sla.health });
+  if (inspection) order.push({ id: inspection.id, label: inspection.label, value: inspection.value, delta: inspection.delta, target: inspection.target, sparkline: inspection.sparkline, health: inspection.health });
+  return order.slice(0, 8).map((c) => ({
+    id: c.id,
+    label: c.label,
+    value: c.value,
+    trendPct: c.delta,
+    comparison30d: c.target ? `Target: ${typeof c.target === 'string' ? c.target : String(c.target)}` : 'vs prior 30d',
+    sparkline: c.sparkline,
+    status: mapHealth(c.health),
+  }));
+}
+
 export function mapMicroPillItems(
   executiveCards: ExecutiveCardData[],
   salesMetrics: KpiTileData[],

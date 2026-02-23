@@ -68,32 +68,32 @@ export type NavFactoryInput = {
   franchiseeEnrolled?: boolean;
 };
 
-/** Sales section: grouped as Prospecting → Active Deals → Conversion. Label "Sales" (not Growth). */
+/** Sales section: linear flow INTAKE → DEAL EXECUTION → DECISION. Label "Sales". */
 function buildSalesSection(input: NavFactoryInput): NavSection {
   const { featureFlags, franchiseeEnrolled } = input;
-  const conversionItems: NavItem[] = [
+  const decisionItems: NavItem[] = [
     { href: '/app/sales/win-loss', labelKey: 'navWinLoss', icon: BarChart3 },
-    { href: '/app/sales/launch-packets', labelKey: 'navContractLaunch', icon: Rocket },
+    { href: '/app/sales/launch-packets', labelKey: 'navLaunchToOperations', icon: Rocket },
   ];
   if (featureFlags?.approvals_enabled) {
-    conversionItems.splice(1, 0, { href: '/app/sales/approvals', labelKey: 'navApprovals', icon: ListChecks });
+    decisionItems.splice(1, 0, { href: '/app/sales/approvals', labelKey: 'navApprovals', icon: ListChecks });
   }
   if (franchiseeEnrolled) {
-    conversionItems.push({ href: '/app/opportunities/network', labelKey: 'navNetworkOpportunities', icon: Briefcase });
+    decisionItems.push({ href: '/app/opportunities/network', labelKey: 'navNetworkOpportunities', icon: Briefcase });
   }
   return {
     id: 'sales',
     labelKey: 'navGrowth',
     groups: [
       {
-        labelKey: 'navProspecting',
+        labelKey: 'navIntake',
         items: [
           { href: '/app/sales/leads', labelKey: 'navLeads', icon: TrendingUp },
           { href: '/app/sales/pipeline', labelKey: 'navPipeline', icon: LayoutDashboard },
         ],
       },
       {
-        labelKey: 'navActiveDeals',
+        labelKey: 'navDealExecution',
         items: [
           { href: '/app/sales/accounts', labelKey: 'navAccountsProspects', icon: Building2 },
           { href: '/app/sales/walkthroughs', labelKey: 'navWalkthroughs', icon: FileSearch },
@@ -102,8 +102,8 @@ function buildSalesSection(input: NavFactoryInput): NavSection {
         ],
       },
       {
-        labelKey: 'navConversion',
-        items: conversionItems,
+        labelKey: 'navDecision',
+        items: decisionItems,
       },
     ],
   };
@@ -136,9 +136,11 @@ function buildExecutiveSection(): NavSection {
     id: 'executive',
     labelKey: 'navExecutive',
     items: [
+      { href: '/app/daily', labelKey: 'navDailyCommand', icon: LayoutDashboard },
       { href: '/app/dashboard', labelKey: 'navOverview', icon: LayoutDashboard },
       { href: '/app/financial-health', labelKey: 'navFinancialHealth', icon: Wallet },
       { href: '/app/kpis', labelKey: 'navKpiDashboard', icon: BarChart3 },
+      { href: '/app/kpi', labelKey: 'navKpiCommandCenter', icon: BarChart3 },
       { href: '/app/benchmarks', labelKey: 'navBenchmarks', icon: BarChart3 },
       { href: '/app/alerts', labelKey: 'navAlerts', icon: AlertCircle },
       { href: '/app/admin/ai-settings', labelKey: 'navAiInsights', icon: Sparkles },

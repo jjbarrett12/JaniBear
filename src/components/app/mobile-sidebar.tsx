@@ -32,7 +32,9 @@ import {
   MessageCircle,
   Rocket,
   Wallet,
+  Lock,
 } from 'lucide-react';
+import { OperationsUpgradeModal, OPERATIONS_UPGRADE_TOOLTIP } from '@/components/app/operations-upgrade-modal';
 import { GlobalSearch } from '@/components/search/global-search';
 import { DarkModeToggle } from '@/components/app/dark-mode-toggle';
 import { LanguageSwitcher } from '@/components/app/language-switcher';
@@ -48,6 +50,7 @@ interface MobileSidebarProps {
   shell?: 'owner_operator' | 'franchisee' | 'franchisor';
   franchiseeEnrolled?: boolean;
   proGearEnabled?: boolean;
+  operationsLocked?: boolean;
 }
 
 /** Shared by Sales and Operations */
@@ -100,8 +103,8 @@ export function MobileSidebar({ logoUrl, navAlerts, shell, franchiseeEnrolled }:
 
   return (
     <>
-      {/* Mobile Header - same blue as sidebar; light mode: slight blue tint so logo stays visible */}
-      <header className="lg:hidden fixed top-0 left-0 right-0 z-50 h-16 flex items-center justify-between px-4 border-b border-border bg-[hsl(220,30%,97%)] dark:bg-card text-foreground">
+      {/* Mobile Header - brand tint */}
+      <header className="lg:hidden fixed top-0 left-0 right-0 z-50 h-16 flex items-center justify-between px-4 border-b-2 border-b-primary/30 bg-primary/5 dark:bg-primary/10 text-foreground">
         <div className="flex items-center gap-3 [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block">
           <Button
             variant="ghost"
@@ -146,9 +149,9 @@ export function MobileSidebar({ logoUrl, navAlerts, shell, franchiseeEnrolled }:
             className="fixed inset-0 bg-black/50 z-50 lg:hidden"
             onClick={() => setIsOpen(false)}
           />
-          <aside className="fixed top-0 left-0 z-50 h-full w-80 bg-white dark:bg-gray-900 shadow-xl lg:hidden transform transition-transform duration-300">
+          <aside className="fixed top-0 left-0 z-50 h-full w-80 bg-card dark:bg-gray-900 shadow-xl lg:hidden transform transition-transform duration-300 border-r border-r-primary/20">
             <div className="flex h-full flex-col">
-              <div className="flex min-h-16 items-center justify-between border-b border-border px-4 py-2 bg-[hsl(220,30%,97%)] dark:bg-card">
+              <div className="flex min-h-16 items-center justify-between border-b border-border px-4 py-2 bg-primary/5 dark:bg-primary/10">
                 <AppLink href="/app/dashboard" className="flex min-h-[3.5rem] w-full items-center bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block [&>span]:!relative [&>span]:w-full [&>span]:h-full">
                   {logoUrl ? (
                     <Image
@@ -287,9 +290,10 @@ export function MobileSidebar({ logoUrl, navAlerts, shell, franchiseeEnrolled }:
                   })}
                 </div>
 
-                <div className="space-y-1">
-                  <p className="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                <div className={`space-y-1 ${operationsLocked ? 'opacity-70' : ''}`}>
+                  <p className="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
                     {t('navOperations')}
+                    {operationsLocked && <Lock className="h-3.5 w-3.5" />}
                   </p>
                   {operationsItemKeys.map((item) => {
                     const Icon = item.icon;
@@ -302,6 +306,21 @@ export function MobileSidebar({ logoUrl, navAlerts, shell, franchiseeEnrolled }:
                       : item.href === '/app/issues' ? alerts.openIssuesCount
                       : item.href === '/app/schedules' ? alerts.missedTaskCount
                       : 0;
+                    if (operationsLocked) {
+                      return (
+                        <button
+                          key={`${item.href}-${item.labelKey}`}
+                          type="button"
+                          title={OPERATIONS_UPGRADE_TOOLTIP}
+                          onClick={() => setUpgradeModalOpen(true)}
+                          className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-base font-medium transition-colors min-h-[44px] text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
+                        >
+                          <Icon className="h-5 w-5 shrink-0" />
+                          {t(item.labelKey)}
+                          <Lock className="h-4 w-4 shrink-0 ml-auto opacity-60" />
+                        </button>
+                      );
+                    }
                     return (
                       <AppLink
                         key={`${item.href}-${item.labelKey}`}
@@ -348,6 +367,7 @@ export function MobileSidebar({ logoUrl, navAlerts, shell, franchiseeEnrolled }:
           </aside>
         </>
       )}
+      <OperationsUpgradeModal open={upgradeModalOpen} onOpenChange={setUpgradeModalOpen} />
     </>
   );
 }

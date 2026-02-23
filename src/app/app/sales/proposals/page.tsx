@@ -15,10 +15,14 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Plus, Rocket } from 'lucide-react';
 import { formatDate, formatCurrency } from '@/lib/utils';
+import { getPlanType } from '@/lib/is-premium';
+import { MarkAsWonButton } from '@/components/sales/mark-as-won-button';
 
 export default async function SalesProposalsPage() {
   const org = await requireOrg();
   const supabase = await createClient();
+  const planType = await getPlanType(org.org_id);
+  const isCub = planType === 'cub';
 
   const { data: proposals } = await supabase
     .from('proposals')
@@ -54,7 +58,7 @@ export default async function SalesProposalsPage() {
       <div className="p-4 md:p-6 space-y-6">
         <PageHeader
           title="Proposals"
-          description="Sent proposals and status. When accepted, open Contract Launch to hand off to Ops."
+          description="Sent proposals and status. When accepted, open Launch to Operations to hand off to Ops."
           primaryCta={
             <Link href="/app/proposals/build">
               <Button className="gap-2">
@@ -97,12 +101,20 @@ export default async function SalesProposalsPage() {
                     <TableCell className="text-muted-foreground text-sm">{formatDate(p.created_at)}</TableCell>
                     <TableCell>
                       {p.status === 'accepted' && (
-                        <Link href="/app/sales/launch-packets">
-                          <Button variant="outline" size="sm" className="gap-1">
-                            <Rocket className="h-3 w-3" />
-                            Contract Launch
-                          </Button>
-                        </Link>
+                        isCub ? (
+                          p.opportunity_id ? (
+                            <MarkAsWonButton opportunityId={p.opportunity_id} />
+                          ) : (
+                            <span className="text-muted-foreground text-sm">—</span>
+                          )
+                        ) : (
+                          <Link href="/app/sales/launch-packets">
+                            <Button variant="outline" size="sm" className="gap-1">
+                              <Rocket className="h-3 w-3" />
+                              Launch to Operations
+                            </Button>
+                          </Link>
+                        )
                       )}
                     </TableCell>
                   </TableRow>

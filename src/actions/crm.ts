@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { requireOrg } from '@/lib/auth';
 import { revalidatePath } from 'next/cache';
+import { logAudit } from '@/lib/audit-log';
 
 /** Filters for accounts list */
 export type AccountListFilters = {
@@ -345,5 +346,65 @@ export async function completeActivity(activity_id: string): Promise<{ error?: s
 
   if (error) return { error: error.message };
   revalidatePath('/app/crm');
+  return {};
+}
+
+/**
+ * Mark deal as won (Sales-only flow). Updates opportunity + linked proposals; no ops account/launch.
+ * Use for Cub plan. Grizzly/Kodiak can use this too or use Launch to Operations.
+ */
+export async function markDealWon(opportunityId: string): Promise<{ error?: string }> {
+  const org = await requireOrg();
+  const supabase = await createClient();
+
+  const { data: opp } = await supabase
+    .from('opportunities')
+    .select('id, stage')
+    .eq('id', opportunityId)
+    .eq('org_id', org.org_id)
+    .single();
+
+  if (!opp) return { error: 'Opportunity not found' };
+  if (opp.stage === 'won') return {}; // idempotent
+
+  const now = new Date().toISOString();
+
+  const { error: oppError } = await supabase
+    .from('opportunities')
+    .update({
+      stage: 'won',
+      closed_at: now,
+      won_at: now,
+      updated_at: now,
+    })
+    .eq('id', opportunityId)
+    .eq('org_id', org.org_id);
+
+  if (oppError) return { error: oppError.message };
+
+  await supabase
+    .from('proposals')
+    .update({ status: 'accepted', updated_at: now })
+    .eq('opportunity_id', opportunityId)
+    .eq('org_id', org.org_id);
+
+  try {
+    await logAudit({
+      orgId: org.org_id,
+      action: 'deal_won',
+      entityType: 'opportunity',
+      entityId: opportunityId,
+      beforeState: { stage: opp.stage },
+      afterState: { stage: 'won' },
+    });
+  } catch {
+    // non-fatal
+  }
+
+  revalidatePath('/app/crm');
+  revalidatePath('/app/crm/opportunities/' + opportunityId);
+  revalidatePath('/app/sales/pipeline');
+  revalidatePath('/app/sales/win-loss');
+  revalidatePath('/app/sales/proposals');
   return {};
 }

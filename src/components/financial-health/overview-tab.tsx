@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo } from 'react';
 import {
   getMockOverviewKpis,
   getMockFinanceAttentionAlerts,
@@ -12,15 +13,45 @@ import { OverviewKpiCardTile } from '@/components/financial-health/overview-kpi-
 import { FinanceAttentionAlerts } from '@/components/financial-health/finance-attention-alerts';
 import { RevenueMarginTrendChart } from '@/components/financial-health/revenue-margin-trend-chart';
 import { SiteProfitabilityTable } from '@/components/financial-health/site-profitability-table';
-import type { SiteProfitabilityRow } from '@/lib/financial-health-mock';
+import type { SiteProfitabilityRow, OverviewKpiCard } from '@/lib/financial-health-mock';
+import type { ARSnapshotExtended } from '@/lib/command-center-data';
+
+function formatArCurrency(n: number): string {
+  if (n >= 1000) return `$${(n / 1000).toFixed(1)}k`;
+  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n);
+}
 
 interface OverviewTabProps {
   onSiteRowClick?: (row: SiteProfitabilityRow) => void;
+  /** Real AR from invoices; overrides mock AR Outstanding and Overdue $ cards and overdue alert. */
+  arSnapshot?: ARSnapshotExtended | null;
 }
 
-export function OverviewTab({ onSiteRowClick }: OverviewTabProps) {
-  const kpis = getMockOverviewKpis();
-  const alerts = getMockFinanceAttentionAlerts();
+export function OverviewTab({ onSiteRowClick, arSnapshot }: OverviewTabProps) {
+  const kpis = useMemo((): OverviewKpiCard[] => {
+    const base = getMockOverviewKpis();
+    if (!arSnapshot) return base;
+    return base.map((card) => {
+      if (card.id === 'ar_outstanding') {
+        return { ...card, value: formatArCurrency(arSnapshot.totalOutstanding) };
+      }
+      if (card.id === 'overdue') {
+        return { ...card, value: formatArCurrency(arSnapshot.overdueTotal) };
+      }
+      return card;
+    });
+  }, [arSnapshot]);
+
+  const alerts = useMemo(() => {
+    const base = getMockFinanceAttentionAlerts();
+    if (!arSnapshot || arSnapshot.overdueInvoiceCount === 0) return base;
+    return base.map((a) =>
+      a.type === 'overdue'
+        ? { ...a, count: arSnapshot.overdueInvoiceCount, amount: arSnapshot.overdueTotal }
+        : a
+    );
+  }, [arSnapshot]);
+
   const revenueMonths = getMockRevenue12Months();
   const marginMonths = getMockMarginTrend();
   const mostProfitable = getMockMostProfitableSites();

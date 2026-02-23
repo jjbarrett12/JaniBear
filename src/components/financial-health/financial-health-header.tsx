@@ -39,6 +39,8 @@ interface FinancialHealthHeaderProps {
   clientOptions?: { id: string; name: string }[];
   /** Optional: locations for combobox. If empty, show simple input. */
   locationOptions?: { id: string; name: string }[];
+  /** When true, show "Connected to QuickBooks"; when false, show "Not connected" with Connect CTA. */
+  quickbooksConnected?: boolean;
 }
 
 export function FinancialHealthHeader({
@@ -151,9 +153,15 @@ export function FinancialHealthHeader({
           <Badge variant="outline" className="font-normal text-xs py-0">
             Supplies: Purchases / Allocations
           </Badge>
-          <Badge variant="outline" className="font-normal text-xs py-0 border-amber-500/50 text-amber-700 dark:text-amber-400">
-            Accounting Sync: Not connected
-          </Badge>
+          {quickbooksConnected ? (
+            <Badge variant="outline" className="font-normal text-xs py-0 border-green-500/50 text-green-700 dark:text-green-400">
+              Accounting Sync: Connected to QuickBooks
+            </Badge>
+          ) : (
+            <Badge variant="outline" className="font-normal text-xs py-0 border-amber-500/50 text-amber-700 dark:text-amber-400">
+              Accounting Sync: Not connected
+            </Badge>
+          )}
         </div>
       </div>
     </header>

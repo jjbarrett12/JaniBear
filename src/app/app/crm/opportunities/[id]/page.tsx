@@ -1,6 +1,7 @@
 import { requireOrg } from '@/lib/auth';
 import { getOpportunityDetail } from '@/actions/crm';
 import { getLaunchPlanByOpportunity, computeReadiness, getLaunchPlanAccess } from '@/actions/launch-plan';
+import { getPlanType } from '@/lib/is-premium';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -9,6 +10,7 @@ import { ArrowLeft, MapPin, User, DollarSign, LayoutGrid, Rocket } from 'lucide-
 import { formatDate } from '@/lib/utils';
 import { OpportunityDetailTabs } from '@/components/crm/opportunity-detail-tabs';
 import { LaunchPlanTab } from '@/components/crm/launch-plan-tab';
+import { OpportunityMarkWonHandler } from '@/components/crm/opportunity-mark-won-handler';
 
 export default async function OpportunityDetailPage({
   params,
@@ -26,10 +28,11 @@ export default async function OpportunityDetailPage({
     notFound();
   }
 
-  const [plan, readiness, access] = await Promise.all([
+  const [plan, readiness, access, planType] = await Promise.all([
     getLaunchPlanByOpportunity(org.org_id, id),
     computeReadiness(id),
     getLaunchPlanAccess(),
+    getPlanType(org.org_id),
   ]);
 
   const opp = data.opportunity;
@@ -38,6 +41,7 @@ export default async function OpportunityDetailPage({
 
   return (
     <div className="space-y-6">
+      <OpportunityMarkWonHandler opportunityId={id} planType={planType} />
       <div className="flex items-center gap-4">
         <Link href="/app/crm">
           <Button variant="outline" size="icon">
@@ -53,10 +57,11 @@ export default async function OpportunityDetailPage({
       </div>
 
       <OpportunityDetailTabs
-        activeTab={tab === 'launch_plan' ? 'launch_plan' : 'overview'}
+        activeTab={tab === 'launch_plan' && planType !== 'cub' ? 'launch_plan' : 'overview'}
+        showLaunchPlanTab={planType !== 'cub'}
         overviewContent={
           <>
-            {!plan && (opp.stage === 'won' || data.bids.some((b) => b.status === 'accepted')) && (
+            {planType !== 'cub' && !plan && (opp.stage === 'won' || data.bids.some((b) => b.status === 'accepted')) && (
               <Card className="border-primary/50 bg-primary/5">
                 <CardContent className="pt-6">
                   <p className="font-medium text-foreground mb-1">Ready to hand off to Ops?</p>

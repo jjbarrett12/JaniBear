@@ -4,19 +4,20 @@ import { Card, CardContent } from '@/components/ui/card';
 import type { ExecutiveCardData, StrategicHealth } from '@/lib/kpi-metrics';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 import { useMemo } from 'react';
+import { cn } from '@/lib/utils';
 
 function strategicBorderClass(health?: StrategicHealth): string {
   switch (health) {
     case 'green':
-      return 'border-health-green';
+      return 'border-l-4 border-l-[hsl(var(--health-green))]';
     case 'amber':
-      return 'border-health-amber';
+      return 'border-l-4 border-l-[hsl(var(--health-amber))]';
     case 'red':
-      return 'border-health-red';
+      return 'border-l-4 border-l-[hsl(var(--health-red))]';
     case 'blue':
-      return 'border-blue-500';
+      return 'border-l-4 border-l-blue-500';
     default:
-      return 'border-border';
+      return 'border-l border-l-border';
   }
 }
 
@@ -43,9 +44,7 @@ function SparklineMini({ data, health }: { data: number[]; health?: StrategicHea
         ? 'hsl(var(--health-amber))'
         : health === 'red'
           ? 'hsl(var(--health-red))'
-          : health === 'blue'
-            ? 'rgb(59 130 246)'
-            : 'hsl(var(--muted-foreground))';
+          : 'hsl(var(--muted-foreground) / 0.6)';
 
   return (
     <svg width={84} height={32} className="overflow-visible" aria-hidden>
@@ -63,57 +62,53 @@ function SparklineMini({ data, health }: { data: number[]; health?: StrategicHea
 
 export function ExecutiveSnapshotCard({ card }: { card: ExecutiveCardData }) {
   const borderClass = strategicBorderClass(card.health);
+  const hasSignal = card.health && card.health !== 'neutral';
   return (
-    <Card className={`border-l-4 ${borderClass} transition-shadow hover:shadow-md min-h-[140px]`}>
-      <CardContent className="p-4">
+    <Card
+      className={cn(
+        'kpi-card-elevated rounded-lg border shadow-none transition-colors h-[140px] flex flex-col',
+        borderClass
+      )}
+    >
+      <CardContent className="p-4 flex flex-col flex-1 min-h-0">
         <div className="flex items-start justify-between gap-2">
-          <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground truncate">
+          <span className="text-[12px] font-medium uppercase tracking-wider text-muted-foreground truncate">
             {card.label}
           </span>
-          {card.health && card.health !== 'neutral' && (
+          {hasSignal && (
             <span
-              className={`h-2 w-2 rounded-full shrink-0 mt-0.5 ${
-                card.health === 'green'
-                  ? 'bg-health-green'
-                  : card.health === 'amber'
-                    ? 'bg-health-amber'
-                    : card.health === 'red'
-                      ? 'bg-health-red'
-                      : card.health === 'blue'
-                        ? 'bg-blue-500'
-                        : 'bg-muted-foreground'
-              }`}
+              className={cn(
+                'h-2 w-2 rounded-full shrink-0 mt-0.5',
+                card.health === 'green' && 'bg-[hsl(var(--health-green))]',
+                card.health === 'amber' && 'bg-[hsl(var(--health-amber))]',
+                card.health === 'red' && 'bg-[hsl(var(--health-red))]',
+                card.health === 'blue' && 'bg-blue-500'
+              )}
               aria-hidden
             />
           )}
         </div>
-        <div className="mt-2 flex flex-wrap items-baseline gap-2">
-          <span className="font-heading text-2xl font-bold text-foreground tabular-nums">
+        <div className="mt-2 flex items-baseline justify-between gap-2 flex-wrap">
+          <span className="font-heading text-3xl md:text-4xl font-bold tracking-tight text-foreground tabular-nums">
             {typeof card.value === 'number' ? card.value.toLocaleString() : card.value}
           </span>
           {card.delta != null && (
             <span
-              className={`flex items-center gap-0.5 text-sm font-medium ${
-                card.delta >= 0 ? 'text-health-green' : 'text-health-red'
-              }`}
+              className={cn(
+                'flex items-center gap-0.5 text-xs font-medium tabular-nums shrink-0',
+                card.delta >= 0 ? 'text-[hsl(var(--health-green))]' : 'text-[hsl(var(--health-red))]'
+              )}
             >
-              {card.delta >= 0 ? (
-                <TrendingUp className="h-4 w-4" />
-              ) : (
-                <TrendingDown className="h-4 w-4" />
-              )}
-              {Math.abs(card.delta).toFixed(1)}%
-              {card.deltaLabel && (
-                <span className="text-muted-foreground font-normal text-xs">({card.deltaLabel})</span>
-              )}
+              {card.delta >= 0 ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
+              {card.delta >= 0 ? '+' : ''}{card.delta.toFixed(1)}%
             </span>
           )}
         </div>
         {card.targetBenchmark && (
-          <p className="text-xs text-muted-foreground mt-1">{card.targetBenchmark}</p>
+          <p className="text-[13px] text-muted-foreground mt-1 truncate">{card.targetBenchmark}</p>
         )}
         {card.sparkline && card.sparkline.length > 0 && (
-          <div className="mt-3 flex justify-end">
+          <div className="mt-auto flex justify-end pt-2">
             <SparklineMini data={card.sparkline} health={card.health} />
           </div>
         )}

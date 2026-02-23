@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { requireOrg } from '@/lib/auth';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { SalesPageShell } from '@/components/sales/page-shell';
@@ -9,6 +9,7 @@ import { ContractLaunchThreeColumn } from '@/components/launch/contract-launch-t
 import { SendToOpsButton } from '@/components/launch/send-to-ops-button';
 import type { LaunchPacketRecord } from '@/components/launch/launch-packet-detail';
 import { Lock } from 'lucide-react';
+import { isOperationsEnabled } from '@/lib/is-premium';
 
 export default async function LaunchPacketSalesDetailPage({
   params,
@@ -17,6 +18,9 @@ export default async function LaunchPacketSalesDetailPage({
 }) {
   const { id } = await params;
   const org = await requireOrg();
+  const operationsEnabled = await isOperationsEnabled(org.org_id);
+  if (!operationsEnabled) redirect('/app/sales/win-loss');
+
   const supabase = await createClient();
 
   const { data: packet } = await supabase
@@ -58,13 +62,13 @@ export default async function LaunchPacketSalesDetailPage({
     <SalesPageShell
       breadcrumb={
         <span className="text-muted-foreground">
-          Sales <span className="text-foreground/80">/ Contract Launch</span>
+          Sales <span className="text-foreground/80">/ Launch to Operations</span>
         </span>
       }
     >
       <div className="p-4 md:p-6 space-y-6">
         <PageHeader
-          title="Contract Launch"
+          title="Launch to Operations"
           description="Deal handoff to Operations. Complete the checklist, then Submit to Operations. Status: Draft → Ready → Submitted."
           primaryCta={
             canSendToOps ? (

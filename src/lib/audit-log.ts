@@ -24,7 +24,8 @@ export type AuditAction =
   | 'inspection_score_change'
   | 'invoice_edit'
   | 'account_update'
-  | 'invoice_create';
+  | 'invoice_create'
+  | 'deal_won';
 
 export async function logAudit(params: {
   orgId: string;

@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import type { NavAlertCounts } from '@/actions/nav-alerts';
 import type { AppTranslationKey } from '@/lib/app-translations';
 import type { ShellKey } from '@/lib/shell';
+import type { PlanType } from '@/lib/is-premium';
 import { getNavSectionsForShell } from '@/lib/nav/shellNav';
 import type { NavSection, NavItem } from '@/lib/nav/shellNav';
 import {
@@ -20,7 +21,7 @@ import {
 const STORAGE_KEY = 'janibear-nav-collapsed';
 
 function getSectionIdForPath(sections: NavSection[], pathname: string): string {
-  if (pathname === '/app/kpis' || pathname.startsWith('/app/kpis/')) {
+  if (pathname === '/app/kpis' || pathname.startsWith('/app/kpis/') || pathname === '/app/kpi' || pathname.startsWith('/app/kpi/')) {
     const exec = sections.find((s) => s.id === 'executive');
     if (exec) return 'executive';
   }
@@ -63,29 +64,13 @@ function navLinkClass(active: boolean) {
 const ALERT_BADGE_CLASS =
   'ml-auto text-[10px] min-w-[18px] h-5 px-1.5 justify-center shrink-0 bg-destructive text-destructive-foreground border-0 rounded-md';
 
-/** Section header: subtle tint by section, readable in light/dark. */
-function sectionHeaderColor(sectionId: string, isActive: boolean): string {
+/** Section header: uses brand primary so company colors apply. */
+function sectionHeaderColor(_sectionId: string, isActive: boolean): string {
   const base = 'rounded-lg transition-colors duration-150 ';
   if (isActive) {
-    const active: Record<string, string> = {
-      executive: 'bg-sky-500/12 text-sky-800 dark:bg-sky-400/15 dark:text-sky-200',
-      sales: 'bg-amber-500/12 text-amber-800 dark:bg-amber-400/15 dark:text-amber-200',
-      growth: 'bg-amber-500/12 text-amber-800 dark:bg-amber-400/15 dark:text-amber-200',
-      operations: 'bg-emerald-500/12 text-emerald-800 dark:bg-emerald-400/15 dark:text-emerald-200',
-      system: 'bg-slate-500/12 text-slate-800 dark:bg-slate-400/15 dark:text-slate-200',
-      franchisor: 'bg-sky-500/12 text-sky-800 dark:bg-sky-400/15 dark:text-sky-200',
-    };
-    return base + (active[sectionId] ?? 'bg-muted text-foreground');
+    return base + 'bg-primary/12 text-primary font-semibold dark:bg-primary/20 dark:text-primary';
   }
-  const inactive: Record<string, string> = {
-    executive: 'text-sky-700 dark:text-sky-300/90 hover:bg-sky-500/8',
-    sales: 'text-amber-700 dark:text-amber-300/90 hover:bg-amber-500/8',
-    growth: 'text-amber-700 dark:text-amber-300/90 hover:bg-amber-500/8',
-    operations: 'text-emerald-700 dark:text-emerald-300/90 hover:bg-emerald-500/8',
-    system: 'text-slate-600 dark:text-slate-400 hover:bg-slate-500/8',
-    franchisor: 'text-sky-700 dark:text-sky-300/90 hover:bg-sky-500/8',
-  };
-  return base + (inactive[sectionId] ?? 'text-muted-foreground hover:bg-muted/60');
+  return base + 'text-muted-foreground hover:bg-primary/8 hover:text-primary';
 }
 
 export function AppSidebarNav({
@@ -94,37 +79,44 @@ export function AppSidebarNav({
   shell = 'owner_operator',
   franchiseeEnrolled = false,
   proGearEnabled = false,
+  operationsLocked = false,
 }: {
   premium: boolean;
   navAlerts?: NavAlertCounts | null;
   shell?: ShellKey;
   franchiseeEnrolled?: boolean;
   proGearEnabled?: boolean;
+  operationsLocked?: boolean;
 }) {
   const pathname = usePathname();
   const { locale } = useLanguage();
   const t = getAppT(locale);
   const alerts = navAlerts ?? { handoffsCount: 0, openIssuesCount: 0, missedTaskCount: 0 };
+  const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
 
   const sections = useMemo(() => {
     const raw = getNavSectionsForShell(shell, franchiseeEnrolled);
-    if (proGearEnabled) return raw;
-    return raw.map((s) => {
+    let result = raw.map((s) => {
       if (s.groups) {
         return {
           ...s,
-          groups: s.groups.map((g) => ({
-            ...g,
-            items: (g.items ?? []).filter((item) => item.href !== '/app/pro-gear'),
-          })),
+          groups: s.groups.map((g) => {
+            let items = g.items ?? [];
+            if (!proGearEnabled) items = items.filter((item) => item.href !== '/app/pro-gear');
+            if (s.id === 'sales' && g.labelKey === 'navDecision' && planType === 'cub') {
+              items = items.filter((item) => item.href !== '/app/sales/launch-packets');
+            }
+            return { ...g, items };
+          }),
         };
       }
       return {
         ...s,
-        items: (s.items ?? []).filter((item) => item.href !== '/app/pro-gear'),
+        items: (s.items ?? []).filter((item) => (proGearEnabled || item.href !== '/app/pro-gear')),
       };
     });
-  }, [shell, franchiseeEnrolled, proGearEnabled]);
+    return result;
+  }, [shell, franchiseeEnrolled, proGearEnabled, planType]);
   const activeSectionId = getSectionIdForPath(sections, pathname);
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
 
@@ -164,6 +156,7 @@ export function AppSidebarNav({
     if (item.href === '/app/sales/launch-packets' && (pathname === '/app/sales/contract-launch' || pathname.startsWith('/app/sales/contract-launch/') || pathname === '/app/sales/launch-packet' || pathname.startsWith('/app/sales/launch-packet/'))) return true;
     if (item.href === '/app/sales/scope' && (pathname === '/app/sales/scope-builder' || pathname.startsWith('/app/sales/scope-builder/'))) return true;
     if (item.href === '/app/kpis' && (pathname === '/app/kpis' || pathname.startsWith('/app/kpis/'))) return true;
+    if (item.href === '/app/kpi' && (pathname === '/app/kpi' || pathname.startsWith('/app/kpi/'))) return true;
     if (item.href === '/app/crm/pipeline' && pathname.startsWith('/app/crm/pipeline')) return true;
     if (item.href === '/app/crm' && (pathname === '/app/crm' || (pathname.startsWith('/app/crm/') && !pathname.startsWith('/app/crm/pipeline')))) return true;
     if (item.href === '/app/ops/map' && pathname.startsWith('/app/ops/map')) return true;
@@ -190,14 +183,16 @@ export function AppSidebarNav({
         {sections.map((section) => {
           const isOpen = collapsed[section.id] !== true;
           const isActiveSection = section.id === activeSectionId;
+          const isOperationsLocked = section.id === 'operations' && operationsLocked;
 
           return (
-            <div key={section.id} className="space-y-1">
+            <div key={section.id} className={`space-y-1 ${isOperationsLocked ? 'opacity-70' : ''}`}>
               <button
                 type="button"
                 onClick={() => toggle(section.id)}
                 className={`flex w-full items-center gap-2.5 px-3 py-2.5 text-left text-xs font-semibold uppercase tracking-widest transition-colors min-h-[40px] ${sectionHeaderColor(section.id, isActiveSection)}`}
                 aria-expanded={isOpen}
+                title={isOperationsLocked ? OPERATIONS_UPGRADE_TOOLTIP : undefined}
               >
                 {isOpen ? (
                   <ChevronDown className="h-4 w-4 shrink-0 opacity-80" aria-hidden />
@@ -205,51 +200,87 @@ export function AppSidebarNav({
                   <ChevronRight className="h-4 w-4 shrink-0 opacity-80" aria-hidden />
                 )}
                 <span className="truncate">{t(section.labelKey)}</span>
+                {isOperationsLocked && <Lock className="h-3.5 w-3.5 shrink-0 ml-auto" aria-hidden />}
               </button>
 
               {isOpen && (
                 <div className="space-y-0.5 pl-1">
                   {section.groups ? (
-                    section.groups.map((group) => (
-                      <div key={group.labelKey} className="space-y-0.5">
-                        <p className="px-3 py-1.5 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-                          {t(group.labelKey)}
-                        </p>
-                        {(group.items ?? []).map((item) => {
-                          const Icon = item.icon;
-                          const active = isItemActive(item);
-                          const alertCount = getAlertCount(item.alertKey);
-                          return (
-                            <AppLink
-                              key={`${item.href}-${item.labelKey}`}
-                              href={item.href}
-                              className={navLinkClass(active)}
-                            >
-                              <Icon
-                                className={`h-5 w-5 shrink-0 ${active ? 'opacity-100' : 'opacity-70'}`}
-                                aria-hidden
-                              />
-                              <span className="truncate">{t(item.labelKey)}</span>
-                              {alertCount > 0 && (
-                                <Badge variant="destructive" className={ALERT_BADGE_CLASS} title="Requires attention">
-                                  {alertCount > 99 ? '99+' : alertCount}
-                                </Badge>
-                              )}
-                            </AppLink>
-                          );
-                        })}
-                      </div>
-                    ))
+                    section.groups.map((group, groupIndex) => {
+                      const groupItems = group.items ?? [];
+                      const hasActiveInGroup = groupItems.some((item) => isItemActive(item));
+                      const isLaunchToOps = (item: NavItem) =>
+                        item.href === '/app/sales/launch-packets' || item.labelKey === 'navLaunchToOperations';
+                      return (
+                        <div
+                          key={group.labelKey}
+                          className={`space-y-0.5 ${groupIndex > 0 ? 'mt-5' : ''}`}
+                        >
+                          <p
+                            className={`px-3 py-1.5 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/80 border-l-2 ${
+                              hasActiveInGroup && section.id === 'sales'
+                                ? 'border-l-primary/50'
+                                : 'border-l-transparent'
+                            }`}
+                          >
+                            {t(group.labelKey)}
+                          </p>
+                          {(groupItems).map((item) => {
+                            const Icon = item.icon;
+                            const active = isItemActive(item);
+                            const alertCount = getAlertCount(item.alertKey);
+                            const isLaunch = isLaunchToOps(item);
+                            const linkClass = isLaunch && active
+                              ? 'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors min-h-[40px] border-l-2 border-l-primary bg-primary/15 text-foreground font-medium ring-1 ring-primary/20'
+                              : navLinkClass(active);
+                            return (
+                              <AppLink
+                                key={`${item.href}-${item.labelKey}`}
+                                href={item.href}
+                                className={linkClass}
+                              >
+                                <Icon
+                                  className={`h-5 w-5 shrink-0 ${active ? 'opacity-100' : 'opacity-70'}`}
+                                  aria-hidden
+                                />
+                                <span className="truncate">{t(item.labelKey)}</span>
+                                {alertCount > 0 && (
+                                  <Badge variant="destructive" className={ALERT_BADGE_CLASS} title="Requires attention">
+                                    {alertCount > 99 ? '99+' : alertCount}
+                                  </Badge>
+                                )}
+                              </AppLink>
+                            );
+                          })}
+                        </div>
+                      );
+                    })
                   ) : (
                     (section.items ?? []).map((item) => {
                       const Icon = item.icon;
                       const active = isItemActive(item);
                       const alertCount = getAlertCount(item.alertKey);
+                      if (isOperationsLocked) {
+                        return (
+                          <button
+                            key={`${item.href}-${item.labelKey}`}
+                            type="button"
+                            title={OPERATIONS_UPGRADE_TOOLTIP}
+                            onClick={() => setUpgradeModalOpen(true)}
+                            className={`flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition-colors min-h-[40px] border-l-2 border-l-transparent text-muted-foreground hover:bg-muted/70 hover:text-foreground`}
+                          >
+                            <Icon className="h-5 w-5 shrink-0 opacity-70" aria-hidden />
+                            <span className="truncate">{t(item.labelKey)}</span>
+                            <Lock className="h-3.5 w-3.5 shrink-0 ml-auto opacity-60" aria-hidden />
+                          </button>
+                        );
+                      }
+                      const linkClass = navLinkClass(active);
                       return (
                         <AppLink
                           key={`${item.href}-${item.labelKey}`}
                           href={item.href}
-                          className={navLinkClass(active)}
+                          className={linkClass}
                         >
                           <Icon
                             className={`h-5 w-5 shrink-0 ${active ? 'opacity-100' : 'opacity-70'}`}
@@ -278,6 +309,8 @@ export function AppSidebarNav({
           <span className="truncate">{t('navSettings')}</span>
         </AppLink>
       </div>
+
+      <OperationsUpgradeModal open={upgradeModalOpen} onOpenChange={setUpgradeModalOpen} />
     </nav>
   );
 }

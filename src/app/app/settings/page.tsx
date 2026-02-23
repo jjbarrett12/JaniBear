@@ -54,6 +54,22 @@ export default async function SettingsPage() {
             </Link>
           </CardContent>
         </Card>
+        {canManageBenchmarking && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Settings className="h-5 w-5" />
+                AI Control Center
+              </CardTitle>
+              <CardDescription>Control AI features, automation rules, privacy, and spending</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Link href="/app/settings/ai">
+                <Button variant="secondary">Open AI Control Center</Button>
+              </Link>
+            </CardContent>
+          </Card>
+        )}
         <Card>
           <CardHeader>
             <CardTitle>Organization</CardTitle>

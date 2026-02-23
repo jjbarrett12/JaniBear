@@ -1,3 +1,4 @@
+import { redirect } from 'next/navigation';
 import { requireOrg } from '@/lib/auth';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -5,9 +6,13 @@ import { SalesPageShell } from '@/components/sales/page-shell';
 import { PageHeader } from '@/components/sales/page-header';
 import { createClient } from '@/lib/supabase/server';
 import { Badge } from '@/components/ui/badge';
+import { isOperationsEnabled } from '@/lib/is-premium';
 
 export default async function LaunchPacketsPage() {
   const org = await requireOrg();
+  const operationsEnabled = await isOperationsEnabled(org.org_id);
+  if (!operationsEnabled) redirect('/app/sales/win-loss');
+
   const supabase = await createClient();
 
   const { data: packets } = await supabase
@@ -29,13 +34,13 @@ export default async function LaunchPacketsPage() {
     <SalesPageShell
       breadcrumb={
         <span className="text-muted-foreground">
-          Sales <span className="text-foreground/80">/ Contract Launch</span>
+          Sales <span className="text-foreground/80">/ Launch to Operations</span>
         </span>
       }
     >
       <div className="p-4 md:p-6 space-y-6">
         <PageHeader
-          title="Contract Launch"
+          title="Launch to Operations"
           description="Ready-for-launch checklist → Submit to Operations. Ops reviews in Launch Intake. Status: Draft → Ready → Submitted."
         />
         <Card>

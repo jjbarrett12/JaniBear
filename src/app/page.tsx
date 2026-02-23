@@ -36,6 +36,7 @@ import { BrandName } from '@/components/ui/brand-name';
 import { HeroBackdropImage } from '@/components/landing/hero-backdrop-image';
 import { HeroCenterImage } from '@/components/landing/hero-center-image';
 import WhatJanibearDoesSection from '@/components/landing/WhatJanibearDoesSection';
+import LifecycleSection from '@/components/landing/LifecycleSection';
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);

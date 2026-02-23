@@ -109,10 +109,21 @@ export function AppSidebarNav({
   const sections = useMemo(() => {
     const raw = getNavSectionsForShell(shell, franchiseeEnrolled);
     if (proGearEnabled) return raw;
-    return raw.map((s) => ({
-      ...s,
-      items: s.items.filter((item) => item.href !== '/app/pro-gear'),
-    }));
+    return raw.map((s) => {
+      if (s.groups) {
+        return {
+          ...s,
+          groups: s.groups.map((g) => ({
+            ...g,
+            items: (g.items ?? []).filter((item) => item.href !== '/app/pro-gear'),
+          })),
+        };
+      }
+      return {
+        ...s,
+        items: (s.items ?? []).filter((item) => item.href !== '/app/pro-gear'),
+      };
+    });
   }, [shell, franchiseeEnrolled, proGearEnabled]);
   const activeSectionId = getSectionIdForPath(sections, pathname);
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
@@ -204,7 +215,7 @@ export function AppSidebarNav({
                         <p className="px-3 py-1.5 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                           {t(group.labelKey)}
                         </p>
-                        {group.items.map((item) => {
+                        {(group.items ?? []).map((item) => {
                           const Icon = item.icon;
                           const active = isItemActive(item);
                           const alertCount = getAlertCount(item.alertKey);

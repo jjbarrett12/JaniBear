@@ -71,13 +71,15 @@
 }
 .landing-page .landing-cta-lg {
   font-size: 1.125rem;
-  padding-left: 2rem;
-  padding-right: 2rem;
-  height: 3.5rem;
-  box-shadow: 0 4px 14px rgba(250, 204, 21, 0.45);
+  padding-left: 2.5rem;
+  padding-right: 2.5rem;
+  min-height: 3.625rem;
+  box-shadow: 0 4px 32px rgba(250, 204, 21, 0.5);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 .landing-page .landing-cta-lg:hover {
-  box-shadow: 0 8px 28px rgba(250, 204, 21, 0.55);
+  box-shadow: 0 8px 40px rgba(250, 204, 21, 0.6);
+  transform: translateY(-2px) scale(1.03);
 }
 .landing-page .landing-outline {
   background: transparent !important;
@@ -294,17 +296,21 @@
   color: hsl(var(--muted-foreground)) !important;
 }
 
-/* KPI Executive Console: deep navy (dark only), premium cards, accent only for signal */
-.dark .kpi-executive-console {
-  background-color: hsl(222 48% 4%);
+/* KPI Command Center: dark charcoal, enterprise, state-only color, no shadows */
+.dark .kpi-executive-console,
+.dark .kpi-command-center {
+  background-color: #0E1117;
   min-height: 100%;
 }
-.dark .kpi-executive-console .kpi-card-elevated {
-  background-color: hsl(218 28% 18%);
-  border-color: hsl(215 18% 24%);
+.dark .kpi-executive-console .kpi-card-elevated,
+.dark .kpi-command-center .kpi-card-elevated {
+  background-color: #151A22;
+  border-color: rgba(255, 255, 255, 0.06);
+  box-shadow: none;
 }
-.dark .kpi-executive-console .kpi-card-elevated:hover {
-  background-color: hsl(218 28% 20%);
+.dark .kpi-executive-console .kpi-card-elevated:hover,
+.dark .kpi-command-center .kpi-card-elevated:hover {
+  background-color: #1a1f28;
 }
 
 /* Light mode: darker text and borders for better contrast (sidebar, cards, badges, descriptions) */

@@ -35,6 +35,7 @@ import {
 import { BrandName } from '@/components/ui/brand-name';
 import { HeroBackdropImage } from '@/components/landing/hero-backdrop-image';
 import { HeroCenterImage } from '@/components/landing/hero-center-image';
+import WhatJanibearDoesSection from '@/components/landing/WhatJanibearDoesSection';
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -225,8 +226,8 @@ export default function Home() {
         {/* Backdrop: image + overlays so content owns the fold */}
         <div className="absolute inset-0 pointer-events-none" aria-hidden>
           <HeroBackdropImage />
-          <div className="absolute inset-0 bg-black/35" />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/35 to-black/80" />
+          <div className="absolute inset-0 bg-black/30" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1a]/95 via-[#0a0f1a]/85 to-black" />
         </div>
         <div className="absolute inset-0 pointer-events-none" aria-hidden>
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[180%] max-w-7xl h-[95%] bg-gradient-radial-hero opacity-50" />
@@ -241,7 +242,7 @@ export default function Home() {
           >
             The{' '}
             <span className="hero-headline-gradient">Operating System</span>
-            {' '}for Commercial Cleaning Companies
+            {' '}for Commercial Cleaning.
           </h1>
           <p
             className={`text-center max-w-xl mx-auto mt-2 md:mt-3 text-zinc-100 text-base md:text-lg font-semibold hero-subhead transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
@@ -250,7 +251,7 @@ export default function Home() {
             Win bids. Keep accounts. Catch margin leaks. One command center.
           </p>
 
-          {/* Laptop — tight to CTAs below */}
+          {/* Laptop — tight to stat strip below */}
           <div
             className={`w-full flex justify-center mt-1 md:mt-2 transition-all duration-700 ${mounted ? 'opacity-100 -translate-y-10 md:-translate-y-16' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '80ms' }}
@@ -258,13 +259,28 @@ export default function Home() {
             <HeroCenterImage />
           </div>
 
-          {/* CTAs — pulled up to kill gap under laptop */}
+          {/* Floating stat strip — below laptop */}
           <div
-            className={`flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center -mt-2 md:-mt-4 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            className={`flex flex-wrap items-center justify-center gap-x-6 gap-y-2 px-5 py-3 -mt-6 md:-mt-8 mb-2 rounded-xl bg-black/50 border border-white/10 backdrop-blur-sm transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            style={{ transitionDelay: '120ms' }}
+            aria-hidden
+          >
+            <span className="text-sm font-medium text-white tabular-nums">24 Buildings Today</span>
+            <span className="text-zinc-500 hidden sm:inline">|</span>
+            <span className="text-sm font-medium text-amber-400/95 tabular-nums">3 Margin Alerts</span>
+            <span className="text-zinc-500 hidden sm:inline">|</span>
+            <span className="text-sm font-medium text-emerald-400/95 tabular-nums">92% Account Health</span>
+            <span className="text-zinc-500 hidden sm:inline">|</span>
+            <span className="text-sm font-medium text-white tabular-nums">$148K Monthly Recurring</span>
+          </div>
+
+          {/* CTAs — primary button heavier */}
+          <div
+            className={`flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '160ms' }}
           >
             <Link href="/demo">
-              <Button size="lg" className="landing-cta landing-cta-lg text-base font-semibold px-8 h-14 rounded-xl shadow-[0_4px_28px_rgba(250,204,21,0.45)] hover:shadow-[0_8px_36px_rgba(250,204,21,0.55)] transition-all hover:scale-[1.02]">
+              <Button size="lg" className="landing-cta landing-cta-lg text-base font-semibold px-10 min-h-[58px] rounded-xl shadow-[0_4px_32px_rgba(250,204,21,0.5)] hover:shadow-[0_8px_40px_rgba(250,204,21,0.6)] transition-all duration-200 active:scale-[0.99]">
                 See the Command Center
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
@@ -294,7 +310,7 @@ export default function Home() {
         />
         <div className="container relative mx-auto px-4">
           <div className="grid md:grid-cols-[1fr_auto_1fr] gap-0 max-w-6xl mx-auto md:items-center md:gap-12 lg:gap-16">
-            {/* Left: headline with hierarchy */}
+            {/* Left: headline with hierarchy + origin */}
             <div
               className={`flex flex-col justify-center md:min-h-0 md:py-4 transition-all duration-700 ease-out ${
                 statementInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
@@ -304,9 +320,14 @@ export default function Home() {
                 <span className="text-white">Built by Operators.</span>
                 <br />
                 <span className="text-white" style={{ opacity: 0.65, fontSize: '0.9em' }}>
-                  Not Venture Capital.
+                  Not Software Guys.
                 </span>
               </h2>
+              <p className="mt-6 text-zinc-300 text-base md:text-lg leading-relaxed max-w-md">
+                <BrandName /> wasn&apos;t built in a boardroom.
+                <br />
+                It was built inside a commercial cleaning company.
+              </p>
             </div>
 
             {/* Vertical accent bar: neon yellow, gradient, animates height into view */}
@@ -325,25 +346,16 @@ export default function Home() {
               />
             </div>
 
-            {/* Right: structured copy, max-width, spacing, punchline, authority */}
+            {/* Right: structured copy, max-width, spacing, punchline */}
             <div
               className="max-w-[600px] space-y-7 text-zinc-300 text-lg leading-[1.7] pl-0 md:pl-0"
               style={{ transitionDelay: '100ms' }}
             >
-              <p
-                className={`transition-all duration-700 ease-out ${
-                  statementInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-                }`}
-                style={{ transitionDelay: '150ms' }}
-              >
-                <BrandName /> wasn&apos;t built in a boardroom. It was built inside a commercial cleaning company.
-              </p>
-
               <div
                 className={`space-y-3 transition-all duration-700 ease-out ${
                   statementInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
                 }`}
-                style={{ transitionDelay: '250ms' }}
+                style={{ transitionDelay: '150ms' }}
               >
                 <h3 className="text-sm font-semibold uppercase tracking-wider text-amber-400/90">
                   20+ Years in the Field.
@@ -356,44 +368,43 @@ export default function Home() {
                 </p>
               </div>
 
-              <div
-                className={`space-y-2 transition-all duration-700 ease-out ${
-                  statementInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-                }`}
-                style={{ transitionDelay: '350ms' }}
-              >
-                <p className="text-zinc-300 font-medium">We&apos;ve:</p>
-                <ul className="list-none space-y-1.5 text-zinc-400">
-                  <li className="flex items-center gap-2">
-                    <span className="text-amber-400" aria-hidden>•</span>
-                    Lost bids
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="text-amber-400" aria-hidden>•</span>
-                    Battled scope creep
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="text-amber-400" aria-hidden>•</span>
-                    Chased down crews when quality slipped
-                  </li>
-                </ul>
-              </div>
-
               <p
                 className={`transition-all duration-700 ease-out ${
                   statementInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
                 }`}
-                style={{ transitionDelay: '450ms' }}
+                style={{ transitionDelay: '250ms' }}
               >
-                We didn&apos;t need another generic software tool. We needed a system that wins contracts, enforces accountability, and protects client relationships long term.
+                We didn&apos;t need another generic software tool.
+                <br />
+                We needed a system that:
               </p>
+
+              <ul
+                className={`list-none space-y-2 text-zinc-300 transition-all duration-700 ease-out ${
+                  statementInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+                }`}
+                style={{ transitionDelay: '350ms' }}
+              >
+                <li className="flex items-center gap-2">
+                  <span className="text-amber-400" aria-hidden>•</span>
+                  Wins contracts
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-amber-400" aria-hidden>•</span>
+                  Enforces accountability
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-amber-400" aria-hidden>•</span>
+                  Protects client relationships long term
+                </li>
+              </ul>
 
               {/* Punchline: larger, bold, yellow underline */}
               <p
                 className={`font-bold text-white text-xl md:text-2xl tracking-tight transition-all duration-700 ease-out ${
                   statementInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
                 }`}
-                style={{ transitionDelay: '550ms' }}
+                style={{ transitionDelay: '450ms' }}
               >
                 So we built it
                 <span className="text-amber-400" aria-hidden>.</span>
@@ -402,139 +413,62 @@ export default function Home() {
                   aria-hidden
                 />
               </p>
+            </div>
+          </div>
 
-              {/* Micro authority */}
-              <div
-                className={`flex flex-wrap gap-x-6 gap-y-2 pt-2 text-sm text-zinc-400 transition-all duration-700 ease-out ${
-                  statementInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-                }`}
-                style={{ transitionDelay: '650ms' }}
-              >
-                <span className="flex items-center gap-2">
-                  <Check className="h-4 w-4 text-amber-400 shrink-0" />
-                  20+ Years Operating
-                </span>
-                <span className="flex items-center gap-2">
-                  <Check className="h-4 w-4 text-amber-400 shrink-0" />
-                  Built Inside a Cleaning Company
-                </span>
-                <span className="flex items-center gap-2">
-                  <Check className="h-4 w-4 text-amber-400 shrink-0" />
-                  Designed for Commercial Contracts
-                </span>
+          {/* Proof Bar: big bold metrics across the width */}
+          <div
+            className={`relative mt-16 md:mt-20 pt-10 border-t border-zinc-700/60 transition-all duration-700 ease-out ${
+              statementInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+            }`}
+            style={{ transitionDelay: '550ms' }}
+          >
+            <div className="container mx-auto px-4">
+              <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 text-center">
+                <div>
+                  <p className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight tabular-nums">
+                    20+
+                  </p>
+                  <p className="text-sm font-semibold uppercase tracking-wider text-amber-400/90 mt-1">
+                    Years Operating
+                  </p>
+                </div>
+                <div>
+                  <p className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight tabular-nums">
+                    30,000
+                  </p>
+                  <p className="text-sm font-semibold uppercase tracking-wider text-amber-400/90 mt-1">
+                    Buildings Bid
+                  </p>
+                </div>
+                <div>
+                  <p className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight tabular-nums">
+                    $200M+
+                  </p>
+                  <p className="text-sm font-semibold uppercase tracking-wider text-amber-400/90 mt-1">
+                    Performed Services
+                  </p>
+                </div>
               </div>
-              <p
-                className={`text-sm text-zinc-500 italic transition-all duration-700 ease-out ${
-                  statementInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-                }`}
-                style={{ transitionDelay: '750ms' }}
-              >
-                Trusted by operators who actually clean buildings.
-              </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* What JANIBEAR Actually Does — 3 pillars: Sales, Ops, Executive */}
-      <section id="what-janibear-does" className="relative py-16 md:py-24 bg-black border-t border-zinc-800/50">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12 md:mb-16">
-            <h2 className="font-heading text-3xl md:text-5xl font-bold text-white mb-4 tracking-tight">
-              What <BrandName /> Actually Does
-            </h2>
-            <p className="text-lg md:text-xl text-zinc-400 max-w-2xl mx-auto">
-              One platform. Three engines. From first walkthrough to margin protection.
-            </p>
-          </div>
-          <div className="grid md:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">
-            {/* Sales Engine — yellow */}
-            <div className={`rounded-2xl border-2 border-amber-400/40 bg-zinc-900/60 p-6 md:p-8 transition-all duration-300 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`} style={{ transitionDelay: '0ms' }}>
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-300 text-xs font-semibold uppercase tracking-wider mb-6">
-                <span className="w-2 h-2 rounded-full bg-amber-400" aria-hidden /> Sales Engine
-              </div>
-              <ul className="space-y-3 text-zinc-300 text-sm md:text-base">
-                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-amber-400 shrink-0" /> AI Walkthrough Capture</li>
-                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-amber-400 shrink-0" /> Auto Scope Extraction</li>
-                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-amber-400 shrink-0" /> Proposal Builder</li>
-                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-amber-400 shrink-0" /> Territory Mapping</li>
-                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-amber-400 shrink-0" /> Bid Win Tracking</li>
-              </ul>
-            </div>
-            {/* Operations Engine — blue */}
-            <div className={`rounded-2xl border-2 border-cyan-400/40 bg-zinc-900/60 p-6 md:p-8 transition-all duration-300 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`} style={{ transitionDelay: '80ms' }}>
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-500/20 border border-cyan-400/40 text-cyan-300 text-xs font-semibold uppercase tracking-wider mb-6">
-                <span className="w-2 h-2 rounded-full bg-cyan-400" aria-hidden /> Operations Engine
-              </div>
-              <ul className="space-y-3 text-zinc-300 text-sm md:text-base">
-                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-cyan-400 shrink-0" /> Crew Scheduling</li>
-                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-cyan-400 shrink-0" /> Site Health Score</li>
-                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-cyan-400 shrink-0" /> Inspections</li>
-                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-cyan-400 shrink-0" /> Issue Escalation</li>
-                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-cyan-400 shrink-0" /> Client Visibility Portal</li>
-              </ul>
-            </div>
-            {/* Executive Command — green */}
-            <div className={`rounded-2xl border-2 border-emerald-400/40 bg-zinc-900/60 p-6 md:p-8 transition-all duration-300 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`} style={{ transitionDelay: '160ms' }}>
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-xs font-semibold uppercase tracking-wider mb-6">
-                <span className="w-2 h-2 rounded-full bg-emerald-400" aria-hidden /> Executive Command
-              </div>
-              <ul className="space-y-3 text-zinc-300 text-sm md:text-base">
-                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-emerald-400 shrink-0" /> Financial Health Module</li>
-                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-emerald-400 shrink-0" /> Account Decay Model</li>
-                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-emerald-400 shrink-0" /> Margin Protection</li>
-                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-emerald-400 shrink-0" /> At-Risk Contracts</li>
-                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-emerald-400 shrink-0" /> KPI Dashboard</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
+      <WhatJanibearDoesSection />
 
-      {/* See It In Action — lifecycle flow */}
-      <section id="see-it-in-action" className="relative py-16 md:py-24 bg-zinc-950/80 border-t border-zinc-800/50">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12 md:mb-16">
-            <h2 className="font-heading text-3xl md:text-5xl font-bold text-white mb-4 tracking-tight">
-              See It In Action
-            </h2>
-            <p className="text-lg md:text-xl text-zinc-400 max-w-2xl mx-auto">
-              This is how it works. One workflow from walkthrough to account health.
-            </p>
-          </div>
-          <div className="max-w-4xl mx-auto">
-            <div className="flex flex-wrap items-center justify-center gap-3 md:gap-4">
-              {[
-                { step: 1, label: 'Capture walkthrough with phone', icon: Camera },
-                { step: 2, label: 'AI extracts scope', icon: Wand2 },
-                { step: 3, label: 'Proposal generated', icon: FileSpreadsheet },
-                { step: 4, label: 'Crew assigned', icon: Users },
-                { step: 5, label: 'Inspections logged', icon: ClipboardCheck },
-                { step: 6, label: 'Account health tracked', icon: TrendingUp },
-              ].map((item, index) => {
-                const Icon = item.icon;
-                return (
-                  <div key={item.step} className="flex items-center gap-2 md:gap-3">
-                    <div className="flex flex-col items-center gap-2 rounded-2xl border border-zinc-700/80 bg-zinc-900/60 px-4 py-4 md:px-5 md:py-4 min-w-[140px] md:min-w-[160px] hover:border-amber-400/40 transition-colors">
-                      <div className="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-400/30 flex items-center justify-center text-amber-300">
-                        <Icon className="h-5 w-5" />
-                      </div>
-                      <span className="text-xs font-medium text-zinc-400 text-center">Step {item.step}</span>
-                      <span className="text-sm font-medium text-white text-center leading-tight">{item.label}</span>
-                    </div>
-                    {index < 5 && (
-                      <ArrowRight className="h-5 w-5 text-zinc-500 shrink-0 hidden md:block" aria-hidden />
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-            <p className="text-center text-sm text-zinc-500 mt-8">
-              You&apos;re not just buying software. You&apos;re replacing disconnected spreadsheets and guesswork with one lifecycle.
-            </p>
-          </div>
-        </div>
-      </section>
+      <LifecycleSection
+        headline="See It In Action"
+        subhead="This is how it works. One workflow from walkthrough to account health."
+        stages={[
+          { title: 'Capture Site Data in Minutes', description: 'Walkthrough to structured data in one flow.', icon: <Camera className="h-5 w-5" /> },
+          { title: 'AI Builds Scope + Pricing Instantly', description: 'Scope, labor, and pricing in seconds.', icon: <Wand2 className="h-5 w-5" /> },
+          { title: 'Proposal Ready to Send', description: 'Branded proposal and send without switching tools.', icon: <FileSpreadsheet className="h-5 w-5" /> },
+          { title: 'Launch Crew + Schedule', description: 'Hand off to ops; crew and schedule in one place.', icon: <Users className="h-5 w-5" /> },
+          { title: 'Quality Tracked Automatically', description: 'Inspections and proof without the chase.', icon: <ClipboardCheck className="h-5 w-5" /> },
+          { title: 'Account Health Never Slips', description: 'Decay signals and save plays before churn.', icon: <TrendingUp className="h-5 w-5" /> },
+        ]}
+      />
 
       <section id="features" className="relative pt-16 md:pt-20 pb-20 md:pb-24 bg-zinc-950/80 border-t border-zinc-800/50">
         <div className="container mx-auto px-4">

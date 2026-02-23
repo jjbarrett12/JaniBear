@@ -22,6 +22,17 @@ import {
 import { ChevronDown, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
+/** PascalCase root so Vercel SWC sees jsx identifier after return ( instead of lowercase div. */
+function KpiBodyRoot({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return React.createElement('div', { className }, children);
+}
+
 /** KPI dashboard body with full JSX. Separate file so KpiDashboardPageV2ContentInner.tsx can be JSX-free for Vercel SWC. */
 export function KpiDashboardBody() {
   const {
@@ -59,8 +70,7 @@ export function KpiDashboardBody() {
     setDetailDrawerOpen(true);
   };
 
-  return (
-    <div className="flex flex-col gap-6">
+  return ( <KpiBodyRoot className="flex flex-col gap-6">
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
@@ -316,6 +326,6 @@ export function KpiDashboardBody() {
       >
         {detailDrawerContent}
       </KpiDetailsDrawer>
-    </div>
+    </KpiBodyRoot>
   );
 }

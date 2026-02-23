@@ -70,7 +70,7 @@ export function KpiDashboardBody() {
     setDetailDrawerOpen(true);
   };
 
-  return ( <KpiBodyRoot className="flex flex-col gap-6">
+  const content = <KpiBodyRoot className="flex flex-col gap-6">
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
@@ -326,6 +326,6 @@ export function KpiDashboardBody() {
       >
         {detailDrawerContent}
       </KpiDetailsDrawer>
-    </KpiBodyRoot>
-  );
+    </KpiBodyRoot>;
+  return content;
 }

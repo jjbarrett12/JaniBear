@@ -1,42 +1,24 @@
 'use client';
 
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Menu, X } from 'lucide-react';
+import { ArrowRight, Check, Menu, X } from 'lucide-react';
 import { BrandName } from '@/components/ui/brand-name';
 import { HeroBackdropImage } from '@/components/landing/hero-backdrop-image';
 import { HeroCenterImage } from '@/components/landing/hero-center-image';
 import { HOMEPAGE } from '@/content/homepage';
 import PlatformModelSection from '@/components/landing/PlatformModelSection';
-import ModulesGridSection from '@/components/landing/ModulesGridSection';
-import WhyJanibearWinsSection from '@/components/landing/WhyJanibearWinsSection';
+import ModulesSection from '@/components/marketing/ModulesSection';
+import { OperatorVsBoardroomSection } from '@/components/sections/OperatorVsBoardroomSection';
 import WhoItsForSection from '@/components/landing/WhoItsForSection';
 import TrustSection from '@/components/landing/TrustSection';
 import FinalCtaSection from '@/components/landing/FinalCtaSection';
 
 export default function Home() {
-  const [mounted, setMounted] = useState(false);
   const [navScrolled, setNavScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const proofRef = useRef<HTMLElement>(null);
-  const [proofInView, setProofInView] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    const el = proofRef.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([e]) => setProofInView(e.isIntersecting),
-      { threshold: 0.1, rootMargin: '0px 0px -60px 0px' }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
 
   // If Supabase sent a password-reset or auth link to the Site URL (homepage), send to the right place
   useLayoutEffect(() => {
@@ -63,15 +45,15 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="landing-page min-h-screen bg-black text-white pb-20 md:pb-0">
+    <div className="landing-page min-h-screen bg-black text-white pb-20 md:pb-0" style={{ backgroundColor: '#000', color: '#fff' }}>
       <nav
-        className={`landing-header sticky top-0 z-50 h-14 md:h-16 py-0 flex items-center overflow-visible transition-all duration-300 ${
+        className={`landing-header sticky top-0 z-50 h-14 md:h-16 py-0 flex items-center overflow-visible transition-all duration-300 bg-black text-white ${
           navScrolled ? 'landing-header-scrolled shadow-sm' : ''
         }`}
         style={{ backgroundColor: '#000' }}
       >
         <div className="container relative mx-auto px-4 h-full flex items-center justify-between gap-4 min-h-0">
-          <Link href="/" className="landing-logo-wrap flex items-center shrink-0 bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block">
+          <Link href="/" className="landing-logo-wrap flex items-center shrink-0 bg-transparent text-white [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block">
             <Image
               src="/logo.png"
               alt="JANIBEAR"
@@ -83,51 +65,46 @@ export default function Home() {
             />
           </Link>
           {/* Desktop: nav categories centered in the middle of the bar */}
-          <div className="hidden md:flex absolute left-1/2 top-0 h-full -translate-x-1/2 items-center gap-1 lg:gap-2">
-            <Link href="/pricing">
-              <Button variant="ghost" size="sm" className="landing-nav-link shrink-0 h-9 px-3">
+          <div className="hidden md:flex absolute left-1/2 top-0 h-full -translate-x-1/2 items-center gap-1 lg:gap-2 text-white">
+            <Link href="/pricing" className="text-white hover:text-white">
+              <Button variant="ghost" size="sm" className="landing-nav-link shrink-0 h-9 px-3 text-white hover:text-white hover:bg-white/10">
                 Pricing
               </Button>
             </Link>
-            <Link href="/survey">
-              <Button variant="ghost" size="sm" className="landing-nav-link shrink-0 h-9 px-3">
+            <Link href="/survey" className="text-white hover:text-white">
+              <Button variant="ghost" size="sm" className="landing-nav-link shrink-0 h-9 px-3 text-white hover:text-white hover:bg-white/10">
                 Plans
               </Button>
             </Link>
-            <Link href="/#platform-model">
-              <Button variant="ghost" size="sm" className="landing-nav-link shrink-0 h-9 px-3">
-                Platform
+            <Link href="/#platform-model" className="text-white hover:text-white">
+              <Button variant="ghost" size="sm" className="landing-nav-link shrink-0 h-9 px-3 text-white hover:text-white hover:bg-white/10">
+                What It Does
               </Button>
             </Link>
-            <Link href="/#modules">
-              <Button variant="ghost" size="sm" className="landing-nav-link shrink-0 h-9 px-3">
-                Modules
+            <Link href="/demo" className="text-white hover:text-white">
+              <Button variant="ghost" size="sm" className="landing-nav-link shrink-0 h-9 px-3 text-white hover:text-white hover:bg-white/10">
+                See It In Action
               </Button>
             </Link>
-            <Link href="/#why-janibear-wins">
-              <Button variant="ghost" size="sm" className="landing-nav-link shrink-0 h-9 px-3">
-                Why Janibear
+            <Link href="/#modules" className="text-white hover:text-white">
+              <Button variant="ghost" size="sm" className="landing-nav-link shrink-0 h-9 px-3 text-white hover:text-white hover:bg-white/10">
+                Features
               </Button>
             </Link>
-            <Link href="/#who-its-for">
-              <Button variant="ghost" size="sm" className="landing-nav-link shrink-0 h-9 px-3">
-                Who It's For
-              </Button>
-            </Link>
-            <Link href="/contact">
-              <Button variant="ghost" size="sm" className="landing-nav-link shrink-0 h-9 px-3">
+            <Link href="/contact" className="text-white hover:text-white">
+              <Button variant="ghost" size="sm" className="landing-nav-link shrink-0 h-9 px-3 text-white hover:text-white hover:bg-white/10">
                 Contact
               </Button>
             </Link>
           </div>
           {/* Desktop: Sign in + primary CTA — right side */}
-          <div className="hidden md:flex items-center gap-1 lg:gap-2 shrink-0 ml-auto">
-            <Link href="/auth/login" className="landing-nav-link landing-nav-link-text text-sm font-medium shrink-0 h-9 flex items-center px-3 hover:underline">
+          <div className="hidden md:flex items-center gap-1 lg:gap-2 shrink-0 ml-auto text-white">
+            <Link href="/auth/login" className="landing-nav-link landing-nav-link-text text-sm font-medium shrink-0 h-9 flex items-center px-3 hover:underline text-white hover:text-white">
               Sign in
             </Link>
             <Link href="/demo">
               <Button size="sm" className="landing-cta shrink-0 h-10 px-4 md:px-5 font-semibold">
-                Get a Private Demo
+                See the Command Center
               </Button>
             </Link>
           </div>
@@ -135,7 +112,7 @@ export default function Home() {
           <button
             type="button"
             onClick={() => setMenuOpen(true)}
-            className="md:hidden landing-nav-link p-2 rounded-md -mr-2 text-zinc-400 hover:text-white hover:bg-white/10"
+            className="md:hidden landing-nav-link p-2 rounded-md -mr-2 text-white hover:text-white hover:bg-white/10"
             aria-label="Open menu"
           >
             <Menu className="h-6 w-6" />
@@ -169,23 +146,20 @@ export default function Home() {
               </button>
             </div>
             <nav className="flex flex-col p-4 gap-1">
-              <Link href="/#platform-model" onClick={() => setMenuOpen(false)} className="px-3 py-3 text-white font-medium rounded-lg hover:bg-white/10">
-                Platform
-              </Link>
-              <Link href="/#modules" onClick={() => setMenuOpen(false)} className="px-3 py-3 text-white font-medium rounded-lg hover:bg-white/10">
-                Modules
-              </Link>
-              <Link href="/#why-janibear-wins" onClick={() => setMenuOpen(false)} className="px-3 py-3 text-white font-medium rounded-lg hover:bg-white/10">
-                Why Janibear
-              </Link>
-              <Link href="/#who-its-for" onClick={() => setMenuOpen(false)} className="px-3 py-3 text-white font-medium rounded-lg hover:bg-white/10">
-                Who It's For
-              </Link>
               <Link href="/pricing" onClick={() => setMenuOpen(false)} className="px-3 py-3 text-white font-medium rounded-lg hover:bg-white/10">
                 Pricing
               </Link>
               <Link href="/survey" onClick={() => setMenuOpen(false)} className="px-3 py-3 text-white font-medium rounded-lg hover:bg-white/10">
                 Plans
+              </Link>
+              <Link href="/#platform-model" onClick={() => setMenuOpen(false)} className="px-3 py-3 text-white font-medium rounded-lg hover:bg-white/10">
+                What It Does
+              </Link>
+              <Link href="/demo" onClick={() => setMenuOpen(false)} className="px-3 py-3 text-white font-medium rounded-lg hover:bg-white/10">
+                See It In Action
+              </Link>
+              <Link href="/#modules" onClick={() => setMenuOpen(false)} className="px-3 py-3 text-white font-medium rounded-lg hover:bg-white/10">
+                Features
               </Link>
               <Link href="/contact" onClick={() => setMenuOpen(false)} className="px-3 py-3 text-white font-medium rounded-lg hover:bg-white/10">
                 Contact
@@ -202,7 +176,7 @@ export default function Home() {
       <div className="fixed bottom-0 left-0 right-0 z-50 p-3 safe-bottom bg-black/95 border-t border-amber-400/30 backdrop-blur md:hidden">
         <Link href="/demo" className="block w-full">
           <Button className="landing-cta w-full h-12 text-base font-semibold rounded-lg">
-            Get a Private Demo
+            See the Command Center
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         </Link>
@@ -222,43 +196,41 @@ export default function Home() {
 
         <div className="relative container mx-auto px-4 max-w-6xl flex flex-col items-center pt-0 md:pt-1">
           <h1
-            className={`text-center max-w-4xl mx-auto font-heading text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white tracking-tight hero-headline transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
-            style={{ transitionDelay: '0ms' }}
+            className="text-center max-w-4xl mx-auto font-heading text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white tracking-tight hero-headline"
           >
             The <span className="hero-headline-gradient">Operating System</span> for Commercial Cleaning.
           </h1>
-          <p
-            className={`text-center max-w-xl mx-auto mt-2 md:mt-3 text-zinc-100 text-base md:text-lg font-semibold hero-subhead transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
-            style={{ transitionDelay: '40ms' }}
-          >
+          <p className="text-center max-w-xl mx-auto mt-2 md:mt-3 text-zinc-100 text-base md:text-lg font-semibold hero-subhead">
             {HOMEPAGE.hero.subhead}
           </p>
 
-          <div
-            className={`w-full flex justify-center mt-1 md:mt-2 transition-all duration-700 ${mounted ? 'opacity-100 -translate-y-10 md:-translate-y-16' : 'opacity-0 translate-y-4'}`}
-            style={{ transitionDelay: '80ms' }}
-          >
+          <div className="w-full flex justify-center mt-1 md:mt-2 -translate-y-10 md:-translate-y-16">
             <HeroCenterImage />
           </div>
 
-          <div
-            className={`flex flex-wrap items-center justify-center gap-x-6 gap-y-2 px-5 py-3 -mt-6 md:-mt-8 mb-2 rounded-xl bg-black/50 border border-white/10 backdrop-blur-sm transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
-            style={{ transitionDelay: '120ms' }}
-            aria-hidden
-          >
-            <span className="text-sm font-medium text-white tabular-nums">24 Buildings Today</span>
-            <span className="text-zinc-500 hidden sm:inline">|</span>
-            <span className="text-sm font-medium text-amber-400/95 tabular-nums">3 Margin Alerts</span>
-            <span className="text-zinc-500 hidden sm:inline">|</span>
-            <span className="text-sm font-medium text-emerald-400/95 tabular-nums">92% Account Health</span>
-            <span className="text-zinc-500 hidden sm:inline">|</span>
-            <span className="text-sm font-medium text-white tabular-nums">$148K Monthly Recurring</span>
+          <div className="-mt-27 md:-mt-36 mb-10">
+            <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-zinc-500 text-center mb-3">Command center · Today</p>
+            <div className="flex flex-wrap items-stretch justify-center gap-3">
+              <div className="rounded-xl border border-blue-500/40 bg-blue-500/5 backdrop-blur-sm px-5 py-3 min-w-[110px] text-center shadow-sm">
+                <span className="text-[11px] font-medium uppercase tracking-wider text-blue-400/90 block mb-0.5">Buildings cleaned today</span>
+                <span className="text-xl font-bold tabular-nums text-white tracking-tight">24</span>
+              </div>
+              <div className="rounded-xl border border-amber-500/40 bg-amber-500/5 backdrop-blur-sm px-5 py-3 min-w-[110px] text-center shadow-sm">
+                <span className="text-[11px] font-medium uppercase tracking-wider text-amber-400/90 block mb-0.5">Inspections due</span>
+                <span className="text-xl font-bold tabular-nums text-amber-400 tracking-tight">3</span>
+              </div>
+              <div className="rounded-xl border border-red-500/40 bg-red-500/5 backdrop-blur-sm px-5 py-3 min-w-[110px] text-center shadow-sm">
+                <span className="text-[11px] font-medium uppercase tracking-wider text-red-400/90 block mb-0.5">Accounts below health</span>
+                <span className="text-xl font-bold tabular-nums text-red-400/90 tracking-tight">5</span>
+              </div>
+              <div className="rounded-xl border border-emerald-500/40 bg-emerald-500/5 backdrop-blur-sm px-5 py-3 min-w-[110px] text-center shadow-sm">
+                <span className="text-[11px] font-medium uppercase tracking-wider text-emerald-400/90 block mb-0.5">Revenue today</span>
+                <span className="text-xl font-bold tabular-nums text-emerald-400 tracking-tight">$14K</span>
+              </div>
+            </div>
           </div>
 
-          <div
-            className={`flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
-            style={{ transitionDelay: '160ms' }}
-          >
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center">
             <Link href="/demo">
               <Button size="lg" className="landing-cta landing-cta-lg text-base font-semibold px-10 min-h-[58px] rounded-xl shadow-[0_4px_32px_rgba(250,204,21,0.5)] hover:shadow-[0_8px_40px_rgba(250,204,21,0.6)] transition-all duration-200 active:scale-[0.99]">
                 {HOMEPAGE.hero.ctaPrimary}
@@ -271,43 +243,53 @@ export default function Home() {
               </Button>
             </Link>
           </div>
-          <p className={`text-sm text-zinc-500 mt-4 transition-all duration-700 ${mounted ? 'opacity-100' : 'opacity-0'}`}>
-            {HOMEPAGE.hero.trial}
-          </p>
+          <ul className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2 mt-6">
+            {HOMEPAGE.hero.trialBullets.map((line) => (
+              <li key={line} className="flex items-center gap-2 text-sm text-zinc-500">
+                <Check className="h-4 w-4 shrink-0 text-amber-400" aria-hidden />
+                {line}
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
-      {/* 2. PROOF STRIP — Built by operators + stats */}
+      {/* 2. BUILT BY OPERATORS — Two columns, yellow vertical line */}
       <section
-        ref={proofRef}
-        className="relative border-t border-zinc-800/50 py-16 md:py-24 overflow-hidden"
+        className="relative border-t border-zinc-800/50 py-16 md:py-20 overflow-hidden min-h-[60vh] md:min-h-[70vh] flex flex-col justify-center"
         style={{ backgroundColor: '#0F1420' }}
         id="proof"
         aria-labelledby="proof-heading"
       >
-        <div className="container relative mx-auto px-4 max-w-6xl">
-          <div className={`text-center max-w-2xl mx-auto transition-all duration-700 ${proofInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-            <h2 id="proof-heading" className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight">
-              {HOMEPAGE.proofStrip.headline} <span className="text-zinc-500">{HOMEPAGE.proofStrip.subline}</span>
+        <div className="container relative mx-auto px-4 max-w-6xl flex-1 flex flex-col md:flex-row md:items-center">
+          {/* Left: large headline only */}
+          <div className="flex-1 flex items-center justify-center md:justify-end pr-0 md:pr-12 py-12 md:py-16">
+            <h2 id="proof-heading" className="font-heading text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white tracking-tight text-center md:text-right max-w-xl">
+              {HOMEPAGE.proofStrip.headline}{' '}
+              <span className="text-zinc-500">{HOMEPAGE.proofStrip.subline}</span>
             </h2>
-            <p className="mt-4 text-zinc-400 text-base md:text-lg">{HOMEPAGE.proofStrip.tagline}</p>
-            <p className="mt-2 text-amber-400/90 text-sm font-semibold uppercase tracking-wider">{HOMEPAGE.proofStrip.statLabel}</p>
           </div>
-          <div className={`mt-12 md:mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 text-center transition-all duration-700 ${proofInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`} style={{ transitionDelay: '150ms' }}>
-            {HOMEPAGE.proofStrip.stats.map((stat) => (
-              <div key={stat.label}>
-                <p className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight tabular-nums">{stat.value}</p>
-                <p className="text-sm font-semibold uppercase tracking-wider text-amber-400/90 mt-1">{stat.label}</p>
-              </div>
-            ))}
+          {/* Bold yellow vertical divider */}
+          <div className="hidden md:block w-1 flex-shrink-0 bg-amber-400 rounded-full min-h-[280px] self-center" aria-hidden />
+          {/* Right: narrative + bullets + checkmarks */}
+          <div className="flex-1 pl-0 md:pl-12 py-8 md:py-16 flex flex-col justify-center max-w-xl">
+            <p className="text-zinc-300 text-base md:text-lg leading-relaxed">{HOMEPAGE.proofStrip.tagline}</p>
+            <p className="mt-6 font-heading text-sm font-bold uppercase tracking-wider text-white">{HOMEPAGE.proofStrip.yearsHeading}</p>
+            <ul className="mt-2 space-y-1 list-disc list-inside text-zinc-300 text-sm md:text-base">
+              {HOMEPAGE.proofStrip.fieldBullets.map((b) => (
+                <li key={b}>{b}</li>
+              ))}
+            </ul>
+            <p className="mt-6 text-zinc-300 text-base leading-relaxed">{HOMEPAGE.proofStrip.needParagraph}</p>
+            <p className="mt-6 font-heading text-base font-bold text-white underline decoration-amber-400 decoration-2">{HOMEPAGE.proofStrip.soWeBuiltIt}</p>
           </div>
         </div>
       </section>
 
       {/* 3–8: Platform, Modules, Why, Who, Trust, Final CTA */}
       <PlatformModelSection />
-      <ModulesGridSection />
-      <WhyJanibearWinsSection />
+      <ModulesSection />
+      <OperatorVsBoardroomSection />
       <WhoItsForSection />
       <TrustSection />
       <FinalCtaSection />

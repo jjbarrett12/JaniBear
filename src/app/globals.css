@@ -491,3 +491,20 @@
   color: #fff !important;
   background: rgba(255, 255, 255, 0.1) !important;
 }
+
+/* Force landing header styling to win over theme/Tailwind (high specificity) */
+body .landing-page .landing-header {
+  background: #000 !important;
+  border: none !important;
+}
+body .landing-page .landing-header a:not(.landing-cta),
+body .landing-page .landing-header button:not(.landing-cta) {
+  color: #fafafa !important;
+  background: transparent !important;
+  border: none !important;
+}
+body .landing-page .landing-header a:not(.landing-cta):hover,
+body .landing-page .landing-header button:not(.landing-cta):hover {
+  color: #fff !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+}

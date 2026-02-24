@@ -150,14 +150,14 @@ export default async function AdminPage(props: { searchParams?: Promise<{ demo?:
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Link href="/app/daily">
+        <Link href="/app/dashboard">
           <Card className="hover:shadow-md transition-shadow cursor-pointer h-full border-primary/20">
             <CardHeader className="py-4">
               <div className="p-2.5 rounded-lg bg-primary/10 w-fit">
                 <LayoutGrid className="h-6 w-6 text-primary" />
               </div>
-              <CardTitle className="text-base mt-3">Overview (Command Center)</CardTitle>
-              <CardDescription>Daily command view, today&apos;s priorities, and widgets</CardDescription>
+              <CardTitle className="text-base mt-3">Dashboard</CardTitle>
+              <CardDescription>Account health, daily command, and today&apos;s priorities</CardDescription>
             </CardHeader>
           </Card>
         </Link>
@@ -172,7 +172,7 @@ export default async function AdminPage(props: { searchParams?: Promise<{ demo?:
             </CardHeader>
           </Card>
         </Link>
-        <Link href="/app/sales/win-loss">
+        <Link href="/app/kpis?tab=rep">
           <Card className="hover:shadow-md transition-shadow cursor-pointer h-full border-primary/20">
             <CardHeader className="py-4">
               <div className="p-2.5 rounded-lg bg-primary/10 w-fit">

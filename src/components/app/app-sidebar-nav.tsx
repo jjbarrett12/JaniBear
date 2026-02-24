@@ -151,7 +151,7 @@ export function AppSidebarNav({
     if (item.href === '/app/kpi' && (pathname === '/app/kpi' || pathname.startsWith('/app/kpi/'))) return true;
     if (item.href === '/app/crm/pipeline' && pathname.startsWith('/app/crm/pipeline')) return true;
     if (item.href === '/app/crm' && (pathname === '/app/crm' || (pathname.startsWith('/app/crm/') && !pathname.startsWith('/app/crm/pipeline')))) return true;
-    if (item.href === '/app/ops/map' && pathname.startsWith('/app/ops/map')) return true;
+    if (item.href === '/app/map' && (pathname === '/app/map' || pathname.startsWith('/app/map/'))) return true;
     if (item.href === '/app/ops/accounts' && pathname.startsWith('/app/ops/accounts')) return true;
     if (item.href === '/app/accounts' && pathname.startsWith('/app/accounts')) return true;
     if (item.href === '/app/sales/accounts' && (pathname === '/app/sales/accounts' || pathname.startsWith('/app/sales/accounts/'))) return true;

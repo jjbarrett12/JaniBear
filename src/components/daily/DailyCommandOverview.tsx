@@ -5,38 +5,47 @@ import {
   Building2,
   Users,
   DollarSign,
-  Activity,
+  ClipboardCheck,
   AlertTriangle,
-  UserPlus,
+  Activity,
 } from 'lucide-react';
 
 function formatCurrency(n: number): string {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n);
 }
 
+const CARD_COLORS: { border: string; bg: string; icon: string; label: string }[] = [
+  { border: 'border-blue-500/50', bg: 'bg-blue-500/10', icon: 'text-blue-400', label: 'text-blue-400/90' },
+  { border: 'border-emerald-500/50', bg: 'bg-emerald-500/10', icon: 'text-emerald-400', label: 'text-emerald-400/90' },
+  { border: 'border-violet-500/50', bg: 'bg-violet-500/10', icon: 'text-violet-400', label: 'text-violet-400/90' },
+  { border: 'border-amber-500/50', bg: 'bg-amber-500/10', icon: 'text-amber-400', label: 'text-amber-400/90' },
+  { border: 'border-red-500/50', bg: 'bg-red-500/10', icon: 'text-red-400', label: 'text-red-400/90' },
+  { border: 'border-cyan-500/50', bg: 'bg-cyan-500/10', icon: 'text-cyan-400', label: 'text-cyan-400/90' },
+];
+
 function SummaryCard({
   label,
   value,
-  sub,
   icon: Icon,
+  colorIndex,
   urgency,
 }: {
   label: string;
   value: string | number;
-  sub?: string;
   icon: React.ComponentType<{ className?: string }>;
+  colorIndex: number;
   urgency?: 'normal' | 'warn' | 'critical';
 }) {
-  const borderClass = urgency === 'critical' ? 'border-red-500/50' : urgency === 'warn' ? 'border-amber-500/50' : 'border-zinc-700';
-  const textClass = urgency === 'critical' ? 'text-red-400' : urgency === 'warn' ? 'text-amber-400' : 'text-zinc-100';
+  const colors = CARD_COLORS[colorIndex % CARD_COLORS.length];
+  const borderClass = urgency === 'critical' ? 'border-red-500/60' : urgency === 'warn' ? 'border-amber-500/60' : colors.border;
+  const valueClass = urgency === 'critical' ? 'text-red-400' : urgency === 'warn' ? 'text-amber-400' : 'text-zinc-100';
   return (
-    <div className={`rounded-lg border ${borderClass} bg-zinc-900/80 px-4 py-3`}>
-      <div className="flex items-center gap-2 text-zinc-400 text-xs font-medium uppercase tracking-wider">
-        <Icon className="h-3.5 w-3.5" />
+    <div className={`rounded-lg border ${borderClass} ${colors.bg} bg-zinc-900/80 px-4 py-3`}>
+      <div className={`flex items-center gap-2 text-xs font-medium uppercase tracking-wider ${colors.label}`}>
+        <Icon className={`h-3.5 w-3.5 ${colors.icon}`} />
         {label}
       </div>
-      <p className={`mt-1 text-xl font-semibold tabular-nums ${textClass}`}>{value}</p>
-      {sub != null && <p className="text-xs text-zinc-500 mt-0.5">{sub}</p>}
+      <p className={`mt-1 text-xl font-semibold tabular-nums ${valueClass}`}>{value}</p>
     </div>
   );
 }
@@ -52,8 +61,10 @@ export function DailyCommandOverview({ data, embedded = false }: DailyCommandOve
   const projectedRecurring = data.revenueToday?.projected_recurring_revenue_today ?? 0;
   const activeCrews = data.capacityToday?.active_crews ?? 0;
   const buildingCapacity = data.capacityToday?.building_capacity_today ?? 0;
-  const crewsNeeded14d = data.hiring14d?.crews_needed_14d ?? 0;
-  const hiringTrigger = data.hiring14d?.hiring_trigger ?? false;
+  const inspectionsDue = data.needsAttention.filter((i) => i.type === 'inspection_due').length;
+  const accountsBelowHealth = data.needsAttention.filter((i) => i.type === 'account_below_health').length;
+  const slaBreaches = data.needsAttention.filter((i) => i.type === 'sla_breach').length;
+  const overdueTasks = data.unassignedCount + slaBreaches;
 
   return (
     <div className={embedded ? '' : 'min-h-full bg-zinc-950 text-zinc-100'}>
@@ -62,10 +73,10 @@ export function DailyCommandOverview({ data, embedded = false }: DailyCommandOve
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-lg font-semibold text-zinc-100 tracking-tight">
-              {embedded ? 'Today' : 'Daily Command Overview'}
+              {embedded ? 'Daily command' : 'Daily Command'}
             </h2>
             <p className="text-sm text-zinc-500 mt-0.5">
-              {embedded ? 'Buildings, crews, revenue' : 'What is happening today'}
+              {embedded ? 'Buildings, crews, inspections, revenue' : "Here's what's happening today"}
             </p>
           </div>
           {!embedded && (
@@ -75,43 +86,47 @@ export function DailyCommandOverview({ data, embedded = false }: DailyCommandOve
           )}
         </div>
 
-        {/* Cards: Buildings Scheduled, Projected Recurring Revenue, Active Crews + Capacity, Utilization %, Hiring Pressure 14d, Unassigned Today */}
+        {/* Top bar: 6 Daily command items as colored cards */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
           <SummaryCard
-            label="Buildings Scheduled Today"
+            label="Buildings scheduled today"
             value={buildingsScheduled}
             icon={Building2}
+            colorIndex={0}
             urgency={buildingsScheduled === 0 ? 'warn' : 'normal'}
           />
           <SummaryCard
-            label="Projected Recurring Revenue Today"
+            label="Crew active / required today"
+            value={buildingCapacity > 0 ? `${activeCrews} / ${buildingCapacity}` : activeCrews}
+            icon={Users}
+            colorIndex={1}
+          />
+          <SummaryCard
+            label="Inspections due today"
+            value={inspectionsDue}
+            icon={ClipboardCheck}
+            colorIndex={2}
+            urgency={inspectionsDue > 0 ? 'warn' : 'normal'}
+          />
+          <SummaryCard
+            label="Accounts below health threshold"
+            value={accountsBelowHealth}
+            icon={Activity}
+            colorIndex={3}
+            urgency={accountsBelowHealth > 0 ? 'critical' : 'normal'}
+          />
+          <SummaryCard
+            label="SLA breaches / overdue tasks"
+            value={overdueTasks}
+            icon={AlertTriangle}
+            colorIndex={4}
+            urgency={overdueTasks > 0 ? 'critical' : 'normal'}
+          />
+          <SummaryCard
+            label="Revenue scheduled today"
             value={formatCurrency(projectedRecurring)}
             icon={DollarSign}
-          />
-          <SummaryCard
-            label="Active Crews + Capacity Today"
-            value={`${activeCrews} / ${buildingCapacity}`}
-            sub={buildingCapacity > 0 ? `${buildingCapacity} capacity` : undefined}
-            icon={Users}
-          />
-          <SummaryCard
-            label="Utilization %"
-            value={data.utilizationPct != null ? `${data.utilizationPct}%` : '—'}
-            icon={Activity}
-            urgency={data.utilizationPct != null && data.utilizationPct > 90 ? 'warn' : 'normal'}
-          />
-          <SummaryCard
-            label="Hiring Pressure 14d"
-            value={crewsNeeded14d}
-            sub={hiringTrigger ? 'Trigger active' : undefined}
-            icon={UserPlus}
-            urgency={hiringTrigger ? 'critical' : crewsNeeded14d > 0 ? 'warn' : 'normal'}
-          />
-          <SummaryCard
-            label="Unassigned Today"
-            value={data.unassignedCount}
-            icon={AlertTriangle}
-            urgency={data.unassignedCount > 0 ? 'critical' : 'normal'}
+            colorIndex={5}
           />
         </div>
 

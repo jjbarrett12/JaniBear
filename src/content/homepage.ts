@@ -10,18 +10,32 @@ export const HOMEPAGE = {
     ctaPrimary: 'Get a Private Demo',
     ctaSecondary: 'Learn More',
     trial: 'Monthly or yearly plans. Cancel anytime. 14-day free trial.',
+    trialBullets: [
+      'Monthly or yearly plans.',
+      'Cancel anytime.',
+      '14-day free trial.',
+    ] as const,
   },
 
   proofStrip: {
     headline: 'Built by Operators.',
-    subline: 'Not Software Guys.',
+    subline: 'Not Venture Capital.',
     tagline: 'JANIBEAR wasn\'t built in a boardroom. It was built inside a commercial cleaning company.',
-    statLabel: 'Over 30k proposals delivered.',
-    stats: [
-      { value: '20+', label: 'Years Operating' },
-      { value: '30,000', label: 'Buildings Bid' },
-      { value: '$200M+', label: 'Performed Services' },
+    yearsHeading: '20+ YEARS IN THE FIELD.',
+    fieldBullets: [
+      "We've bid buildings.",
+      'Managed crews.',
+      'Fixed failed inspections.',
+      'Lost sleep over client expectations.',
     ] as const,
+    needParagraph: "We didn't need another generic software tool. We needed a system that wins contracts, enforces accountability, and protects client relationships long term.",
+    soWeBuiltIt: 'So we built it.',
+    checkItems: [
+      '20+ Years Operating',
+      'Built Inside a Cleaning Company',
+      'Designed for Commercial Cleaners',
+    ] as const,
+    trustedLine: 'Trusted by operators who actually clean buildings.',
   },
 
   platformModel: {
@@ -29,7 +43,7 @@ export const HOMEPAGE = {
     subhead: 'Not a CRM with a calendar—the command center for commercial cleaning.',
     steps: [
       { title: 'Sales', description: 'Walkthrough to signed contract. AI scope, proposals, follow-ups.' },
-      { title: 'Operations', description: 'Crews, inspections, compliance. Deliver clean and consistent.' },
+      { title: 'Operations', description: 'Crews, inspections, compliance. Deliver clean and consistent service.' },
       { title: 'Intelligence', description: 'Account health, margin signals, KPI command center.' },
     ] as const,
   },
@@ -53,6 +67,12 @@ export const HOMEPAGE = {
       'Sales and operations in one system—no disconnected tools.',
       'Account health and margin visibility—catch decay before churn.',
       'AI that handles scope and proposals so you focus on winning.',
+    ] as const,
+    comparison: [
+      { other: 'Built in a boardroom', janibear: 'Built in the field—20+ years operating.' },
+      { other: 'Disconnected tools', janibear: 'Sales and operations in one system.' },
+      { other: 'Reactive—see decay after churn', janibear: 'Account health and margin visibility—catch decay before churn.' },
+      { other: 'Manual scope and proposals', janibear: 'AI that handles scope and proposals so you focus on winning.' },
     ] as const,
   },
 

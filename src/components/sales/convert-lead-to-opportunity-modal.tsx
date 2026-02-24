@@ -65,7 +65,7 @@ export function ConvertLeadToOpportunityModal({
       return;
     }
     setOpen(false);
-    router.push(`/app/sales/pipeline?highlight=${encodeURIComponent(result.opportunityId)}`);
+    router.push(`/app/kpis?tab=pipeline&highlight=${encodeURIComponent(result.opportunityId)}`);
   };
 
   return (

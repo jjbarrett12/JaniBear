@@ -4,9 +4,6 @@ export const alt = "JANIBEAR – AI Software for Janitorial Sales & Operations";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-const siteUrl = process.env.NEXT_PUBLIC_APP_URL || "https://janibear.com";
-const logoUrl = `${siteUrl}/logo.png`;
-
 export default async function OgImage() {
   return new ImageResponse(
     (
@@ -46,15 +43,18 @@ export default async function OgImage() {
             zIndex: 1,
           }}
         >
-          {/* Logo */}
+          {/* Logo as text to avoid URL resolution issues during build (e.g. Windows) */}
           <div style={{ display: "flex", alignItems: "center" }}>
-            <img
-              src={logoUrl}
-              alt="JANIBEAR"
-              width={220}
-              height={72}
-              style={{ objectFit: "contain", height: 56 }}
-            />
+            <span
+              style={{
+                fontSize: 48,
+                fontWeight: 800,
+                color: "#fbbf24",
+                letterSpacing: "0.08em",
+              }}
+            >
+              JANIBEAR
+            </span>
           </div>
 
           {/* Headline block */}

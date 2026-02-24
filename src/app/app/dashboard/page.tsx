@@ -48,7 +48,7 @@ export default async function DashboardPage() {
       <DashboardDataProvider data={data}>
         <CommandCenterHeader
           userName={data.userName}
-          subtitle="Here's what requires your attention today."
+          subtitle="Here's what's happening with your business today."
         />
         <section className="mb-6 rounded-xl border border-border bg-zinc-950 text-zinc-100 overflow-hidden">
           <DailyCommandOverview data={dailyPayload} embedded />

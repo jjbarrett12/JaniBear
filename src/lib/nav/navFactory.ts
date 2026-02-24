@@ -86,21 +86,18 @@ export type NavFactoryInput = {
   franchiseeEnrolled?: boolean;
 };
 
-/** Executive section: Overview (Command Center), Financial Health, Pipeline, Account Health, Alerts, Rep Performance, KPI Dashboard, Benchmarks, HelpHub. AI is in-module; University in System (Training); Pro Gear in Operations. */
+/** Executive section: Financial Health, Account Health, Alerts, Reports, Map, Benchmarks, HelpHub. */
 function buildExecutiveSection(): NavSection {
   return {
     id: 'executive',
     labelKey: 'navExecutive',
     theme: 'executive',
     items: [
-      { href: '/app/daily', labelKey: 'navOverview', icon: LayoutGrid },
       { href: '/app/financial-health', labelKey: 'navRevenueForecast', icon: Wallet },
-      { href: '/app/sales/pipeline', labelKey: 'navPipelineAnalytics', icon: LineChart },
       { href: '/app/dashboard', labelKey: 'navAccountHealth', icon: Gauge },
       { href: '/app/alerts', labelKey: 'navAlerts', icon: AlertCircle },
-      { href: '/app/sales/win-loss', labelKey: 'navRepPerformance', icon: BarChart3 },
-      { href: '/app/kpis', labelKey: 'navKpiDashboard', icon: BarChart3 },
-      { href: '/app/kpi', labelKey: 'navKpiCommandCenter', icon: LineChart },
+      { href: '/app/kpis', labelKey: 'navReports', icon: BarChart3 },
+      { href: '/app/map', labelKey: 'navMap', icon: Map },
       { href: '/app/benchmarks', labelKey: 'navBenchmarks', icon: BarChart2 },
       { href: '/app/helphub', labelKey: 'navHelpHubQR', icon: QrCode },
     ],
@@ -114,7 +111,6 @@ function buildSalesSection(input: NavFactoryInput): NavSection {
     { href: '/app/sales/leads', labelKey: 'navLeads', icon: TrendingUp },
     { href: '/app/sales/accounts', labelKey: 'navAccountsProspects', icon: Building2 },
     { href: '/app/crm/contacts', labelKey: 'navContacts', icon: Users },
-    { href: '/app/map', labelKey: 'navTerritories', icon: MapPin },
     { href: '/app/sales/pipeline', labelKey: 'navOpportunities', icon: LayoutDashboard },
     { href: '/app/sales/walkthroughs', labelKey: 'navWalkthroughs', icon: FileSearch },
     { href: '/app/sales/proposals', labelKey: 'navProposals', icon: Calculator },
@@ -158,7 +154,6 @@ function buildOperationsSection(input: NavFactoryInput): NavSection {
     items: [
       { href: '/app/ops/accounts', labelKey: 'navAccountsActive', icon: Building2 },
       { href: '/app/sites', labelKey: 'navLocations', icon: MapPin },
-      { href: '/app/ops/map', labelKey: 'navMap', icon: Map },
       { href: '/app/ops/crews', labelKey: 'navCrewManagement', icon: Users },
       { href: '/app/ops/schedules', labelKey: 'navServiceSchedules', icon: Calendar, alertKey: 'missedTaskCount' },
       { href: '/app/ops/inspections', labelKey: 'navInspections', icon: ClipboardCheck },

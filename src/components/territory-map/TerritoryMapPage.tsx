@@ -94,33 +94,33 @@ export function TerritoryMapPage({ data, orgId }: Props) {
 
   return (
     <div className="flex h-[calc(100vh-4rem)] flex-col gap-0 overflow-hidden">
-      {/* Header */}
+      {/* Header with Sales / Operations color toggle */}
       <div className="flex items-center justify-between border-b border-border bg-card px-4 py-3">
         <div>
-          <h1 className="text-xl font-semibold text-foreground">Territory Map</h1>
+          <h1 className="text-xl font-semibold text-foreground">Map</h1>
           <p className="text-sm text-muted-foreground">
             {mode === 'ops'
-              ? 'Site locations and health overview'
-              : 'Sales prospects and cold-calling quadrants'}
+              ? 'Map crews, customers, sites, and franchisees'
+              : 'Graph areas, territories, and prospects'}
           </p>
         </div>
-        <div className="flex items-center gap-1 rounded-lg bg-muted p-1">
+        <div className="flex items-center gap-0 rounded-lg border border-border bg-muted/50 p-0.5">
           <button
             onClick={() => { setMode('ops'); handleCloseDrawers(); }}
-            className={`rounded-md px-4 py-1.5 text-sm font-medium transition-colors ${
+            className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
               mode === 'ops'
-                ? 'bg-primary text-primary-foreground shadow-sm'
-                : 'text-muted-foreground hover:text-foreground'
+                ? 'bg-emerald-500 text-white shadow-sm'
+                : 'text-muted-foreground hover:text-foreground hover:bg-muted'
             }`}
           >
-            Ops
+            Operations
           </button>
           <button
             onClick={() => { setMode('sales'); handleCloseDrawers(); }}
-            className={`rounded-md px-4 py-1.5 text-sm font-medium transition-colors ${
+            className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
               mode === 'sales'
-                ? 'bg-primary text-primary-foreground shadow-sm'
-                : 'text-muted-foreground hover:text-foreground'
+                ? 'bg-blue-500 text-white shadow-sm'
+                : 'text-muted-foreground hover:text-foreground hover:bg-muted'
             }`}
           >
             Sales

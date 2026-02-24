@@ -2,6 +2,12 @@
 
 import { HOMEPAGE } from '@/content/homepage';
 
+const CARD_STYLES = [
+  { border: 'border-blue-500/50', bg: 'bg-blue-500/10', accent: 'text-blue-400' },
+  { border: 'border-emerald-500/50', bg: 'bg-emerald-500/10', accent: 'text-emerald-400' },
+  { border: 'border-amber-500/50', bg: 'bg-amber-500/10', accent: 'text-amber-400' },
+];
+
 export default function PlatformModelSection() {
   const { headline, subhead, steps } = HOMEPAGE.platformModel;
   return (
@@ -18,17 +24,20 @@ export default function PlatformModelSection() {
           <p className="text-lg text-zinc-400 max-w-2xl mx-auto">{subhead}</p>
         </div>
         <div className="grid md:grid-cols-3 gap-6 md:gap-8 relative">
-          {steps.map((step, i) => (
-            <div
-              key={step.title}
-              className="relative rounded-2xl border border-zinc-700/80 bg-zinc-900/50 p-6 md:p-8 text-center hover:border-amber-400/40 transition-colors"
-            >
-              <span className="text-sm font-semibold uppercase tracking-wider text-amber-400/90">
-                {String(i + 1)}. {step.title}
-              </span>
-              <p className="mt-3 text-zinc-300 text-base">{step.description}</p>
-            </div>
-          ))}
+          {steps.map((step, i) => {
+            const style = CARD_STYLES[i % CARD_STYLES.length];
+            return (
+              <div
+                key={step.title}
+                className={`relative rounded-2xl border ${style.border} ${style.bg} bg-zinc-900/50 p-6 md:p-8 text-center hover:shadow-lg transition-all`}
+              >
+                <span className={`text-sm font-semibold uppercase tracking-wider ${style.accent}`}>
+                  {String(i + 1)}. {step.title}
+                </span>
+                <p className="mt-3 text-zinc-300 text-base">{step.description}</p>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>

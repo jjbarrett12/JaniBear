@@ -42,7 +42,82 @@ const SAMPLE_CREWS = [
   'Special Projects',
 ];
 
+const SAMPLE_LEADS = [
+  { contact_name: 'Devin Clark', company: 'LVT Facilities', email: 'devin.clark@lvt.com', phone: '385-685-3097', status: 'new' as const },
+  { contact_name: 'Maria Santos', company: 'Pacific Property Group', email: 'msantos@pacificprop.com', phone: '415-222-1000', status: 'contacted' as const },
+  { contact_name: 'James Chen', company: 'Tech Campus West', email: 'jchen@techcampus.com', phone: '408-555-0123', status: 'walkthrough_scheduled' as const },
+  { contact_name: 'Sarah Miller', company: 'Downtown Financial Center', email: 'sarah.m@downtownfin.com', phone: '213-444-5678', status: 'proposal_sent' as const },
+  { contact_name: 'Robert Davis', company: 'Riverside Office Park', email: 'rdavis@riverside.com', phone: '951-333-7890', status: 'won' as const },
+  { contact_name: 'Lisa Park', company: 'Medical Plaza LLC', email: 'lpark@medicalplaza.org', phone: '916-666-2345', status: 'new' as const },
+  { contact_name: 'Michael Torres', company: 'Industrial Complex Mgmt', email: 'mtorres@indcomplex.com', phone: '909-777-3456', status: 'contacted' as const },
+  { contact_name: 'Emily Wong', company: 'Retail Strip Mall Co', email: 'ewong@retailstrip.com', phone: '559-888-4567', status: 'lost' as const },
+  { contact_name: 'David Brown', company: 'School District #7', email: 'dbrown@district7.edu', phone: '661-999-5678', status: 'new' as const },
+  { contact_name: 'Jennifer Lee', company: 'Municipal Building Authority', email: 'jlee@municipal.gov', phone: '510-111-6789', status: 'walkthrough_done' as const },
+];
+
+const SAMPLE_ACCOUNTS = [
+  { name: 'Riverside Office Park – Bldg A', status: 'active' as const },
+  { name: 'Tech Campus West', status: 'active' as const },
+  { name: 'Pacific Property Group', status: 'active' as const },
+  { name: 'Downtown Financial Center', status: 'active' as const },
+  { name: 'Medical Plaza Suite 200', status: 'active' as const },
+  { name: 'Industrial Complex – Warehouse', status: 'inactive' as const },
+  { name: 'Retail Strip Mall', status: 'active' as const },
+  { name: 'School District #7', status: 'active' as const },
+];
+
 export type SeedResult = { ok: true; message: string } | { ok: false; error: string };
+
+/** Seed leads and accounts so you can test Sales (Leads, Pipeline) and CRM. Safe to run multiple times only when org has no leads. */
+export async function seedSampleSalesData(): Promise<SeedResult> {
+  try {
+    const org = await requireOrg();
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return { ok: false, error: 'Not signed in' };
+    const orgId = org.org_id;
+    const userId = user.id;
+
+    const { count: leadCount } = await supabase.from('leads').select('*', { count: 'exact', head: true }).eq('org_id', orgId);
+    if ((leadCount ?? 0) > 0) {
+      return { ok: false, error: 'You already have leads. Seed is for empty orgs only (or delete leads first).' };
+    }
+
+    // 1. Leads
+    const { error: leadErr } = await supabase.from('leads').insert(
+      SAMPLE_LEADS.map((l) => ({
+        org_id: orgId,
+        source: 'paste',
+        contact_name: l.contact_name,
+        company: l.company,
+        email: l.email,
+        phone: l.phone,
+        status: l.status,
+        created_by_user_id: userId,
+      }))
+    );
+    if (leadErr) return { ok: false, error: `Leads: ${leadErr.message}` };
+
+    // 2. Accounts
+    const { error: accErr } = await supabase.from('accounts').insert(
+      SAMPLE_ACCOUNTS.map((a) => ({
+        org_id: orgId,
+        name: a.name,
+        status: a.status,
+      }))
+    );
+    if (accErr) return { ok: false, error: `Accounts: ${accErr.message}` };
+
+    revalidatePath('/app/sales/leads');
+    revalidatePath('/app/sales');
+    revalidatePath('/app/crm');
+    revalidatePath('/app/settings/test-data');
+    return { ok: true, message: `Added ${SAMPLE_LEADS.length} leads and ${SAMPLE_ACCOUNTS.length} accounts. Check Leads and CRM.` };
+  } catch (e) {
+    const error = e instanceof Error ? e.message : 'Unknown error';
+    return { ok: false, error };
+  }
+}
 
 export async function seedSampleData(): Promise<SeedResult> {
   try {

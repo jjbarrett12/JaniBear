@@ -65,20 +65,20 @@ function navLinkClass(active: boolean) {
   return `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors min-h-[40px] border-l-2 ${
     active
       ? 'border-l-primary bg-primary/10 text-foreground font-medium'
-      : 'border-l-transparent text-muted-foreground hover:bg-muted/70 hover:text-foreground'
+      : 'border-l-transparent text-foreground/90 hover:bg-foreground/10 hover:text-foreground dark:text-foreground/95 dark:hover:bg-foreground/10'
   }`;
 }
 
 const ALERT_BADGE_CLASS =
   'ml-auto text-[10px] min-w-[18px] h-5 px-1.5 justify-center shrink-0 bg-destructive text-destructive-foreground border-0 rounded-md';
 
-/** Section header: uses brand primary so company colors apply. */
+/** Section header: readable on any sidebar background (primary tint). */
 function sectionHeaderColor(_sectionId: string, isActive: boolean): string {
   const base = 'rounded-lg transition-colors duration-150 ';
   if (isActive) {
-    return base + 'bg-primary/12 text-primary font-semibold dark:bg-primary/20 dark:text-primary';
+    return base + 'bg-primary/12 text-foreground font-semibold dark:bg-primary/20 dark:text-foreground';
   }
-  return base + 'text-muted-foreground hover:bg-primary/8 hover:text-primary';
+  return base + 'text-foreground/85 hover:bg-foreground/10 hover:text-foreground dark:text-foreground/90 dark:hover:bg-foreground/10';
 }
 
 export function AppSidebarNav({
@@ -221,7 +221,7 @@ export function AppSidebarNav({
                           className={`space-y-0.5 ${groupIndex > 0 ? 'mt-5' : ''}`}
                         >
                           <p
-                            className={`px-3 py-1.5 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/80 border-l-2 ${
+                            className={`px-3 py-1.5 text-[10px] font-semibold uppercase tracking-widest text-foreground/75 border-l-2 dark:text-foreground/80 ${
                               hasActiveInGroup && section.id === 'sales'
                                 ? 'border-l-primary/50'
                                 : 'border-l-transparent'
@@ -271,7 +271,7 @@ export function AppSidebarNav({
                             type="button"
                             title={OPERATIONS_UPGRADE_TOOLTIP}
                             onClick={() => setUpgradeModalOpen(true)}
-                            className={`flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition-colors min-h-[40px] border-l-2 border-l-transparent text-muted-foreground hover:bg-muted/70 hover:text-foreground`}
+                            className={`flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition-colors min-h-[40px] border-l-2 border-l-transparent text-foreground/85 hover:bg-foreground/10 hover:text-foreground dark:text-foreground/90`}
                           >
                             <Icon className="h-5 w-5 shrink-0 opacity-70" aria-hidden />
                             <span className="truncate">{t(item.labelKey)}</span>

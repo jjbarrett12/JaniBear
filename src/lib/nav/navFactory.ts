@@ -86,7 +86,7 @@ export type NavFactoryInput = {
   franchiseeEnrolled?: boolean;
 };
 
-/** Executive section: Command Center, Revenue Forecast, Pipeline Analytics, Account Health, Risk & SLA, Rep Performance. */
+/** Executive section: Command Center, Financial Health, Pipeline Analytics, Account Health, Risk & SLA, Rep Performance. */
 function buildExecutiveSection(): NavSection {
   return {
     id: 'executive',

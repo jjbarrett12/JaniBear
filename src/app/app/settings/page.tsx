@@ -6,7 +6,7 @@ import { OrgSwitcher } from '@/components/settings/org-switcher';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
 import { Button, buttonVariants } from '@/components/ui/button';
-import { Settings, Palette, Upload, Users } from 'lucide-react';
+import { Settings, Palette, Upload, Users, Database } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const ADMIN_ROLES = ['owner', 'admin', 'manager'];
@@ -41,6 +41,22 @@ export default async function SettingsPage() {
           }}
         />
         {canManageBenchmarking && <BenchmarkingSettings orgId={org.org_id} />}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Database className="h-5 w-5" />
+              Test data
+            </CardTitle>
+            <CardDescription>
+              Add sample leads, customers, locations, and more so you can test modules and see what&apos;s broken. No data = nothing to test.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Link href="/app/settings/test-data">
+              <Button variant="secondary">Open Test data</Button>
+            </Link>
+          </CardContent>
+        </Card>
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">

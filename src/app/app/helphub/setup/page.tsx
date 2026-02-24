@@ -26,8 +26,19 @@ export default async function HelpHubSetupPage() {
 
   return (
     <FeatureGate feature="helphub_qr" allowed={hasFeature(access, 'helphub_qr')} fallback={
-      <div className="rounded-md border bg-card p-6 text-center text-muted-foreground">
-        <p>HelpHub QR is not enabled for your plan. Upgrade or enable the HelpHub QR add-on.</p>
+      <div className="rounded-md border bg-card p-8 text-center max-w-lg mx-auto">
+        <p className="text-muted-foreground mb-2">HelpHub QR is not enabled for your plan. Upgrade or enable the HelpHub QR add-on.</p>
+        <p className="text-sm text-muted-foreground mb-6">
+          HelpHub QR lets customers submit service requests via a unique link or QR code per location; submissions become ops tasks and you get proof-of-response logs.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <Button asChild>
+            <Link href="/pricing">See plans & enable</Link>
+          </Button>
+          <Button asChild variant="outline">
+            <Link href="/contact">Contact us</Link>
+          </Button>
+        </div>
       </div>
     }>
     <div className="space-y-6">

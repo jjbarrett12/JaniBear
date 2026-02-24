@@ -152,15 +152,15 @@ export function MobileSidebar({ logoUrl, navAlerts, shell, franchiseeEnrolled, p
           />
           <aside className="fixed top-0 left-0 z-50 h-full w-80 bg-primary/15 dark:bg-primary/20 shadow-xl lg:hidden transform transition-transform duration-300 border-r-2 border-primary">
             <div className="flex h-full flex-col">
-              <div className="flex min-h-16 items-center justify-between border-b border-primary/30 px-4 py-2 bg-primary/20 dark:bg-primary/25">
-                <AppLink href="/app/dashboard" className="flex min-h-[3.5rem] w-full items-center bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block [&>span]:!relative [&>span]:w-full [&>span]:h-full">
+              <div className="flex min-h-16 items-center justify-between border-b border-primary/30 px-4 py-3 bg-primary/20 dark:bg-primary/25 gap-3">
+                <AppLink href="/app/dashboard" className="flex min-h-[3rem] flex-1 min-w-0 items-center bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block [&>span]:!relative [&>span]:h-12 [&>span]:w-full [&>span]:max-w-[160px]">
                   {logoUrl ? (
                     <Image
                       src={logoUrl}
                       alt="Company Logo"
-                      width={200}
-                      height={70}
-                      className="h-full w-full min-h-[3rem] object-contain object-left bg-transparent"
+                      width={160}
+                      height={56}
+                      className="h-12 w-full max-h-12 object-contain object-left bg-transparent"
                       priority
                       unoptimized
                     />
@@ -168,9 +168,9 @@ export function MobileSidebar({ logoUrl, navAlerts, shell, franchiseeEnrolled, p
                     <Image
                       src="/logo.png"
                       alt="JANIBEAR Logo"
-                      width={220}
-                      height={80}
-                      className="h-full w-full min-h-[3.5rem] object-contain object-left bg-transparent [&>img]:bg-transparent dark:[&>img]:drop-shadow-[0_0_8px_rgba(255,255,255,0.15)] dark:[&>img]:brightness-110"
+                      width={160}
+                      height={56}
+                      className="h-12 w-full max-h-12 object-contain object-left bg-transparent [&>img]:bg-transparent dark:[&>img]:drop-shadow-[0_0_8px_rgba(255,255,255,0.15)] dark:[&>img]:brightness-110"
                       priority
                       unoptimized
                     />
@@ -196,7 +196,7 @@ export function MobileSidebar({ logoUrl, navAlerts, shell, franchiseeEnrolled, p
                   className={`flex items-center gap-3 rounded-lg px-4 py-3 text-base font-medium transition-colors min-h-[48px] ${
                     pathname === '/app/dashboard'
                       ? 'bg-primary text-primary-foreground'
-                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                      : 'text-foreground/90 hover:bg-foreground/10 dark:text-foreground/95 dark:hover:bg-foreground/10'
                   }`}
                 >
                   <LayoutDashboard className="h-5 w-5 shrink-0" />
@@ -207,7 +207,7 @@ export function MobileSidebar({ logoUrl, navAlerts, shell, franchiseeEnrolled, p
                   className={`flex items-center gap-3 rounded-lg px-4 py-3 text-base font-medium transition-colors min-h-[48px] ${
                     pathname.startsWith('/app/financial-health')
                       ? 'bg-primary text-primary-foreground'
-                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                      : 'text-foreground/90 hover:bg-foreground/10 dark:text-foreground/95 dark:hover:bg-foreground/10'
                   }`}
                 >
                   <Wallet className="h-5 w-5 shrink-0" />
@@ -218,7 +218,7 @@ export function MobileSidebar({ logoUrl, navAlerts, shell, franchiseeEnrolled, p
                   className={`flex items-center gap-3 rounded-lg px-4 py-3 text-base font-medium transition-colors min-h-[48px] ${
                     pathname.startsWith('/app/kpis')
                       ? 'bg-primary text-primary-foreground'
-                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                      : 'text-foreground/90 hover:bg-foreground/10 dark:text-foreground/95 dark:hover:bg-foreground/10'
                   }`}
                 >
                   <BarChart3 className="h-5 w-5 shrink-0" />
@@ -229,7 +229,7 @@ export function MobileSidebar({ logoUrl, navAlerts, shell, franchiseeEnrolled, p
                   className={`flex items-center gap-3 rounded-lg px-4 py-3 text-base font-medium transition-colors min-h-[48px] ${
                     pathname.startsWith('/app/university')
                       ? 'bg-primary text-primary-foreground'
-                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                      : 'text-foreground/90 hover:bg-foreground/10 dark:text-foreground/95 dark:hover:bg-foreground/10'
                   }`}
                 >
                   <GraduationCap className="h-5 w-5 shrink-0" />
@@ -237,7 +237,7 @@ export function MobileSidebar({ logoUrl, navAlerts, shell, franchiseeEnrolled, p
                 </AppLink>
 
                 <div className="space-y-1">
-                  <p className="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                  <p className="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-foreground/75 dark:text-foreground/80">
                     {t('navCrmAndLocations')}
                   </p>
                   {sharedCrmAndLocationsItemKeys.map((item) => {
@@ -255,7 +255,7 @@ export function MobileSidebar({ logoUrl, navAlerts, shell, franchiseeEnrolled, p
                         className={`flex items-center gap-3 rounded-lg px-4 py-3 text-base font-medium transition-colors min-h-[44px] ${
                           isActive
                             ? 'bg-primary text-primary-foreground'
-                            : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                            : 'text-foreground/90 hover:bg-foreground/10 dark:text-foreground/95 dark:hover:bg-foreground/10'
                         }`}
                       >
                         <Icon className="h-5 w-5 shrink-0" />
@@ -266,7 +266,7 @@ export function MobileSidebar({ logoUrl, navAlerts, shell, franchiseeEnrolled, p
                 </div>
 
                 <div className="space-y-1">
-                  <p className="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                  <p className="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-foreground/75 dark:text-foreground/80">
                     {t('navSales')}
                   </p>
                   {salesItemKeys.map((item) => {
@@ -281,7 +281,7 @@ export function MobileSidebar({ logoUrl, navAlerts, shell, franchiseeEnrolled, p
                         className={`flex items-center gap-3 rounded-lg px-4 py-3 text-base font-medium transition-colors min-h-[44px] ${
                           isActive
                             ? 'bg-primary text-primary-foreground'
-                            : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                            : 'text-foreground/90 hover:bg-foreground/10 dark:text-foreground/95 dark:hover:bg-foreground/10'
                         }`}
                       >
                         <Icon className="h-5 w-5 shrink-0" />
@@ -292,7 +292,7 @@ export function MobileSidebar({ logoUrl, navAlerts, shell, franchiseeEnrolled, p
                 </div>
 
                 <div className={`space-y-1 ${operationsLocked ? 'opacity-70' : ''}`}>
-                  <p className="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
+                  <p className="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-foreground/75 dark:text-foreground/80 flex items-center gap-1.5">
                     {t('navOperations')}
                     {operationsLocked && <Lock className="h-3.5 w-3.5" />}
                   </p>
@@ -314,7 +314,7 @@ export function MobileSidebar({ logoUrl, navAlerts, shell, franchiseeEnrolled, p
                           type="button"
                           title={OPERATIONS_UPGRADE_TOOLTIP}
                           onClick={() => setUpgradeModalOpen(true)}
-                          className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-base font-medium transition-colors min-h-[44px] text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
+                          className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-base font-medium transition-colors min-h-[44px] text-foreground/80 hover:bg-foreground/10 dark:text-foreground/85 dark:hover:bg-foreground/10"
                         >
                           <Icon className="h-5 w-5 shrink-0" />
                           {t(item.labelKey)}
@@ -329,7 +329,7 @@ export function MobileSidebar({ logoUrl, navAlerts, shell, franchiseeEnrolled, p
                         className={`flex items-center gap-3 rounded-lg px-4 py-3 text-base font-medium transition-colors min-h-[44px] ${
                           isActive
                             ? 'bg-primary text-primary-foreground'
-                            : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                            : 'text-foreground/90 hover:bg-foreground/10 dark:text-foreground/95 dark:hover:bg-foreground/10'
                         }`}
                       >
                         <Icon className="h-5 w-5 shrink-0" />
@@ -350,7 +350,7 @@ export function MobileSidebar({ logoUrl, navAlerts, shell, franchiseeEnrolled, p
                     className={`flex items-center gap-3 rounded-lg px-4 py-3 text-base font-medium transition-colors min-h-[44px] ${
                       pathname.startsWith('/app/settings')
                         ? 'bg-primary text-primary-foreground'
-                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                        : 'text-foreground/90 hover:bg-foreground/10 dark:text-foreground/95 dark:hover:bg-foreground/10'
                     }`}
                   >
                     <Settings className="h-5 w-5 shrink-0" />

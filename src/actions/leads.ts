@@ -1,8 +1,56 @@
 'use server';
 
 import { createClient } from '@/lib/supabase/server';
-import { requireOrg, getCurrentUserId } from '@/lib/auth';
+import { requireOrg, getCurrentUserId, getCurrentUser, getCurrentOrg } from '@/lib/auth';
 import { revalidatePath } from 'next/cache';
+
+export type CreateLeadInput = {
+  source: 'paste' | 'email' | 'text' | 'third_party' | 'voice' | 'scan';
+  contact_name?: string | null;
+  company?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  address?: string | null;
+  city?: string | null;
+  state?: string | null;
+  zip?: string | null;
+  raw_text?: string | null;
+};
+
+export type CreateLeadResult = { ok: true; leadId: string } | { ok: false; error: string };
+
+/** Create a new lead (e.g. from Import Lead paste/email/scan). Uses server client to avoid schema cache issues. */
+export async function createLead(input: CreateLeadInput): Promise<CreateLeadResult> {
+  const user = await getCurrentUser();
+  if (!user) return { ok: false, error: 'Not signed in.' };
+  const org = await getCurrentOrg();
+  if (!org?.org_id) return { ok: false, error: 'Organization not found.' };
+  const supabase = await createClient();
+  const { data: lead, error } = await supabase
+    .from('leads')
+    .insert({
+      org_id: org.org_id,
+      source: input.source,
+      contact_name: input.contact_name ?? null,
+      company: input.company ?? null,
+      email: input.email ?? null,
+      phone: input.phone ?? null,
+      address: input.address ?? null,
+      city: input.city ?? null,
+      state: input.state ?? null,
+      zip: input.zip ?? null,
+      raw_text: input.raw_text ?? null,
+      status: 'new',
+      created_by_user_id: user.id,
+    })
+    .select('id')
+    .single();
+  if (error) return { ok: false, error: error.message };
+  if (!lead?.id) return { ok: false, error: 'Failed to create lead' };
+  revalidatePath('/app/sales/leads');
+  revalidatePath('/app/sales/leads/new');
+  return { ok: true, leadId: lead.id };
+}
 
 export type LeadForDrawer = {
   lead: {

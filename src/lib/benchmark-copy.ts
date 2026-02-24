@@ -42,6 +42,9 @@ export const COMPANY_SIZE_OPTIONS = [
 export const YOUR_VS_PEERS_HEADING = 'Your company vs peers';
 export const YOUR_VS_PEERS_PRIVACY =
   'Peer data is anonymized and aggregated. No individual company is ever identified. Your metrics are shown only to you.';
+export const YOUR_VS_CODE_GROUP_HEADING = 'Your group (share code)';
+export const YOUR_VS_CODE_GROUP_PRIVACY =
+  'Aggregated metrics for organizations that share the same code. No individual company is identified.';
 export const PEER_COUNT_LABEL = 'Peers in this group';
 export const YOUR_COMPANY_LABEL = 'Your company';
 export const PEER_AVG_LABEL = 'Peer average';

@@ -105,13 +105,13 @@ export function MobileSidebar({ logoUrl, navAlerts, shell, franchiseeEnrolled, p
   return (
     <>
       {/* Mobile Header - brand tint */}
-      <header className="lg:hidden fixed top-0 left-0 right-0 z-50 h-16 flex items-center justify-between px-4 border-b-2 border-b-primary/30 bg-primary/5 dark:bg-primary/10 text-foreground">
+      <header className="lg:hidden fixed top-0 left-0 right-0 z-50 h-16 flex items-center justify-between px-4 border-b border-primary bg-primary text-primary-foreground">
         <div className="flex items-center gap-3 [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block">
           <Button
             variant="ghost"
             size="icon"
             onClick={() => setIsOpen(true)}
-            className="h-10 w-10 text-foreground hover:bg-muted"
+            className="h-10 w-10 text-primary-foreground hover:bg-primary-foreground/15"
           >
             <Menu className="h-6 w-6" />
           </Button>
@@ -137,7 +137,7 @@ export function MobileSidebar({ logoUrl, navAlerts, shell, franchiseeEnrolled, p
             />
           )}
         </div>
-        <div className="flex items-center gap-2 [&_button]:text-foreground [&_button]:hover:bg-muted [&_.rounded-lg]:border-border">
+        <div className="flex items-center gap-2 [&_button]:text-primary-foreground [&_button]:hover:bg-primary-foreground/15 [&_.rounded-lg]:border-primary-foreground/30">
           <LanguageSwitcher />
           <DarkModeToggle />
         </div>
@@ -150,9 +150,9 @@ export function MobileSidebar({ logoUrl, navAlerts, shell, franchiseeEnrolled, p
             className="fixed inset-0 bg-black/50 z-50 lg:hidden"
             onClick={() => setIsOpen(false)}
           />
-          <aside className="fixed top-0 left-0 z-50 h-full w-80 bg-card dark:bg-gray-900 shadow-xl lg:hidden transform transition-transform duration-300 border-r border-r-primary/20">
+          <aside className="fixed top-0 left-0 z-50 h-full w-80 bg-primary/15 dark:bg-primary/20 shadow-xl lg:hidden transform transition-transform duration-300 border-r-2 border-primary">
             <div className="flex h-full flex-col">
-              <div className="flex min-h-16 items-center justify-between border-b border-border px-4 py-2 bg-primary/5 dark:bg-primary/10">
+              <div className="flex min-h-16 items-center justify-between border-b border-primary/30 px-4 py-2 bg-primary/20 dark:bg-primary/25">
                 <AppLink href="/app/dashboard" className="flex min-h-[3.5rem] w-full items-center bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block [&>span]:!relative [&>span]:w-full [&>span]:h-full">
                   {logoUrl ? (
                     <Image

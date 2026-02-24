@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/server';
 import { AiControlCenterPage } from '@/components/ai/AiControlCenterPage';
 import type { AiOrgConfigRow, AiModuleStateRow, AiAutomationRuleRow } from '@/app/app/settings/ai/types';
 
-const ADMIN_ROLES = ['owner', 'admin'];
+const ADMIN_ROLES = ['owner', 'admin', 'manager'];
 
 export default async function AiSettingsPage() {
   const org = await requireOrg();

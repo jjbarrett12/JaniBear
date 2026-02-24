@@ -17,7 +17,7 @@ function requireAiAdmin(orgId: string) {
     if (!context.activeOrgId || context.activeOrgId !== orgId)
       throw new Error('Unauthorized');
     const role = (context.role ?? context.effectiveRole ?? '').toLowerCase();
-    const canManage = role === 'owner' || role === 'admin' || context.capabilities['ai_settings.manage'];
+    const canManage = ['owner', 'admin', 'manager'].includes(role) || context.capabilities['ai_settings.manage'];
     if (!canManage) throw new Error('Only admins can change AI settings');
   };
 }

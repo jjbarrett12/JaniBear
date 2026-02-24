@@ -5,8 +5,9 @@ import { BenchmarkingSettings } from '@/components/settings/benchmarking-setting
 import { OrgSwitcher } from '@/components/settings/org-switcher';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Settings, Palette, Upload, Users } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const ADMIN_ROLES = ['owner', 'admin', 'manager'];
 
@@ -64,8 +65,11 @@ export default async function SettingsPage() {
               <CardDescription>Control AI features, automation rules, privacy, and spending</CardDescription>
             </CardHeader>
             <CardContent>
-              <Link href="/app/settings/ai">
-                <Button variant="secondary">Open AI Control Center</Button>
+              <Link
+                href="/app/settings/ai"
+                className={cn(buttonVariants({ variant: 'secondary' }))}
+              >
+                Open AI Control Center
               </Link>
             </CardContent>
           </Card>

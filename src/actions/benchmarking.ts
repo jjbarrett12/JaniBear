@@ -4,36 +4,39 @@ import { createClient } from '@/lib/supabase/server';
 import { requireOrg } from '@/lib/auth';
 import { revalidatePath } from 'next/cache';
 
-/** Settings for benchmarking (opt-in + peer group). Only for current user's org. */
+/** Settings for benchmarking (opt-in + peer group + optional share code). Only for current user's org. */
 export async function getBenchmarkSettings(orgId: string): Promise<{
   benchmarkingOptIn: boolean;
   companySizeBucket: string | null;
   vertical: string | null;
+  benchmarkShareCode: string | null;
   error?: string;
 }> {
   try {
     const org = await requireOrg();
-    if (org.org_id !== orgId) return { benchmarkingOptIn: false, companySizeBucket: null, vertical: null, error: 'Forbidden' };
+    if (org.org_id !== orgId) return { benchmarkingOptIn: false, companySizeBucket: null, vertical: null, benchmarkShareCode: null, error: 'Forbidden' };
   } catch {
-    return { benchmarkingOptIn: false, companySizeBucket: null, vertical: null, error: 'Unauthorized' };
+    return { benchmarkingOptIn: false, companySizeBucket: null, vertical: null, benchmarkShareCode: null, error: 'Unauthorized' };
   }
 
   const supabase = await createClient();
   const { data, error } = await supabase
     .from('organizations')
-    .select('benchmarking_opt_in, company_size_bucket, vertical')
+    .select('benchmarking_opt_in, company_size_bucket, vertical, benchmark_share_code')
     .eq('id', orgId)
     .single();
 
   if (error || !data) {
-    return { benchmarkingOptIn: false, companySizeBucket: null, vertical: null, error: error?.message ?? 'Not found' };
+    return { benchmarkingOptIn: false, companySizeBucket: null, vertical: null, benchmarkShareCode: null, error: error?.message ?? 'Not found' };
   }
 
-  const row = data as { benchmarking_opt_in?: boolean; company_size_bucket?: string | null; vertical?: string | null };
+  const row = data as { benchmarking_opt_in?: boolean; company_size_bucket?: string | null; vertical?: string | null; benchmark_share_code?: string | null };
+  const code = row.benchmark_share_code?.trim() || null;
   return {
     benchmarkingOptIn: Boolean(row.benchmarking_opt_in),
     companySizeBucket: row.company_size_bucket ?? null,
     vertical: row.vertical ?? null,
+    benchmarkShareCode: code || null,
   };
 }
 
@@ -42,7 +45,12 @@ const ADMIN_ROLES = ['owner', 'admin', 'manager'];
 /** Update benchmarking settings. Admin only. */
 export async function updateBenchmarkSettings(
   orgId: string,
-  payload: { benchmarkingOptIn?: boolean; companySizeBucket?: string | null; vertical?: string | null }
+  payload: {
+    benchmarkingOptIn?: boolean;
+    companySizeBucket?: string | null;
+    vertical?: string | null;
+    benchmarkShareCode?: string | null;
+  }
 ): Promise<{ error?: string }> {
   try {
     const org = await requireOrg();
@@ -58,12 +66,21 @@ export async function updateBenchmarkSettings(
   if (payload.benchmarkingOptIn !== undefined) updates.benchmarking_opt_in = payload.benchmarkingOptIn;
   if (payload.companySizeBucket !== undefined) updates.company_size_bucket = payload.companySizeBucket || null;
   if (payload.vertical !== undefined) updates.vertical = payload.vertical || null;
+  if (payload.benchmarkShareCode !== undefined) updates.benchmark_share_code = payload.benchmarkShareCode?.trim() || null;
 
   if (Object.keys(updates).length === 0) return {};
 
   const { error } = await supabase.from('organizations').update(updates).eq('id', orgId);
 
   if (error) return { error: error.message };
+  if (payload.benchmarkShareCode !== undefined) {
+    try {
+      const { createAdminClient } = await import('@/lib/supabase/admin');
+      await createAdminClient().rpc('refresh_benchmark_code_aggregates');
+    } catch {
+      // Non-fatal; cron will refresh later
+    }
+  }
   revalidatePath('/app/benchmarks');
   revalidatePath('/app/settings');
   return {};
@@ -128,6 +145,50 @@ export async function getOrgBenchmarkMetrics(orgId: string): Promise<{
     inspectionScore,
     grossMargin: null,
     costPerSqft: null,
+  };
+}
+
+/** Code-group aggregate for current org (if they have a share code). */
+export async function getBenchmarkCodeAggregate(orgId: string): Promise<{
+  shareCode: string;
+  avgCloseRate: number | null;
+  avgInspectionScore: number | null;
+  avgGrossMargin: number | null;
+  avgCostPerSqft: number | null;
+  orgCount: number;
+  updatedAt: string;
+} | null> {
+  try {
+    const org = await requireOrg();
+    if (org.org_id !== orgId) return null;
+  } catch {
+    return null;
+  }
+
+  const supabase = await createClient();
+  const { data: orgRow } = await supabase
+    .from('organizations')
+    .select('benchmark_share_code')
+    .eq('id', orgId)
+    .single();
+  const code = (orgRow as { benchmark_share_code?: string | null } | null)?.benchmark_share_code?.trim();
+  if (!code) return null;
+
+  const { data: row, error } = await supabase
+    .from('benchmark_code_aggregates')
+    .select('share_code, avg_close_rate, avg_inspection_score, avg_gross_margin, avg_cost_per_sqft, org_count, updated_at')
+    .eq('share_code', code)
+    .maybeSingle();
+
+  if (error || !row) return null;
+  return {
+    shareCode: (row as { share_code: string }).share_code,
+    avgCloseRate: (row as { avg_close_rate?: number | null }).avg_close_rate ?? null,
+    avgInspectionScore: (row as { avg_inspection_score?: number | null }).avg_inspection_score ?? null,
+    avgGrossMargin: (row as { avg_gross_margin?: number | null }).avg_gross_margin ?? null,
+    avgCostPerSqft: (row as { avg_cost_per_sqft?: number | null }).avg_cost_per_sqft ?? null,
+    orgCount: (row as { org_count: number }).org_count ?? 0,
+    updatedAt: (row as { updated_at: string }).updated_at,
   };
 }
 

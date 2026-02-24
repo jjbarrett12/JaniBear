@@ -23,34 +23,40 @@ import { OperationsUpgradeModal, OPERATIONS_UPGRADE_TOOLTIP } from '@/components
 const STORAGE_KEY = 'janibear-nav-collapsed';
 
 function getSectionIdForPath(sections: NavSection[], pathname: string): string {
-  if (pathname === '/app/kpis' || pathname.startsWith('/app/kpis/') || pathname === '/app/kpi' || pathname.startsWith('/app/kpi/')) {
-    const exec = sections.find((s) => s.id === 'executive');
-    if (exec) return 'executive';
-  }
-  if (pathname === '/app/benchmarks' || pathname.startsWith('/app/benchmarks/')) {
-    const exec = sections.find((s) => s.id === 'executive');
-    if (exec) return 'executive';
-  }
-  if (pathname === '/app/alerts' || pathname.startsWith('/app/alerts/')) {
-    const exec = sections.find((s) => s.id === 'executive');
-    if (exec) return 'executive';
-  }
   const flatItems = (s: NavSection) =>
     s.groups ? s.groups.flatMap((g) => g.items) : (s.items ?? []);
+
+  if (pathname === '/app/ops/launch-intake' || pathname.startsWith('/app/ops/launch-intake/') ||
+      pathname === '/app/ops/launches' || pathname.startsWith('/app/ops/launches')) {
+    const launch = sections.find((s) => s.id === 'launch');
+    if (launch) return 'launch';
+  }
+  if (pathname === '/app/sales/launch-packets' || pathname.startsWith('/app/sales/launch-packets/') ||
+      pathname === '/app/sales/contract-launch' || pathname.startsWith('/app/sales/contract-launch/') ||
+      pathname === '/app/sales/launch-packet' || pathname.startsWith('/app/sales/launch-packet/')) {
+    const launch = sections.find((s) => s.id === 'launch');
+    if (launch) return 'launch';
+  }
+  if (pathname === '/app/sales/scope' || pathname.startsWith('/app/sales/scope')) {
+    const launch = sections.find((s) => s.id === 'launch');
+    if (launch) return 'launch';
+  }
+
   for (const section of sections) {
     for (const item of flatItems(section)) {
       if (pathname === item.href) return section.id;
       if (item.href !== '/app/dashboard' && pathname.startsWith(item.href + '/')) return section.id;
-      if (item.href === '/app/sales/launch-packets' && (pathname === '/app/sales/contract-launch' || pathname.startsWith('/app/sales/contract-launch/') || pathname === '/app/sales/launch-packet' || pathname.startsWith('/app/sales/launch-packet/'))) return section.id;
       if (item.href === '/app/sales/scope' && (pathname === '/app/sales/scope-builder' || pathname.startsWith('/app/sales/scope-builder/'))) return section.id;
       if (item.href === '/app/crm' && (pathname === '/app/crm' || pathname.startsWith('/app/crm/'))) return section.id;
-      if (pathname.startsWith('/app/sales/') || pathname === '/app/sales') return section.id;
-      if (pathname.startsWith('/app/ops/')) return section.id;
     }
   }
   if (pathname.startsWith('/app/sales/') || pathname === '/app/sales') {
     const sales = sections.find((s) => s.id === 'sales');
     if (sales) return sales.id;
+  }
+  if (pathname.startsWith('/app/ops/')) {
+    const ops = sections.find((s) => s.id === 'operations');
+    if (ops) return ops.id;
   }
   return sections[0]?.id ?? 'executive';
 }
@@ -100,27 +106,9 @@ export function AppSidebarNav({
 
   const sections = useMemo(() => {
     const raw = getNavSectionsForShell(shell, franchiseeEnrolled);
-    let result = raw.map((s) => {
-      if (s.groups) {
-        return {
-          ...s,
-          groups: s.groups.map((g) => {
-            let items = g.items ?? [];
-            if (!proGearEnabled) items = items.filter((item) => item.href !== '/app/pro-gear');
-            if (s.id === 'sales' && g.labelKey === 'navDecision' && planType === 'cub') {
-              items = items.filter((item) => item.href !== '/app/sales/launch-packets');
-            }
-            return { ...g, items };
-          }),
-        };
-      }
-      return {
-        ...s,
-        items: (s.items ?? []).filter((item) => (proGearEnabled || item.href !== '/app/pro-gear')),
-      };
-    });
-    return result;
-  }, [shell, franchiseeEnrolled, proGearEnabled, planType]);
+    // Show all nav items: Pro Gear and Launch to Operations always visible (page-level gating if needed)
+    return raw;
+  }, [shell, franchiseeEnrolled]);
   const activeSectionId = getSectionIdForPath(sections, pathname);
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
 
@@ -189,8 +177,20 @@ export function AppSidebarNav({
           const isActiveSection = section.id === activeSectionId;
           const isOperationsLocked = section.id === 'operations' && operationsLocked;
 
+          const themeBorder =
+            section.theme === 'executive'
+              ? 'border-l-2 border-l-violet-500/80'
+              : section.theme === 'sales'
+                ? 'border-l-2 border-l-blue-500/80'
+                : section.theme === 'launch'
+                  ? 'border-l-2 border-l-amber-500/80'
+                  : section.theme === 'operations'
+                    ? 'border-l-2 border-l-emerald-500/80'
+                    : section.theme === 'system'
+                      ? 'border-l-2 border-l-slate-500/80'
+                      : '';
           return (
-            <div key={section.id} className={`space-y-1 ${isOperationsLocked ? 'opacity-70' : ''}`}>
+            <div key={section.id} className={`space-y-1 pl-0.5 ${themeBorder} ${isOperationsLocked ? 'opacity-70' : ''}`}>
               <button
                 type="button"
                 onClick={() => toggle(section.id)}

@@ -1,20 +1,17 @@
 import { requireOrg } from '@/lib/auth';
 import { getDailyCommand } from '@/lib/daily-command-data';
-import { DailyCommandOverview } from '@/components/daily/DailyCommandOverview';
+import { DailyCommandContent } from '@/components/daily/DailyCommandContent';
 
 export const revalidate = 60;
 
 /**
- * Daily Command Overview — What is happening today. Same view-powered data as Overview.
- * Full-page dark layout.
+ * Daily Command — tactical execution for TODAY (action + urgency).
+ * Tiles: buildings, crews, unassigned, inspections due, accounts below health, SLA, revenue, utilization.
+ * Then Needs Attention list and Today's Schedule table.
  */
 export default async function DailyCommandPage() {
   const org = await requireOrg();
   const data = await getDailyCommand(org.org_id);
 
-  return (
-    <div className="min-h-full bg-zinc-950 text-zinc-100">
-      <DailyCommandOverview data={data} embedded={false} />
-    </div>
-  );
+  return <DailyCommandContent data={data} />;
 }

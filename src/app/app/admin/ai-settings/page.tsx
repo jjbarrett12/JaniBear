@@ -1,45 +1,63 @@
 import { redirect } from 'next/navigation';
-import { requireOrg, getCurrentUserId } from '@/lib/auth';
+import { requireOrg } from '@/lib/auth';
+import { getUserContext } from '@/lib/user-context';
 import { createClient } from '@/lib/supabase/server';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Settings } from 'lucide-react';
+import { AiControlCenterPage } from '@/components/ai/AiControlCenterPage';
+import type { AiOrgConfigRow, AiModuleStateRow, AiAutomationRuleRow } from '@/app/app/settings/ai/types';
 
-export default async function AISettingsPage() {
+const ADMIN_ROLES = ['owner', 'admin', 'manager'];
+
+export default async function AdminAISettingsPage() {
   const org = await requireOrg();
-  const userId = await getCurrentUserId();
-  if (!userId) redirect('/auth/login');
+  const orgId = org.org_id;
+
+  const { context } = await getUserContext();
+  const role = (context.role ?? context.effectiveRole ?? '').toLowerCase();
+  const canManage = ADMIN_ROLES.includes(role) || context.capabilities['ai_settings.manage'];
+  if (!canManage) redirect('/app/admin');
+
   const supabase = await createClient();
+  const period = new Date().toISOString().slice(0, 7);
 
-  const { data: member } = await supabase
-    .from('org_members')
-    .select('role')
-    .eq('org_id', org.org_id)
-    .eq('user_id', userId)
-    .single();
+  const [configRes, modulesRes, rulesRes, usageRes] = await Promise.all([
+    supabase.from('ai_org_config').select('*').eq('org_id', orgId).maybeSingle(),
+    supabase.from('ai_module_state').select('*').eq('org_id', orgId).order('module_key'),
+    supabase.from('ai_automation_rules').select('*').eq('org_id', orgId).order('created_at', { ascending: false }),
+    supabase
+      .from('ai_usage')
+      .select('tokens_input, tokens_output, estimated_cost_cents')
+      .eq('org_id', orgId)
+      .eq('period', period)
+      .is('usage_date', null)
+      .maybeSingle(),
+  ]);
 
-  if (!member || !['owner', 'admin', 'manager'].includes(member.role)) {
-    redirect('/app/dashboard');
-  }
+  const config = configRes.data as AiOrgConfigRow | null;
+  const modules = (modulesRes.data ?? []) as AiModuleStateRow[];
+  const rules = (rulesRes.data ?? []) as AiAutomationRuleRow[];
+  const usageRow = usageRes.data as { tokens_input?: number; tokens_output?: number; estimated_cost_cents?: number } | null;
+  const tokensUsed = (usageRow?.tokens_input ?? 0) + (usageRow?.tokens_output ?? 0);
+  const costCents = usageRow?.estimated_cost_cents ?? 0;
+  const budgetCents = config?.budget_limit_cents ?? null;
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-foreground">AI Settings</h1>
-        <p className="text-muted-foreground mt-1">Configure AI features and API keys</p>
+        <p className="text-muted-foreground mt-1">Configure AI features, API keys, and automation</p>
       </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Settings className="h-5 w-5" />
-            AI Settings
-          </CardTitle>
-          <CardDescription>Manage API keys and options for AI-powered features (compliance, invoices, scheduling, etc.).</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground">This section is being built. Check back later to configure AI options.</p>
-        </CardContent>
-      </Card>
+      <AiControlCenterPage
+        orgId={orgId}
+        initialConfig={config}
+        initialModules={modules}
+        initialRules={rules}
+        initialUsage={{
+          period,
+          tokensUsed,
+          costCents,
+          budgetCents,
+        }}
+      />
     </div>
   );
 }

@@ -40,33 +40,38 @@ export async function AppSidebar({
       {/* Mobile Sidebar */}
       <MobileSidebar logoUrl={orgData?.logo_url} navAlerts={navAlerts} shell={shell} franchiseeEnrolled={franchiseeEnrolled} proGearEnabled={proGearEnabled} operationsLocked={operationsLocked} />
 
-      {/* Desktop Sidebar - w-56 so it doesn't overlap main content */}
-      <aside className="hidden lg:flex fixed left-0 top-0 z-40 h-screen w-56 shrink-0 overflow-hidden border-r border-r-primary/20 border-border bg-card">
+      {/* Desktop Sidebar - w-56 so it doesn't overlap main content; uses brand primary for color */}
+      <aside className="hidden lg:flex fixed left-0 top-0 z-40 h-screen w-56 shrink-0 overflow-hidden border-r-2 border-primary bg-primary/15 dark:bg-primary/20">
         <div className="flex h-full min-w-0 flex-1 flex-col">
-          <div className="flex flex-col shrink-0 border-b border-border px-3 py-4 bg-primary/5 dark:bg-primary/10">
-            <AppLink href="/app/dashboard" className="flex min-h-[5.5rem] w-full min-w-0 items-center justify-center bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block [&>span]:!relative [&>span]:h-full [&>span]:w-full">
-              {orgData?.logo_url ? (
-                <Image
-                  src={orgData.logo_url}
-                  alt="Company Logo"
-                  width={220}
-                  height={96}
-                  className="h-20 w-full max-h-20 object-contain object-center bg-transparent"
-                  priority
-                  unoptimized
-                />
-              ) : (
-                <Image
-                  src="/logo.png"
-                  alt="JANIBEAR Logo"
-                  width={220}
-                  height={96}
-                  className="h-20 w-full max-h-20 object-contain object-center bg-transparent [&>img]:bg-transparent dark:[&>img]:drop-shadow-[0_0_8px_rgba(255,255,255,0.15)] dark:[&>img]:brightness-110"
-                  priority
-                  unoptimized
-                />
-              )}
-            </AppLink>
+          {/* Logo box: larger, cut in half (left = logo, right = accent strip) */}
+          <div className="flex shrink-0 border-b border-primary/30 bg-primary/20 dark:bg-primary/25 overflow-hidden min-h-[7.5rem]">
+            <div className="flex w-full h-full min-h-[7.5rem]">
+              <AppLink href="/app/dashboard" className="flex flex-1 min-w-0 items-center justify-center bg-transparent py-4 pl-3 pr-2 [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block [&>span]:!relative [&>span]:h-full [&>span]:w-full">
+                {orgData?.logo_url ? (
+                  <Image
+                    src={orgData.logo_url}
+                    alt="Company Logo"
+                    width={200}
+                    height={100}
+                    className="h-24 w-full max-h-24 object-contain object-center bg-transparent"
+                    priority
+                    unoptimized
+                  />
+                ) : (
+                  <Image
+                    src="/logo.png"
+                    alt="JANIBEAR Logo"
+                    width={200}
+                    height={100}
+                    className="h-24 w-full max-h-24 object-contain object-center bg-transparent [&>img]:bg-transparent dark:[&>img]:drop-shadow-[0_0_8px_rgba(255,255,255,0.15)] dark:[&>img]:brightness-110"
+                    priority
+                    unoptimized
+                  />
+                )}
+              </AppLink>
+              <div className="w-1.5 shrink-0 bg-primary/50 dark:bg-primary/60 rounded-l" aria-hidden />
+              <div className="w-8 shrink-0 bg-primary/25 dark:bg-primary/30" aria-hidden />
+            </div>
           </div>
           
           <div className="min-w-0 shrink-0 border-b border-border px-3 py-2">

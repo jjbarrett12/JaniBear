@@ -33,6 +33,19 @@ import {
   Trophy,
   UserCheck,
   Briefcase,
+  LayoutGrid,
+  Gauge,
+  LineChart,
+  BarChart2,
+  QrCode,
+  CalendarCheck,
+  ClipboardList,
+  UserPlus,
+  ScanSearch,
+  RotateCcw,
+  Percent,
+  Radar,
+  Workflow,
 } from 'lucide-react';
 
 export type OrgType = 'independent' | 'franchisee' | 'franchisor';
@@ -49,9 +62,14 @@ export type NavGroup = {
   items: NavItem[];
 };
 
+/** Optional theme for enterprise sidebar styling (e.g. colored accent). */
+export type NavSectionTheme = 'executive' | 'sales' | 'launch' | 'operations' | 'system';
+
 export type NavSection = {
   id: string;
   labelKey: AppTranslationKey;
+  /** Optional theme for section styling in sidebar. */
+  theme?: NavSectionTheme;
   /** Flat list (legacy). When absent, use groups. */
   items?: NavItem[];
   /** Grouped subsections (e.g. Sales: Prospecting / Active Deals / Conversion). */
@@ -68,55 +86,82 @@ export type NavFactoryInput = {
   franchiseeEnrolled?: boolean;
 };
 
-/** Sales section: linear flow INTAKE → DEAL EXECUTION → DECISION. Label "Sales". */
-function buildSalesSection(input: NavFactoryInput): NavSection {
-  const { featureFlags, franchiseeEnrolled } = input;
-  const decisionItems: NavItem[] = [
-    { href: '/app/sales/win-loss', labelKey: 'navWinLoss', icon: BarChart3 },
-    { href: '/app/sales/launch-packets', labelKey: 'navLaunchToOperations', icon: Rocket },
-  ];
-  if (featureFlags?.approvals_enabled) {
-    decisionItems.splice(1, 0, { href: '/app/sales/approvals', labelKey: 'navApprovals', icon: ListChecks });
-  }
-  if (franchiseeEnrolled) {
-    decisionItems.push({ href: '/app/opportunities/network', labelKey: 'navNetworkOpportunities', icon: Briefcase });
-  }
+/** Executive section: Command Center, Revenue Forecast, Pipeline Analytics, Account Health, Risk & SLA, Rep Performance. */
+function buildExecutiveSection(): NavSection {
   return {
-    id: 'sales',
-    labelKey: 'navGrowth',
-    groups: [
-      {
-        labelKey: 'navIntake',
-        items: [
-          { href: '/app/sales/leads', labelKey: 'navLeads', icon: TrendingUp },
-          { href: '/app/sales/pipeline', labelKey: 'navPipeline', icon: LayoutDashboard },
-        ],
-      },
-      {
-        labelKey: 'navDealExecution',
-        items: [
-          { href: '/app/sales/accounts', labelKey: 'navAccountsProspects', icon: Building2 },
-          { href: '/app/sales/walkthroughs', labelKey: 'navWalkthroughs', icon: FileSearch },
-          { href: '/app/sales/scope', labelKey: 'navScope', icon: FileText },
-          { href: '/app/sales/proposals', labelKey: 'navProposals', icon: Calculator },
-        ],
-      },
-      {
-        labelKey: 'navDecision',
-        items: decisionItems,
-      },
+    id: 'executive',
+    labelKey: 'navExecutive',
+    theme: 'executive',
+    items: [
+      { href: '/app/daily', labelKey: 'navCommandCenter', icon: LayoutDashboard },
+      { href: '/app/financial-health', labelKey: 'navRevenueForecast', icon: Wallet },
+      { href: '/app/sales/pipeline', labelKey: 'navPipelineAnalytics', icon: LineChart },
+      { href: '/app/dashboard', labelKey: 'navAccountHealth', icon: Gauge },
+      { href: '/app/alerts', labelKey: 'navAlerts', icon: AlertCircle },
+      { href: '/app/sales/win-loss', labelKey: 'navRepPerformance', icon: BarChart3 },
+      { href: '/app/overview', labelKey: 'navOverview', icon: LayoutGrid },
+      { href: '/app/kpis', labelKey: 'navKpiDashboard', icon: BarChart3 },
+      { href: '/app/kpi', labelKey: 'navKpiCommandCenter', icon: LineChart },
+      { href: '/app/benchmarks', labelKey: 'navBenchmarks', icon: BarChart2 },
+      { href: '/app/admin/ai-settings', labelKey: 'navAiInsights', icon: Sparkles },
+      { href: '/app/helphub', labelKey: 'navHelpHubQR', icon: QrCode },
+      { href: '/app/university', labelKey: 'navUniversity', icon: GraduationCap },
+      { href: '/app/pro-gear', labelKey: 'navProGear', icon: ShoppingBag },
     ],
   };
 }
 
-/** Operations section: Launch Intake first, then Accounts (Active), then execution. Sites → Accounts in label. */
+/** Sales section: Leads, Accounts (Prospects), Contacts, Territories, Opportunities, Walkthroughs, Proposals. */
+function buildSalesSection(input: NavFactoryInput): NavSection {
+  const { franchiseeEnrolled } = input;
+  const items: NavItem[] = [
+    { href: '/app/sales/leads', labelKey: 'navLeads', icon: TrendingUp },
+    { href: '/app/sales/accounts', labelKey: 'navAccountsProspects', icon: Building2 },
+    { href: '/app/crm/contacts', labelKey: 'navContacts', icon: Users },
+    { href: '/app/map', labelKey: 'navTerritories', icon: MapPin },
+    { href: '/app/sales/pipeline', labelKey: 'navOpportunities', icon: LayoutDashboard },
+    { href: '/app/sales/walkthroughs', labelKey: 'navWalkthroughs', icon: FileSearch },
+    { href: '/app/sales/proposals', labelKey: 'navProposals', icon: Calculator },
+  ];
+  if (franchiseeEnrolled) {
+    items.push({ href: '/app/opportunities/network', labelKey: 'navNetworkOpportunities', icon: Briefcase });
+  }
+  return {
+    id: 'sales',
+    labelKey: 'navGrowth',
+    theme: 'sales',
+    items,
+  };
+}
+
+/** Launch section: the bridge between Sales and Operations. */
+function buildLaunchSection(input: NavFactoryInput): NavSection {
+  return {
+    id: 'launch',
+    labelKey: 'navLaunch',
+    theme: 'launch',
+    items: [
+      { href: '/app/ops/launch-intake', labelKey: 'navActivationQueue', icon: Rocket, alertKey: 'handoffsCount' },
+      { href: '/app/sales/launch-packets', labelKey: 'navLaunchToOperations', icon: FileUp },
+      { href: '/app/sales/scope', labelKey: 'navScopePacket', icon: FileText },
+      { href: '/app/ops/launch-intake', labelKey: 'navHandoffChecklist', icon: ClipboardList },
+      { href: '/app/ops/launches', labelKey: 'navStaffingPlan', icon: UserPlus },
+      { href: '/app/ops/launches', labelKey: 'navGoLiveCalendar', icon: CalendarCheck },
+      { href: '/app/ops/launch-intake', labelKey: 'navFirstInspectionSetup', icon: ScanSearch },
+      { href: '/app/ops/launches', labelKey: 'nav30DayReview', icon: RotateCcw },
+    ],
+  };
+}
+
+/** Operations section: Accounts (Active), Sites, Map, Crews, Schedules, Inspections, QC, Issues, Tasks, Supplies, Contracts, Reporting. */
 function buildOperationsSection(input: NavFactoryInput): NavSection {
   return {
     id: 'operations',
     labelKey: 'navOperations',
+    theme: 'operations',
     items: [
-      { href: '/app/ops/launch-intake', labelKey: 'navLaunchIntake', icon: Rocket, alertKey: 'handoffsCount' },
       { href: '/app/ops/accounts', labelKey: 'navAccountsActive', icon: Building2 },
+      { href: '/app/sites', labelKey: 'navLocations', icon: MapPin },
       { href: '/app/ops/map', labelKey: 'navMap', icon: Map },
       { href: '/app/ops/crews', labelKey: 'navCrewManagement', icon: Users },
       { href: '/app/ops/schedules', labelKey: 'navServiceSchedules', icon: Calendar, alertKey: 'missedTaskCount' },
@@ -126,38 +171,22 @@ function buildOperationsSection(input: NavFactoryInput): NavSection {
       { href: '/app/ops/tasks', labelKey: 'navMyTasks', icon: ClipboardCheck },
       { href: '/app/ops/supplies', labelKey: 'navSupplies', icon: Package },
       { href: '/app/ops/contracts', labelKey: 'navContracts', icon: FileUp },
+      { href: '/app/kpis', labelKey: 'navReporting', icon: BarChart3 },
     ],
   };
 }
 
-/** Executive section for independent/franchisee. */
-function buildExecutiveSection(): NavSection {
-  return {
-    id: 'executive',
-    labelKey: 'navExecutive',
-    items: [
-      { href: '/app/daily', labelKey: 'navDailyCommand', icon: LayoutDashboard },
-      { href: '/app/dashboard', labelKey: 'navOverview', icon: LayoutDashboard },
-      { href: '/app/financial-health', labelKey: 'navFinancialHealth', icon: Wallet },
-      { href: '/app/kpis', labelKey: 'navKpiDashboard', icon: BarChart3 },
-      { href: '/app/kpi', labelKey: 'navKpiCommandCenter', icon: BarChart3 },
-      { href: '/app/benchmarks', labelKey: 'navBenchmarks', icon: BarChart3 },
-      { href: '/app/alerts', labelKey: 'navAlerts', icon: AlertCircle },
-      { href: '/app/admin/ai-settings', labelKey: 'navAiInsights', icon: Sparkles },
-      { href: '/app/university', labelKey: 'navUniversity', icon: GraduationCap },
-      { href: '/app/pro-gear', labelKey: 'navProGear', icon: ShoppingBag },
-    ],
-  };
-}
-
-/** System section. Franchisee: "My Unit" — no org-wide admin (no Organization panel). */
+/** System section: Commission, Renewals, Automations, Users & Roles, AI Settings, Integrations, Settings. */
 function buildSystemSection(input: NavFactoryInput): NavSection {
   const { orgType } = input;
   const base: NavItem[] = [
+    { href: '/app/admin', labelKey: 'navCommissionDashboard', icon: Percent },
+    { href: '/app/admin', labelKey: 'navRenewalRadar', icon: Radar },
+    { href: '/app/admin', labelKey: 'navWorkflows', icon: Workflow },
+    { href: '/app/admin', labelKey: 'navUsersAndRoles', icon: Users },
     { href: '/app/admin/ai-settings', labelKey: 'navAiSettings', icon: Sparkles },
-    { href: '/app/settings', labelKey: 'navOrganization', icon: Settings },
-    { href: '/app/admin', labelKey: 'navUsersRoles', icon: Users },
     { href: '/app/admin', labelKey: 'navIntegrations', icon: Settings },
+    { href: '/app/settings', labelKey: 'navOrganization', icon: Settings },
     { href: '/app/audit', labelKey: 'navAuditLogs', icon: FileText },
   ];
   const items =
@@ -167,6 +196,7 @@ function buildSystemSection(input: NavFactoryInput): NavSection {
   return {
     id: 'system',
     labelKey: 'navSystem',
+    theme: 'system',
     items,
   };
 }
@@ -184,7 +214,7 @@ function buildFranchisorSections(input: NavFactoryInput): NavSection[] {
         { href: '/app/franchise/awards', labelKey: 'navAwards', icon: Trophy },
         { href: '/app/franchise/memberships', labelKey: 'navMemberships', icon: UserCheck },
         { href: '/app/kpis', labelKey: 'navKpiDashboard', icon: BarChart3 },
-        { href: '/app/benchmarks', labelKey: 'navBenchmarks', icon: BarChart3 },
+        { href: '/app/benchmarks', labelKey: 'navBenchmarks', icon: BarChart2 },
         { href: '/app/alerts', labelKey: 'navAlerts', icon: AlertCircle },
       ],
     },
@@ -193,7 +223,7 @@ function buildFranchisorSections(input: NavFactoryInput): NavSection[] {
       labelKey: 'navSystem',
       items: [
         { href: '/app/settings', labelKey: 'navOrganization', icon: Settings },
-        { href: '/app/admin', labelKey: 'navUsersRoles', icon: Users },
+        { href: '/app/admin', labelKey: 'navAdminDashboard', icon: Users },
       ],
     },
   ];
@@ -209,23 +239,22 @@ function buildFranchisorSections(input: NavFactoryInput): NavSection[] {
 
 /**
  * Build full nav sections for the given org_type, role, and feature flags.
- * - Independent: full Sales + Ops + System.
- * - Franchisee: same + Network Opportunities when enrolled; System without Organization (My Unit).
- * - Franchisor: Network + Franchise + Control only.
+ * Enterprise order: EXECUTIVE → SALES → LAUNCH → OPERATIONS → SYSTEM.
+ * - Independent/franchisee: all five sections.
+ * - Franchisor: Network + Franchise + Control only (no Sales/Launch/Ops).
  */
 export function buildNavSections(input: NavFactoryInput): NavSection[] {
-  const { orgType, franchiseeEnrolled } = input;
+  const { orgType } = input;
 
   if (orgType === 'franchisor') {
     return buildFranchisorSections(input);
   }
 
-  const sections: NavSection[] = [
+  return [
     buildExecutiveSection(),
     buildSalesSection(input),
+    buildLaunchSection(input),
     buildOperationsSection(input),
     buildSystemSection(input),
   ];
-
-  return sections;
 }

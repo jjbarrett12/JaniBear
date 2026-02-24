@@ -39,17 +39,23 @@ export function AuditLogViewer({ orgId }: { orgId: string }) {
       actorUserId: actorUserId || undefined,
     });
     setError(err ?? null);
-    if (!err) setEntries(list);
+    if (!err) {
+      setEntries(list);
+      const { actors: a } = await listAuditLogActors(orgId);
+      if (a) setActors(a);
+    }
     setLoading(false);
   };
+
+  const isTableMissing =
+    error != null &&
+    (error.toLowerCase().includes('schema cache') ||
+      error.toLowerCase().includes("could not find the table") ||
+      error.toLowerCase().includes('relation "public.audit_log" does not exist'));
 
   useEffect(() => {
     load();
   }, [orgId, fromDate, toDate, entityType, actorUserId]);
-
-  useEffect(() => {
-    listAuditLogActors(orgId).then((r) => r.actors && setActors(r.actors));
-  }, [orgId]);
 
   return (
     <Card>
@@ -109,11 +115,22 @@ export function AuditLogViewer({ orgId }: { orgId: string }) {
         </div>
 
         {error ? (
-          <p className="text-sm text-amber-600 dark:text-amber-400">{error}</p>
+          <div className="space-y-2">
+            {isTableMissing ? (
+              <>
+                <p className="text-sm font-medium text-amber-600 dark:text-amber-400">Audit log table not set up</p>
+                <p className="text-sm text-muted-foreground">
+                  The <code className="rounded bg-muted px-1">public.audit_log</code> table is missing or not visible. Run the migration <code className="rounded bg-muted px-1">064_audit_log.sql</code> from <code className="rounded bg-muted px-1">supabase/migrations</code> against your database. If you use Supabase Dashboard, try reloading the schema cache (Project Settings → API) and ensure the migration has been applied.
+                </p>
+              </>
+            ) : (
+              <p className="text-sm text-amber-600 dark:text-amber-400">{error}</p>
+            )}
+          </div>
         ) : loading ? (
           <p className="text-sm text-muted-foreground">Loading…</p>
         ) : entries.length === 0 ? (
-          <p className="text-sm text-muted-foreground">No audit entries match the filters.</p>
+          <p className="text-sm text-muted-foreground">No audit entries yet. Key actions (pricing changes, proposal edits, contract updates, etc.) will appear here once they occur.</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">

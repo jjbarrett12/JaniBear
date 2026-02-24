@@ -43,6 +43,25 @@ export type BuildingTodayDisplay = {
   startTime: string | null;
 };
 
+/** Extended schedule row for Daily Command table (optional fields when available). */
+export type ScheduleRow = BuildingTodayDisplay & {
+  inspectionRequired?: boolean;
+  healthScore?: number | null;
+  revenueToday?: number | null;
+};
+
+/** Priority-ordered item for "Needs Attention" list. */
+export type NeedsAttentionItem = {
+  id: string;
+  type: 'unassigned' | 'inspection_due' | 'sla_breach' | 'account_below_health';
+  account: string;
+  site: string;
+  dueTime: string | null;
+  severity: 'high' | 'medium' | 'low';
+  href: string;
+  ctaLabel: string;
+};
+
 export type DailyCommandPayload = {
   revenueToday: RevenueTodayRow | null;
   capacityToday: CapacityTodayRow | null;
@@ -51,6 +70,10 @@ export type DailyCommandPayload = {
   unassignedCount: number;
   /** buildings_scheduled_today / building_capacity_today (app-side only) */
   utilizationPct: number | null;
+  /** Priority-ordered list for Needs Attention (unassigned, inspections due, SLA, accounts below health). */
+  needsAttention: NeedsAttentionItem[];
+  /** Schedule rows for Today's Schedule table (buildingsToday with optional extra fields). */
+  scheduleRows: ScheduleRow[];
 };
 
 const EMPTY_PAYLOAD: DailyCommandPayload = {
@@ -60,6 +83,8 @@ const EMPTY_PAYLOAD: DailyCommandPayload = {
   buildingsToday: [],
   unassignedCount: 0,
   utilizationPct: null,
+  needsAttention: [],
+  scheduleRows: [],
 };
 
 export async function getDailyCommand(orgId: string): Promise<DailyCommandPayload> {
@@ -150,6 +175,34 @@ async function getDailyCommandInner(orgId: string): Promise<DailyCommandPayload>
     };
   });
 
+  // Needs Attention: unassigned sites first (priority); inspections due / SLA / accounts below health stubbed or from future queries
+  const needsAttention: NeedsAttentionItem[] = [];
+  buildingsRaw.forEach((b) => {
+    if (b.crew_id != null) return;
+    const locId = b.location_id ?? b.facility_id ?? null;
+    const locationName = locId ? locationNameById.get(locId) ?? '—' : '—';
+    const clientName = locId ? clientNameByLocationId.get(locId) ?? '—' : '—';
+    const startTime = b.expected_completion_time ? String(b.expected_completion_time).slice(0, 5) : null;
+    needsAttention.push({
+      id: `unassigned-${b.id}`,
+      type: 'unassigned',
+      account: clientName,
+      site: locationName,
+      dueTime: startTime,
+      severity: 'high',
+      href: '/app/ops/launch-intake',
+      ctaLabel: 'Assign crew',
+    });
+  });
+
+  // Schedule rows: buildingsToday with optional inspection/health/revenue (stub null when not available)
+  const scheduleRows: ScheduleRow[] = buildingsToday.map((row) => ({
+    ...row,
+    inspectionRequired: undefined,
+    healthScore: null,
+    revenueToday: null,
+  }));
+
   return {
     revenueToday,
     capacityToday,
@@ -157,6 +210,8 @@ async function getDailyCommandInner(orgId: string): Promise<DailyCommandPayload>
     buildingsToday,
     unassignedCount,
     utilizationPct,
+    needsAttention,
+    scheduleRows,
   };
 }
 

@@ -66,9 +66,10 @@ CREATE INDEX IF NOT EXISTS idx_organizations_custom_branding ON organizations(cu
     const supabase = createClient();
 
     try {
-      // Delete old logo if exists
+      // Delete old logo if exists (path is everything after bucket name in URL)
       if (logoUrl) {
-        const oldPath = logoUrl.split('/').pop();
+        const pathMatch = logoUrl.match(/organization-logos\/(.+)$/);
+        const oldPath = pathMatch ? pathMatch[1] : null;
         if (oldPath) {
           await supabase.storage.from('organization-logos').remove([oldPath]);
         }
@@ -88,7 +89,7 @@ CREATE INDEX IF NOT EXISTS idx_organizations_custom_branding ON organizations(cu
 
       if (uploadError) {
         if (uploadError.message?.includes('Bucket not found') || uploadError.message?.includes('not found') || uploadError.message?.includes('bucket') || uploadError.message?.includes('storage')) {
-          throw new Error('Logo storage is not set up. In Supabase SQL Editor run migration 005_create_logo_storage_bucket.sql (creates bucket "organization-logos" and policies).');
+          throw new Error('Logo storage is not set up. Run the Supabase migration 074_organization_logos_storage_ensure.sql in the SQL Editor (Dashboard → SQL Editor), or run: supabase db push');
         }
         throw uploadError;
       }
@@ -99,6 +100,16 @@ CREATE INDEX IF NOT EXISTS idx_organizations_custom_branding ON organizations(cu
         .getPublicUrl(filePath);
 
       setLogoUrl(publicUrl);
+
+      // Persist logo_url to organizations so it survives refresh
+      const { error: updateError } = await supabase
+        .from('organizations')
+        .update({ logo_url: publicUrl })
+        .eq('id', orgId);
+      if (updateError) {
+        console.warn('Logo uploaded but organizations update failed:', updateError);
+      }
+
       toast({
         title: 'Logo uploaded',
         description: 'Logo has been uploaded successfully',
@@ -119,10 +130,24 @@ CREATE INDEX IF NOT EXISTS idx_organizations_custom_branding ON organizations(cu
     if (!logoUrl) return;
 
     const supabase = createClient();
-    const path = logoUrl.split('/').pop();
-    
+    const pathMatch = logoUrl.match(/organization-logos\/(.+)$/);
+    const path = pathMatch ? pathMatch[1] : null;
+
     if (path) {
-      await supabase.storage.from('organization-logos').remove([`${orgId}/${path}`]);
+      await supabase.storage.from('organization-logos').remove([path]);
+    }
+
+    const { error } = await supabase
+      .from('organizations')
+      .update({ logo_url: null })
+      .eq('id', orgId);
+    if (error) {
+      toast({
+        title: 'Remove failed',
+        description: error.message ?? 'Could not clear logo from organization',
+        variant: 'destructive',
+      });
+      return;
     }
 
     setLogoUrl(null);

@@ -43,15 +43,17 @@ interface FinancialHealthHeaderProps {
   quickbooksConnected?: boolean;
 }
 
-export function FinancialHealthHeader({
-  filters,
-  onChange,
-  clientOptions = [],
-  locationOptions = [],
-}: FinancialHealthHeaderProps) {
+export function FinancialHealthHeader(props: FinancialHealthHeaderProps) {
+  const {
+    filters,
+    onChange,
+    clientOptions = [],
+    locationOptions = [],
+  } = props;
   const set = (patch: Partial<FinancialHealthHeaderFilters>) => {
     onChange({ ...filters, ...patch });
   };
+  const isQuickBooksConnected = props.quickbooksConnected === true;
 
   return (
     <header className="border-b border-border pb-4">
@@ -153,7 +155,7 @@ export function FinancialHealthHeader({
           <Badge variant="outline" className="font-normal text-xs py-0">
             Supplies: Purchases / Allocations
           </Badge>
-          {quickbooksConnected ? (
+          {isQuickBooksConnected ? (
             <Badge variant="outline" className="font-normal text-xs py-0 border-green-500/50 text-green-700 dark:text-green-400">
               Accounting Sync: Connected to QuickBooks
             </Badge>

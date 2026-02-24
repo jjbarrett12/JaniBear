@@ -29,13 +29,23 @@ async function runRefresh(request: NextRequest) {
 
   try {
     const supabase = createAdminClient();
-    const { data, error } = await supabase.rpc('refresh_benchmark_aggregates');
+    const [anonResult, codeResult] = await Promise.all([
+      supabase.rpc('refresh_benchmark_aggregates'),
+      supabase.rpc('refresh_benchmark_code_aggregates'),
+    ]);
 
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+    if (anonResult.error) {
+      return NextResponse.json({ error: anonResult.error.message }, { status: 500 });
+    }
+    if (codeResult.error) {
+      return NextResponse.json({ error: codeResult.error.message }, { status: 500 });
     }
 
-    return NextResponse.json({ ok: true, rowsUpdated: data ?? 0 });
+    return NextResponse.json({
+      ok: true,
+      anonymousRowsUpdated: anonResult.data ?? 0,
+      codeRowsUpdated: codeResult.data ?? 0,
+    });
   } catch (err) {
     console.error('cron/refresh-benchmark-aggregates:', err);
     return NextResponse.json(

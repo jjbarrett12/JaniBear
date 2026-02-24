@@ -63,7 +63,6 @@ export default function Home() {
   }, []);
 
   return (
-    <>
     <div className="landing-page min-h-screen bg-black text-white pb-20 md:pb-0">
       <nav
         className={`landing-header sticky top-0 z-50 h-14 md:h-16 py-0 flex items-center overflow-visible transition-all duration-300 ${
@@ -216,7 +215,7 @@ export default function Home() {
           <div className="absolute inset-0 bg-black/20" />
           <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1a]/80 via-[#0a0f1a]/65 to-black/95" />
         </div>
-        <div className="absolute inset-0 pointer-events-none" aria-hidden">
+        <div className="absolute inset-0 pointer-events-none" aria-hidden>
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[180%] max-w-7xl h-[95%] bg-gradient-radial-hero opacity-40" />
         </div>
         <div className="absolute inset-0 pointer-events-none opacity-[0.06] hero-noise" aria-hidden />
@@ -358,6 +357,5 @@ export default function Home() {
         </div>
       </footer>
     </div>
-    </>
   );
 }

@@ -182,17 +182,17 @@ export default function Home() {
         </Link>
       </div>
 
-      {/* 1. HERO */}
+      {/* 1. HERO — lighter overlays so backdrop (e.g. janitorial floor signs) stays visible */}
       <section className="relative w-full overflow-hidden pt-8 md:pt-10 pb-10 md:pb-12 flex flex-col">
         <div className="absolute inset-0 pointer-events-none" aria-hidden>
           <HeroBackdropImage />
-          <div className="absolute inset-0 bg-black/20" />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1a]/80 via-[#0a0f1a]/65 to-black/95" />
+          <div className="absolute inset-0 bg-black/10" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1a]/45 via-[#0a0f1a]/35 to-black/75" />
         </div>
         <div className="absolute inset-0 pointer-events-none" aria-hidden>
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[180%] max-w-7xl h-[95%] bg-gradient-radial-hero opacity-40" />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[180%] max-w-7xl h-[95%] bg-gradient-radial-hero opacity-25" />
         </div>
-        <div className="absolute inset-0 pointer-events-none opacity-[0.06] hero-noise" aria-hidden />
+        <div className="absolute inset-0 pointer-events-none opacity-[0.04] hero-noise" aria-hidden />
 
         <div className="relative container mx-auto px-4 max-w-6xl flex flex-col items-center pt-0 md:pt-1">
           <h1
@@ -254,6 +254,9 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Review / Trust — right under hero */}
+      <TrustSection />
+
       {/* 2. BUILT BY OPERATORS — Two columns, yellow vertical line */}
       <section
         className="relative border-t border-zinc-800/50 py-16 md:py-20 overflow-hidden min-h-[60vh] md:min-h-[70vh] flex flex-col justify-center"
@@ -291,7 +294,6 @@ export default function Home() {
       <ModulesSection />
       <OperatorVsBoardroomSection />
       <WhoItsForSection />
-      <TrustSection />
       <FinalCtaSection />
 
       <footer className="bg-black text-zinc-400 py-12">

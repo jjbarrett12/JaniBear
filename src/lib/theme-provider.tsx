@@ -34,13 +34,19 @@ export function ThemeProvider({ children, orgId, initialTheme }: {
     logo_url?: string | null;
   } | null;
 }) {
-  const hasCustomBranding = initialTheme && (initialTheme.primary_color || initialTheme.secondary_color || initialTheme.logo_url);
+  const hasCustomBranding = initialTheme && (
+    (initialTheme.primary_color && initialTheme.primary_color.trim()) ||
+    (initialTheme.secondary_color && initialTheme.secondary_color.trim()) ||
+    initialTheme.logo_url
+  );
   const [theme, setThemeState] = useState<ThemeColors>(() => {
-    if (hasCustomBranding) {
+    if (hasCustomBranding && initialTheme) {
+      const p = (initialTheme.primary_color && initialTheme.primary_color.trim()) || defaultTheme.primary;
+      const s = (initialTheme.secondary_color && initialTheme.secondary_color.trim()) || defaultTheme.secondary;
       return {
-        primary: initialTheme!.primary_color || defaultTheme.primary,
-        secondary: initialTheme!.secondary_color || defaultTheme.secondary,
-        logoUrl: initialTheme!.logo_url ?? null,
+        primary: p,
+        secondary: s,
+        logoUrl: initialTheme.logo_url ?? null,
       };
     }
     return defaultTheme;
@@ -57,6 +63,20 @@ export function ThemeProvider({ children, orgId, initialTheme }: {
     });
   }, []);
 
+  // Sync from server when layout re-fetches after router.refresh() (e.g. after saving branding)
+  useEffect(() => {
+    if (!initialTheme) return;
+    const p = (initialTheme.primary_color && initialTheme.primary_color.trim()) || defaultTheme.primary;
+    const s = (initialTheme.secondary_color && initialTheme.secondary_color.trim()) || defaultTheme.secondary;
+    const hasAny = p !== defaultTheme.primary || s !== defaultTheme.secondary || (initialTheme.logo_url ?? null);
+    if (!hasAny) return;
+    setThemeState({
+      primary: p,
+      secondary: s,
+      logoUrl: initialTheme.logo_url ?? null,
+    });
+  }, [initialTheme?.primary_color, initialTheme?.secondary_color, initialTheme?.logo_url]);
+
   useEffect(() => {
     if (!orgId || hasCustomBranding) return;
 
@@ -69,10 +89,10 @@ export function ThemeProvider({ children, orgId, initialTheme }: {
           .eq('id', orgId)
           .maybeSingle();
 
-        if (data && (data.primary_color || data.secondary_color || data.logo_url)) {
+        if (data && ((data.primary_color && data.primary_color.trim()) || (data.secondary_color && data.secondary_color.trim()) || data.logo_url)) {
           setThemeState({
-            primary: data.primary_color || defaultTheme.primary,
-            secondary: data.secondary_color || defaultTheme.secondary,
+            primary: (data.primary_color && data.primary_color.trim()) || defaultTheme.primary,
+            secondary: (data.secondary_color && data.secondary_color.trim()) || defaultTheme.secondary,
             logoUrl: data.logo_url ?? null,
           });
         }

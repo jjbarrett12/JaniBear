@@ -1,7 +1,10 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useLayoutEffect } from 'react';
 import { useTheme } from '@/lib/theme-provider';
+
+const DEFAULT_PRIMARY = '#3b82f6';
+const DEFAULT_SECONDARY = '#64748b';
 
 function hexToHsl(hex: string): string {
   hex = hex.replace('#', '');
@@ -30,26 +33,27 @@ function primaryForegroundHsl(primaryHex: string): string {
   const g = parseInt(hex.slice(2, 4), 16) / 255;
   const b = parseInt(hex.slice(4, 6), 16) / 255;
   const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
-  return luminance > 0.5 ? '0 0% 9%' : '0 0% 100%'; // dark text on light primary, white on dark primary
+  return luminance > 0.5 ? '0 0% 9%' : '0 0% 100%';
 }
 
 export function ThemeApplier() {
   const { theme } = useTheme();
 
-  useEffect(() => {
+  // Always apply primary/secondary so org branding overrides globals.css. useLayoutEffect to run before paint.
+  useLayoutEffect(() => {
     const root = document.documentElement;
+    const primary = (theme.primary && theme.primary.trim()) || DEFAULT_PRIMARY;
+    const secondary = (theme.secondary && theme.secondary.trim()) || DEFAULT_SECONDARY;
 
-    if (theme.primary) {
-      const primaryHsl = theme.primary.startsWith('#') ? hexToHsl(theme.primary) : theme.primary;
-      const secondaryHsl = theme.secondary.startsWith('#') ? hexToHsl(theme.secondary) : theme.secondary;
+    const primaryHsl = primary.startsWith('#') && /^#[0-9A-Fa-f]{6}$/.test(primary) ? hexToHsl(primary) : (primary.includes('%') ? primary : hexToHsl(DEFAULT_PRIMARY));
+    const secondaryHsl = secondary.startsWith('#') && /^#[0-9A-Fa-f]{6}$/.test(secondary) ? hexToHsl(secondary) : (secondary.includes('%') ? secondary : hexToHsl(DEFAULT_SECONDARY));
 
-      root.style.setProperty('--primary', primaryHsl);
-      root.style.setProperty('--secondary', secondaryHsl);
-      root.style.setProperty('--ring', primaryHsl);
-      root.style.setProperty('--accent', secondaryHsl);
-      if (theme.primary.startsWith('#')) {
-        root.style.setProperty('--primary-foreground', primaryForegroundHsl(theme.primary));
-      }
+    root.style.setProperty('--primary', primaryHsl);
+    root.style.setProperty('--secondary', secondaryHsl);
+    root.style.setProperty('--ring', primaryHsl);
+    root.style.setProperty('--accent', secondaryHsl);
+    if (primary.startsWith('#') && /^#[0-9A-Fa-f]{6}$/.test(primary)) {
+      root.style.setProperty('--primary-foreground', primaryForegroundHsl(primary));
     }
   }, [theme]);
 

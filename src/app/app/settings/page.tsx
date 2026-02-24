@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { requireOrg } from '@/lib/auth';
 import { BrandingSettings } from '@/components/settings/branding-settings';
 import { BenchmarkingSettings } from '@/components/settings/benchmarking-settings';
+import { ProfilePhotoSettings } from '@/components/settings/profile-photo-settings';
 import { OrgSwitcher } from '@/components/settings/org-switcher';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
@@ -32,6 +33,7 @@ export default async function SettingsPage() {
       </div>
 
       <div className="space-y-6">
+        <ProfilePhotoSettings />
         <BrandingSettings
           orgId={org.org_id}
           initialData={{

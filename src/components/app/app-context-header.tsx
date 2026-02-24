@@ -6,6 +6,7 @@ import { AppLink } from '@/components/app/app-link';
 import { NotificationBell } from '@/components/notifications/notification-bell';
 import { DarkModeToggle } from '@/components/app/dark-mode-toggle';
 import { LanguageSwitcher } from '@/components/app/language-switcher';
+import { UserAvatarHeader } from '@/components/app/user-avatar-header';
 import { AlertTriangle, ChevronDown, Rocket, AlertCircle, Calendar } from 'lucide-react';
 import type { NavAlertCounts } from '@/actions/nav-alerts';
 import { getAppT } from '@/lib/app-translations';
@@ -56,13 +57,7 @@ export function AppContextHeader({
               <DarkModeToggle />
             </div>
             <NotificationBell />
-            <AppLink
-              href="/app/settings"
-              className="flex h-8 w-8 items-center justify-center rounded-md text-primary-foreground/80 hover:bg-primary-foreground/15 hover:text-primary-foreground"
-              title="Settings"
-            >
-              <span className="text-xs font-medium">Me</span>
-            </AppLink>
+            <UserAvatarHeader />
           </div>
         </div>
 

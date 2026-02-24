@@ -27,11 +27,7 @@ interface SearchResult {
   href: string;
 }
 
-function getSearchPlaceholder(pathname: string): string {
-  if (pathname.startsWith('/app/crm')) return 'Search accounts, contacts…';
-  if (pathname.startsWith('/app/sites') || pathname.startsWith('/app/map') || pathname.startsWith('/app/accounts')) return 'Search sites, locations…';
-  return 'Search inspections, walkthroughs…';
-}
+const SEARCH_PLACEHOLDER = 'Search';
 
 export function GlobalSearch() {
   const [query, setQuery] = useState('');
@@ -41,7 +37,7 @@ export function GlobalSearch() {
   const searchRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const pathname = usePathname();
-  const placeholder = getSearchPlaceholder(pathname ?? '');
+  const placeholder = SEARCH_PLACEHOLDER;
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

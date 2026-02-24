@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -21,6 +22,7 @@ interface BrandingSettingsProps {
 }
 
 export function BrandingSettings({ orgId, initialData }: BrandingSettingsProps) {
+  const router = useRouter();
   const { toast } = useToast();
   const { setTheme } = useTheme();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -110,6 +112,7 @@ CREATE INDEX IF NOT EXISTS idx_organizations_custom_branding ON organizations(cu
         console.warn('Logo uploaded but organizations update failed:', updateError);
       }
 
+      router.refresh();
       toast({
         title: 'Logo uploaded',
         description: 'Logo has been uploaded successfully',
@@ -151,22 +154,33 @@ CREATE INDEX IF NOT EXISTS idx_organizations_custom_branding ON organizations(cu
     }
 
     setLogoUrl(null);
+    router.refresh();
     toast({
       title: 'Logo removed',
       description: 'Logo has been removed',
     });
   };
 
+  const normalizeHex = (v: string) => {
+    const s = (v || '').trim();
+    if (!s) return s;
+    if (s.startsWith('#')) return s;
+    if (/^[0-9A-Fa-f]{6}$/.test(s)) return `#${s}`;
+    return s;
+  };
+
   const handleSave = async () => {
     setIsSaving(true);
     const supabase = createClient();
+    const primary = normalizeHex(primaryColor);
+    const secondary = normalizeHex(secondaryColor);
 
     try {
       const { error } = await supabase
         .from('organizations')
         .update({
-          primary_color: primaryColor,
-          secondary_color: secondaryColor,
+          primary_color: primary || null,
+          secondary_color: secondary || null,
           logo_url: logoUrl,
         })
         .eq('id', orgId);
@@ -174,10 +188,13 @@ CREATE INDEX IF NOT EXISTS idx_organizations_custom_branding ON organizations(cu
       if (error) throw error;
 
       setTheme({
-        primary: primaryColor,
-        secondary: secondaryColor,
+        primary: primary || primaryColor,
+        secondary: secondary || secondaryColor,
         logoUrl: logoUrl ?? null,
       });
+
+      // Re-fetch layout data so sidebar/header get new logo and next full load uses new colors
+      router.refresh();
 
       toast({
         title: 'Settings saved',
@@ -214,7 +231,7 @@ CREATE INDEX IF NOT EXISTS idx_organizations_custom_branding ON organizations(cu
       <CardHeader>
         <CardTitle>Branding &amp; company colors</CardTitle>
         <CardDescription>
-          Set your company colors and logo. Colors apply app-wide: buttons, links, focus rings, sidebar accents, and primary actions. Logo appears in the sidebar.
+          Set your company colors and logo. Colors apply app-wide: buttons, links, focus rings, sidebar accents, and primary actions. Logo appears in the sidebar. If colors or logo don’t update, run migrations 070 and 074 in Supabase SQL Editor.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-8">
@@ -230,6 +247,7 @@ CREATE INDEX IF NOT EXISTS idx_organizations_custom_branding ON organizations(cu
                   width={120}
                   height={60}
                   className="h-16 w-auto object-contain border rounded p-2 bg-white"
+                  unoptimized
                 />
                 <Button
                   type="button"
@@ -361,7 +379,8 @@ CREATE INDEX IF NOT EXISTS idx_organizations_custom_branding ON organizations(cu
           onClick={handleSave}
           disabled={isSaving}
           size="lg"
-          className="w-full h-14 text-lg"
+          className="w-full h-14 text-lg text-white border-0"
+          style={{ backgroundColor: primaryColor }}
         >
           {isSaving ? 'Saving...' : 'Save Branding Settings'}
         </Button>

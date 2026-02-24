@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { requireOrg } from '@/lib/auth';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, Users } from 'lucide-react';
@@ -46,12 +47,22 @@ export default async function CrewsPage() {
                     {crew.crew_members?.length || 0} member{crew.crew_members?.length !== 1 ? 's' : ''}
                   </p>
                   {crew.crew_members && crew.crew_members.length > 0 && (
-                    <div className="mt-3 flex flex-wrap gap-2">
+                    <div className="mt-3 flex flex-wrap items-center gap-2">
                       {crew.crew_members.slice(0, 3).map((member: any) => (
                         <span
                           key={member.user_id}
-                          className="text-xs bg-gray-100 px-2 py-1 rounded"
+                          className="inline-flex items-center gap-1.5 text-xs bg-muted px-2 py-1 rounded-full"
                         >
+                          {member.profiles?.avatar_url ? (
+                            <Image
+                              src={member.profiles.avatar_url}
+                              alt=""
+                              width={20}
+                              height={20}
+                              className="rounded-full object-cover h-5 w-5"
+                              unoptimized
+                            />
+                          ) : null}
                           {member.profiles?.full_name || 'Unknown'}
                         </span>
                       ))}

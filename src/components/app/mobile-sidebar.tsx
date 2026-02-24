@@ -92,6 +92,7 @@ const MOBILE_ALERT_BADGE_CLASS = 'ml-auto text-[10px] min-w-[18px] h-5 px-1.5 ju
 
 export function MobileSidebar({ logoUrl, navAlerts, shell, franchiseeEnrolled }: MobileSidebarProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
   const pathname = usePathname();
   const { locale } = useLanguage();
   const t = getAppT(locale);

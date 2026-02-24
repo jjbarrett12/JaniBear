@@ -63,6 +63,7 @@ export default function Home() {
   }, []);
 
   return (
+    <>
     <div className="landing-page min-h-screen bg-black text-white pb-20 md:pb-0">
       <nav
         className={`landing-header sticky top-0 z-50 h-14 md:h-16 py-0 flex items-center overflow-visible transition-all duration-300 ${
@@ -357,5 +358,6 @@ export default function Home() {
         </div>
       </footer>
     </div>
+    </>
   );
 }

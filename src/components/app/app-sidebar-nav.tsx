@@ -15,8 +15,10 @@ import type { NavSection, NavItem } from '@/lib/nav/shellNav';
 import {
   ChevronDown,
   ChevronRight,
+  Lock,
   Settings,
 } from 'lucide-react';
+import { OperationsUpgradeModal, OPERATIONS_UPGRADE_TOOLTIP } from '@/components/app/operations-upgrade-modal';
 
 const STORAGE_KEY = 'janibear-nav-collapsed';
 

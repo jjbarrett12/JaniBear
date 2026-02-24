@@ -90,7 +90,7 @@ const operationsItemKeys: { href: string; labelKey: AppTranslationKey; icon: Rea
 
 const MOBILE_ALERT_BADGE_CLASS = 'ml-auto text-[10px] min-w-[18px] h-5 px-1.5 justify-center shrink-0 bg-destructive text-destructive-foreground border-0';
 
-export function MobileSidebar({ logoUrl, navAlerts, shell, franchiseeEnrolled }: MobileSidebarProps) {
+export function MobileSidebar({ logoUrl, navAlerts, shell, franchiseeEnrolled, proGearEnabled, operationsLocked }: MobileSidebarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
   const pathname = usePathname();

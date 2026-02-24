@@ -75,6 +75,7 @@ function sectionHeaderColor(_sectionId: string, isActive: boolean): string {
 
 export function AppSidebarNav({
   premium,
+  planType,
   navAlerts,
   shell = 'owner_operator',
   franchiseeEnrolled = false,
@@ -82,6 +83,7 @@ export function AppSidebarNav({
   operationsLocked = false,
 }: {
   premium: boolean;
+  planType: PlanType;
   navAlerts?: NavAlertCounts | null;
   shell?: ShellKey;
   franchiseeEnrolled?: boolean;

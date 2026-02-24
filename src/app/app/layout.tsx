@@ -26,7 +26,7 @@ export default async function AppLayout({
   const supabase = await createClient();
   const impersonateOrgId = await getImpersonateOrgId();
 
-  const [organization, navAlerts, shell, franchiseeEnrolled, proGearEnabled] = await Promise.all([
+  const [organizationResult, navAlerts, shell, franchiseeEnrolled, proGearEnabled] = await Promise.all([
     supabase.from('organizations').select('name, primary_color, secondary_color, logo_url').eq('id', org.org_id).maybeSingle(),
     getNavAlertCounts(),
     resolveShellForOrg(org.org_id),
@@ -34,7 +34,14 @@ export default async function AppLayout({
     getProGearEnabled(org.org_id),
   ]);
 
-  const orgName = organization?.data?.name ?? (org.organizations as { name?: string } | null)?.name ?? null;
+  // If branding columns don't exist yet (migration not run), fall back to name-only so login/dashboard still work
+  let organizationData = organizationResult.data;
+  if (organizationResult.error && /column|could not find/i.test(organizationResult.error.message ?? '')) {
+    const fallback = await supabase.from('organizations').select('name').eq('id', org.org_id).maybeSingle();
+    organizationData = fallback.data ?? null;
+  }
+
+  const orgName = organizationData?.name ?? (org.organizations as { name?: string } | null)?.name ?? null;
   const impersonatingOrgName = impersonateOrgId && impersonateOrgId === org.org_id ? orgName : null;
 
   const pathname = (await headers()).get('x-pathname') ?? '';
@@ -43,7 +50,7 @@ export default async function AppLayout({
   }
 
   return (
-    <ThemeProvider orgId={org.org_id} initialTheme={organization?.data ?? undefined}>
+    <ThemeProvider orgId={org.org_id} initialTheme={organizationData ?? undefined}>
       <ThemeApplier />
       <ShellGuard shell={shell} />
       <div className="min-h-screen bg-background">

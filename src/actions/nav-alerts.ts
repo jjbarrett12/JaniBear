@@ -18,13 +18,16 @@ export type NavAlertCounts = {
  * - Open issues (Issues)
  * - Crews who didn't check off tasks after their shift (Schedules / task list)
  */
+const EMPTY_NAV_ALERTS: NavAlertCounts = { handoffsCount: 0, openIssuesCount: 0, missedTaskCount: 0 };
+
 export async function getNavAlertCounts(): Promise<NavAlertCounts> {
-  const org = await requireOrg();
-  const supabase = await createClient();
+  try {
+    const org = await requireOrg();
+    const supabase = await createClient();
 
-  const today = new Date().toISOString().split('T')[0];
+    const today = new Date().toISOString().split('T')[0];
 
-  const [handoffsRes, issuesRes, missedRes] = await Promise.all([
+    const [handoffsRes, issuesRes, missedRes] = await Promise.all([
     (async () => {
       const plansRes = await supabase
         .from('launch_plans')
@@ -70,9 +73,14 @@ export async function getNavAlertCounts(): Promise<NavAlertCounts> {
     })(),
   ]);
 
-  return {
-    handoffsCount: await handoffsRes,
-    openIssuesCount: (issuesRes as { count?: number })?.count ?? 0,
-    missedTaskCount: await missedRes,
-  };
+    return {
+      handoffsCount: await handoffsRes,
+      openIssuesCount: (issuesRes as { count?: number })?.count ?? 0,
+      missedTaskCount: await missedRes,
+    };
+  } catch (e) {
+    // Next.js redirect() throws; must rethrow so login redirect still works
+    if ((e as { digest?: string })?.digest?.startsWith?.('NEXT_REDIRECT')) throw e;
+    return EMPTY_NAV_ALERTS;
+  }
 }

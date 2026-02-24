@@ -2,7 +2,7 @@ import Image from 'next/image';
 import { AppLink } from '@/components/app/app-link';
 import { createClient } from '@/lib/supabase/server';
 import { requireOrg } from '@/lib/auth';
-import { isPremiumPlan } from '@/lib/is-premium';
+import { isPremiumPlan, getPlanType } from '@/lib/is-premium';
 import { getNavAlertCounts } from '@/actions/nav-alerts';
 import type { NavAlertCounts } from '@/actions/nav-alerts';
 import type { ShellKey } from '@/lib/shell';
@@ -22,13 +22,16 @@ export async function AppSidebar({
   const { data: { user } } = await supabase.auth.getUser();
   const org = await requireOrg();
 
-  const [organization, premium, planType, navAlertsFetched] = await Promise.all([
+  const [organizationResult, premium, planType, navAlertsFetched] = await Promise.all([
     supabase.from('organizations').select('logo_url').eq('id', org.org_id).maybeSingle(),
     isPremiumPlan(org.org_id),
     getPlanType(org.org_id),
     navAlertsProp == null ? getNavAlertCounts() : Promise.resolve(navAlertsProp),
   ]);
-  const orgData = organization?.data ?? null;
+  // If logo_url column doesn't exist yet (migration not run), treat as no custom logo
+  const orgData = organizationResult.error && /column|could not find/i.test(organizationResult.error.message ?? '')
+    ? null
+    : (organizationResult.data ?? null);
   const navAlerts = navAlertsFetched ?? navAlertsProp ?? null;
   const operationsLocked = !premium;
 

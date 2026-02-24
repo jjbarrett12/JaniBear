@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { createOrgInvite } from '@/actions/team';
-import { ASSIGNABLE_ROLES } from '@/actions/team';
+import { ASSIGNABLE_ROLES } from '@/lib/team-roles';
 import { Loader2, Copy, Check } from 'lucide-react';
 
 const ROLE_LABELS: Record<string, string> = {

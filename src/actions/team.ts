@@ -5,19 +5,7 @@ import { getCurrentUserId } from '@/lib/auth';
 import { getActiveOrgIdFromCookie } from '@/lib/user-context';
 import { checkSeatLimit } from '@/lib/org-limits';
 import { revalidatePath } from 'next/cache';
-
-const ASSIGNABLE_ROLES = [
-  'admin',
-  'manager',
-  'sales_rep',
-  'sales',
-  'ops',
-  'inspector',
-  'cleaner',
-  'client_viewer',
-] as const;
-
-export type AssignableRole = (typeof ASSIGNABLE_ROLES)[number];
+import { ASSIGNABLE_ROLES, type AssignableRole } from '@/lib/team-roles';
 
 /** Update an org member's role. Caller must be owner/admin/manager; cannot change an owner's role. */
 export async function updateMemberRole(
@@ -119,5 +107,3 @@ export async function acceptOrgInvite(token: string): Promise<{ error?: string; 
   revalidatePath('/app/dashboard');
   return { orgId: result.org_id };
 }
-
-export { ASSIGNABLE_ROLES };

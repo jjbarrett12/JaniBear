@@ -18,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { ASSIGNABLE_ROLES, type AssignableRole } from '@/actions/team';
+import { ASSIGNABLE_ROLES, type AssignableRole } from '@/lib/team-roles';
 import { Loader2, KeyRound, UserX, UserCheck } from 'lucide-react';
 
 export type MemberRow = {

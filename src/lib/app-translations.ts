@@ -151,6 +151,8 @@ const enApp = {
     navUsersAndRoles: 'Users & Roles',
     navReporting: 'Reporting',
     navIntegrations: 'Integrations',
+    navTraining: 'Training',
+    navPerformanceComparison: 'Performance Comparison',
     itemsRequireAttention: '{{count}} items require attention',
 
     // Dashboard
@@ -343,6 +345,8 @@ const esOverrides: Partial<typeof enApp> = {
     navUsersAndRoles: 'Usuarios y roles',
     navReporting: 'Informes',
     navIntegrations: 'Integraciones',
+    navTraining: 'Formación',
+    navPerformanceComparison: 'Comparativa de rendimiento',
     itemsRequireAttention: '{{count}} elementos requieren atención',
 
     dashboardWelcomeBack: 'Bienvenido de nuevo',

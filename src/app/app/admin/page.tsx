@@ -15,6 +15,9 @@ import {
   Clock,
   CheckCircle2,
   Palette,
+  LayoutGrid,
+  BarChart3,
+  BarChart2,
 } from 'lucide-react';
 
 // Demo counts for marketing screenshots (?demo=1)
@@ -143,7 +146,54 @@ export default async function AdminPage(props: { searchParams?: Promise<{ demo?:
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-foreground">Admin Dashboard</h1>
-        <p className="text-muted-foreground mt-2">Manage employees, compliance, invoicing, and AI features</p>
+        <p className="text-muted-foreground mt-2">Overview, KPIs, benchmarks, performance comparison, employees, compliance, and more</p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <Link href="/app/daily">
+          <Card className="hover:shadow-md transition-shadow cursor-pointer h-full border-primary/20">
+            <CardHeader className="py-4">
+              <div className="p-2.5 rounded-lg bg-primary/10 w-fit">
+                <LayoutGrid className="h-6 w-6 text-primary" />
+              </div>
+              <CardTitle className="text-base mt-3">Overview (Command Center)</CardTitle>
+              <CardDescription>Daily command view, today&apos;s priorities, and widgets</CardDescription>
+            </CardHeader>
+          </Card>
+        </Link>
+        <Link href="/app/kpis">
+          <Card className="hover:shadow-md transition-shadow cursor-pointer h-full border-primary/20">
+            <CardHeader className="py-4">
+              <div className="p-2.5 rounded-lg bg-primary/10 w-fit">
+                <BarChart3 className="h-6 w-6 text-primary" />
+              </div>
+              <CardTitle className="text-base mt-3">KPI Dashboard</CardTitle>
+              <CardDescription>Key performance indicators and reporting</CardDescription>
+            </CardHeader>
+          </Card>
+        </Link>
+        <Link href="/app/sales/win-loss">
+          <Card className="hover:shadow-md transition-shadow cursor-pointer h-full border-primary/20">
+            <CardHeader className="py-4">
+              <div className="p-2.5 rounded-lg bg-primary/10 w-fit">
+                <TrendingUp className="h-6 w-6 text-primary" />
+              </div>
+              <CardTitle className="text-base mt-3">Performance Comparison</CardTitle>
+              <CardDescription>Compare sales teams and rep performance</CardDescription>
+            </CardHeader>
+          </Card>
+        </Link>
+        <Link href="/app/benchmarks">
+          <Card className="hover:shadow-md transition-shadow cursor-pointer h-full border-primary/20">
+            <CardHeader className="py-4">
+              <div className="p-2.5 rounded-lg bg-primary/10 w-fit">
+                <BarChart2 className="h-6 w-6 text-primary" />
+              </div>
+              <CardTitle className="text-base mt-3">Benchmarks</CardTitle>
+              <CardDescription>Compare your metrics to peers and targets</CardDescription>
+            </CardHeader>
+          </Card>
+        </Link>
       </div>
 
       {isPlatformAdmin && (

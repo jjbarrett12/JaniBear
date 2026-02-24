@@ -136,6 +136,15 @@ export default async function TestDataPage() {
         </Card>
       </div>
 
+      <Card className="border-amber-500/20 bg-amber-500/5">
+        <CardHeader>
+          <CardTitle className="text-base">If leads or seed fails: &quot;table not found&quot; / &quot;schema cache&quot;</CardTitle>
+          <CardDescription>
+            The <code className="rounded bg-black/10 dark:bg-white/10 px-1">leads</code> or <code className="rounded bg-black/10 dark:bg-white/10 px-1">accounts</code> table may not exist in your Supabase project yet. Run your migrations: in Supabase Dashboard open <strong>SQL Editor</strong> and run <code className="rounded bg-black/10 dark:bg-white/10 px-1">supabase/migrations/008_sales_and_qc.sql</code> (creates leads) and <code className="rounded bg-black/10 dark:bg-white/10 px-1">037_accounts_facilities.sql</code> (creates accounts), or from your repo run <code className="rounded bg-black/10 dark:bg-white/10 px-1">supabase db push</code>.
+          </CardDescription>
+        </CardHeader>
+      </Card>
+
       <Card>
         <CardHeader>
           <CardTitle>Where to test after loading</CardTitle>

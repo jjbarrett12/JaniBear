@@ -33,6 +33,7 @@ import {
   Rocket,
   Wallet,
   Lock,
+  ShoppingBag,
 } from 'lucide-react';
 import { OperationsUpgradeModal, OPERATIONS_UPGRADE_TOOLTIP } from '@/components/app/operations-upgrade-modal';
 import { GlobalSearch } from '@/components/search/global-search';
@@ -85,7 +86,13 @@ const operationsItemKeys: { href: string; labelKey: AppTranslationKey; icon: Rea
   { href: '/app/helphub', labelKey: 'navHelpHubQR', icon: Ticket },
   { href: '/app/messages', labelKey: 'navMessages', icon: MessageCircle },
   { href: '/app/qc-assign', labelKey: 'navQcTaskAssign', icon: ListChecks },
-  { href: '/app/admin', labelKey: 'navAdmin', icon: Settings },
+];
+
+/** System: Admin Dashboard, Training, Pro Gear (Cub + Grizzly for gloves/equipment). */
+const systemItemKeys: { href: string; labelKey: AppTranslationKey; icon: React.ComponentType<{ className?: string }> }[] = [
+  { href: '/app/admin', labelKey: 'navAdminDashboard', icon: Settings },
+  { href: '/app/university', labelKey: 'navTraining', icon: GraduationCap },
+  { href: '/app/pro-gear', labelKey: 'navProGear', icon: ShoppingBag },
 ];
 
 const MOBILE_ALERT_BADGE_CLASS = 'ml-auto text-[10px] min-w-[18px] h-5 px-1.5 justify-center shrink-0 bg-destructive text-destructive-foreground border-0';
@@ -224,18 +231,6 @@ export function MobileSidebar({ logoUrl, navAlerts, shell, franchiseeEnrolled, p
                   <BarChart3 className="h-5 w-5 shrink-0" />
                   {t('navKpiDashboard')}
                 </AppLink>
-                <AppLink
-                  href="/app/university"
-                  className={`flex items-center gap-3 rounded-lg px-4 py-3 text-base font-medium transition-colors min-h-[48px] ${
-                    pathname.startsWith('/app/university')
-                      ? 'bg-primary text-primary-foreground'
-                      : 'text-foreground/90 hover:bg-foreground/10 dark:text-foreground/95 dark:hover:bg-foreground/10'
-                  }`}
-                >
-                  <GraduationCap className="h-5 w-5 shrink-0" />
-                  {t('navUniversity')}
-                </AppLink>
-
                 <div className="space-y-1">
                   <p className="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-foreground/75 dark:text-foreground/80">
                     {t('navCrmAndLocations')}
@@ -339,6 +334,30 @@ export function MobileSidebar({ logoUrl, navAlerts, shell, franchiseeEnrolled, p
                             {alertCount > 99 ? '99+' : alertCount}
                           </Badge>
                         )}
+                      </AppLink>
+                    );
+                  })}
+                </div>
+
+                <div className="space-y-1 pt-2 border-t dark:border-gray-800">
+                  <p className="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-foreground/75 dark:text-foreground/80">
+                    {t('navSystem')}
+                  </p>
+                  {systemItemKeys.map((item) => {
+                    const Icon = item.icon;
+                    const isActive = pathname === item.href || (item.href === '/app/admin' ? pathname.startsWith('/app/admin') : pathname.startsWith(item.href + '/'));
+                    return (
+                      <AppLink
+                        key={item.href}
+                        href={item.href}
+                        className={`flex items-center gap-3 rounded-lg px-4 py-3 text-base font-medium transition-colors min-h-[44px] ${
+                          isActive
+                            ? 'bg-primary text-primary-foreground'
+                            : 'text-foreground/90 hover:bg-foreground/10 dark:text-foreground/95 dark:hover:bg-foreground/10'
+                        }`}
+                      >
+                        <Icon className="h-5 w-5 shrink-0" />
+                        {t(item.labelKey)}
                       </AppLink>
                     );
                   })}

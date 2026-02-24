@@ -68,6 +68,13 @@ const SAMPLE_ACCOUNTS = [
 
 export type SeedResult = { ok: true; message: string } | { ok: false; error: string };
 
+const TABLE_MISSING_MSG =
+  "The leads or accounts table isn't in your database. Run Supabase migrations so the table exists: in Supabase Dashboard open SQL Editor and run the migration that creates the 'leads' table (e.g. supabase/migrations/008_sales_and_qc.sql), or run: supabase db push";
+
+function isTableMissingError(msg: string): boolean {
+  return /schema cache|could not find the table|relation.*does not exist/i.test(msg ?? '');
+}
+
 /** Seed leads and accounts so you can test Sales (Leads, Pipeline) and CRM. Safe to run multiple times only when org has no leads. */
 export async function seedSampleSalesData(): Promise<SeedResult> {
   try {
@@ -78,7 +85,10 @@ export async function seedSampleSalesData(): Promise<SeedResult> {
     const orgId = org.org_id;
     const userId = user.id;
 
-    const { count: leadCount } = await supabase.from('leads').select('*', { count: 'exact', head: true }).eq('org_id', orgId);
+    const { count: leadCount, error: countErr } = await supabase.from('leads').select('*', { count: 'exact', head: true }).eq('org_id', orgId);
+    if (countErr && isTableMissingError(countErr.message)) {
+      return { ok: false, error: TABLE_MISSING_MSG };
+    }
     if ((leadCount ?? 0) > 0) {
       return { ok: false, error: 'You already have leads. Seed is for empty orgs only (or delete leads first).' };
     }
@@ -96,7 +106,9 @@ export async function seedSampleSalesData(): Promise<SeedResult> {
         created_by_user_id: userId,
       }))
     );
-    if (leadErr) return { ok: false, error: `Leads: ${leadErr.message}` };
+    if (leadErr) {
+      return { ok: false, error: isTableMissingError(leadErr.message) ? TABLE_MISSING_MSG : `Leads: ${leadErr.message}` };
+    }
 
     // 2. Accounts
     const { error: accErr } = await supabase.from('accounts').insert(
@@ -106,7 +118,9 @@ export async function seedSampleSalesData(): Promise<SeedResult> {
         status: a.status,
       }))
     );
-    if (accErr) return { ok: false, error: `Accounts: ${accErr.message}` };
+    if (accErr) {
+      return { ok: false, error: isTableMissingError(accErr.message) ? TABLE_MISSING_MSG : `Accounts: ${accErr.message}` };
+    }
 
     revalidatePath('/app/sales/leads');
     revalidatePath('/app/sales');

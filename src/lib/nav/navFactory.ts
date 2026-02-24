@@ -86,27 +86,23 @@ export type NavFactoryInput = {
   franchiseeEnrolled?: boolean;
 };
 
-/** Executive section: Command Center, Financial Health, Pipeline Analytics, Account Health, Risk & SLA, Rep Performance. */
+/** Executive section: Overview (Command Center), Financial Health, Pipeline, Account Health, Alerts, Rep Performance, KPI Dashboard, Benchmarks, HelpHub. AI is in-module; University in System (Training); Pro Gear in Operations. */
 function buildExecutiveSection(): NavSection {
   return {
     id: 'executive',
     labelKey: 'navExecutive',
     theme: 'executive',
     items: [
-      { href: '/app/daily', labelKey: 'navCommandCenter', icon: LayoutDashboard },
+      { href: '/app/daily', labelKey: 'navOverview', icon: LayoutGrid },
       { href: '/app/financial-health', labelKey: 'navRevenueForecast', icon: Wallet },
       { href: '/app/sales/pipeline', labelKey: 'navPipelineAnalytics', icon: LineChart },
       { href: '/app/dashboard', labelKey: 'navAccountHealth', icon: Gauge },
       { href: '/app/alerts', labelKey: 'navAlerts', icon: AlertCircle },
       { href: '/app/sales/win-loss', labelKey: 'navRepPerformance', icon: BarChart3 },
-      { href: '/app/overview', labelKey: 'navOverview', icon: LayoutGrid },
       { href: '/app/kpis', labelKey: 'navKpiDashboard', icon: BarChart3 },
       { href: '/app/kpi', labelKey: 'navKpiCommandCenter', icon: LineChart },
       { href: '/app/benchmarks', labelKey: 'navBenchmarks', icon: BarChart2 },
-      { href: '/app/admin/ai-settings', labelKey: 'navAiInsights', icon: Sparkles },
       { href: '/app/helphub', labelKey: 'navHelpHubQR', icon: QrCode },
-      { href: '/app/university', labelKey: 'navUniversity', icon: GraduationCap },
-      { href: '/app/pro-gear', labelKey: 'navProGear', icon: ShoppingBag },
     ],
   };
 }
@@ -176,16 +172,18 @@ function buildOperationsSection(input: NavFactoryInput): NavSection {
   };
 }
 
-/** System section: Commission, Renewals, Automations, Users & Roles, AI Settings, Integrations, Settings. */
+/** System section: Admin Dashboard, Commission, Renewals, Automations, Users & Roles, AI Settings, Training (University), Pro Gear, Organization, Audit. */
 function buildSystemSection(input: NavFactoryInput): NavSection {
   const { orgType } = input;
   const base: NavItem[] = [
+    { href: '/app/admin', labelKey: 'navAdminDashboard', icon: LayoutDashboard },
     { href: '/app/admin', labelKey: 'navCommissionDashboard', icon: Percent },
     { href: '/app/admin', labelKey: 'navRenewalRadar', icon: Radar },
     { href: '/app/admin', labelKey: 'navWorkflows', icon: Workflow },
     { href: '/app/admin', labelKey: 'navUsersAndRoles', icon: Users },
     { href: '/app/admin/ai-settings', labelKey: 'navAiSettings', icon: Sparkles },
-    { href: '/app/admin', labelKey: 'navIntegrations', icon: Settings },
+    { href: '/app/university', labelKey: 'navTraining', icon: GraduationCap },
+    { href: '/app/pro-gear', labelKey: 'navProGear', icon: ShoppingBag },
     { href: '/app/settings', labelKey: 'navOrganization', icon: Settings },
     { href: '/app/audit', labelKey: 'navAuditLogs', icon: FileText },
   ];

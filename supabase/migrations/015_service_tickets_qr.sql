@@ -15,27 +15,21 @@ CREATE TABLE service_tickets (
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   resolved_at TIMESTAMPTZ
 );
-
 CREATE INDEX idx_service_tickets_org_id ON service_tickets(org_id);
 CREATE INDEX idx_service_tickets_location_id ON service_tickets(location_id);
 CREATE INDEX idx_service_tickets_status ON service_tickets(status);
 CREATE INDEX idx_service_tickets_created_at ON service_tickets(created_at DESC);
-
 ALTER TABLE service_tickets ENABLE ROW LEVEL SECURITY;
-
 -- Org members can manage tickets for their org
 CREATE POLICY "Org members can read service_tickets"
   ON service_tickets FOR SELECT
   USING (is_org_member(org_id, auth.uid()));
-
 CREATE POLICY "Org writers can insert service_tickets"
   ON service_tickets FOR INSERT
   WITH CHECK (can_write_org(org_id, auth.uid()));
-
 CREATE POLICY "Org writers can update service_tickets"
   ON service_tickets FOR UPDATE
   USING (can_write_org(org_id, auth.uid()));
-
 -- Public: get location display name for ticket form (no auth required)
 CREATE OR REPLACE FUNCTION get_public_location_display(p_location_id UUID)
 RETURNS JSONB
@@ -57,7 +51,6 @@ BEGIN
   RETURN jsonb_build_object('name', v_name, 'org_name', v_org_name);
 END;
 $$;
-
 -- Public: create a service ticket from QR/form (no auth required)
 CREATE OR REPLACE FUNCTION create_service_ticket_from_public(
   p_location_id UUID,
@@ -88,11 +81,9 @@ BEGIN
   RETURN v_ticket_id;
 END;
 $$;
-
 -- Allow anon to call these functions (used by public ticket page)
 GRANT EXECUTE ON FUNCTION get_public_location_display(UUID) TO anon;
 GRANT EXECUTE ON FUNCTION create_service_ticket_from_public(UUID, TEXT, TEXT, TEXT, TEXT) TO anon;
-
 -- Trigger to keep updated_at in sync
 CREATE OR REPLACE FUNCTION set_service_ticket_updated_at()
 RETURNS TRIGGER AS $$
@@ -106,7 +97,6 @@ BEGIN
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
-
 CREATE TRIGGER service_tickets_updated_at
   BEFORE UPDATE ON service_tickets
   FOR EACH ROW EXECUTE PROCEDURE set_service_ticket_updated_at();

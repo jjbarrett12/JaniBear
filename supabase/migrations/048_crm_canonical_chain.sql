@@ -57,7 +57,7 @@ CREATE INDEX IF NOT EXISTS idx_bids_walkthrough_id ON public.bids(walkthrough_id
 -- 5. CRM Activities (unified timeline) — location_id added in DO block for locations/sites
 -- =============================================================================
 CREATE TABLE IF NOT EXISTS public.crm_activities (
-  id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   org_id uuid NOT NULL REFERENCES public.organizations(id) ON DELETE CASCADE,
   client_id uuid REFERENCES public.clients(id) ON DELETE SET NULL,
   opportunity_id uuid REFERENCES public.opportunities(id) ON DELETE SET NULL,
@@ -90,7 +90,7 @@ CREATE INDEX IF NOT EXISTS idx_crm_activities_location_id ON public.crm_activiti
 -- 6. CRM Contacts (lean contacts) — location_id added in DO block
 -- =============================================================================
 CREATE TABLE IF NOT EXISTS public.crm_contacts (
-  id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   org_id uuid NOT NULL REFERENCES public.organizations(id) ON DELETE CASCADE,
   client_id uuid NOT NULL REFERENCES public.clients(id) ON DELETE CASCADE,
   first_name text,

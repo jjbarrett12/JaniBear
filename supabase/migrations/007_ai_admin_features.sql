@@ -28,7 +28,6 @@ CREATE TABLE IF NOT EXISTS employees (
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- ============================================
 -- COMPLIANCE RECORDS TABLE
 -- ============================================
@@ -51,7 +50,6 @@ CREATE TABLE IF NOT EXISTS compliance_records (
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- ============================================
 -- SDS (SAFETY DATA SHEETS) TABLE
 -- ============================================
@@ -79,7 +77,6 @@ CREATE TABLE IF NOT EXISTS sds_sheets (
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- ============================================
 -- PURCHASE ORDERS TABLE
 -- ============================================
@@ -105,7 +102,6 @@ CREATE TABLE IF NOT EXISTS purchase_orders (
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- ============================================
 -- PURCHASE ORDER ITEMS TABLE
 -- ============================================
@@ -123,7 +119,6 @@ CREATE TABLE IF NOT EXISTS purchase_order_items (
   category TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- ============================================
 -- INVOICES TABLE
 -- ============================================
@@ -153,7 +148,6 @@ CREATE TABLE IF NOT EXISTS invoices (
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- ============================================
 -- INVOICE ITEMS TABLE
 -- ============================================
@@ -169,7 +163,6 @@ CREATE TABLE IF NOT EXISTS invoice_items (
   category TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- ============================================
 -- PHONE ATTENDANT CALLS TABLE
 -- ============================================
@@ -194,7 +187,6 @@ CREATE TABLE IF NOT EXISTS phone_calls (
   created_at TIMESTAMPTZ DEFAULT NOW(),
   completed_at TIMESTAMPTZ
 );
-
 -- ============================================
 -- AI CONFIGURATION TABLE
 -- ============================================
@@ -213,7 +205,6 @@ CREATE TABLE IF NOT EXISTS ai_config (
   updated_at TIMESTAMPTZ DEFAULT NOW(),
   UNIQUE(org_id, feature)
 );
-
 -- ============================================
 -- PHONE ATTENDANT SUBSCRIPTION TABLE
 -- ============================================
@@ -235,7 +226,6 @@ CREATE TABLE IF NOT EXISTS phone_attendant_subscriptions (
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- ============================================
 -- INDEXES
 -- ============================================
@@ -243,42 +233,32 @@ CREATE INDEX IF NOT EXISTS idx_employees_org_id ON employees(org_id);
 CREATE INDEX IF NOT EXISTS idx_employees_user_id ON employees(user_id);
 CREATE INDEX IF NOT EXISTS idx_employees_status ON employees(status);
 CREATE INDEX IF NOT EXISTS idx_employees_employee_number ON employees(employee_number);
-
 CREATE INDEX IF NOT EXISTS idx_compliance_org_id ON compliance_records(org_id);
 CREATE INDEX IF NOT EXISTS idx_compliance_location_id ON compliance_records(location_id);
 CREATE INDEX IF NOT EXISTS idx_compliance_status ON compliance_records(status);
 CREATE INDEX IF NOT EXISTS idx_compliance_due_date ON compliance_records(due_date);
 CREATE INDEX IF NOT EXISTS idx_compliance_type ON compliance_records(type);
-
 CREATE INDEX IF NOT EXISTS idx_sds_org_id ON sds_sheets(org_id);
 CREATE INDEX IF NOT EXISTS idx_sds_product_name ON sds_sheets(product_name);
 CREATE INDEX IF NOT EXISTS idx_sds_is_active ON sds_sheets(is_active);
-
 CREATE INDEX IF NOT EXISTS idx_po_org_id ON purchase_orders(org_id);
 CREATE INDEX IF NOT EXISTS idx_po_number ON purchase_orders(po_number);
 CREATE INDEX IF NOT EXISTS idx_po_status ON purchase_orders(status);
 CREATE INDEX IF NOT EXISTS idx_po_order_date ON purchase_orders(order_date);
-
 CREATE INDEX IF NOT EXISTS idx_po_items_po_id ON purchase_order_items(po_id);
-
 CREATE INDEX IF NOT EXISTS idx_invoices_org_id ON invoices(org_id);
 CREATE INDEX IF NOT EXISTS idx_invoices_customer_id ON invoices(customer_id);
 CREATE INDEX IF NOT EXISTS idx_invoices_invoice_number ON invoices(invoice_number);
 CREATE INDEX IF NOT EXISTS idx_invoices_status ON invoices(status);
 CREATE INDEX IF NOT EXISTS idx_invoices_due_date ON invoices(due_date);
-
 CREATE INDEX IF NOT EXISTS idx_invoice_items_invoice_id ON invoice_items(invoice_id);
-
 CREATE INDEX IF NOT EXISTS idx_phone_calls_org_id ON phone_calls(org_id);
 CREATE INDEX IF NOT EXISTS idx_phone_calls_status ON phone_calls(status);
 CREATE INDEX IF NOT EXISTS idx_phone_calls_created_at ON phone_calls(created_at);
-
 CREATE INDEX IF NOT EXISTS idx_ai_config_org_id ON ai_config(org_id);
 CREATE INDEX IF NOT EXISTS idx_ai_config_feature ON ai_config(feature);
-
 CREATE INDEX IF NOT EXISTS idx_phone_subscriptions_org_id ON phone_attendant_subscriptions(org_id);
 CREATE INDEX IF NOT EXISTS idx_phone_subscriptions_is_active ON phone_attendant_subscriptions(is_active);
-
 -- ============================================
 -- RLS POLICIES
 -- ============================================
@@ -289,7 +269,6 @@ CREATE POLICY "Users can view employees in their organization"
   ON employees FOR SELECT
   TO authenticated
   USING (org_id IN (SELECT org_id FROM org_members WHERE user_id = auth.uid()));
-
 CREATE POLICY "Managers can manage employees in their organization"
   ON employees FOR ALL
   TO authenticated
@@ -299,38 +278,32 @@ CREATE POLICY "Managers can manage employees in their organization"
       WHERE user_id = auth.uid() AND role IN ('owner', 'manager', 'admin')
     )
   );
-
 -- Compliance Records
 ALTER TABLE compliance_records ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can view compliance records in their organization"
   ON compliance_records FOR SELECT
   TO authenticated
   USING (org_id IN (SELECT org_id FROM org_members WHERE user_id = auth.uid()));
-
 CREATE POLICY "Users can manage compliance records in their organization"
   ON compliance_records FOR ALL
   TO authenticated
   USING (org_id IN (SELECT org_id FROM org_members WHERE user_id = auth.uid()));
-
 -- SDS Sheets
 ALTER TABLE sds_sheets ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can view SDS sheets in their organization"
   ON sds_sheets FOR SELECT
   TO authenticated
   USING (org_id IN (SELECT org_id FROM org_members WHERE user_id = auth.uid()));
-
 CREATE POLICY "Users can manage SDS sheets in their organization"
   ON sds_sheets FOR ALL
   TO authenticated
   USING (org_id IN (SELECT org_id FROM org_members WHERE user_id = auth.uid()));
-
 -- Purchase Orders
 ALTER TABLE purchase_orders ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can view purchase orders in their organization"
   ON purchase_orders FOR SELECT
   TO authenticated
   USING (org_id IN (SELECT org_members WHERE user_id = auth.uid()));
-
 CREATE POLICY "Managers can manage purchase orders in their organization"
   ON purchase_orders FOR ALL
   TO authenticated
@@ -340,7 +313,6 @@ CREATE POLICY "Managers can manage purchase orders in their organization"
       WHERE user_id = auth.uid() AND role IN ('owner', 'manager', 'admin')
     )
   );
-
 -- Purchase Order Items
 ALTER TABLE purchase_order_items ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can view PO items for their organization's POs"
@@ -352,7 +324,6 @@ CREATE POLICY "Users can view PO items for their organization's POs"
       WHERE org_id IN (SELECT org_id FROM org_members WHERE user_id = auth.uid())
     )
   );
-
 CREATE POLICY "Managers can manage PO items"
   ON purchase_order_items FOR ALL
   TO authenticated
@@ -365,14 +336,12 @@ CREATE POLICY "Managers can manage PO items"
       )
     )
   );
-
 -- Invoices
 ALTER TABLE invoices ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can view invoices in their organization"
   ON invoices FOR SELECT
   TO authenticated
   USING (org_id IN (SELECT org_id FROM org_members WHERE user_id = auth.uid()));
-
 CREATE POLICY "Managers can manage invoices in their organization"
   ON invoices FOR ALL
   TO authenticated
@@ -382,7 +351,6 @@ CREATE POLICY "Managers can manage invoices in their organization"
       WHERE user_id = auth.uid() AND role IN ('owner', 'manager', 'admin')
     )
   );
-
 -- Invoice Items
 ALTER TABLE invoice_items ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can view invoice items for their organization's invoices"
@@ -394,7 +362,6 @@ CREATE POLICY "Users can view invoice items for their organization's invoices"
       WHERE org_id IN (SELECT org_id FROM org_members WHERE user_id = auth.uid())
     )
   );
-
 CREATE POLICY "Managers can manage invoice items"
   ON invoice_items FOR ALL
   TO authenticated
@@ -407,26 +374,22 @@ CREATE POLICY "Managers can manage invoice items"
       )
     )
   );
-
 -- Phone Calls
 ALTER TABLE phone_calls ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can view phone calls in their organization"
   ON phone_calls FOR SELECT
   TO authenticated
   USING (org_id IN (SELECT org_id FROM org_members WHERE user_id = auth.uid()));
-
 CREATE POLICY "Users can manage phone calls in their organization"
   ON phone_calls FOR ALL
   TO authenticated
   USING (org_id IN (SELECT org_members WHERE user_id = auth.uid()));
-
 -- AI Config
 ALTER TABLE ai_config ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can view AI config in their organization"
   ON ai_config FOR SELECT
   TO authenticated
   USING (org_id IN (SELECT org_id FROM org_members WHERE user_id = auth.uid()));
-
 CREATE POLICY "Admins can manage AI config in their organization"
   ON ai_config FOR ALL
   TO authenticated
@@ -436,14 +399,12 @@ CREATE POLICY "Admins can manage AI config in their organization"
       WHERE user_id = auth.uid() AND role IN ('owner', 'admin')
     )
   );
-
 -- Phone Attendant Subscriptions
 ALTER TABLE phone_attendant_subscriptions ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can view phone subscriptions in their organization"
   ON phone_attendant_subscriptions FOR SELECT
   TO authenticated
   USING (org_id IN (SELECT org_id FROM org_members WHERE user_id = auth.uid()));
-
 CREATE POLICY "Admins can manage phone subscriptions in their organization"
   ON phone_attendant_subscriptions FOR ALL
   TO authenticated
@@ -453,7 +414,6 @@ CREATE POLICY "Admins can manage phone subscriptions in their organization"
       WHERE user_id = auth.uid() AND role IN ('owner', 'admin')
     )
   );
-
 -- ============================================
 -- STORAGE BUCKETS
 -- ============================================
@@ -462,7 +422,6 @@ CREATE POLICY "Admins can manage phone subscriptions in their organization"
 INSERT INTO storage.buckets (id, name, public)
 VALUES ('sds-sheets', 'sds-sheets', false)
 ON CONFLICT (id) DO NOTHING;
-
 -- Storage policies for SDS sheets
 CREATE POLICY "Users can upload SDS sheets for their organization"
   ON storage.objects FOR INSERT
@@ -473,7 +432,6 @@ CREATE POLICY "Users can upload SDS sheets for their organization"
       SELECT org_id::text FROM org_members WHERE user_id = auth.uid()
     )
   );
-
 CREATE POLICY "Users can read SDS sheets from their organization"
   ON storage.objects FOR SELECT
   TO authenticated
@@ -483,7 +441,6 @@ CREATE POLICY "Users can read SDS sheets from their organization"
       SELECT org_id::text FROM org_members WHERE user_id = auth.uid()
     )
   );
-
 CREATE POLICY "Users can delete SDS sheets from their organization"
   ON storage.objects FOR DELETE
   TO authenticated
@@ -494,12 +451,10 @@ CREATE POLICY "Users can delete SDS sheets from their organization"
       WHERE user_id = auth.uid() AND role IN ('owner', 'manager', 'admin')
     )
   );
-
 -- Employee Photos Storage Bucket
 INSERT INTO storage.buckets (id, name, public)
 VALUES ('employee-photos', 'employee-photos', false)
 ON CONFLICT (id) DO NOTHING;
-
 CREATE POLICY "Users can upload employee photos for their organization"
   ON storage.objects FOR INSERT
   TO authenticated
@@ -509,7 +464,6 @@ CREATE POLICY "Users can upload employee photos for their organization"
       SELECT org_id::text FROM org_members WHERE user_id = auth.uid()
     )
   );
-
 CREATE POLICY "Users can read employee photos from their organization"
   ON storage.objects FOR SELECT
   TO authenticated
@@ -519,7 +473,6 @@ CREATE POLICY "Users can read employee photos from their organization"
       SELECT org_id::text FROM org_members WHERE user_id = auth.uid()
     )
   );
-
 -- ============================================
 -- FUNCTIONS & TRIGGERS
 -- ============================================
@@ -532,28 +485,20 @@ BEGIN
   RETURN NEW;
 END;
 $$ language 'plpgsql';
-
 CREATE TRIGGER update_employees_updated_at BEFORE UPDATE ON employees
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-
 CREATE TRIGGER update_compliance_updated_at BEFORE UPDATE ON compliance_records
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-
 CREATE TRIGGER update_sds_updated_at BEFORE UPDATE ON sds_sheets
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-
 CREATE TRIGGER update_po_updated_at BEFORE UPDATE ON purchase_orders
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-
 CREATE TRIGGER update_invoices_updated_at BEFORE UPDATE ON invoices
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-
 CREATE TRIGGER update_ai_config_updated_at BEFORE UPDATE ON ai_config
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-
 CREATE TRIGGER update_phone_subscriptions_updated_at BEFORE UPDATE ON phone_attendant_subscriptions
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-
 -- Generate PO number
 CREATE OR REPLACE FUNCTION generate_po_number()
 RETURNS TEXT AS $$
@@ -571,7 +516,6 @@ BEGIN
   RETURN COALESCE(new_po_number, 'PO-' || TO_CHAR(NOW(), 'YYYYMMDD') || '-0001');
 END;
 $$ LANGUAGE plpgsql;
-
 -- Generate Invoice number
 CREATE OR REPLACE FUNCTION generate_invoice_number()
 RETURNS TEXT AS $$

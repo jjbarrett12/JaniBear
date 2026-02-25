@@ -8,7 +8,7 @@
 -- 1) FEATURES (fine-grained gates: lidar, helphub_qr, sales_crm, ops_qc, etc.)
 -- ---------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS features (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   code TEXT NOT NULL UNIQUE,
   name TEXT NOT NULL
 );
@@ -16,6 +16,22 @@ CREATE TABLE IF NOT EXISTS features (
 CREATE INDEX IF NOT EXISTS idx_features_code ON features(code);
 
 COMMENT ON TABLE features IS 'Feature flags for plan/addon/override gating (e.g. lidar, helphub_qr).';
+
+-- Ensure plans exists in older databases before creating plan_features FK.
+CREATE TABLE IF NOT EXISTS plans (
+  code TEXT PRIMARY KEY,
+  org_type TEXT,
+  tier INTEGER,
+  name TEXT,
+  price_cents INTEGER NOT NULL DEFAULT 0,
+  modules JSONB NOT NULL DEFAULT '{}'::jsonb
+);
+
+ALTER TABLE plans ADD COLUMN IF NOT EXISTS org_type TEXT;
+ALTER TABLE plans ADD COLUMN IF NOT EXISTS tier INTEGER;
+ALTER TABLE plans ADD COLUMN IF NOT EXISTS name TEXT;
+ALTER TABLE plans ADD COLUMN IF NOT EXISTS price_cents INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE plans ADD COLUMN IF NOT EXISTS modules JSONB NOT NULL DEFAULT '{}'::jsonb;
 
 -- ---------------------------------------------------------------------------
 -- 2) PLAN FEATURES (which features each plan enables; plans.code exists)
@@ -35,7 +51,7 @@ COMMENT ON TABLE plan_features IS 'Plan baseline: which features are enabled by 
 -- 3) ADDONS (HelpHubQR, LiDAR)
 -- ---------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS addons (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   code TEXT NOT NULL UNIQUE,
   name TEXT NOT NULL
 );
@@ -60,7 +76,7 @@ CREATE INDEX IF NOT EXISTS idx_addon_features_feature ON addon_features(feature_
 -- 5) TENANT FEATURE OVERRIDES (per-tenant force on/off; org_id = tenant_id)
 -- ---------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS tenant_feature_overrides (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   tenant_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
   feature_id UUID NOT NULL REFERENCES features(id) ON DELETE CASCADE,
   enabled BOOLEAN NOT NULL,
@@ -78,7 +94,7 @@ COMMENT ON TABLE tenant_feature_overrides IS 'Per-tenant override: comping, pilo
 -- 6) ROLE PERMISSIONS (role -> feature -> can_read, can_write)
 -- ---------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS role_permissions (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   role TEXT NOT NULL,
   feature_id UUID NOT NULL REFERENCES features(id) ON DELETE CASCADE,
   can_read BOOLEAN NOT NULL DEFAULT false,

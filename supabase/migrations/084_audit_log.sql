@@ -1,6 +1,6 @@
 -- ============================================
 -- Audit log: immutable trail of key actions (CRM/Ops/Finance).
--- RLS: org isolation + admin-only read. No update/delete for normal users.
+-- Replacement for legacy 0641_* migration id.
 -- ============================================
 
 CREATE TABLE IF NOT EXISTS public.audit_log (
@@ -26,7 +26,7 @@ CREATE INDEX IF NOT EXISTS idx_audit_log_actor ON public.audit_log(org_id, actor
 
 ALTER TABLE public.audit_log ENABLE ROW LEVEL SECURITY;
 
--- Only org members with admin role (owner, admin, manager) can read audit log.
+DROP POLICY IF EXISTS "Admin can read audit_log" ON public.audit_log;
 CREATE POLICY "Admin can read audit_log"
   ON public.audit_log FOR SELECT TO authenticated
   USING (
@@ -38,12 +38,9 @@ CREATE POLICY "Admin can read audit_log"
     )
   );
 
--- Any org member can insert (so server actions can write when user performs an action).
+DROP POLICY IF EXISTS "Org member can insert audit_log" ON public.audit_log;
 CREATE POLICY "Org member can insert audit_log"
   ON public.audit_log FOR INSERT TO authenticated
   WITH CHECK (
     org_id IN (SELECT org_id FROM public.org_members WHERE user_id = auth.uid())
   );
-
--- No UPDATE or DELETE policies: table is append-only for normal users.
--- Super-admin can use service role to delete if required (no policy = only service role).

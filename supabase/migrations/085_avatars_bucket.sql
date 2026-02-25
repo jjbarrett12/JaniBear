@@ -1,5 +1,5 @@
 -- Profile avatars bucket: users can upload/read/delete their own avatar (path: user_id/filename).
--- Run if profile photo upload in Settings fails with "Bucket not found".
+-- Replacement for legacy 0751_* migration id.
 
 INSERT INTO storage.buckets (id, name, public)
 VALUES ('avatars', 'avatars', true)

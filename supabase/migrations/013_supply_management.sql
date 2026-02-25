@@ -42,7 +42,6 @@ CREATE TABLE IF NOT EXISTS vendors (
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- ============================================
 -- PRODUCTS TABLE (Supply Catalog)
 -- ============================================
@@ -73,7 +72,6 @@ CREATE TABLE IF NOT EXISTS products (
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- ============================================
 -- CUSTOMER PRODUCTS (Products assigned to customers/locations for easy reorder)
 -- ============================================
@@ -107,12 +105,10 @@ CREATE TABLE IF NOT EXISTS customer_products (
   -- Ensure unique product per customer/location
   CONSTRAINT unique_customer_product UNIQUE (org_id, client_id, location_id, product_id)
 );
-
 -- ============================================
 -- ENHANCE PURCHASE ORDERS with Bill To / Ship To
 -- ============================================
 ALTER TABLE purchase_orders ADD COLUMN IF NOT EXISTS vendor_id UUID REFERENCES vendors(id) ON DELETE SET NULL;
-
 -- Bill To Address
 ALTER TABLE purchase_orders ADD COLUMN IF NOT EXISTS bill_to_company TEXT;
 ALTER TABLE purchase_orders ADD COLUMN IF NOT EXISTS bill_to_address TEXT;
@@ -120,7 +116,6 @@ ALTER TABLE purchase_orders ADD COLUMN IF NOT EXISTS bill_to_city TEXT;
 ALTER TABLE purchase_orders ADD COLUMN IF NOT EXISTS bill_to_state TEXT;
 ALTER TABLE purchase_orders ADD COLUMN IF NOT EXISTS bill_to_zip TEXT;
 ALTER TABLE purchase_orders ADD COLUMN IF NOT EXISTS bill_to_country TEXT DEFAULT 'USA';
-
 -- Ship To Address
 ALTER TABLE purchase_orders ADD COLUMN IF NOT EXISTS ship_to_company TEXT;
 ALTER TABLE purchase_orders ADD COLUMN IF NOT EXISTS ship_to_address TEXT;
@@ -128,18 +123,14 @@ ALTER TABLE purchase_orders ADD COLUMN IF NOT EXISTS ship_to_city TEXT;
 ALTER TABLE purchase_orders ADD COLUMN IF NOT EXISTS ship_to_state TEXT;
 ALTER TABLE purchase_orders ADD COLUMN IF NOT EXISTS ship_to_zip TEXT;
 ALTER TABLE purchase_orders ADD COLUMN IF NOT EXISTS ship_to_country TEXT DEFAULT 'USA';
-
 -- Link to client/location for customer orders
 ALTER TABLE purchase_orders ADD COLUMN IF NOT EXISTS client_id UUID REFERENCES clients(id) ON DELETE SET NULL;
 ALTER TABLE purchase_orders ADD COLUMN IF NOT EXISTS location_id UUID REFERENCES locations(id) ON DELETE SET NULL;
-
 -- Email settings
 ALTER TABLE purchase_orders ADD COLUMN IF NOT EXISTS sent_to_vendor_at TIMESTAMPTZ;
 ALTER TABLE purchase_orders ADD COLUMN IF NOT EXISTS vendor_confirmation TEXT;
-
 -- Enhance PO items with product reference
 ALTER TABLE purchase_order_items ADD COLUMN IF NOT EXISTS product_id UUID REFERENCES products(id) ON DELETE SET NULL;
-
 -- ============================================
 -- INDEXES
 -- ============================================
@@ -154,18 +145,15 @@ CREATE INDEX IF NOT EXISTS idx_customer_products_location_id ON customer_product
 CREATE INDEX IF NOT EXISTS idx_customer_products_product_id ON customer_products(product_id);
 CREATE INDEX IF NOT EXISTS idx_po_vendor_id ON purchase_orders(vendor_id);
 CREATE INDEX IF NOT EXISTS idx_po_client_id ON purchase_orders(client_id);
-
 -- ============================================
 -- ROW LEVEL SECURITY
 -- ============================================
 
 -- Vendors RLS
 ALTER TABLE vendors ENABLE ROW LEVEL SECURITY;
-
 CREATE POLICY "Users can view vendors in their organization"
   ON vendors FOR SELECT
   USING (org_id IN (SELECT org_id FROM org_members WHERE user_id = auth.uid()));
-
 CREATE POLICY "Managers can manage vendors"
   ON vendors FOR ALL
   USING (org_id IN (
@@ -173,14 +161,11 @@ CREATE POLICY "Managers can manage vendors"
     WHERE user_id = auth.uid() 
     AND role IN ('owner', 'admin', 'ops')
   ));
-
 -- Products RLS
 ALTER TABLE products ENABLE ROW LEVEL SECURITY;
-
 CREATE POLICY "Users can view products in their organization"
   ON products FOR SELECT
   USING (org_id IN (SELECT org_id FROM org_members WHERE user_id = auth.uid()));
-
 CREATE POLICY "Managers can manage products"
   ON products FOR ALL
   USING (org_id IN (
@@ -188,14 +173,11 @@ CREATE POLICY "Managers can manage products"
     WHERE user_id = auth.uid() 
     AND role IN ('owner', 'admin', 'ops')
   ));
-
 -- Customer Products RLS
 ALTER TABLE customer_products ENABLE ROW LEVEL SECURITY;
-
 CREATE POLICY "Users can view customer products in their organization"
   ON customer_products FOR SELECT
   USING (org_id IN (SELECT org_id FROM org_members WHERE user_id = auth.uid()));
-
 CREATE POLICY "Managers can manage customer products"
   ON customer_products FOR ALL
   USING (org_id IN (
@@ -203,7 +185,6 @@ CREATE POLICY "Managers can manage customer products"
     WHERE user_id = auth.uid() 
     AND role IN ('owner', 'admin', 'ops', 'sales')
   ));
-
 -- ============================================
 -- TRIGGERS
 -- ============================================
@@ -214,22 +195,18 @@ BEGIN
     RETURN NEW;
 END;
 $$ language 'plpgsql';
-
 DROP TRIGGER IF EXISTS update_vendors_updated_at ON vendors;
 CREATE TRIGGER update_vendors_updated_at 
   BEFORE UPDATE ON vendors 
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-
 DROP TRIGGER IF EXISTS update_products_updated_at ON products;
 CREATE TRIGGER update_products_updated_at 
   BEFORE UPDATE ON products 
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-
 DROP TRIGGER IF EXISTS update_customer_products_updated_at ON customer_products;
 CREATE TRIGGER update_customer_products_updated_at 
   BEFORE UPDATE ON customer_products 
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-
 -- ============================================
 -- HELPER FUNCTION: Generate next PO number
 -- ============================================

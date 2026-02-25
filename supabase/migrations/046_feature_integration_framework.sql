@@ -10,7 +10,7 @@
 -- ============================================================================
 
 CREATE TABLE IF NOT EXISTS recurring_billing_schedules (
-  id            UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   org_id        UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
   account_id    UUID NOT NULL REFERENCES accounts(id) ON DELETE CASCADE,
   facility_id   UUID REFERENCES facilities(id) ON DELETE SET NULL,
@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS recurring_billing_schedules (
 COMMENT ON TABLE recurring_billing_schedules IS 'Defines recurring billing cycles for account/facility contracts';
 
 CREATE TABLE IF NOT EXISTS payment_reminders (
-  id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   org_id          UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
   invoice_id      UUID NOT NULL REFERENCES invoices(id) ON DELETE CASCADE,
   reminder_type   TEXT NOT NULL CHECK (reminder_type IN ('upcoming','due','overdue_3d','overdue_7d','overdue_14d','overdue_30d','custom')),
@@ -93,7 +93,7 @@ EXCEPTION WHEN OTHERS THEN NULL;
 END $$;
 
 CREATE TABLE IF NOT EXISTS work_order_items (
-  id            UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   work_order_id UUID NOT NULL REFERENCES work_orders(id) ON DELETE CASCADE,
   description   TEXT NOT NULL,
   quantity      DECIMAL(10,2) DEFAULT 1,
@@ -106,7 +106,7 @@ CREATE TABLE IF NOT EXISTS work_order_items (
 );
 
 CREATE TABLE IF NOT EXISTS work_order_photos (
-  id            UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   work_order_id UUID NOT NULL REFERENCES work_orders(id) ON DELETE CASCADE,
   photo_url     TEXT NOT NULL,
   caption       TEXT,
@@ -123,7 +123,7 @@ COMMENT ON TABLE work_order_photos IS 'Before/during/after photos attached to wo
 -- ============================================================================
 
 CREATE TABLE IF NOT EXISTS email_templates (
-  id          UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   org_id      UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
   name        TEXT NOT NULL,
   subject     TEXT NOT NULL,
@@ -139,7 +139,7 @@ CREATE TABLE IF NOT EXISTS email_templates (
 );
 
 CREATE TABLE IF NOT EXISTS email_sequences (
-  id            UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   org_id        UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
   name          TEXT NOT NULL,
   description   TEXT,
@@ -154,7 +154,7 @@ CREATE TABLE IF NOT EXISTS email_sequences (
 );
 
 CREATE TABLE IF NOT EXISTS email_sequence_steps (
-  id            UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   sequence_id   UUID NOT NULL REFERENCES email_sequences(id) ON DELETE CASCADE,
   step_order    INTEGER NOT NULL,
   step_type     TEXT NOT NULL DEFAULT 'email'
@@ -175,7 +175,7 @@ CREATE TABLE IF NOT EXISTS email_sequence_steps (
 );
 
 CREATE TABLE IF NOT EXISTS email_sequence_enrollments (
-  id            UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   org_id        UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
   sequence_id   UUID NOT NULL REFERENCES email_sequences(id) ON DELETE CASCADE,
   lead_id       UUID REFERENCES leads(id) ON DELETE SET NULL,
@@ -192,7 +192,7 @@ CREATE TABLE IF NOT EXISTS email_sequence_enrollments (
 );
 
 CREATE TABLE IF NOT EXISTS email_sequence_events (
-  id            UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   enrollment_id UUID NOT NULL REFERENCES email_sequence_enrollments(id) ON DELETE CASCADE,
   step_id       UUID REFERENCES email_sequence_steps(id) ON DELETE SET NULL,
   event_type    TEXT NOT NULL
@@ -212,7 +212,7 @@ COMMENT ON TABLE email_sequence_events IS 'Tracking events (opens, clicks, repli
 -- ============================================================================
 
 CREATE TABLE IF NOT EXISTS customer_surveys (
-  id            UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   org_id        UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
   name          TEXT NOT NULL,
   survey_type   TEXT NOT NULL DEFAULT 'csat'
@@ -229,7 +229,7 @@ CREATE TABLE IF NOT EXISTS customer_surveys (
 );
 
 CREATE TABLE IF NOT EXISTS survey_questions (
-  id            UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   survey_id     UUID NOT NULL REFERENCES customer_surveys(id) ON DELETE CASCADE,
   question_text TEXT NOT NULL,
   question_type TEXT NOT NULL DEFAULT 'rating'
@@ -241,7 +241,7 @@ CREATE TABLE IF NOT EXISTS survey_questions (
 );
 
 CREATE TABLE IF NOT EXISTS survey_responses (
-  id            UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   org_id        UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
   survey_id     UUID NOT NULL REFERENCES customer_surveys(id) ON DELETE CASCADE,
   account_id    UUID REFERENCES accounts(id) ON DELETE SET NULL,
@@ -259,7 +259,7 @@ CREATE TABLE IF NOT EXISTS survey_responses (
 );
 
 CREATE TABLE IF NOT EXISTS survey_answers (
-  id            UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   response_id   UUID NOT NULL REFERENCES survey_responses(id) ON DELETE CASCADE,
   question_id   UUID NOT NULL REFERENCES survey_questions(id) ON DELETE CASCADE,
   answer_text   TEXT,
@@ -278,7 +278,7 @@ COMMENT ON TABLE survey_answers IS 'Answers to individual questions within a res
 -- ============================================================================
 
 CREATE TABLE IF NOT EXISTS route_plans (
-  id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   org_id          UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
   name            TEXT NOT NULL,
   date            DATE NOT NULL,
@@ -295,7 +295,7 @@ CREATE TABLE IF NOT EXISTS route_plans (
 );
 
 CREATE TABLE IF NOT EXISTS route_stops (
-  id            UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   route_id      UUID NOT NULL REFERENCES route_plans(id) ON DELETE CASCADE,
   facility_id   UUID REFERENCES facilities(id) ON DELETE SET NULL,
   stop_order    INTEGER NOT NULL,
@@ -314,7 +314,7 @@ CREATE TABLE IF NOT EXISTS route_stops (
 );
 
 CREATE TABLE IF NOT EXISTS crew_check_ins (
-  id            UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   org_id        UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
   user_id       UUID NOT NULL REFERENCES auth.users(id),
   facility_id   UUID REFERENCES facilities(id) ON DELETE SET NULL,
@@ -338,7 +338,7 @@ COMMENT ON TABLE crew_check_ins IS 'GPS-verified check-in/check-out at facilitie
 -- ============================================================================
 
 CREATE TABLE IF NOT EXISTS automation_workflows (
-  id            UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   org_id        UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
   name          TEXT NOT NULL,
   description   TEXT,
@@ -352,7 +352,7 @@ CREATE TABLE IF NOT EXISTS automation_workflows (
 );
 
 CREATE TABLE IF NOT EXISTS automation_triggers (
-  id            UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   workflow_id   UUID NOT NULL REFERENCES automation_workflows(id) ON DELETE CASCADE,
   trigger_type  TEXT NOT NULL
                   CHECK (trigger_type IN (
@@ -371,7 +371,7 @@ CREATE TABLE IF NOT EXISTS automation_triggers (
 );
 
 CREATE TABLE IF NOT EXISTS automation_actions (
-  id            UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   workflow_id   UUID NOT NULL REFERENCES automation_workflows(id) ON DELETE CASCADE,
   action_order  INTEGER NOT NULL,
   action_type   TEXT NOT NULL
@@ -388,7 +388,7 @@ CREATE TABLE IF NOT EXISTS automation_actions (
 );
 
 CREATE TABLE IF NOT EXISTS automation_logs (
-  id            UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   workflow_id   UUID NOT NULL REFERENCES automation_workflows(id) ON DELETE CASCADE,
   trigger_id    UUID REFERENCES automation_triggers(id) ON DELETE SET NULL,
   status        TEXT NOT NULL CHECK (status IN ('started','completed','failed','skipped')),
@@ -409,7 +409,7 @@ COMMENT ON TABLE automation_logs IS 'Execution history for workflow runs';
 -- ============================================================================
 
 CREATE TABLE IF NOT EXISTS contract_renewals (
-  id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   org_id          UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
   account_id      UUID NOT NULL REFERENCES accounts(id) ON DELETE CASCADE,
   contract_id     UUID,

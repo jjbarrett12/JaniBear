@@ -1,10 +1,12 @@
--- Pro Gear: product SKU for storefront display + contact requests for large opportunities
+-- Pro Gear: product SKU for storefront display + contact requests for large opportunities.
+-- Replacement for legacy 0351_* migration id.
+
 ALTER TABLE pro_gear_products ADD COLUMN IF NOT EXISTS sku TEXT;
 CREATE INDEX IF NOT EXISTS idx_pro_gear_products_sku ON pro_gear_products(sku) WHERE sku IS NOT NULL;
 
 -- Contact requests: "Request to be contacted about large opportunities"
 CREATE TABLE IF NOT EXISTS pro_gear_contact_requests (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
   contact_name TEXT NOT NULL,
   email TEXT NOT NULL,
@@ -18,23 +20,27 @@ CREATE TABLE IF NOT EXISTS pro_gear_contact_requests (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE INDEX idx_pro_gear_contact_requests_status ON pro_gear_contact_requests(status);
-CREATE INDEX idx_pro_gear_contact_requests_created ON pro_gear_contact_requests(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_pro_gear_contact_requests_status ON pro_gear_contact_requests(status);
+CREATE INDEX IF NOT EXISTS idx_pro_gear_contact_requests_created ON pro_gear_contact_requests(created_at DESC);
 
 ALTER TABLE pro_gear_contact_requests ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Users can insert own pro_gear_contact_requests" ON pro_gear_contact_requests;
 CREATE POLICY "Users can insert own pro_gear_contact_requests"
   ON pro_gear_contact_requests FOR INSERT TO authenticated
   WITH CHECK (user_id = auth.uid() OR user_id IS NULL);
 
+DROP POLICY IF EXISTS "Users can read own pro_gear_contact_requests" ON pro_gear_contact_requests;
 CREATE POLICY "Users can read own pro_gear_contact_requests"
   ON pro_gear_contact_requests FOR SELECT TO authenticated
   USING (user_id = auth.uid());
 
+DROP POLICY IF EXISTS "Admins read all pro_gear_contact_requests" ON pro_gear_contact_requests;
 CREATE POLICY "Admins read all pro_gear_contact_requests"
   ON pro_gear_contact_requests FOR SELECT TO authenticated
   USING (is_pro_gear_admin());
 
+DROP POLICY IF EXISTS "Admins update pro_gear_contact_requests" ON pro_gear_contact_requests;
 CREATE POLICY "Admins update pro_gear_contact_requests"
   ON pro_gear_contact_requests FOR UPDATE TO authenticated
   USING (is_pro_gear_admin());

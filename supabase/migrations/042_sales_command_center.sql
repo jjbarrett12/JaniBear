@@ -9,7 +9,7 @@ ALTER TABLE org_members ADD CONSTRAINT org_members_role_check
   CHECK (role IN ('owner', 'admin', 'manager', 'sales_rep', 'sales', 'ops', 'inspector', 'cleaner', 'client', 'client_viewer'));
 
 -- 2) Pipeline proposals table (separate from existing lead-linked proposals)
-CREATE TABLE sales_proposals (
+CREATE TABLE IF NOT EXISTS sales_proposals (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
   rep_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
@@ -27,13 +27,13 @@ CREATE TABLE sales_proposals (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE INDEX idx_sales_proposals_org_rep ON sales_proposals(org_id, rep_id);
-CREATE INDEX idx_sales_proposals_org_status_stage ON sales_proposals(org_id, status, stage);
-CREATE INDEX idx_sales_proposals_org_delivered ON sales_proposals(org_id, delivered_at);
-CREATE INDEX idx_sales_proposals_org_closed ON sales_proposals(org_id, closed_at);
+CREATE INDEX IF NOT EXISTS idx_sales_proposals_org_rep ON sales_proposals(org_id, rep_id);
+CREATE INDEX IF NOT EXISTS idx_sales_proposals_org_status_stage ON sales_proposals(org_id, status, stage);
+CREATE INDEX IF NOT EXISTS idx_sales_proposals_org_delivered ON sales_proposals(org_id, delivered_at);
+CREATE INDEX IF NOT EXISTS idx_sales_proposals_org_closed ON sales_proposals(org_id, closed_at);
 
 -- 3) Sales targets (one row per rep per org)
-CREATE TABLE sales_targets (
+CREATE TABLE IF NOT EXISTS sales_targets (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
   rep_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
@@ -43,10 +43,10 @@ CREATE TABLE sales_targets (
   UNIQUE(org_id, rep_id)
 );
 
-CREATE INDEX idx_sales_targets_org_rep ON sales_targets(org_id, rep_id);
+CREATE INDEX IF NOT EXISTS idx_sales_targets_org_rep ON sales_targets(org_id, rep_id);
 
 -- 4) Sales activity (optional, for future engagement metrics)
-CREATE TABLE sales_activity (
+CREATE TABLE IF NOT EXISTS sales_activity (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
   rep_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
@@ -55,7 +55,7 @@ CREATE TABLE sales_activity (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE INDEX idx_sales_activity_org_rep_created ON sales_activity(org_id, rep_id, created_at);
+CREATE INDEX IF NOT EXISTS idx_sales_activity_org_rep_created ON sales_activity(org_id, rep_id, created_at);
 
 -- 5) updated_at trigger for sales_proposals
 CREATE OR REPLACE FUNCTION set_sales_proposals_updated_at()
@@ -236,30 +236,36 @@ RETURNS BOOLEAN AS $$
     SELECT 1 FROM org_members
     WHERE org_id = p_org_id AND user_id = p_user_id
       AND (status = 'active' OR status IS NULL)
-      AND (COALESCE(role_enum::text, role) IN ('owner', 'admin', 'manager', 'op_admin', 'fr_admin', 'op_ops_manager'))
+      AND LOWER(TRIM(COALESCE(role, ''))) IN ('owner', 'admin', 'manager', 'op_admin', 'fr_admin', 'op_ops_manager')
   );
 $$ LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public;
 
 -- sales_proposals: rep sees own; admin/manager sees all in org
+DROP POLICY IF EXISTS "Rep can CRUD own sales_proposals" ON sales_proposals;
 CREATE POLICY "Rep can CRUD own sales_proposals"
   ON sales_proposals FOR ALL
   USING (rep_id = auth.uid() AND is_org_member(org_id));
+DROP POLICY IF EXISTS "Admin/manager can read all sales_proposals in org" ON sales_proposals;
 CREATE POLICY "Admin/manager can read all sales_proposals in org"
   ON sales_proposals FOR SELECT
   USING (is_sales_admin_or_manager(org_id, auth.uid()));
 
 -- sales_targets: rep sees own; admin/manager all
+DROP POLICY IF EXISTS "Rep can read own sales_targets" ON sales_targets;
 CREATE POLICY "Rep can read own sales_targets"
   ON sales_targets FOR SELECT
   USING (rep_id = auth.uid() AND is_org_member(org_id));
+DROP POLICY IF EXISTS "Admin/manager can all sales_targets in org" ON sales_targets;
 CREATE POLICY "Admin/manager can all sales_targets in org"
   ON sales_targets FOR ALL
   USING (is_sales_admin_or_manager(org_id, auth.uid()));
 
 -- sales_activity: rep sees own; admin all
+DROP POLICY IF EXISTS "Rep can read own sales_activity" ON sales_activity;
 CREATE POLICY "Rep can read own sales_activity"
   ON sales_activity FOR SELECT
   USING (rep_id = auth.uid() AND is_org_member(org_id));
+DROP POLICY IF EXISTS "Admin can read all sales_activity" ON sales_activity;
 CREATE POLICY "Admin can read all sales_activity"
   ON sales_activity FOR SELECT
   USING (is_sales_admin_or_manager(org_id, auth.uid()));

@@ -2,7 +2,7 @@
 -- Single new table. Additive only. locations is canonical facility.
 
 CREATE TABLE IF NOT EXISTS public.launch_plans (
-  id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   org_id uuid NOT NULL REFERENCES public.organizations(id) ON DELETE CASCADE,
   opportunity_id uuid NOT NULL UNIQUE REFERENCES public.opportunities(id) ON DELETE CASCADE,
   client_id uuid REFERENCES public.clients(id) ON DELETE SET NULL,

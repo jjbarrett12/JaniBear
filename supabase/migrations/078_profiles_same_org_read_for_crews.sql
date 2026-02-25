@@ -1,8 +1,8 @@
 -- Allow org members to read profiles (id, full_name, etc.) of other users in the same org.
--- Required so crew form and other UI can show a list of org members by name when adding
--- crew members, assigning tasks, etc. Without this, profiles RLS only allows reading your
--- own profile, so the dropdown only showed the current user.
+-- Required so crew form and other UI can show a list of org members by name.
+-- Replacement for legacy 0221_* migration id.
 
+DROP POLICY IF EXISTS "Org members can read same-org member profiles" ON profiles;
 CREATE POLICY "Org members can read same-org member profiles"
   ON profiles FOR SELECT
   TO authenticated

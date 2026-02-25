@@ -7,8 +7,8 @@
 INSERT INTO storage.buckets (id, name, public)
 VALUES ('walkthrough-scans', 'walkthrough-scans', false)
 ON CONFLICT (id) DO NOTHING;
-
 -- Org-isolated: path must be org/{org_id}/... and org_id must be user's org
+DROP POLICY IF EXISTS "Org members can insert walkthrough scans" ON storage.objects;
 CREATE POLICY "Org members can insert walkthrough scans"
 ON storage.objects FOR INSERT
 TO authenticated
@@ -19,7 +19,7 @@ WITH CHECK (
     SELECT org_id::text FROM org_members WHERE user_id = auth.uid()
   )
 );
-
+DROP POLICY IF EXISTS "Org members can select walkthrough scans" ON storage.objects;
 CREATE POLICY "Org members can select walkthrough scans"
 ON storage.objects FOR SELECT
 TO authenticated
@@ -30,7 +30,7 @@ USING (
     SELECT org_id::text FROM org_members WHERE user_id = auth.uid()
   )
 );
-
+DROP POLICY IF EXISTS "Org members can delete walkthrough scans" ON storage.objects;
 CREATE POLICY "Org members can delete walkthrough scans"
 ON storage.objects FOR DELETE
 TO authenticated
@@ -41,7 +41,6 @@ USING (
     SELECT org_id::text FROM org_members WHERE user_id = auth.uid()
   )
 );
-
 -- ============================================
 -- walkthrough_scans.status: constrain allowed values (only if table exists)
 -- ============================================

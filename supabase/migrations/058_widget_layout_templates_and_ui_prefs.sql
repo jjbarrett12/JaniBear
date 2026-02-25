@@ -6,7 +6,7 @@
 -- 1. widget_layout_templates
 -- =============================================================================
 CREATE TABLE IF NOT EXISTS public.widget_layout_templates (
-  id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   org_id uuid REFERENCES public.organizations(id) ON DELETE CASCADE,
   module_key text NOT NULL,
   role text NOT NULL,
@@ -104,7 +104,7 @@ CREATE POLICY "widget_layout_templates_delete"
 -- 2. user_ui_prefs (active layout mode per user per module)
 -- =============================================================================
 CREATE TABLE IF NOT EXISTS public.user_ui_prefs (
-  id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   org_id uuid NOT NULL REFERENCES public.organizations(id) ON DELETE CASCADE,
   module_key text NOT NULL,

@@ -43,16 +43,16 @@ export async function AppSidebar({
       {/* Desktop Sidebar - w-56 so it doesn't overlap main content; uses brand primary for color */}
       <aside className="hidden lg:flex fixed left-0 top-0 z-40 h-screen w-56 shrink-0 overflow-hidden border-r-2 border-primary bg-primary/15 dark:bg-primary/20">
         <div className="flex h-full min-w-0 flex-1 flex-col">
-          {/* Logo box + Dashboard label at top */}
-          <div className="flex shrink-0 border-b border-primary/30 bg-primary/20 dark:bg-primary/25 min-h-[5.5rem] flex flex-col items-center justify-center px-4 py-3">
-            <AppLink href="/app/dashboard" className="flex items-center justify-center min-h-[3rem] w-full bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block [&>span]:!relative [&>span]:h-12 [&>span]:w-full [&>span]:max-w-[180px]">
+          {/* Logo box + Dashboard label at top — larger logo for visibility */}
+          <div className="flex shrink-0 border-b border-primary/30 bg-primary/20 dark:bg-primary/25 min-h-[8rem] flex flex-col items-center justify-center px-4 py-4">
+            <AppLink href="/app/dashboard" className="flex items-center justify-center min-h-[4.5rem] w-full bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block [&>span]:!relative [&>span]:h-20 [&>span]:w-full [&>span]:max-w-[200px]">
               {orgData?.logo_url ? (
                 <Image
                   src={orgData.logo_url}
                   alt="Company Logo"
-                  width={180}
-                  height={64}
-                  className="h-12 w-full max-h-12 object-contain object-center bg-transparent"
+                  width={200}
+                  height={80}
+                  className="h-20 w-full max-h-20 object-contain object-center bg-transparent"
                   priority
                   unoptimized
                 />
@@ -60,9 +60,9 @@ export async function AppSidebar({
                 <Image
                   src="/logo.png"
                   alt="JANIBEAR Logo"
-                  width={180}
-                  height={64}
-                  className="h-12 w-full max-h-12 object-contain object-center bg-transparent [&>img]:bg-transparent dark:[&>img]:drop-shadow-[0_0_8px_rgba(255,255,255,0.15)] dark:[&>img]:brightness-110"
+                  width={200}
+                  height={80}
+                  className="h-20 w-full max-h-20 object-contain object-center bg-transparent [&>img]:bg-transparent dark:[&>img]:drop-shadow-[0_0_8px_rgba(255,255,255,0.15)] dark:[&>img]:brightness-110"
                   priority
                   unoptimized
                 />

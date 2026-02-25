@@ -3,7 +3,7 @@
 
 -- Categories (top-level: Floor Care, Terminal cleaning, Chemical SDS, Customer Service)
 CREATE TABLE IF NOT EXISTS university_categories (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
   name TEXT NOT NULL,
   slug TEXT NOT NULL,
@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS university_categories (
 
 -- Folders (under a category: e.g. Carpet extraction, Bonnet cleaning under Floor Care)
 CREATE TABLE IF NOT EXISTS university_folders (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
   category_id UUID NOT NULL REFERENCES university_categories(id) ON DELETE CASCADE,
   name TEXT NOT NULL,
@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS university_folders (
 
 -- Media items (photos/videos in a folder)
 CREATE TABLE IF NOT EXISTS university_media (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
   folder_id UUID NOT NULL REFERENCES university_folders(id) ON DELETE CASCADE,
   type TEXT NOT NULL CHECK (type IN ('photo', 'video', 'document')),
@@ -48,26 +48,32 @@ ALTER TABLE university_categories ENABLE ROW LEVEL SECURITY;
 ALTER TABLE university_folders ENABLE ROW LEVEL SECURITY;
 ALTER TABLE university_media ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Org members can read university_categories" ON university_categories;
 CREATE POLICY "Org members can read university_categories"
   ON university_categories FOR SELECT TO authenticated
   USING (is_org_member(org_id, auth.uid()));
 
+DROP POLICY IF EXISTS "Org managers can manage university_categories" ON university_categories;
 CREATE POLICY "Org managers can manage university_categories"
   ON university_categories FOR ALL TO authenticated
   USING (can_write_org(org_id, auth.uid()));
 
+DROP POLICY IF EXISTS "Org members can read university_folders" ON university_folders;
 CREATE POLICY "Org members can read university_folders"
   ON university_folders FOR SELECT TO authenticated
   USING (is_org_member(org_id, auth.uid()));
 
+DROP POLICY IF EXISTS "Org managers can manage university_folders" ON university_folders;
 CREATE POLICY "Org managers can manage university_folders"
   ON university_folders FOR ALL TO authenticated
   USING (can_write_org(org_id, auth.uid()));
 
+DROP POLICY IF EXISTS "Org members can read university_media" ON university_media;
 CREATE POLICY "Org members can read university_media"
   ON university_media FOR SELECT TO authenticated
   USING (is_org_member(org_id, auth.uid()));
 
+DROP POLICY IF EXISTS "Org managers can manage university_media" ON university_media;
 CREATE POLICY "Org managers can manage university_media"
   ON university_media FOR ALL TO authenticated
   USING (can_write_org(org_id, auth.uid()));
@@ -78,6 +84,7 @@ VALUES ('university-uploads', 'university-uploads', true)
 ON CONFLICT (id) DO NOTHING;
 
 -- RLS: path = org_id/folder_id/filename
+DROP POLICY IF EXISTS "Org members can read university-uploads" ON storage.objects;
 CREATE POLICY "Org members can read university-uploads"
   ON storage.objects FOR SELECT TO authenticated
   USING (
@@ -87,6 +94,7 @@ CREATE POLICY "Org members can read university-uploads"
     )
   );
 
+DROP POLICY IF EXISTS "Org managers can upload university-uploads" ON storage.objects;
 CREATE POLICY "Org managers can upload university-uploads"
   ON storage.objects FOR INSERT TO authenticated
   WITH CHECK (
@@ -97,6 +105,7 @@ CREATE POLICY "Org managers can upload university-uploads"
     )
   );
 
+DROP POLICY IF EXISTS "Org managers can update university-uploads" ON storage.objects;
 CREATE POLICY "Org managers can update university-uploads"
   ON storage.objects FOR UPDATE TO authenticated
   USING (
@@ -107,6 +116,7 @@ CREATE POLICY "Org managers can update university-uploads"
     )
   );
 
+DROP POLICY IF EXISTS "Org managers can delete university-uploads" ON storage.objects;
 CREATE POLICY "Org managers can delete university-uploads"
   ON storage.objects FOR DELETE TO authenticated
   USING (

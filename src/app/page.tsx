@@ -225,7 +225,7 @@ export default function Home() {
               </div>
               <div className="rounded-xl border border-emerald-500/40 bg-emerald-500/5 backdrop-blur-sm px-5 py-3 min-w-[110px] text-center shadow-sm">
                 <span className="text-[11px] font-medium uppercase tracking-wider text-emerald-400/90 block mb-0.5">Revenue today</span>
-                <span className="text-xl font-bold tabular-nums text-emerald-400 tracking-tight">$14K</span>
+                <span className="text-xl font-bold tabular-nums text-emerald-400 tracking-tight">$9,912</span>
               </div>
             </div>
           </div>

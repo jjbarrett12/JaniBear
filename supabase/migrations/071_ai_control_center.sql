@@ -3,7 +3,7 @@
 
 -- Global AI org config (toggles, privacy, model, provider)
 CREATE TABLE IF NOT EXISTS ai_org_config (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
   ai_enabled BOOLEAN NOT NULL DEFAULT true,
   budget_limit_cents INTEGER,
@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS ai_org_config (
 
 -- Per-module state (enabled, settings, usage stats)
 CREATE TABLE IF NOT EXISTS ai_module_state (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
   module_key TEXT NOT NULL,
   enabled BOOLEAN NOT NULL DEFAULT false,
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS ai_module_state (
 
 -- Automation rules (triggers + actions)
 CREATE TABLE IF NOT EXISTS ai_automation_rules (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
   name TEXT NOT NULL,
   enabled BOOLEAN NOT NULL DEFAULT true,
@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS ai_automation_rules (
 
 -- Usage per org per month (and daily breakdown)
 CREATE TABLE IF NOT EXISTS ai_usage (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
   period TEXT NOT NULL,
   usage_date DATE,
@@ -70,7 +70,7 @@ CREATE TABLE IF NOT EXISTS ai_usage (
 
 -- Audit log for AI config changes
 CREATE TABLE IF NOT EXISTS ai_audit_log (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE SET NULL,
   action TEXT NOT NULL,

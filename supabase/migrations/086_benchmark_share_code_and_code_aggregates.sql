@@ -1,9 +1,9 @@
 -- ============================================
 -- Benchmark by share code: allow orgs to benchmark with others that share a code.
 -- Anonymous benchmarking (opt-in + peer group) unchanged. This adds an optional code-based group.
+-- Replacement for legacy 0761_* migration id.
 -- ============================================
 
--- 1) Org setting: optional share code (e.g. "ABC12"). Orgs with the same code see each other's aggregate only.
 ALTER TABLE organizations
   ADD COLUMN IF NOT EXISTS benchmark_share_code TEXT;
 
@@ -12,7 +12,6 @@ COMMENT ON COLUMN organizations.benchmark_share_code IS 'Optional. When set, org
 CREATE INDEX IF NOT EXISTS idx_organizations_benchmark_share_code
   ON organizations(benchmark_share_code) WHERE benchmark_share_code IS NOT NULL AND TRIM(benchmark_share_code) <> '';
 
--- 2) Code-group aggregates: one row per share_code. No minimum cohort (users explicitly chose to share).
 CREATE TABLE IF NOT EXISTS public.benchmark_code_aggregates (
   share_code TEXT NOT NULL PRIMARY KEY,
   avg_close_rate NUMERIC,
@@ -25,9 +24,9 @@ CREATE TABLE IF NOT EXISTS public.benchmark_code_aggregates (
 
 COMMENT ON TABLE public.benchmark_code_aggregates IS 'Benchmark aggregates by share code. Only orgs with that code can read. Populated by refresh_benchmark_code_aggregates.';
 
--- 3) RLS: read only if your org has this share_code
 ALTER TABLE public.benchmark_code_aggregates ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Read own code group aggregates" ON public.benchmark_code_aggregates;
 CREATE POLICY "Read own code group aggregates"
   ON public.benchmark_code_aggregates FOR SELECT
   TO authenticated
@@ -43,7 +42,6 @@ CREATE POLICY "Read own code group aggregates"
     )
   );
 
--- 4) Refresh function: compute code aggregates from orgs that have that share_code
 CREATE OR REPLACE FUNCTION public.refresh_benchmark_code_aggregates()
 RETURNS INT
 LANGUAGE plpgsql

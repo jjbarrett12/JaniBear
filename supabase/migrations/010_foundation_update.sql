@@ -1,14 +1,11 @@
-
 -- Update Organizations
 ALTER TABLE organizations ADD COLUMN IF NOT EXISTS timezone TEXT DEFAULT 'UTC';
 ALTER TABLE organizations ADD COLUMN IF NOT EXISTS plan TEXT DEFAULT 'free';
 ALTER TABLE organizations ADD COLUMN IF NOT EXISTS seat_limit INTEGER DEFAULT 5;
-
 -- Update Org Members Roles
 ALTER TABLE org_members DROP CONSTRAINT IF EXISTS org_members_role_check;
 ALTER TABLE org_members ADD CONSTRAINT org_members_role_check 
   CHECK (role IN ('owner', 'admin', 'sales', 'ops', 'inspector', 'cleaner', 'client'));
-
 -- Clients
 CREATE TABLE IF NOT EXISTS clients (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -18,7 +15,6 @@ CREATE TABLE IF NOT EXISTS clients (
   created_at TIMESTAMPTZ DEFAULT NOW(),
   created_by UUID REFERENCES auth.users(id)
 );
-
 CREATE TABLE IF NOT EXISTS client_contacts (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
@@ -29,7 +25,6 @@ CREATE TABLE IF NOT EXISTS client_contacts (
   role TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Rename Locations to Sites and link to Clients
 DO $$ 
 BEGIN
@@ -37,9 +32,7 @@ BEGIN
     ALTER TABLE locations RENAME TO sites;
   END IF;
 END $$;
-
 ALTER TABLE sites ADD COLUMN IF NOT EXISTS client_id UUID REFERENCES clients(id) ON DELETE SET NULL;
-
 -- Spaces (was location_areas)
 DO $$ 
 BEGIN
@@ -51,7 +44,6 @@ END $$;
 ALTER TABLE spaces ADD COLUMN IF NOT EXISTS type TEXT;
 ALTER TABLE spaces ADD COLUMN IF NOT EXISTS sqft NUMERIC;
 ALTER TABLE spaces ADD COLUMN IF NOT EXISTS fixtures_jsonb JSONB DEFAULT '[]';
-
 -- Opportunities
 CREATE TABLE IF NOT EXISTS opportunities (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -66,7 +58,6 @@ CREATE TABLE IF NOT EXISTS opportunities (
   created_by UUID REFERENCES auth.users(id),
   closed_at TIMESTAMPTZ
 );
-
 -- Walkthroughs
 CREATE TABLE IF NOT EXISTS walkthroughs (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -79,7 +70,6 @@ CREATE TABLE IF NOT EXISTS walkthroughs (
   created_by UUID REFERENCES auth.users(id),
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 CREATE TABLE IF NOT EXISTS walkthrough_media (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
@@ -89,7 +79,6 @@ CREATE TABLE IF NOT EXISTS walkthrough_media (
   metadata_jsonb JSONB DEFAULT '{}',
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 CREATE TABLE IF NOT EXISTS walkthrough_transcripts (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
@@ -99,7 +88,6 @@ CREATE TABLE IF NOT EXISTS walkthrough_transcripts (
   provider TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 CREATE TABLE IF NOT EXISTS scope_models (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
@@ -109,7 +97,6 @@ CREATE TABLE IF NOT EXISTS scope_models (
   missing_fields JSONB,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Update Proposals to link to Opportunities
 ALTER TABLE proposals ADD COLUMN IF NOT EXISTS opportunity_id UUID REFERENCES opportunities(id);
 ALTER TABLE proposals ADD COLUMN IF NOT EXISTS version INTEGER DEFAULT 1;
@@ -119,7 +106,6 @@ ALTER TABLE proposals ADD COLUMN IF NOT EXISTS sent_at TIMESTAMPTZ;
 ALTER TABLE proposals ADD COLUMN IF NOT EXISTS accepted_at TIMESTAMPTZ;
 ALTER TABLE proposals ADD COLUMN IF NOT EXISTS public_token TEXT UNIQUE;
 ALTER TABLE proposals ADD COLUMN IF NOT EXISTS created_by UUID REFERENCES auth.users(id);
-
 CREATE TABLE IF NOT EXISTS proposal_events (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
@@ -128,7 +114,6 @@ CREATE TABLE IF NOT EXISTS proposal_events (
   payload_jsonb JSONB,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Tasks & Sequences
 CREATE TABLE IF NOT EXISTS tasks (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -143,14 +128,12 @@ CREATE TABLE IF NOT EXISTS tasks (
   notes TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 CREATE TABLE IF NOT EXISTS sequences (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
   name TEXT NOT NULL,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 CREATE TABLE IF NOT EXISTS sequence_steps (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
@@ -161,7 +144,6 @@ CREATE TABLE IF NOT EXISTS sequence_steps (
   template_jsonb JSONB,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 CREATE TABLE IF NOT EXISTS sequence_enrollments (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
@@ -171,7 +153,6 @@ CREATE TABLE IF NOT EXISTS sequence_enrollments (
   enrolled_at TIMESTAMPTZ DEFAULT NOW(),
   last_step_at TIMESTAMPTZ
 );
-
 CREATE TABLE IF NOT EXISTS messages (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
@@ -185,7 +166,6 @@ CREATE TABLE IF NOT EXISTS messages (
   related_id UUID,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- QC / Retention
 CREATE TABLE IF NOT EXISTS inspection_templates (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -195,11 +175,11 @@ CREATE TABLE IF NOT EXISTS inspection_templates (
   scoring_rules_jsonb JSONB DEFAULT '{}',
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Update Inspections
 ALTER TABLE inspections ADD COLUMN IF NOT EXISTS summary TEXT;
 ALTER TABLE inspections ADD COLUMN IF NOT EXISTS score NUMERIC;
-ALTER TABLE inspections ADD COLUMN IF NOT EXISTS template_snapshot_jsonb JSONB; -- Snapshot of template at time of inspection
+ALTER TABLE inspections ADD COLUMN IF NOT EXISTS template_snapshot_jsonb JSONB;
+-- Snapshot of template at time of inspection
 
 CREATE TABLE IF NOT EXISTS inspection_items (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -211,11 +191,9 @@ CREATE TABLE IF NOT EXISTS inspection_items (
   photos_jsonb JSONB DEFAULT '[]',
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Issues (Update existing)
 ALTER TABLE issues ADD COLUMN IF NOT EXISTS ai_tags JSONB;
 ALTER TABLE issues ADD COLUMN IF NOT EXISTS sla_due_at TIMESTAMPTZ;
-
 CREATE TABLE IF NOT EXISTS work_orders (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
@@ -226,7 +204,6 @@ CREATE TABLE IF NOT EXISTS work_orders (
   status TEXT DEFAULT 'pending',
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Workload
 CREATE TABLE IF NOT EXISTS employees (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -237,7 +214,6 @@ CREATE TABLE IF NOT EXISTS employees (
   active BOOLEAN DEFAULT true,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 CREATE TABLE IF NOT EXISTS workload_rules (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
@@ -248,7 +224,6 @@ CREATE TABLE IF NOT EXISTS workload_rules (
   notes TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 CREATE TABLE IF NOT EXISTS shifts (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
@@ -258,7 +233,6 @@ CREATE TABLE IF NOT EXISTS shifts (
   assigned_employee_ids JSONB DEFAULT '[]',
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Reports
 CREATE TABLE IF NOT EXISTS report_runs (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -267,7 +241,6 @@ CREATE TABLE IF NOT EXISTS report_runs (
   status TEXT DEFAULT 'queued' CHECK (status IN ('queued', 'generated', 'sent')),
   generated_at TIMESTAMPTZ
 );
-
 CREATE TABLE IF NOT EXISTS client_reports (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
@@ -278,7 +251,6 @@ CREATE TABLE IF NOT EXISTS client_reports (
   pdf_path TEXT,
   sent_at TIMESTAMPTZ
 );
-
 -- RLS Policies Helper Function (if not exists)
 CREATE OR REPLACE FUNCTION is_org_member(org_id UUID) 
 RETURNS BOOLEAN AS $$
@@ -290,10 +262,8 @@ RETURNS BOOLEAN AS $$
     -- Existing schema for org_members didn't specify 'status' column in Create Table, but prompt requested it.
   );
 $$ LANGUAGE sql SECURITY DEFINER;
-
 -- Add status to org_members if missing
 ALTER TABLE org_members ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'active' CHECK (status IN ('invited', 'active', 'suspended'));
-
 -- Org Invites
 CREATE TABLE IF NOT EXISTS org_invites (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -305,7 +275,6 @@ CREATE TABLE IF NOT EXISTS org_invites (
   created_at TIMESTAMPTZ DEFAULT NOW(),
   accepted_at TIMESTAMPTZ
 );
-
 -- Enable RLS on new tables
 ALTER TABLE clients ENABLE ROW LEVEL SECURITY;
 ALTER TABLE client_contacts ENABLE ROW LEVEL SECURITY;
@@ -329,7 +298,6 @@ ALTER TABLE shifts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE report_runs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE client_reports ENABLE ROW LEVEL SECURITY;
 ALTER TABLE org_invites ENABLE ROW LEVEL SECURITY;
-
 -- Apply Policies (Generic for org members)
 CREATE POLICY "Org members can view all" ON clients FOR ALL USING (is_org_member(org_id));
 CREATE POLICY "Org members can view all" ON client_contacts FOR ALL USING (is_org_member(org_id));
@@ -353,7 +321,6 @@ CREATE POLICY "Org members can view all" ON shifts FOR ALL USING (is_org_member(
 CREATE POLICY "Org members can view all" ON report_runs FOR ALL USING (is_org_member(org_id));
 CREATE POLICY "Org members can view all" ON client_reports FOR ALL USING (is_org_member(org_id));
 CREATE POLICY "Org members can view all" ON org_invites FOR ALL USING (is_org_member(org_id));
-
 -- Public Proposal Access
 CREATE OR REPLACE FUNCTION get_proposal_public(token_input TEXT)
 RETURNS TABLE (

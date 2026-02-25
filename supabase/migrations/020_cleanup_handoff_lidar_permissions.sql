@@ -29,7 +29,6 @@ BEGIN
 EXCEPTION WHEN undefined_table THEN
   NULL; -- opportunities/sites not created yet (010 not run); skip handoff columns
 END $$;
-
 -- ---------------------------------------------------------------------------
 -- 2) LIDAR / WALKTHROUGH SCANS – sanity checks and documentation
 -- One row per RoomPlan capture; multiple scans per walkthrough allowed. Only if table exists (019).
@@ -45,7 +44,6 @@ BEGIN
     CREATE INDEX IF NOT EXISTS idx_walkthrough_scans_walkthrough_created ON walkthrough_scans(walkthrough_id, created_at DESC);
   END IF;
 END $$;
-
 -- ---------------------------------------------------------------------------
 -- 3) SIMPLIFIED PERMISSIONS – single effective role
 -- Use role_enum when set; otherwise fall back to role (legacy). One source of truth in app.
@@ -70,7 +68,6 @@ BEGIN
 EXCEPTION WHEN undefined_table THEN
   NULL; -- org_members might not exist in minimal DB
 END $$;
-
 -- ---------------------------------------------------------------------------
 -- 4) DEFAULT SUBSCRIPTION FOR EXISTING ORGS (optional cleanup)
 -- So every org has a plan and org_has_module() works. Only if tables exist (019).

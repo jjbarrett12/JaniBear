@@ -54,11 +54,11 @@ CREATE INDEX IF NOT EXISTS idx_organizations_custom_branding ON organizations(cu
       return;
     }
 
-    // Validate file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
+    // Validate file size (max 20MB for larger/high-res logos)
+    if (file.size > 20 * 1024 * 1024) {
       toast({
         title: 'File too large',
-        description: 'Logo must be less than 5MB',
+        description: 'Logo must be less than 20MB',
         variant: 'destructive',
       });
       return;
@@ -286,7 +286,7 @@ CREATE INDEX IF NOT EXISTS idx_organizations_custom_branding ON organizations(cu
                 {isUploading ? 'Uploading...' : logoUrl ? 'Change Logo' : 'Upload Logo'}
               </Button>
               <p className="text-xs text-gray-500 mt-1">
-                PNG, JPG, or SVG. Max 5MB. Recommended: 200x60px. Leave empty to keep the default JANIBEAR logo.
+                PNG, JPG, or SVG. Max 20MB. Recommended: 400x120px or larger for a clear sidebar logo. Leave empty to keep the default JANIBEAR logo.
               </p>
             </div>
           </div>

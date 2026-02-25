@@ -13,7 +13,7 @@ COMMENT ON COLUMN accounts.user_limit IS 'Max number of active account users (ad
 -- 2. account_users: users who can access and manage a specific account
 -- =============================================================================
 CREATE TABLE IF NOT EXISTS account_users (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   account_id UUID NOT NULL REFERENCES accounts(id) ON DELETE CASCADE,
   user_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
   role TEXT NOT NULL DEFAULT 'admin' CHECK (role IN ('admin', 'member')),
@@ -32,7 +32,7 @@ COMMENT ON TABLE account_users IS 'Users who can log in and manage a specific ac
 -- 3. account_invites: invite by email (user may not exist yet)
 -- =============================================================================
 CREATE TABLE IF NOT EXISTS account_invites (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   account_id UUID NOT NULL REFERENCES accounts(id) ON DELETE CASCADE,
   email TEXT NOT NULL,
   role TEXT NOT NULL DEFAULT 'admin' CHECK (role IN ('admin', 'member')),
@@ -105,16 +105,18 @@ CREATE TRIGGER trg_check_account_user_limit
 ALTER TABLE account_users ENABLE ROW LEVEL SECURITY;
 
 -- Org members (operator) can manage account_users for their org's accounts
+DROP POLICY IF EXISTS "Org members can manage account_users for their accounts" ON account_users;
 CREATE POLICY "Org members can manage account_users for their accounts"
   ON account_users FOR ALL
   USING (
-    account_id IN (SELECT id FROM accounts WHERE org_id IN (SELECT org_id FROM org_members WHERE user_id = auth.uid() AND (status = 'active' OR status IS NULL))
+    account_id IN (SELECT id FROM accounts WHERE org_id IN (SELECT org_id FROM org_members WHERE user_id = auth.uid() AND (status = 'active' OR status IS NULL)))
   )
   WITH CHECK (
     account_id IN (SELECT id FROM accounts WHERE org_id IN (SELECT org_id FROM org_members WHERE user_id = auth.uid() AND (status = 'active' OR status IS NULL)))
   );
 
 -- Account users can read their own membership
+DROP POLICY IF EXISTS "Account users can read own membership" ON account_users;
 CREATE POLICY "Account users can read own membership"
   ON account_users FOR SELECT
   USING (user_id = auth.uid());
@@ -124,6 +126,7 @@ CREATE POLICY "Account users can read own membership"
 -- =============================================================================
 ALTER TABLE account_invites ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Org members can manage account_invites for their accounts" ON account_invites;
 CREATE POLICY "Org members can manage account_invites for their accounts"
   ON account_invites FOR ALL
   USING (
@@ -134,6 +137,7 @@ CREATE POLICY "Org members can manage account_invites for their accounts"
   );
 
 -- Invitees need to read their invite by token to accept (token is secret)
+DROP POLICY IF EXISTS "Authenticated can read account_invites" ON account_invites;
 CREATE POLICY "Authenticated can read account_invites"
   ON account_invites FOR SELECT
   TO authenticated
@@ -224,6 +228,18 @@ CREATE POLICY "Org members or account users can read facilities"
 -- =============================================================================
 -- 9. updated_at trigger for account_users
 -- =============================================================================
-CREATE TRIGGER update_account_users_updated_at
-  BEFORE UPDATE ON account_users
-  FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1
+    FROM pg_proc p
+    JOIN pg_namespace n ON n.oid = p.pronamespace
+    WHERE n.nspname = 'public' AND p.proname = 'update_updated_at_column'
+  ) THEN
+    DROP TRIGGER IF EXISTS update_account_users_updated_at ON account_users;
+    CREATE TRIGGER update_account_users_updated_at
+      BEFORE UPDATE ON account_users
+      FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+  END IF;
+END
+$$;

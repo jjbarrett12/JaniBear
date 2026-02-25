@@ -3,7 +3,7 @@
 -- Sales can move to ready; Ops can only Accept/Reject.
 
 CREATE TABLE IF NOT EXISTS public.launch_packets (
-  id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   org_id uuid NOT NULL REFERENCES public.organizations(id) ON DELETE CASCADE,
   account_id uuid NOT NULL REFERENCES public.accounts(id) ON DELETE CASCADE,
   created_by uuid REFERENCES auth.users(id) ON DELETE SET NULL,

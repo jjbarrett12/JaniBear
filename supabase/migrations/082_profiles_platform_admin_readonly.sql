@@ -1,4 +1,6 @@
--- PROFILES: is_platform_admin only writable by platform admin (prevents self-assign)
+-- PROFILES: is_platform_admin only writable by platform admin (prevents self-assign).
+-- Replacement for legacy 0521_* migration id.
+
 CREATE OR REPLACE FUNCTION profiles_deny_platform_admin_self_update()
 RETURNS TRIGGER AS $$
 BEGIN

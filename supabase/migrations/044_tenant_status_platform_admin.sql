@@ -45,6 +45,11 @@ RETURNS BOOLEAN AS $$
   SELECT COALESCE((SELECT is_platform_admin FROM profiles WHERE id = p_user_id), false);
 $$ LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public;
 
+CREATE OR REPLACE FUNCTION is_platform_admin()
+RETURNS BOOLEAN AS $$
+  SELECT is_platform_admin(auth.uid());
+$$ LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public;
+
 COMMENT ON FUNCTION is_platform_admin(UUID) IS 'True if the given user (default current) is a platform superadmin.';
 GRANT EXECUTE ON FUNCTION is_platform_admin(UUID) TO authenticated;
 GRANT EXECUTE ON FUNCTION is_platform_admin() TO authenticated;

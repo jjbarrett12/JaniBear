@@ -2,7 +2,7 @@
 -- Table: user_widget_layouts
 
 CREATE TABLE IF NOT EXISTS public.user_widget_layouts (
-  id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   org_id uuid NOT NULL REFERENCES public.organizations(id) ON DELETE CASCADE,
   user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   module_key text NOT NULL,

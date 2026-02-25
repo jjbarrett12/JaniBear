@@ -1,10 +1,11 @@
 'use client';
 
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, GeoJSON, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { QuadrantDrawControls } from './QuadrantDrawControls';
+import { setSavedMapView } from '@/lib/territory-map-view-storage';
 import type {
   MapMode,
   FacilityWithHealth,
@@ -46,25 +47,74 @@ const prospectIconColors: Record<ProspectStatus, string> = {
 };
 
 // ---------------------------------------------------------------------------
-// FitBounds helper
+// FitBounds helper (only when no saved view is being restored)
 // ---------------------------------------------------------------------------
-function FitBounds({ points }: { points: [number, number][] }) {
+function FitBounds({ points, skip }: { points: [number, number][]; skip: boolean }) {
   const map = useMap();
   useEffect(() => {
-    if (points.length >= 1) {
+    if (skip || points.length < 1) return;
+    try {
+      map.fitBounds(points, { padding: [40, 40], maxZoom: 14 });
+    } catch {
+      /* ignore */
+    }
+  }, [map, points, skip]);
+  return null;
+}
+
+// ---------------------------------------------------------------------------
+// Fit map to given points when trigger value changes (e.g. "Zoom to results")
+// ---------------------------------------------------------------------------
+function FitToPinsOnTrigger({ points, trigger }: { points: [number, number][]; trigger: number }) {
+  const map = useMap();
+  const prevTrigger = useRef(trigger);
+  useEffect(() => {
+    if (trigger !== prevTrigger.current && trigger > 0 && points.length > 0) {
+      prevTrigger.current = trigger;
       try {
         map.fitBounds(points, { padding: [40, 40], maxZoom: 14 });
       } catch {
         /* ignore */
       }
     }
-  }, [map, points]);
+  }, [map, points, trigger]);
+  return null;
+}
+
+// ---------------------------------------------------------------------------
+// Persist map view on move/zoom so it restores when user returns
+// ---------------------------------------------------------------------------
+function MapViewPersist({ orgId }: { orgId: string }) {
+  const map = useMap();
+  const savingRef = useRef(false);
+  useEffect(() => {
+    const save = () => {
+      if (savingRef.current) return;
+      savingRef.current = true;
+      try {
+        const center = map.getCenter();
+        const zoom = map.getZoom();
+        setSavedMapView(orgId, { center: [center.lat, center.lng], zoom });
+      } finally {
+        savingRef.current = false;
+      }
+    };
+    map.on('moveend', save);
+    map.on('zoomend', save);
+    return () => {
+      map.off('moveend', save);
+      map.off('zoomend', save);
+    };
+  }, [map, orgId]);
   return null;
 }
 
 // ---------------------------------------------------------------------------
 // MapCanvas
 // ---------------------------------------------------------------------------
+const DEFAULT_CENTER: [number, number] = [39.8283, -98.5795];
+const DEFAULT_ZOOM = 4;
+
 interface Props {
   mode: MapMode;
   facilities: FacilityWithHealth[];
@@ -74,6 +124,11 @@ interface Props {
   onSelectSite: (s: FacilityWithHealth) => void;
   onSelectProspect: (p: Prospect) => void;
   onQuadrantCreated: (q: Quadrant) => void;
+  /** When set, map uses this view instead of fitting to pins (restore from localStorage). */
+  initialCenter?: [number, number];
+  initialZoom?: number;
+  /** Increment to trigger fitBounds to current facilities+prospects (e.g. "Zoom to results"). */
+  fitToPinsTrigger?: number;
 }
 
 export function MapCanvas({
@@ -85,16 +140,29 @@ export function MapCanvas({
   onSelectSite,
   onSelectProspect,
   onQuadrantCreated,
+  initialCenter,
+  initialZoom,
+  fitToPinsTrigger = 0,
 }: Props) {
   const allPoints = useMemo<[number, number][]>(() => {
     if (mode === 'ops') return facilities.map((f) => [f.latitude, f.longitude]);
     return prospects.map((p) => [p.lat, p.lng]);
   }, [mode, facilities, prospects]);
 
+  const allPointsForZoom = useMemo<[number, number][]>(() => {
+    const fromFacilities = facilities.map((f) => [f.latitude, f.longitude] as [number, number]);
+    const fromProspects = prospects.map((p) => [p.lat, p.lng] as [number, number]);
+    return [...fromFacilities, ...fromProspects];
+  }, [facilities, prospects]);
+
+  const center = initialCenter ?? DEFAULT_CENTER;
+  const zoom = initialZoom ?? DEFAULT_ZOOM;
+  const hasSavedView = initialCenter != null && initialZoom != null;
+
   return (
     <MapContainer
-      center={[39.8283, -98.5795]}
-      zoom={4}
+      center={center}
+      zoom={zoom}
       className="h-full w-full"
       scrollWheelZoom
     >
@@ -103,7 +171,9 @@ export function MapCanvas({
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
 
-      {allPoints.length > 0 && <FitBounds points={allPoints} />}
+      {allPoints.length > 0 && <FitBounds points={allPoints} skip={hasSavedView} />}
+      <FitToPinsOnTrigger points={allPointsForZoom} trigger={fitToPinsTrigger} />
+      <MapViewPersist orgId={orgId} />
 
       {/* Quadrant overlays */}
       {quadrants.map((q) => (

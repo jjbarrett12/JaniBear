@@ -11,6 +11,7 @@ import { HeroCenterImage } from '@/components/landing/hero-center-image';
 import { HOMEPAGE } from '@/content/homepage';
 import PlatformModelSection from '@/components/landing/PlatformModelSection';
 import ModulesSection from '@/components/marketing/ModulesSection';
+import { SalesOpsResultsSection } from '@/components/landing/SalesOpsResultsSection';
 import { OperatorVsBoardroomSection } from '@/components/sections/OperatorVsBoardroomSection';
 import WhoItsForSection from '@/components/landing/WhoItsForSection';
 import TrustSection from '@/components/landing/TrustSection';
@@ -314,9 +315,10 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 3–8: Platform, Modules, Why, Who, Trust, Final CTA */}
+      {/* 3–8: Platform, Modules, Results (Sales/Ops), Why, Who, Final CTA */}
       <PlatformModelSection />
       <ModulesSection />
+      <SalesOpsResultsSection />
       <OperatorVsBoardroomSection />
       <WhoItsForSection />
       <FinalCtaSection />

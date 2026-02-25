@@ -16,11 +16,13 @@ import { SAVE_AS_TEMPLATE_BUTTON } from './layout-selector-copy';
 import type { BreakpointKey, LayoutItem, WidgetDefinition } from '@/lib/widgets/types';
 import {
   fetchSavedLayoutsForModule,
+  getLayoutFromLocalStorage,
   saveLayout,
   resetLayoutsForModule,
   mergeLayoutWithDefaults,
   getDefaultLayoutForBreakpoint,
 } from '@/lib/widgets/layoutPersistence';
+import { loadCollapsedWidgets, saveCollapsedWidgets } from '@/lib/widgets/widget-collapsed-persistence';
 import {
   saveOrgTemplate,
   setOrgTemplateLock,
@@ -77,6 +79,7 @@ export function WidgetGrid({ moduleKey, orgId, widgets, role, roleEnum, header, 
   const [saveTemplateOpen, setSaveTemplateOpen] = useState(false);
   const [applyToTeamOpen, setApplyToTeamOpen] = useState(false);
   const [isSavingTemplate, setIsSavingTemplate] = useState(false);
+  const [collapsedWidgets, setCollapsedWidgets] = useState<string[]>([]);
 
   const templateRole = toTemplateRole(role ?? null, roleEnum ?? null);
   const roleLabel = getRoleDisplayLabel(templateRole);
@@ -106,6 +109,15 @@ export function WidgetGrid({ moduleKey, orgId, widgets, role, roleEnum, header, 
     return () => { mounted = false; };
   }, []);
 
+  // Seed from localStorage immediately so layout is visible before DB returns
+  useEffect(() => {
+    if (!orgId || !userId || !moduleKey) return;
+    const fromLocal = getLayoutFromLocalStorage(orgId, userId, moduleKey);
+    if (Object.keys(fromLocal).length > 0) {
+      setSavedByBp((prev) => ({ ...fromLocal, ...prev }));
+    }
+  }, [orgId, userId, moduleKey]);
+
   useEffect(() => {
     if (!userId) return;
     let mounted = true;
@@ -113,6 +125,11 @@ export function WidgetGrid({ moduleKey, orgId, widgets, role, roleEnum, header, 
       if (mounted) setSavedByBp(data);
     });
     return () => { mounted = false; };
+  }, [orgId, userId, moduleKey]);
+
+  useEffect(() => {
+    if (!userId) return;
+    setCollapsedWidgets(loadCollapsedWidgets(orgId, userId, moduleKey));
   }, [orgId, userId, moduleKey]);
 
   useEffect(() => {
@@ -215,6 +232,34 @@ export function WidgetGrid({ moduleKey, orgId, widgets, role, roleEnum, header, 
     setLayout((prev) => prev.filter((item) => item.i !== widgetId));
     setHiddenWidgets((prev) => (prev.includes(widgetId) ? prev : [...prev, widgetId]));
   }, []);
+
+  const handleCollapsedToggle = useCallback(
+    (widgetId: string) => {
+      if (!userId) return;
+      setCollapsedWidgets((prev) => {
+        const next = prev.includes(widgetId)
+          ? prev.filter((id) => id !== widgetId)
+          : [...prev, widgetId];
+        saveCollapsedWidgets(orgId, userId, moduleKey, next);
+        return next;
+      });
+    },
+    [orgId, userId, moduleKey]
+  );
+
+  const handleResetSize = useCallback(
+    (widgetId: string) => {
+      const def = widgetMap.get(widgetId);
+      if (!def) return;
+      const d = def.default[currentBp] ?? def.default.lg ?? def.default.md ?? def.default.sm;
+      setLayout((prev) =>
+        prev.map((item) =>
+          item.i === widgetId ? { ...item, w: d?.w ?? 1, h: d?.h ?? 1 } : item
+        )
+      );
+    },
+    [widgetMap, currentBp]
+  );
 
   const handleAddWidget = useCallback(
     (widgetId: string) => {
@@ -487,7 +532,10 @@ export function WidgetGrid({ moduleKey, orgId, widgets, role, roleEnum, header, 
           widgetMap={widgetMap}
           orgId={orgId}
           onRemove={handleRemove}
+          onResetSize={handleResetSize}
           breakpoint={currentBp}
+          collapsedWidgets={collapsedWidgets}
+          onCollapsedToggle={handleCollapsedToggle}
         />
       )}
 
@@ -541,7 +589,10 @@ interface WidgetGridInnerProps {
   widgetMap: Map<string, WidgetDefinition>;
   orgId: string;
   onRemove: (widgetId: string) => void;
+  onResetSize: (widgetId: string) => void;
   breakpoint: BreakpointKey;
+  collapsedWidgets: string[];
+  onCollapsedToggle: (widgetId: string) => void;
 }
 
 function WidgetGridInner({
@@ -551,7 +602,10 @@ function WidgetGridInner({
   widgetMap,
   orgId,
   onRemove,
+  onResetSize,
   breakpoint,
+  collapsedWidgets,
+  onCollapsedToggle,
 }: WidgetGridInnerProps) {
   const [GridLayout, setGridLayout] = useState<React.ComponentType<any> | null>(null);
 
@@ -576,7 +630,10 @@ function WidgetGridInner({
                 widgetId={item.i}
                 title={def.title}
                 editMode={editMode}
+                collapsed={collapsedWidgets.includes(item.i)}
+                onCollapsedToggle={() => onCollapsedToggle(item.i)}
                 onRemove={editMode ? () => onRemove(item.i) : undefined}
+                onResetSize={editMode ? () => onResetSize(item.i) : undefined}
               >
                 <Comp orgId={orgId} />
               </WidgetFrame>
@@ -588,7 +645,7 @@ function WidgetGridInner({
   }
 
   return (
-    <div className="widget-grid-container [&_.react-grid-layout]:min-h-[200px]">
+    <div className={cn('widget-grid-container', editMode && 'widget-grid-edit-mode', '[&_.react-grid-layout]:min-h-[200px]')}>
       <GridLayout
         layout={layout}
         cols={cols}
@@ -614,7 +671,10 @@ function WidgetGridInner({
                 widgetId={item.i}
                 title={def.title}
                 editMode={editMode}
+                collapsed={collapsedWidgets.includes(item.i)}
+                onCollapsedToggle={() => onCollapsedToggle(item.i)}
                 onRemove={editMode ? () => onRemove(item.i) : undefined}
+                onResetSize={editMode ? () => onResetSize(item.i) : undefined}
               >
                 <Comp orgId={orgId} />
               </WidgetFrame>

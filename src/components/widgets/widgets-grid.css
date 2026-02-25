@@ -9,10 +9,24 @@
 .widget-grid-container .react-grid-item.react-draggable-dragging {
   transition: none;
   z-index: 3;
+  transform: scale(1.02);
+}
+/* Accent glow on widget while dragging */
+.widget-grid-container .react-grid-item.react-draggable-dragging .elevated-card {
+  box-shadow:
+    0 12px 30px rgba(0, 0, 0, 0.45),
+    0 4px 10px rgba(0, 0, 0, 0.35),
+    0 0 0 1px hsl(var(--primary) / 0.14),
+    0 0 24px hsl(var(--primary) / 0.12);
 }
 .widget-grid-container .react-grid-item.react-grid-placeholder {
   z-index: 2;
   background: hsl(var(--primary) / 0.15);
-  border-radius: 0.5rem;
+  border-radius: 17px;
   opacity: 0.8;
+}
+/* Customize mode: faint dashed outline on widget hover */
+.widget-grid-container.widget-grid-edit-mode .react-grid-item:hover .elevated-card {
+  outline: 1px dashed rgba(255, 255, 255, 0.2);
+  outline-offset: 2px;
 }

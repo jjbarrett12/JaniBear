@@ -209,23 +209,23 @@ export default function Home() {
           </div>
 
           <div className="-mt-27 md:-mt-36 mb-10">
-            <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-zinc-500 text-center mb-3">Command center · Today</p>
+            <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-amber-300 text-center mb-3">Command center · Today</p>
             <div className="flex flex-wrap items-stretch justify-center gap-3">
-              <div className="rounded-xl border border-blue-500/40 bg-blue-500/5 backdrop-blur-sm px-5 py-3 min-w-[110px] text-center shadow-sm">
-                <span className="text-[11px] font-medium uppercase tracking-wider text-blue-400/90 block mb-0.5">Buildings cleaned today</span>
+              <div className="rounded-xl border-2 border-cyan-400/80 bg-cyan-500/10 backdrop-blur-sm px-5 py-3 min-w-[110px] text-center shadow-[0_0_16px_rgba(34,211,238,0.25)]">
+                <span className="text-[11px] font-semibold uppercase tracking-wider text-cyan-300 block mb-0.5">Buildings cleaned today</span>
                 <span className="text-xl font-bold tabular-nums text-white tracking-tight">24</span>
               </div>
-              <div className="rounded-xl border border-amber-500/40 bg-amber-500/5 backdrop-blur-sm px-5 py-3 min-w-[110px] text-center shadow-sm">
-                <span className="text-[11px] font-medium uppercase tracking-wider text-amber-400/90 block mb-0.5">Inspections due</span>
-                <span className="text-xl font-bold tabular-nums text-amber-400 tracking-tight">3</span>
+              <div className="rounded-xl border-2 border-amber-400/80 bg-amber-500/10 backdrop-blur-sm px-5 py-3 min-w-[110px] text-center shadow-[0_0_16px_rgba(251,191,36,0.25)]">
+                <span className="text-[11px] font-semibold uppercase tracking-wider text-amber-300 block mb-0.5">Inspections due</span>
+                <span className="text-xl font-bold tabular-nums text-amber-300 tracking-tight">3</span>
               </div>
-              <div className="rounded-xl border border-red-500/40 bg-red-500/5 backdrop-blur-sm px-5 py-3 min-w-[110px] text-center shadow-sm">
-                <span className="text-[11px] font-medium uppercase tracking-wider text-red-400/90 block mb-0.5">Accounts below health</span>
-                <span className="text-xl font-bold tabular-nums text-red-400/90 tracking-tight">5</span>
+              <div className="rounded-xl border-2 border-rose-400/80 bg-rose-500/10 backdrop-blur-sm px-5 py-3 min-w-[110px] text-center shadow-[0_0_16px_rgba(251,113,133,0.25)]">
+                <span className="text-[11px] font-semibold uppercase tracking-wider text-rose-300 block mb-0.5">Accounts below health</span>
+                <span className="text-xl font-bold tabular-nums text-rose-300 tracking-tight">5</span>
               </div>
-              <div className="rounded-xl border border-emerald-500/40 bg-emerald-500/5 backdrop-blur-sm px-5 py-3 min-w-[110px] text-center shadow-sm">
-                <span className="text-[11px] font-medium uppercase tracking-wider text-emerald-400/90 block mb-0.5">Revenue today</span>
-                <span className="text-xl font-bold tabular-nums text-emerald-400 tracking-tight">$9,912</span>
+              <div className="rounded-xl border-2 border-emerald-400/80 bg-emerald-500/10 backdrop-blur-sm px-5 py-3 min-w-[110px] text-center shadow-[0_0_16px_rgba(52,211,153,0.25)]">
+                <span className="text-[11px] font-semibold uppercase tracking-wider text-emerald-300 block mb-0.5">Revenue today</span>
+                <span className="text-xl font-bold tabular-nums text-emerald-300 tracking-tight">$9,912</span>
               </div>
             </div>
           </div>
@@ -238,14 +238,14 @@ export default function Home() {
               </Button>
             </Link>
             <Link href="/#platform-model">
-              <Button variant="outline" size="lg" className="landing-cta-secondary border-2 border-amber-400/50 text-zinc-200 hover:bg-white/5 hover:border-amber-400/70 h-12 px-6 rounded-xl font-medium">
+              <Button variant="outline" size="lg" className="landing-cta-secondary border-2 border-amber-400 text-amber-300 hover:bg-amber-400/10 hover:border-amber-300 hover:text-amber-200 h-12 px-6 rounded-xl font-medium">
                 {HOMEPAGE.hero.ctaSecondary}
               </Button>
             </Link>
           </div>
           <ul className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2 mt-6">
             {HOMEPAGE.hero.trialBullets.map((line) => (
-              <li key={line} className="flex items-center gap-2 text-sm text-zinc-500">
+              <li key={line} className="flex items-center gap-2 text-sm text-amber-200/95">
                 <Check className="h-4 w-4 shrink-0 text-amber-400" aria-hidden />
                 {line}
               </li>
@@ -257,23 +257,48 @@ export default function Home() {
       {/* Review / Trust — right under hero */}
       <TrustSection />
 
-      {/* 2. BUILT BY OPERATORS — Two columns, yellow vertical line */}
+      {/* 2. BUILT BY OPERATORS — Navy luxury, glow divider, watermark */}
       <section
-        className="relative border-t border-zinc-800/50 py-16 md:py-20 overflow-hidden min-h-[60vh] md:min-h-[70vh] flex flex-col justify-center"
-        style={{ backgroundColor: '#0F1420' }}
+        className="relative border-t border-[#111C2F]/80 py-16 md:py-20 overflow-hidden min-h-[60vh] md:min-h-[70vh] flex flex-col justify-center"
+        style={{ backgroundColor: '#0B1220' }}
         id="proof"
         aria-labelledby="proof-heading"
       >
+        {/* Radial navy glow behind headline */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: 'radial-gradient(ellipse 80% 60% at 25% 50%, rgba(17,28,47,0.9) 0%, transparent 60%)',
+          }}
+          aria-hidden
+        />
         <div className="container relative mx-auto px-4 max-w-6xl flex-1 flex flex-col md:flex-row md:items-center">
-          {/* Left: large headline only */}
-          <div className="flex-1 flex items-center justify-center md:justify-end pr-0 md:pr-12 py-12 md:py-16">
-            <h2 id="proof-heading" className="font-heading text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white tracking-tight text-center md:text-right max-w-xl">
+          {/* Left: headline + watermark */}
+          <div className="flex-1 relative flex items-center justify-center md:justify-end pr-0 md:pr-12 py-12 md:py-16">
+            {/* Faint JANIBEAR watermark behind headline */}
+            <Image
+              src="/logo.png"
+              alt=""
+              width={480}
+              height={160}
+              className="absolute inset-0 m-auto w-[140%] max-w-[520px] h-auto object-contain opacity-[0.05] pointer-events-none select-none"
+              aria-hidden
+              unoptimized
+            />
+            <h2 id="proof-heading" className="relative z-10 font-heading text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white tracking-tight text-center md:text-right max-w-xl">
               {HOMEPAGE.proofStrip.headline}{' '}
               <span className="text-zinc-500">{HOMEPAGE.proofStrip.subline}</span>
             </h2>
           </div>
-          {/* Bold yellow vertical divider */}
-          <div className="hidden md:block w-1 flex-shrink-0 bg-amber-400 rounded-full min-h-[280px] self-center" aria-hidden />
+          {/* Yellow vertical divider with glow + gradient */}
+          <div
+            className="hidden md:block w-1 flex-shrink-0 rounded-full min-h-[280px] self-center"
+            style={{
+              background: 'linear-gradient(180deg, rgba(255,204,0,0.8), rgba(255,204,0,0.1))',
+              boxShadow: '0 0 12px rgba(255, 204, 0, 0.5)',
+            }}
+            aria-hidden
+          />
           {/* Right: narrative + bullets + checkmarks */}
           <div className="flex-1 pl-0 md:pl-12 py-8 md:py-16 flex flex-col justify-center max-w-xl">
             <p className="text-zinc-300 text-base md:text-lg leading-relaxed">{HOMEPAGE.proofStrip.tagline}</p>

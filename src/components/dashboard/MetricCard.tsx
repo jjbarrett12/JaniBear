@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Card, CardContent } from '@/components/ui/card';
+import { ElevatedCard } from '@/components/ui/elevated-card';
 import { cn } from '@/lib/utils';
 
 export type MetricCardProps = {
@@ -31,14 +31,13 @@ export function MetricCard({
   children,
 }: MetricCardProps) {
   const content = (
-    <Card
+    <ElevatedCard
       className={cn(
-        'rounded-2xl border border-border bg-card shadow-sm transition-shadow hover:shadow-md',
         href && 'cursor-pointer',
         className
       )}
     >
-      <CardContent className="p-5">
+      <div className="p-5">
         <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-1">
           {title}
         </p>
@@ -61,15 +60,15 @@ export function MetricCard({
           <p className="mt-1 text-xs text-muted-foreground">{subtitle}</p>
         )}
         {children}
-      </CardContent>
-    </Card>
+      </div>
+    </ElevatedCard>
   );
 
   if (href) {
     return (
       <Link
         href={href}
-        className="block min-w-0 outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-2xl"
+        className="block min-w-0 outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-[17px]"
       >
         {content}
       </Link>

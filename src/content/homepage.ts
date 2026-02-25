@@ -87,10 +87,11 @@ export const HOMEPAGE = {
   },
 
   trust: {
-    headline: 'Trusted by operators',
-    subhead: 'From first site to hundreds.',
-    quote: 'We needed a system that wins contracts, enforces accountability, and protects client relationships. So we built it.',
-    attribution: 'Built in a 20-year commercial cleaning operation.',
+    headline: 'Finally — A System That Enforces Accountability',
+    subhead: '',
+    quote: "We've been in business for 17 years and manage 142 accounts across Phoenix, AZ. Before implementing this system, our close rate hovered around 28% and client churn was a constant issue. Within 6 months, our close rate increased by 19%, and we saw a 32% drop in service-related complaints. It's given us structure, accountability, and a clear competitive edge.",
+    attribution: '— Owner, Commercial Cleaning Company',
+    attributionLocation: 'Phoenix, Arizona',
   },
 
   finalCta: {

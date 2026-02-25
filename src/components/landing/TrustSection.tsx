@@ -3,24 +3,31 @@
 import { HOMEPAGE } from '@/content/homepage';
 
 export default function TrustSection() {
-  const { headline, subhead, quote, attribution } = HOMEPAGE.trust;
+  const { headline, subhead, quote, attribution, attributionLocation } = HOMEPAGE.trust;
   return (
     <section
       id="trust"
-      className="relative py-12 md:py-16 border-t border-zinc-800/50"
-      style={{ backgroundColor: '#0a0a0a' }}
+      className="relative py-24 bg-black"
       aria-labelledby="trust-heading"
     >
-      <div className="container mx-auto px-4 max-w-2xl">
-        <div className="rounded-2xl border border-amber-500/50 bg-black/90 p-8 md:p-10 text-center">
-          <h2 id="trust-heading" className="font-heading text-2xl md:text-3xl font-bold text-white mb-2 tracking-tight">
+      <div className="mx-auto max-w-6xl px-6">
+        <div className="relative mx-auto max-w-5xl rounded-3xl border-2 border-yellow-500/80 bg-black/70 px-10 py-14 text-center backdrop-blur-sm shadow-[0_0_40px_rgba(234,179,8,0.15)]">
+          <h2 id="trust-heading" className="font-heading text-4xl md:text-5xl font-black tracking-tight text-white">
             {headline}
           </h2>
-          <p className="text-zinc-400 text-sm md:text-base mb-6">{subhead}</p>
-          <blockquote className="text-lg md:text-xl text-white leading-relaxed italic">
+          {subhead ? <p className="mt-4 text-zinc-400 text-sm md:text-base">{subhead}</p> : null}
+          <p className="mt-8 text-xl md:text-2xl leading-relaxed text-gray-200 italic">
             &ldquo;{quote}&rdquo;
-          </blockquote>
-          <p className="mt-4 text-sm text-zinc-400">{attribution}</p>
+          </p>
+          <p className="mt-6 text-sm uppercase tracking-widest text-gray-400">
+            {attribution}
+            {attributionLocation && (
+              <>
+                <br />
+                {attributionLocation}
+              </>
+            )}
+          </p>
         </div>
       </div>
     </section>

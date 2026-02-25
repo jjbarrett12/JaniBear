@@ -11,6 +11,8 @@ import { HeroCenterImage } from '@/components/landing/hero-center-image';
 import { HOMEPAGE } from '@/content/homepage';
 import PlatformModelSection from '@/components/landing/PlatformModelSection';
 import ModulesSection from '@/components/marketing/ModulesSection';
+import { SalesInfrastructureSection } from '@/components/landing/SalesInfrastructureSection';
+import { OperationsControlSection } from '@/components/landing/OperationsControlSection';
 import { SalesOpsResultsSection } from '@/components/landing/SalesOpsResultsSection';
 import { OperatorVsBoardroomSection } from '@/components/sections/OperatorVsBoardroomSection';
 import WhoItsForSection from '@/components/landing/WhoItsForSection';
@@ -255,7 +257,13 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Review / Trust — right under hero */}
+      {/* 2. Sales Infrastructure — category-defining differentiator */}
+      <SalesInfrastructureSection />
+
+      {/* 3. Operations Control — protect the revenue */}
+      <OperationsControlSection />
+
+      {/* Review / Trust */}
       <TrustSection />
 
       {/* 2. BUILT BY OPERATORS — Navy luxury, glow divider, watermark */}

@@ -45,7 +45,12 @@ export async function createLead(input: CreateLeadInput): Promise<CreateLeadResu
     })
     .select('id')
     .single();
-  if (error) return { ok: false, error: error.message };
+  if (error) {
+    const msg = error.message ?? '';
+    if (msg.includes('schema cache') || msg.includes('does not exist') || (msg.includes('relation') && msg.includes('leads')))
+      return { ok: false, error: 'Leads table is missing. In Supabase Dashboard open SQL Editor and run the migration: supabase/migrations/089_ensure_leads_table.sql (or run: supabase db push).' };
+    return { ok: false, error: error.message };
+  }
   if (!lead?.id) return { ok: false, error: 'Failed to create lead' };
   revalidatePath('/app/sales/leads');
   revalidatePath('/app/sales/leads/new');

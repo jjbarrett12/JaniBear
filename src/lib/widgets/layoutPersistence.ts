@@ -212,11 +212,31 @@ export function getDefaultLayoutForBreakpoint(
   return items;
 }
 
+/** Returns true if two layout items overlap in grid space. */
+function layoutItemsOverlap(a: LayoutItem, b: LayoutItem): boolean {
+  if (a.i === b.i) return false;
+  const aRight = a.x + a.w;
+  const aBottom = a.y + a.h;
+  const bRight = b.x + b.w;
+  const bBottom = b.y + b.h;
+  return a.x < bRight && aRight > b.x && a.y < bBottom && aBottom > b.y;
+}
+
+/** Returns true if any items in the layout overlap (would cause stacking). */
+export function hasLayoutOverlaps(layout: LayoutItem[]): boolean {
+  for (let i = 0; i < layout.length; i++) {
+    for (let j = i + 1; j < layout.length; j++) {
+      if (layoutItemsOverlap(layout[i], layout[j])) return true;
+    }
+  }
+  return false;
+}
+
 /**
  * Merge saved layout with current widget definitions:
  * - Start from default layout for this breakpoint
  * - Apply saved positions/sizes for widgets that exist in definitions
- * - Append new widgets (in definitions but not in saved) with sensible defaults
+ * - If saved layout has any overlapping items, use default layout so widgets are not stacked
  * - Exclude widgets in hiddenWidgets
  */
 export function mergeLayoutWithDefaults(
@@ -229,6 +249,7 @@ export function mergeLayoutWithDefaults(
   const defaultLayout = getDefaultLayoutForBreakpoint(visibleWidgets, breakpoint, []);
 
   if (!saved?.layout?.length) return defaultLayout;
+  if (hasLayoutOverlaps(saved.layout)) return defaultLayout;
 
   const byId = new Map<string, LayoutItem>();
   defaultLayout.forEach((item) => byId.set(item.i, { ...item }));
@@ -250,5 +271,7 @@ export function mergeLayoutWithDefaults(
     });
   });
 
-  return Array.from(byId.values());
+  const merged = Array.from(byId.values());
+  if (hasLayoutOverlaps(merged)) return defaultLayout;
+  return merged;
 }

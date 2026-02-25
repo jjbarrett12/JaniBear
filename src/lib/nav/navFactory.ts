@@ -34,7 +34,6 @@ import {
   UserCheck,
   Briefcase,
   LayoutGrid,
-  Gauge,
   LineChart,
   BarChart2,
   QrCode,
@@ -86,15 +85,15 @@ export type NavFactoryInput = {
   franchiseeEnrolled?: boolean;
 };
 
-/** Executive section: Financial Health, Account Health, Alerts, Reports, Map, Benchmarks, HelpHub. */
+/** Executive section: Dashboard (top), Financial Health, Alerts, Reports, Map, Benchmarks, HelpHub. */
 function buildExecutiveSection(): NavSection {
   return {
     id: 'executive',
     labelKey: 'navExecutive',
     theme: 'executive',
     items: [
+      { href: '/app/dashboard', labelKey: 'navDashboard', icon: LayoutDashboard },
       { href: '/app/financial-health', labelKey: 'navRevenueForecast', icon: Wallet },
-      { href: '/app/dashboard', labelKey: 'navAccountHealth', icon: Gauge },
       { href: '/app/alerts', labelKey: 'navAlerts', icon: AlertCircle },
       { href: '/app/kpis', labelKey: 'navReports', icon: BarChart3 },
       { href: '/app/map', labelKey: 'navMap', icon: Map },

@@ -326,10 +326,11 @@
   border-color: hsl(var(--border)) !important;
 }
 
-/* Elevated card: dashboard KPI tiles, charts, widgets. Premium enterprise depth. */
+/* Elevated card: dashboard KPI tiles, charts, widgets. Premium enterprise depth, solid and colorful. */
 .elevated-card {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: hsl(var(--card));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-left: 3px solid hsl(var(--primary) / 0.6);
   border-radius: 17px;
   box-shadow:
     0 12px 30px rgba(0, 0, 0, 0.45),
@@ -338,7 +339,8 @@
 }
 .elevated-card:hover {
   transform: translateY(-2px);
-  border-color: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.15);
+  border-left-color: hsl(var(--primary) / 0.85);
   box-shadow:
     0 16px 36px rgba(0, 0, 0, 0.5),
     0 6px 14px rgba(0, 0, 0, 0.4);

@@ -64,7 +64,7 @@ export function SalesInfrastructureSection() {
   return (
     <section
       id="sales-infrastructure"
-      className="relative py-[110px] md:py-[120px] bg-black border-t border-white/5"
+      className="relative py-[110px] md:py-[120px] border-t border-white/5"
       aria-labelledby="sales-infra-heading"
     >
       <div className="mx-auto max-w-[1280px] px-4 sm:px-6">
@@ -94,7 +94,7 @@ export function SalesInfrastructureSection() {
           </p>
         </div>
 
-        {/* 4 cards in a row on desktop */}
+        {/* Single row of 4 cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 md:gap-8">
           {cards.map((card) => {
             const Icon = card.Icon;

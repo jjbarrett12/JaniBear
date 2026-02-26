@@ -61,7 +61,7 @@ export function OperationsControlSection() {
   return (
     <section
       id="operations-control"
-      className="relative py-[120px] bg-black border-t border-white/10"
+      className="relative py-[120px] border-t border-white/10"
       aria-labelledby="ops-control-heading"
     >
       <div className="mx-auto max-w-[1280px] px-4 sm:px-6">
@@ -106,14 +106,14 @@ export function OperationsControlSection() {
           </p>
         </div>
 
-        {/* 2x2 card grid — 40px gap */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+        {/* Single row of 4 cards */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 md:gap-8">
           {cards.map((card) => {
             const Icon = card.Icon;
             return (
               <article
                 key={card.badge}
-                className="group rounded-2xl p-8 md:p-9 bg-black border border-emerald-400/40 transition-all duration-200 hover:-translate-y-1 hover:border-emerald-400/70"
+                className="group rounded-2xl p-6 md:p-8 bg-black border border-emerald-400/40 transition-all duration-200 hover:-translate-y-1 hover:border-emerald-400/70 min-w-0"
                 style={{
                   boxShadow: CARD_BORDER,
                   boxSizing: 'border-box',

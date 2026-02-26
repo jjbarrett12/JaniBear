@@ -7,7 +7,7 @@ export default function TrustSection() {
   return (
     <section
       id="trust"
-      className="relative py-24 bg-black"
+      className="relative py-24"
       aria-labelledby="trust-heading"
     >
       <div className="mx-auto max-w-6xl px-6">

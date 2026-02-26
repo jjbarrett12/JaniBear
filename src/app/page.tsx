@@ -12,6 +12,7 @@ import { HOMEPAGE } from '@/content/homepage';
 import { SalesInfrastructureSection } from '@/components/landing/SalesInfrastructureSection';
 import { OperationsControlSection } from '@/components/landing/OperationsControlSection';
 import { SalesOpsResultsSection } from '@/components/landing/SalesOpsResultsSection';
+import { BuiltByOperatorsSection } from '@/components/landing/BuiltByOperatorsSection';
 import { OperatorVsBoardroomSection } from '@/components/sections/OperatorVsBoardroomSection';
 import WhoItsForSection from '@/components/landing/WhoItsForSection';
 import TrustSection from '@/components/landing/TrustSection';
@@ -51,7 +52,7 @@ export default function Home() {
         className={`landing-header sticky top-0 z-50 h-14 md:h-16 py-0 flex items-center overflow-visible transition-all duration-300 bg-black text-white ${
           navScrolled ? 'landing-header-scrolled shadow-sm' : ''
         }`}
-        style={{ backgroundColor: '#000' }}
+        className="bg-[#050810]/95 backdrop-blur-sm"
       >
         <div className="container relative mx-auto px-4 h-full flex items-center justify-between gap-4 min-h-0">
           <Link href="/" className="landing-logo-wrap flex items-center shrink-0 bg-transparent text-white [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block">
@@ -264,62 +265,8 @@ export default function Home() {
       {/* Review / Trust */}
       <TrustSection />
 
-      {/* 2. BUILT BY OPERATORS — Navy luxury, glow divider, watermark */}
-      <section
-        className="relative border-t border-[#111C2F]/80 py-16 md:py-20 overflow-hidden min-h-[60vh] md:min-h-[70vh] flex flex-col justify-center"
-        style={{ backgroundColor: '#0B1220' }}
-        id="proof"
-        aria-labelledby="proof-heading"
-      >
-        {/* Radial navy glow behind headline */}
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background: 'radial-gradient(ellipse 80% 60% at 25% 50%, rgba(17,28,47,0.9) 0%, transparent 60%)',
-          }}
-          aria-hidden
-        />
-        <div className="container relative mx-auto px-4 max-w-6xl flex-1 flex flex-col md:flex-row md:items-center">
-          {/* Left: headline + watermark */}
-          <div className="flex-1 relative flex items-center justify-center md:justify-end pr-0 md:pr-12 py-12 md:py-16">
-            {/* Faint JANIBEAR watermark behind headline */}
-            <Image
-              src="/logo.png"
-              alt=""
-              width={480}
-              height={160}
-              className="absolute inset-0 m-auto w-[140%] max-w-[520px] h-auto object-contain opacity-[0.05] pointer-events-none select-none"
-              aria-hidden
-              unoptimized
-            />
-            <h2 id="proof-heading" className="relative z-10 font-heading text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white tracking-tight text-center md:text-right max-w-xl">
-              {HOMEPAGE.proofStrip.headline}{' '}
-              <span className="text-zinc-500">{HOMEPAGE.proofStrip.subline}</span>
-            </h2>
-          </div>
-          {/* Yellow vertical divider with glow + gradient */}
-          <div
-            className="hidden md:block w-1 flex-shrink-0 rounded-full min-h-[280px] self-center"
-            style={{
-              background: 'linear-gradient(180deg, rgba(255,204,0,0.8), rgba(255,204,0,0.1))',
-              boxShadow: '0 0 12px rgba(255, 204, 0, 0.5)',
-            }}
-            aria-hidden
-          />
-          {/* Right: narrative + bullets + checkmarks */}
-          <div className="flex-1 pl-0 md:pl-12 py-8 md:py-16 flex flex-col justify-center max-w-xl">
-            <p className="text-zinc-300 text-base md:text-lg leading-relaxed">{HOMEPAGE.proofStrip.tagline}</p>
-            <p className="mt-6 font-heading text-sm font-bold uppercase tracking-wider text-white">{HOMEPAGE.proofStrip.yearsHeading}</p>
-            <ul className="mt-2 space-y-1 list-disc list-inside text-zinc-300 text-sm md:text-base">
-              {HOMEPAGE.proofStrip.fieldBullets.map((b) => (
-                <li key={b}>{b}</li>
-              ))}
-            </ul>
-            <p className="mt-6 text-zinc-300 text-base leading-relaxed">{HOMEPAGE.proofStrip.needParagraph}</p>
-            <p className="mt-6 font-heading text-base font-bold text-white underline decoration-amber-400 decoration-2">{HOMEPAGE.proofStrip.soWeBuiltIt}</p>
-          </div>
-        </div>
-      </section>
+      {/* Built by Operators — premium two-column + glass card */}
+      <BuiltByOperatorsSection />
 
       {/* Results (Sales/Ops), Why, Who, Final CTA */}
       <SalesOpsResultsSection />
@@ -327,7 +274,7 @@ export default function Home() {
       <WhoItsForSection />
       <FinalCtaSection />
 
-      <footer className="bg-black text-zinc-400 py-12">
+      <footer className="text-zinc-400 py-12 border-t border-white/5">
         <div className="container mx-auto px-4 max-w-6xl">
           <div className="grid md:grid-cols-4 gap-8">
             <div className="[&>span]:bg-transparent [&>span]:shadow-none [&>span]:block">
@@ -371,6 +318,7 @@ export default function Home() {
           </div>
         </div>
       </footer>
+      </div>
     </div>
   );
 }

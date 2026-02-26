@@ -2,18 +2,45 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Landing page: black theme, white text */
+/* Landing page: single continuous backdrop (dark navy/black), no hard section bands */
 .landing-page {
-  background-color: #000 !important;
+  background-color: #050810 !important;
   color: #fff;
+  position: relative;
+  min-height: 100vh;
 }
-/* Nav: black background, white text; no border so it blends with hero */
+.landing-page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 100% 80% at 20% 20%, rgba(30, 41, 59, 0.25) 0%, transparent 50%),
+    radial-gradient(ellipse 80% 100% at 80% 80%, rgba(49, 46, 129, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 60% at 50% 50%, rgba(15, 23, 42, 0.4) 0%, transparent 70%);
+}
+.landing-page .landing-page-content {
+  position: relative;
+  z-index: 1;
+}
+/* Optional faint noise over the whole page (reduces banding) */
+.landing-page-noise {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+}
+/* Nav: match page backdrop so no harsh band; white text */
 .landing-header {
-  background: #000 !important;
+  background: #050810 !important;
   border: none !important;
 }
 .landing-header.landing-header-scrolled {
-  background: rgba(0, 0, 0, 0.95) !important;
+  background: rgba(5, 8, 16, 0.95) !important;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }

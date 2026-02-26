@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
 import { getEffectiveAccessForCurrentUser } from '@/lib/access';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { adminUsersSetPasswordBody } from '@/lib/api-validation';
 
 /**
  * POST /api/admin/users/set-password
@@ -14,20 +14,18 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Forbidden: platform admin only' }, { status: 403 });
   }
 
-  let body: { userId?: string; newPassword?: string };
+  let raw: unknown;
   try {
-    body = await request.json();
+    raw = await request.json();
   } catch {
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
   }
-  const userId = typeof body.userId === 'string' ? body.userId.trim() : '';
-  const newPassword = typeof body.newPassword === 'string' ? body.newPassword : '';
-  if (!userId || !newPassword) {
-    return NextResponse.json({ error: 'Body must include userId and newPassword' }, { status: 400 });
+  const parsed = adminUsersSetPasswordBody.safeParse(raw);
+  if (!parsed.success) {
+    const msg = parsed.error.flatten().formErrors[0] ?? parsed.error.message;
+    return NextResponse.json({ error: msg }, { status: 400 });
   }
-  if (newPassword.length < 8) {
-    return NextResponse.json({ error: 'Password must be at least 8 characters' }, { status: 400 });
-  }
+  const { userId, newPassword } = parsed.data;
 
   try {
     const admin = createAdminClient();

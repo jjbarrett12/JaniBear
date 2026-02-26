@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -15,6 +16,15 @@ const SHELL_OPTIONS: { value: ShellKey; label: string; icon: React.ComponentType
   { value: 'franchisee', label: SHELL_LABELS.franchisee, icon: Briefcase },
   { value: 'franchisor', label: SHELL_LABELS.franchisor, icon: LayoutDashboard },
 ];
+
+function CreateOrgSubmitButton() {
+  const { pending } = useFormStatus();
+  return (
+    <Button type="submit" disabled={pending}>
+      {pending ? 'Creating…' : 'Create'}
+    </Button>
+  );
+}
 
 export function CreateOrgForm() {
   const [shell, setShell] = useState<ShellKey>('owner_operator');
@@ -56,7 +66,7 @@ export function CreateOrgForm() {
       {state?.error && (
         <p className="text-sm text-destructive">{state.error}</p>
       )}
-      <Button type="submit">Create</Button>
+      <CreateOrgSubmitButton />
     </form>
   );
 }

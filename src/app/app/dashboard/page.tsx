@@ -9,9 +9,8 @@ import { CommandCenterHeader } from '@/components/dashboard/CommandCenterHeader'
 import { DashboardWithExecutiveToggle } from '@/components/dashboard/DashboardWithExecutiveToggle';
 import { DashboardDataProvider } from '@/contexts/dashboard-data-context';
 import { getCommandCenterData } from '@/lib/command-center-data';
-import { getDailyCommand } from '@/lib/daily-command-data';
-import { DailyCommandOverview } from '@/components/daily/DailyCommandOverview';
 import { getExecutiveMode } from '@/actions/executive-mode';
+import { CommandCenterSection } from './components/CommandCenterSection';
 import { Award } from 'lucide-react';
 
 export const revalidate = 60;
@@ -35,9 +34,8 @@ export default async function DashboardPage() {
     redirect('/app/sales-dashboard');
   }
 
-  const [data, dailyPayload, executivePref] = await Promise.all([
+  const [data, executivePref] = await Promise.all([
     getCommandCenterData(org.org_id),
-    getDailyCommand(org.org_id),
     getExecutiveMode(org.org_id),
   ]);
   const isFranchisee = context.orgType === 'franchisee';
@@ -50,9 +48,7 @@ export default async function DashboardPage() {
           userName={data.userName}
           subtitle="Here's what's happening with your business today."
         />
-        <section className="mb-6 rounded-xl border border-border bg-zinc-950 text-zinc-100 overflow-hidden">
-          <DailyCommandOverview data={dailyPayload} embedded />
-        </section>
+        <CommandCenterSection orgId={org.org_id} />
         {isFranchisee && (
           <div className="rounded-2xl border border-border bg-muted/30 px-6 py-4 flex items-center justify-between gap-4 flex-wrap mb-6">
             <p className="text-sm text-muted-foreground">

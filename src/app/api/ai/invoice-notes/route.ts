@@ -30,11 +30,13 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json({ notes });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('AI invoice notes error:', error);
+    const message = error instanceof Error ? error.message : 'Failed to generate notes';
+    const isTimeout = typeof message === 'string' && (message.includes('timeout') || message.includes('ETIMEDOUT'));
     return NextResponse.json(
-      { error: error.message || 'Failed to generate notes' },
-      { status: 500 }
+      { error: isTimeout ? 'AI request timed out. Please try again.' : message },
+      { status: isTimeout ? 503 : 500 }
     );
   }
 }

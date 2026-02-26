@@ -65,13 +65,18 @@ export function OperationsControlSection() {
       aria-labelledby="ops-control-heading"
     >
       <div className="mx-auto max-w-[1280px] px-4 sm:px-6">
-        {/* Section label — PROTECT THE REVENUE */}
-        <p
-          className="text-center text-xs font-bold uppercase tracking-[0.25em] text-emerald-400 mb-4"
-          style={{ textShadow: EMERALD_GLOW }}
-        >
-          Protect the revenue
-        </p>
+        {/* Boxed pill header — Protect the Revenue */}
+        <div className="flex justify-center mb-8">
+          <span
+            className="inline-flex items-center rounded-full border-2 border-emerald-400/70 bg-zinc-900/95 px-5 py-2.5 text-sm font-bold uppercase tracking-wider text-emerald-400"
+            style={{
+              boxShadow: '0 0 0 1px rgba(52, 211, 153, 0.2), 0 0 20px rgba(52, 211, 153, 0.15), inset 0 1px 0 rgba(255,255,255,0.05)',
+              textShadow: '0 0 12px rgba(52, 211, 153, 0.4)',
+            }}
+          >
+            Protect the Revenue
+          </span>
+        </div>
 
         {/* Main headline */}
         <h2

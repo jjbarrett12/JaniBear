@@ -9,8 +9,6 @@ import { BrandName } from '@/components/ui/brand-name';
 import { HeroBackdropImage } from '@/components/landing/hero-backdrop-image';
 import { HeroCenterImage } from '@/components/landing/hero-center-image';
 import { HOMEPAGE } from '@/content/homepage';
-import PlatformModelSection from '@/components/landing/PlatformModelSection';
-import ModulesSection from '@/components/marketing/ModulesSection';
 import { SalesInfrastructureSection } from '@/components/landing/SalesInfrastructureSection';
 import { OperationsControlSection } from '@/components/landing/OperationsControlSection';
 import { SalesOpsResultsSection } from '@/components/landing/SalesOpsResultsSection';
@@ -79,7 +77,7 @@ export default function Home() {
                 Plans
               </Button>
             </Link>
-            <Link href="/#platform-model" className="text-white hover:text-white">
+            <Link href="/#sales-infrastructure" className="text-white hover:text-white">
               <Button variant="ghost" size="sm" className="landing-nav-link shrink-0 h-9 px-3 text-white hover:text-white hover:bg-white/10">
                 What It Does
               </Button>
@@ -89,7 +87,7 @@ export default function Home() {
                 See It In Action
               </Button>
             </Link>
-            <Link href="/#modules" className="text-white hover:text-white">
+            <Link href="/#operations-control" className="text-white hover:text-white">
               <Button variant="ghost" size="sm" className="landing-nav-link shrink-0 h-9 px-3 text-white hover:text-white hover:bg-white/10">
                 Features
               </Button>
@@ -155,13 +153,13 @@ export default function Home() {
               <Link href="/survey" onClick={() => setMenuOpen(false)} className="px-3 py-3 text-white font-medium rounded-lg hover:bg-white/10">
                 Plans
               </Link>
-              <Link href="/#platform-model" onClick={() => setMenuOpen(false)} className="px-3 py-3 text-white font-medium rounded-lg hover:bg-white/10">
+              <Link href="/#sales-infrastructure" onClick={() => setMenuOpen(false)} className="px-3 py-3 text-white font-medium rounded-lg hover:bg-white/10">
                 What It Does
               </Link>
               <Link href="/demo" onClick={() => setMenuOpen(false)} className="px-3 py-3 text-white font-medium rounded-lg hover:bg-white/10">
                 See It In Action
               </Link>
-              <Link href="/#modules" onClick={() => setMenuOpen(false)} className="px-3 py-3 text-white font-medium rounded-lg hover:bg-white/10">
+              <Link href="/#operations-control" onClick={() => setMenuOpen(false)} className="px-3 py-3 text-white font-medium rounded-lg hover:bg-white/10">
                 Features
               </Link>
               <Link href="/contact" onClick={() => setMenuOpen(false)} className="px-3 py-3 text-white font-medium rounded-lg hover:bg-white/10">
@@ -240,7 +238,7 @@ export default function Home() {
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
-            <Link href="/#platform-model">
+            <Link href="/#sales-infrastructure">
               <Button variant="outline" size="lg" className="landing-cta-secondary border-2 border-amber-400 text-amber-300 hover:bg-amber-400/10 hover:border-amber-300 hover:text-amber-200 h-12 px-6 rounded-xl font-medium">
                 {HOMEPAGE.hero.ctaSecondary}
               </Button>
@@ -323,9 +321,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 3–8: Platform, Modules, Results (Sales/Ops), Why, Who, Final CTA */}
-      <PlatformModelSection />
-      <ModulesSection />
+      {/* Results (Sales/Ops), Why, Who, Final CTA */}
       <SalesOpsResultsSection />
       <OperatorVsBoardroomSection />
       <WhoItsForSection />
@@ -346,8 +342,8 @@ export default function Home() {
                 <li><Link href="/demo" className="hover:text-white transition-colors">Get a Private Demo</Link></li>
                 <li><Link href="/pricing" className="hover:text-white transition-colors">See Plans</Link></li>
                 <li><Link href="/survey" className="hover:text-white transition-colors">Find Your Plan</Link></li>
-                <li><Link href="/#platform-model" className="hover:text-white transition-colors">Platform</Link></li>
-                <li><Link href="/#modules" className="hover:text-white transition-colors">Modules</Link></li>
+                <li><Link href="/#sales-infrastructure" className="hover:text-white transition-colors">Platform</Link></li>
+                <li><Link href="/#operations-control" className="hover:text-white transition-colors">Modules</Link></li>
                 <li><Link href="/#why-janibear-wins" className="hover:text-white transition-colors">Why Janibear</Link></li>
                 <li><Link href="/#who-its-for" className="hover:text-white transition-colors">Who It&apos;s For</Link></li>
                 <li><Link href="/contact" className="hover:text-white transition-colors">Contact</Link></li>

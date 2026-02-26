@@ -37,14 +37,11 @@ export async function getWorkOrders(orgId: string, filters?: {
   return (data ?? []) as WorkOrder[];
 }
 
-export async function getWorkOrder(id: string): Promise<WorkOrder | null> {
+export async function getWorkOrder(id: string, orgId?: string): Promise<WorkOrder | null> {
   const supabase = await createClient();
-  const { data, error } = await supabase
-    .from('work_orders')
-    .select(WO_SELECT)
-    .eq('id', id)
-    .single();
-
+  let query = supabase.from('work_orders').select(WO_SELECT).eq('id', id);
+  if (orgId) query = query.eq('org_id', orgId);
+  const { data, error } = await query.single();
   if (error) return null;
   return data as WorkOrder;
 }
@@ -112,7 +109,7 @@ export async function updateWorkOrderStatus(
     updates.completed_at = new Date().toISOString();
   }
 
-  const { error } = await supabase.from('work_orders').update(updates).eq('id', id);
+  const { error } = await supabase.from('work_orders').update(updates).eq('id', id).eq('org_id', orgId);
   if (error) throw error;
 
   await logActivity({

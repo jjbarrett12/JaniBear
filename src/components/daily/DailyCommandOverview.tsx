@@ -14,13 +14,13 @@ function formatCurrency(n: number): string {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n);
 }
 
-const CARD_COLORS: { border: string; bg: string; icon: string; label: string }[] = [
-  { border: 'border-blue-500/50', bg: 'bg-blue-500/10', icon: 'text-blue-400', label: 'text-blue-400/90' },
-  { border: 'border-emerald-500/50', bg: 'bg-emerald-500/10', icon: 'text-emerald-400', label: 'text-emerald-400/90' },
-  { border: 'border-violet-500/50', bg: 'bg-violet-500/10', icon: 'text-violet-400', label: 'text-violet-400/90' },
-  { border: 'border-amber-500/50', bg: 'bg-amber-500/10', icon: 'text-amber-400', label: 'text-amber-400/90' },
-  { border: 'border-red-500/50', bg: 'bg-red-500/10', icon: 'text-red-400', label: 'text-red-400/90' },
-  { border: 'border-cyan-500/50', bg: 'bg-cyan-500/10', icon: 'text-cyan-400', label: 'text-cyan-400/90' },
+const CARD_COLORS: { leftAccent: string; bg: string; icon: string; label: string }[] = [
+  { leftAccent: 'border-l-blue-500/60', bg: 'bg-blue-500/10', icon: 'text-blue-400', label: 'text-blue-400/90' },
+  { leftAccent: 'border-l-emerald-500/60', bg: 'bg-emerald-500/10', icon: 'text-emerald-400', label: 'text-emerald-400/90' },
+  { leftAccent: 'border-l-violet-500/60', bg: 'bg-violet-500/10', icon: 'text-violet-400', label: 'text-violet-400/90' },
+  { leftAccent: 'border-l-amber-500/60', bg: 'bg-amber-500/10', icon: 'text-amber-400', label: 'text-amber-400/90' },
+  { leftAccent: 'border-l-red-500/60', bg: 'bg-red-500/10', icon: 'text-red-400', label: 'text-red-400/90' },
+  { leftAccent: 'border-l-cyan-500/60', bg: 'bg-cyan-500/10', icon: 'text-cyan-400', label: 'text-cyan-400/90' },
 ];
 
 function SummaryCard({
@@ -37,10 +37,10 @@ function SummaryCard({
   urgency?: 'normal' | 'warn' | 'critical';
 }) {
   const colors = CARD_COLORS[colorIndex % CARD_COLORS.length];
-  const borderClass = urgency === 'critical' ? 'border-red-500/60' : urgency === 'warn' ? 'border-amber-500/60' : colors.border;
+  const accentClass = urgency === 'critical' ? 'border-l-red-500/70' : urgency === 'warn' ? 'border-l-amber-500/70' : colors.leftAccent;
   const valueClass = urgency === 'critical' ? 'text-red-400' : urgency === 'warn' ? 'text-amber-400' : 'text-zinc-100';
   return (
-    <div className={`rounded-lg border ${borderClass} ${colors.bg} bg-zinc-900/80 px-4 py-3`}>
+    <div className={`rounded-lg border-l-2 ${accentClass} ${colors.bg} bg-zinc-900/80 px-4 py-3`}>
       <div className={`flex items-center gap-2 text-xs font-medium uppercase tracking-wider ${colors.label}`}>
         <Icon className={`h-3.5 w-3.5 ${colors.icon}`} />
         {label}
@@ -68,7 +68,7 @@ export function DailyCommandOverview({ data, embedded = false }: DailyCommandOve
 
   return (
     <div className={embedded ? '' : 'min-h-full bg-zinc-950 text-zinc-100'}>
-      <div className={`mx-auto max-w-[1600px] ${embedded ? 'px-0' : 'px-4 sm:px-6 py-6'} space-y-6`}>
+      <div className={`mx-auto max-w-[1600px] ${embedded ? 'px-0' : 'px-4 sm:px-6 py-6'} space-y-8`}>
         {/* Section header */}
         <div className="flex items-center justify-between">
           <div>
@@ -87,7 +87,7 @@ export function DailyCommandOverview({ data, embedded = false }: DailyCommandOve
         </div>
 
         {/* Top bar: 6 Daily command items as colored cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
           <SummaryCard
             label="Buildings scheduled today"
             value={buildingsScheduled}
@@ -130,18 +130,18 @@ export function DailyCommandOverview({ data, embedded = false }: DailyCommandOve
           />
         </div>
 
-        {/* Buildings table */}
-        <div>
-          <h3 className="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-2">Buildings Being Cleaned Today</h3>
-          <div className="rounded-lg border border-zinc-800 bg-zinc-900/50 overflow-hidden">
+        {/* Buildings table — spacing only, no intersecting borders */}
+        <div className="pt-2">
+          <h3 className="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-3">Buildings Being Cleaned Today</h3>
+          <div className="rounded-lg bg-zinc-900/50 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-zinc-800 text-zinc-500 text-left">
-                    <th className="px-4 py-3 font-medium">Account (Location)</th>
-                    <th className="px-4 py-3 font-medium">Service Type</th>
-                    <th className="px-4 py-3 font-medium">Crew Assigned</th>
-                    <th className="px-4 py-3 font-medium">Start Time</th>
+                  <tr className="text-zinc-500 text-left">
+                    <th className="px-4 pt-4 pb-2 font-medium">Account (Location)</th>
+                    <th className="px-4 pt-4 pb-2 font-medium">Service Type</th>
+                    <th className="px-4 pt-4 pb-2 font-medium">Crew Assigned</th>
+                    <th className="px-4 pt-4 pb-2 font-medium">Start Time</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -153,14 +153,14 @@ export function DailyCommandOverview({ data, embedded = false }: DailyCommandOve
                     </tr>
                   ) : (
                     data.buildingsToday.map((row) => (
-                      <tr key={row.id} className="border-b border-zinc-800/80 hover:bg-zinc-800/30">
-                        <td className="px-4 py-2.5">
+                      <tr key={row.id} className="hover:bg-zinc-800/30">
+                        <td className="px-4 py-3">
                           <span className="font-medium text-zinc-200">{row.clientName}</span>
                           <span className="text-zinc-500 block text-xs">{row.locationName}</span>
                         </td>
-                        <td className="px-4 py-2.5 text-zinc-400">{row.templateName ?? '—'}</td>
-                        <td className="px-4 py-2.5 text-zinc-400">{row.crewName ?? '—'}</td>
-                        <td className="px-4 py-2.5 text-zinc-400 tabular-nums">{row.startTime ?? '—'}</td>
+                        <td className="px-4 py-3 text-zinc-400">{row.templateName ?? '—'}</td>
+                        <td className="px-4 py-3 text-zinc-400">{row.crewName ?? '—'}</td>
+                        <td className="px-4 py-3 text-zinc-400 tabular-nums">{row.startTime ?? '—'}</td>
                       </tr>
                     ))
                   )}

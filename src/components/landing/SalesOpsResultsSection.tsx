@@ -19,10 +19,10 @@ export function SalesOpsResultsSection() {
           </p>
         </div>
 
-        {/* Sales — calm cards */}
+        {/* Sales — amber-highlighted cards, yellow label */}
         <div className="mt-12">
           <div className="mb-5 flex items-center justify-center">
-            <span className="inline-flex items-center rounded-full border border-zinc-600/80 bg-zinc-900/60 px-3 py-1 text-xs font-semibold text-zinc-300">
+            <span className="inline-flex items-center rounded-full border border-amber-400/60 bg-amber-500/15 px-3 py-1 text-xs font-semibold text-amber-300">
               SALES
             </span>
           </div>
@@ -35,10 +35,10 @@ export function SalesOpsResultsSection() {
           </div>
         </div>
 
-        {/* Ops — calm cards */}
+        {/* Ops — amber-highlighted cards, green label */}
         <div className="mt-10">
           <div className="mb-5 flex items-center justify-center">
-            <span className="inline-flex items-center rounded-full border border-zinc-600/80 bg-zinc-900/60 px-3 py-1 text-xs font-semibold text-zinc-300">
+            <span className="inline-flex items-center rounded-full border border-emerald-400/60 bg-emerald-500/15 px-3 py-1 text-xs font-semibold text-emerald-300">
               OPERATIONS
             </span>
           </div>
@@ -67,9 +67,11 @@ function ResultCard({
   sub: string;
 }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
+    <div
+      className="rounded-2xl border border-amber-400/25 bg-amber-500/5 p-6 shadow-[0_0_0_1px_rgba(251,191,36,0.12),0_0_16px_rgba(251,191,36,0.06)] transition-all duration-200 hover:border-amber-400/40 hover:shadow-[0_0_0_1px_rgba(251,191,36,0.2),0_0_20px_rgba(251,191,36,0.1)]"
+    >
       <div className="flex items-center justify-center">
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-lg">
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-amber-400/20 bg-amber-500/10 text-lg">
           {icon}
         </div>
       </div>

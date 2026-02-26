@@ -68,6 +68,19 @@ export function SalesInfrastructureSection() {
       aria-labelledby="sales-infra-heading"
     >
       <div className="mx-auto max-w-[1280px] px-4 sm:px-6">
+        {/* Boxed pill header — for Sales Teams that want to Dominate */}
+        <div className="flex justify-center mb-8">
+          <span
+            className="inline-flex items-center rounded-full border-2 border-amber-400/70 bg-zinc-900/95 px-5 py-2.5 text-sm font-bold uppercase tracking-wider text-amber-300"
+            style={{
+              boxShadow: '0 0 0 1px rgba(255, 193, 7, 0.2), 0 0 20px rgba(255, 193, 7, 0.15), inset 0 1px 0 rgba(255,255,255,0.05)',
+              textShadow: '0 0 12px rgba(255, 193, 7, 0.4)',
+            }}
+          >
+            For Sales Teams That Want to Dominate
+          </span>
+        </div>
+
         {/* Header */}
         <div className="text-center mb-16 md:mb-20">
           <h2
@@ -81,14 +94,14 @@ export function SalesInfrastructureSection() {
           </p>
         </div>
 
-        {/* 2x2 grid — 36–40px gap */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-9 md:gap-10">
+        {/* 4 cards in a row on desktop */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 md:gap-8">
           {cards.map((card) => {
             const Icon = card.Icon;
             return (
               <article
                 key={card.badge}
-                className="group rounded-2xl p-8 md:p-9 bg-zinc-900/80 border border-amber-400/20 transition-all duration-200 hover:-translate-y-1 hover:border-amber-400/40"
+                className="group rounded-2xl p-6 md:p-8 bg-zinc-900/80 border min-w-0 border-amber-400/20 transition-all duration-200 hover:-translate-y-1 hover:border-amber-400/40"
                 style={{
                   boxShadow: `${CARD_BORDER_GLOW}, inset 0 1px 0 rgba(255,255,255,0.03)`,
                 }}

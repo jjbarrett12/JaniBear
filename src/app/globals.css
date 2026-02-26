@@ -467,6 +467,19 @@
   }
 }
 
+/* Sheet (drawer) slide-in from right */
+@keyframes sheet-slide-in-right {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+.sheet-animate-in-right {
+  animation: sheet-slide-in-right 0.25s ease-out;
+}
+
 /* Hide scrollbar for proposal sample scroll (keep functionality) */
 .hide-scrollbar {
   -ms-overflow-style: none;

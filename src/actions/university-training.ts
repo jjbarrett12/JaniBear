@@ -403,11 +403,23 @@ export async function submitQuiz(
   passed: boolean
 ): Promise<{ error?: string }> {
   try {
+    const org = await requireOrg();
     const uid = await getCurrentUserId();
     if (!uid) return { error: 'Unauthorized' };
     const supabase = await createClient();
+    const { data: enrollment } = await supabase
+      .from('jb_training_enrollments')
+      .select('id, course_id')
+      .eq('id', enrollmentId)
+      .eq('user_id', uid)
+      .single();
+    if (!enrollment) return { error: 'Enrollment not found or access denied' };
     const { data: quiz } = await supabase.from('jb_training_quizzes').select('course_id, passing_score').eq('id', quizId).single();
     if (!quiz) return { error: 'Quiz not found' };
+    if (quiz.course_id !== enrollment.course_id) return { error: 'Quiz does not belong to this enrollment' };
+    const { data: course } = await supabase.from('jb_training_courses').select('org_id').eq('id', quiz.course_id).single();
+    if (!course) return { error: 'Course not found' };
+    if (course.org_id != null && course.org_id !== org.id) return { error: 'Course not available to your organization' };
     await supabase.from('jb_training_quiz_submissions').insert({
       quiz_id: quizId,
       user_id: uid,

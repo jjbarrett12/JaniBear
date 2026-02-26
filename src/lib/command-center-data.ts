@@ -2,6 +2,7 @@
  * Owner Command Center: server-side aggregates scoped by org_id.
  * Used by /app/dashboard. Cache with revalidate: 60.
  */
+import { unstable_cache } from 'next/cache';
 import { createClient } from '@/lib/supabase/server';
 
 const TODAY = new Date().toISOString().slice(0, 10);
@@ -171,9 +172,15 @@ const FALLBACK_DATA: CommandCenterData = {
   userName: 'there',
 };
 
+const CACHE_REVALIDATE_SECONDS = 60;
+
 export async function getCommandCenterData(orgId: string): Promise<CommandCenterData> {
   try {
-    return await getCommandCenterDataInner(orgId);
+    return await unstable_cache(
+      () => getCommandCenterDataInner(orgId),
+      ['command-center', orgId],
+      { revalidate: CACHE_REVALIDATE_SECONDS }
+    )();
   } catch (e) {
     if (process.env.NODE_ENV === 'development') {
       console.error('[getCommandCenterData]', e);
@@ -218,15 +225,15 @@ async function getCommandCenterDataInner(orgId: string): Promise<CommandCenterDa
     supabase.from('accounts').select('contract_value_monthly').eq('org_id', orgId).not('contract_value_monthly', 'is', null),
     supabase.from('issues').select('id', { count: 'exact', head: true }).eq('org_id', orgId).eq('status', 'open'),
     supabase.from('inspections').select('id, total_score').eq('org_id', orgId).gte('created_at', sevenDaysAgo).not('total_score', 'is', null),
-    supabase.from('accounts').select('id').eq('org_id', orgId).eq('status', 'active'),
+    supabase.from('accounts').select('id').eq('org_id', orgId).eq('status', 'active').limit(5000),
     supabase.from('contract_renewals').select('id').eq('org_id', orgId).lt('expires_at', new Date(Date.now() + 30 * 864e5).toISOString().slice(0, 10)).gte('expires_at', TODAY).in('renewal_status', ['upcoming', 'notified_90d', 'notified_60d', 'notified_30d', 'proposal_sent', 'negotiating']).catch(() => ({ data: [], count: 0 })),
     supabase.from('crews').select('id', { count: 'exact', head: true }).eq('org_id', orgId),
     supabase.from('work_orders').select('id', { count: 'exact', head: true }).eq('org_id', orgId).in('status', ['pending', 'assigned']).lte('sla_deadline', new Date(now.getTime() + 864e5).toISOString()).catch(() => ({ count: 0 })),
     supabase.from('schedules').select('id, recurrence, weekday, start_date').eq('org_id', orgId).eq('is_active', true).catch(() => ({ data: [] })),
-    supabase.from('facilities').select('id, account_id').eq('org_id', orgId),
-    supabase.from('inspections').select('facility_id, total_score').eq('org_id', orgId).not('total_score', 'is', null).gte('created_at', thirtyDaysAgo),
+    supabase.from('facilities').select('id, account_id').eq('org_id', orgId).limit(5000),
+    supabase.from('inspections').select('facility_id, total_score').eq('org_id', orgId).not('total_score', 'is', null).gte('created_at', thirtyDaysAgo).limit(10000),
     supabase.from('inspections').select('id, facility_id, total_score').eq('org_id', orgId).gte('created_at', YESTERDAY + 'T00:00:00').lt('created_at', TODAY + 'T00:00:00'),
-    supabase.from('invoices').select('total_amount, due_date, status').eq('org_id', orgId).not('status', 'in', '("paid","cancelled","refunded")'),
+    supabase.from('invoices').select('total_amount, due_date, status').eq('org_id', orgId).not('status', 'in', '("paid","cancelled","refunded")').limit(AR_SNAPSHOT_LIMIT),
     supabase.from('bids').select('id, total_estimated_cost').eq('org_id', orgId).in('status', ['draft', 'sent', 'accepted']),
     supabase.from('sales_proposals').select('id, proposal_value').eq('org_id', orgId).eq('status', 'active').catch(() => ({ data: [] })),
     supabase.from('crm_activities').select('id', { count: 'exact', head: true }).eq('org_id', orgId).eq('due_date', TODAY).catch(() => ({ count: 0 })),
@@ -397,13 +404,17 @@ async function getCommandCenterDataInner(orgId: string): Promise<CommandCenterDa
  * Source: invoices where status NOT IN (paid, cancelled, refunded).
  * Use for Financial Health Overview and AR tab so they show real data.
  */
+/** Max invoices to aggregate in memory; beyond this use an RPC for exact AR. */
+const AR_SNAPSHOT_LIMIT = 10_000;
+
 export async function getARSnapshotForOrg(orgId: string): Promise<ARSnapshotExtended> {
   const supabase = await createClient();
   const { data } = await supabase
     .from('invoices')
     .select('total_amount, due_date')
     .eq('org_id', orgId)
-    .not('status', 'in', '("paid","cancelled","refunded")');
+    .not('status', 'in', '("paid","cancelled","refunded")')
+    .limit(AR_SNAPSHOT_LIMIT);
   const rows = data ?? [];
   const todayTs = new Date(TODAY).getTime();
   let totalOutstanding = 0;

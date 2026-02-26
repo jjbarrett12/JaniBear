@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { getEffectiveAccessForCurrentUser } from '@/lib/access';
+import { adminUsersEnableBody } from '@/lib/api-validation';
 
 /**
  * POST /api/admin/users/enable
@@ -15,13 +16,18 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  let body: { membershipId?: string; userId?: string; tenantId?: string };
+  let raw: unknown;
   try {
-    body = await request.json();
+    raw = await request.json();
   } catch {
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
   }
-
+  const parsed = adminUsersEnableBody.safeParse(raw);
+  if (!parsed.success) {
+    const msg = parsed.error.flatten().formErrors[0] ?? parsed.error.message;
+    return NextResponse.json({ error: msg }, { status: 400 });
+  }
+  const body = parsed.data;
   const membershipId = body.membershipId;
   const userId = body.userId;
   const tenantId = body.tenantId;

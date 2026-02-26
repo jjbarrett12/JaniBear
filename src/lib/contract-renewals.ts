@@ -52,20 +52,41 @@ export async function createRenewal(
   return data as ContractRenewal;
 }
 
+export const RENEWAL_STATUS_VALUES = [
+  'upcoming',
+  'notified_90d',
+  'notified_60d',
+  'notified_30d',
+  'proposal_sent',
+  'negotiating',
+  'renewed',
+  'lost',
+  'expired',
+] as const;
+
+export type RenewalStatusValue = (typeof RENEWAL_STATUS_VALUES)[number];
+
+export function isAllowedRenewalStatus(value: string): value is RenewalStatusValue {
+  return RENEWAL_STATUS_VALUES.includes(value as RenewalStatusValue);
+}
+
 export async function updateRenewalStatus(
   id: string,
+  orgId: string,
   status: string,
   extras?: Partial<ContractRenewal>
 ): Promise<void> {
   const supabase = await createClient();
-  await supabase
+  const { error } = await supabase
     .from('contract_renewals')
     .update({
       renewal_status: status,
       ...extras,
       updated_at: new Date().toISOString(),
     })
-    .eq('id', id);
+    .eq('id', id)
+    .eq('org_id', orgId);
+  if (error) throw error;
 }
 
 /**

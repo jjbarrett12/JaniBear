@@ -13,8 +13,8 @@ import { SalesInfrastructureSection } from '@/components/landing/SalesInfrastruc
 import { OperationsControlSection } from '@/components/landing/OperationsControlSection';
 import { SalesOpsResultsSection } from '@/components/landing/SalesOpsResultsSection';
 import { BuiltByOperatorsSection } from '@/components/landing/BuiltByOperatorsSection';
-import { OperatorVsBoardroomSection } from '@/components/sections/OperatorVsBoardroomSection';
 import PersonaSection from '@/components/marketing/persona-section';
+import { ConversionWorkflowSection } from '@/components/marketing/ConversionWorkflowSection';
 import TrustSection from '@/components/landing/TrustSection';
 import FinalCtaSection from '@/components/landing/FinalCtaSection';
 
@@ -47,11 +47,13 @@ export default function Home() {
   }, []);
 
   const navClassName =
-    'landing-header sticky top-0 z-50 h-14 md:h-16 py-0 flex items-center overflow-visible transition-all duration-300 bg-black text-white bg-[#050810]/95 backdrop-blur-sm' +
-    (navScrolled ? ' landing-header-scrolled shadow-sm' : '');
+    'landing-header sticky top-0 z-50 h-14 md:h-16 py-0 flex items-center overflow-visible transition-all duration-300 text-white bg-[#0B0B0F]/95 backdrop-blur-md border-b border-white/5' +
+    (navScrolled ? ' landing-header-scrolled shadow-lg shadow-black/20' : '');
 
   const content = (
-    <div className="landing-page min-h-screen bg-black text-white pb-20 md:pb-0">
+    <div className="landing-page min-h-screen text-white pb-20 md:pb-0">
+      {/* Layer 3: animated network lines */}
+      <div className="landing-page-network-lines" aria-hidden />
       <nav className={navClassName}>
         <div className="container relative mx-auto px-4 h-full flex items-center justify-between gap-4 min-h-0">
           <Link href="/" className="landing-logo-wrap flex items-center shrink-0 bg-transparent text-white [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block">
@@ -255,24 +257,34 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 2. Who it's for — persona cards + preview (below the fold) */}
+      {/* 2. How it works — visual workflow / conversion */}
+      <ConversionWorkflowSection />
+
+      {/* 3. Who it's for — persona cards (below the fold) */}
       <PersonaSection />
+      <hr className="landing-section-divider" />
 
       {/* 3. Sales Infrastructure — category-defining differentiator */}
       <SalesInfrastructureSection />
 
       {/* 4. Operations Control — protect the revenue */}
       <OperationsControlSection />
+      <hr className="landing-section-divider" />
+
+      {/* 5. Conversion workflow — Scan → Scope → Price → Proposal → Win → Execute */}
+      <ConversionWorkflowSection />
+      <hr className="landing-section-divider" />
 
       {/* Review / Trust */}
       <TrustSection />
 
       {/* Built by Operators — premium two-column + glass card */}
       <BuiltByOperatorsSection />
+      <hr className="landing-section-divider" />
 
       {/* Results (Sales/Ops), Why, Who, Final CTA */}
       <SalesOpsResultsSection />
-      <OperatorVsBoardroomSection />
+      <hr className="landing-section-divider" />
       <FinalCtaSection />
 
       <footer className="text-zinc-400 py-12">

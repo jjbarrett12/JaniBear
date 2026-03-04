@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Check } from 'lucide-react';
+import { CheckCircle2 } from 'lucide-react';
 import { loadStripe } from '@stripe/stripe-js';
 import type { BusinessModel } from './business-model-selector';
 import { HelpHubQRUpsell } from './helphubqr-upsell';
@@ -700,24 +700,28 @@ export function ModularPricing({ businessModel, dark = true }: ModularPricingPro
                 key={`${platform}-${tier.id}`}
                 className={
                   dark
-                    ? `relative bg-zinc-900/60 border-2 flex flex-col overflow-hidden ${tier.popular ? 'border-amber-500/50 shadow-lg shadow-amber-500/5' : 'border-zinc-800 hover:border-zinc-700'}`
-                    : `relative flex flex-col ${tier.popular ? 'border-2 border-primary/50 shadow-lg' : ''}`
+                    ? `relative flex flex-col overflow-hidden transition-all duration-300 hover:-translate-y-1 ${
+                        tier.popular
+                          ? 'scale-[1.02] bg-white/5 border-2 border-indigo-400/50 shadow-[0_20px_60px_rgba(0,0,0,0.35)] shadow-indigo-500/10 hover:border-indigo-400/70'
+                          : 'bg-white/5 border border-white/10 backdrop-blur-md shadow-[0_20px_60px_rgba(0,0,0,0.35)] hover:border-indigo-400/40'
+                      }`
+                    : `relative flex flex-col ${tier.popular ? 'border-2 border-primary/50 shadow-lg scale-[1.02]' : ''}`
                 }
               >
                 {tier.popular && (
-                  <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 to-amber-400" />
+                  <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 to-purple-500" />
                 )}
                 <CardHeader className="pb-4 pt-6 px-6">
                   <div className="flex items-center justify-between gap-2">
                     <CardTitle className={dark ? 'text-xl text-white' : 'text-xl'}>{tier.name}</CardTitle>
                     {tier.popular && (
-                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-amber-500/20 text-amber-400 border border-amber-400/40">
-                        Most popular
+                      <span className="rounded-full bg-indigo-500 px-3 py-1 text-xs font-semibold text-white">
+                        Most Popular
                       </span>
                     )}
                   </div>
                   <p className="text-sm text-zinc-400 mt-1">{tier.userLimit}</p>
-                  <p className="text-sm text-amber-400/90 mt-2 font-medium">{tier.microcopy}</p>
+                  <p className="text-sm text-indigo-400/90 mt-2 font-medium">{tier.microcopy}</p>
                   <div className="mt-5">
                     {billingInterval === 'monthly' ? (
                       <>
@@ -747,7 +751,7 @@ export function ModularPricing({ businessModel, dark = true }: ModularPricingPro
                   <ul className="space-y-3 text-sm text-zinc-300">
                     {tier.features.map((f, i) => (
                       <li key={i} className="flex items-start gap-2.5">
-                        <Check className="h-4 w-4 text-amber-400/80 flex-shrink-0 mt-0.5" />
+                        <CheckCircle2 className="h-4 w-4 text-emerald-400 flex-shrink-0 mt-0.5" />
                         <span>{f}</span>
                       </li>
                     ))}
@@ -759,7 +763,7 @@ export function ModularPricing({ businessModel, dark = true }: ModularPricingPro
                 </CardContent>
                 <CardFooter className="pt-6 pb-6 px-6">
                   <Button
-                    className={dark ? `w-full h-12 text-base font-semibold border-0 ${tier.popular ? 'bg-amber-500 text-white hover:bg-amber-400' : 'bg-zinc-700 text-white hover:bg-zinc-600'}` : 'w-full h-12'}
+                    className={dark ? `w-full h-12 text-base font-semibold border-0 transition-all duration-300 ${tier.popular ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-[0_4px_20px_rgba(99,102,241,0.4)] hover:shadow-[0_8px_32px_rgba(99,102,241,0.5)] hover:brightness-110' : 'bg-zinc-700 text-white hover:bg-zinc-600'}` : 'w-full h-12'}
                     variant={dark ? undefined : tier.popular ? 'default' : 'outline'}
                     size="lg"
                     onClick={() => handleCheckout(tier.id)}

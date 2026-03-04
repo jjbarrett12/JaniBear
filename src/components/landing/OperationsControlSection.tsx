@@ -2,9 +2,6 @@
 
 import { Check, LayoutDashboard, ClipboardCheck, Users, ShieldAlert } from 'lucide-react';
 
-const CARD_BORDER = '0 0 0 1px rgba(52, 211, 153, 0.4), 0 0 24px rgba(52, 211, 153, 0.12)';
-const CARD_BORDER_HOVER = '0 0 0 1px rgba(52, 211, 153, 0.7), 0 0 32px rgba(52, 211, 153, 0.22)';
-
 const cards = [
   {
     badge: 'COMMAND',
@@ -52,70 +49,48 @@ export function OperationsControlSection() {
       aria-labelledby="ops-control-heading"
     >
       <div className="mx-auto max-w-[1280px] px-4 sm:px-6">
-        {/* Section intro — anchored in card */}
-        <div className="rounded-2xl border border-zinc-700/70 bg-zinc-900/50 px-6 py-8 md:px-10 md:py-10 mb-12 md:mb-16 max-w-4xl mx-auto text-center shadow-lg shadow-black/20">
+        {/* Section intro — glass card */}
+        <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md px-6 py-8 md:px-10 md:py-10 mb-12 md:mb-16 max-w-4xl mx-auto text-center shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
           <div className="flex justify-center mb-5">
-            <span
-              className="inline-flex items-center rounded-full border-2 border-emerald-400/70 bg-zinc-900/95 px-5 py-2.5 text-sm font-bold uppercase tracking-wider text-emerald-400"
-              style={{
-                boxShadow: '0 0 0 1px rgba(52, 211, 153, 0.2), 0 0 20px rgba(52, 211, 153, 0.15), inset 0 1px 0 rgba(255,255,255,0.05)',
-                textShadow: '0 0 12px rgba(52, 211, 153, 0.4)',
-              }}
-            >
+            <span className="inline-flex items-center rounded-full border border-emerald-400/30 bg-emerald-500/10 px-5 py-2.5 text-sm font-semibold uppercase tracking-wider text-emerald-300">
               Protect the Revenue
             </span>
           </div>
           <h2
             id="ops-control-heading"
-            className="font-heading text-4xl sm:text-5xl md:text-6xl font-bold text-white tracking-tight text-center leading-[1.1]"
+            className="font-heading text-4xl md:text-5xl font-semibold text-white tracking-tight text-center leading-[1.1]"
           >
             Winning the Account Is Only Half the Battle.
           </h2>
-          <p className="mx-auto mt-6 max-w-[900px] text-center text-lg md:text-xl text-white font-medium leading-relaxed">
+          <p className="mx-auto mt-6 max-w-[900px] text-center text-lg text-gray-400 leading-relaxed">
             High attrition rates kill janitorial companies. What happens after the contract is signed determines whether you stay a $100K company — or scale into a $100M operation.
           </p>
         </div>
 
-        {/* Single row of 3 cards — larger */}
+        {/* Single row of 3 cards — glass morphism, indigo-style icon containers */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
           {cards.map((card) => {
             const Icon = card.Icon;
             return (
               <article
                 key={card.badge}
-                className="group rounded-2xl p-8 md:p-10 bg-black border border-emerald-400/40 transition-all duration-200 hover:-translate-y-1 hover:border-emerald-400/70 min-w-0"
-                style={{
-                  boxShadow: CARD_BORDER,
-                  boxSizing: 'border-box',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.boxShadow = CARD_BORDER_HOVER;
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.boxShadow = CARD_BORDER;
-                }}
+                className="group rounded-2xl p-8 md:p-10 min-w-0 bg-white/5 border border-white/10 backdrop-blur-md shadow-[0_20px_60px_rgba(0,0,0,0.35)] transition-all duration-300 hover:-translate-y-1 hover:border-indigo-400/40"
               >
-                <div
-                  className="inline-flex items-center rounded-full border border-emerald-400/50 bg-emerald-500/15 px-3 py-1 text-xs font-bold uppercase tracking-widest text-emerald-300 mb-5"
-                  style={{ textShadow: '0 0 12px rgba(52, 211, 153, 0.4)' }}
-                >
+                <div className="inline-flex items-center rounded-full border border-indigo-400/20 bg-indigo-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-indigo-300 mb-5">
                   {card.badge}
                 </div>
                 <div className="flex items-start gap-4 mb-4">
-                  <div
-                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-emerald-400/40 bg-emerald-500/10 text-emerald-400"
-                    style={{ boxShadow: '0 0 12px rgba(52, 211, 153, 0.2)' }}
-                  >
-                    <Icon className="h-5 w-5" strokeWidth={2} />
+                  <div className="flex size-12 shrink-0 items-center justify-center rounded-xl border border-indigo-400/20 bg-indigo-500/10 text-indigo-400">
+                    <Icon className="h-6 w-6 transition-transform duration-300 group-hover:rotate-6" strokeWidth={2} aria-hidden />
                   </div>
-                  <h3 className="font-heading text-xl md:text-2xl font-bold text-white tracking-tight pt-1">
+                  <h3 className="font-heading text-xl md:text-2xl font-semibold text-white tracking-tight pt-1">
                     {card.title}
                   </h3>
                 </div>
                 <ul className="space-y-2.5 mb-6">
                   {card.bullets.map((bullet) => (
-                    <li key={bullet} className="flex items-center gap-2.5 text-sm text-white font-medium">
-                      <Check className="h-4 w-4 shrink-0 text-emerald-400" strokeWidth={2.5} aria-hidden style={{ filter: 'drop-shadow(0 0 4px rgba(52, 211, 153, 0.5))' }} />
+                    <li key={bullet} className="flex items-center gap-2.5 text-sm text-zinc-300">
+                      <Check className="h-4 w-4 shrink-0 text-emerald-400" strokeWidth={2.5} aria-hidden />
                       {bullet}
                     </li>
                   ))}
@@ -128,9 +103,9 @@ export function OperationsControlSection() {
           })}
         </div>
 
-        {/* Final tagline — in card */}
+        {/* Final tagline — glass card */}
         <div className="mt-20 md:mt-24">
-          <div className="rounded-2xl border border-zinc-700/70 bg-zinc-900/50 px-6 py-8 max-w-2xl mx-auto text-center shadow-lg shadow-black/20">
+          <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md px-6 py-8 max-w-2xl mx-auto text-center shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
             <p className="text-lg md:text-xl font-bold text-white tracking-tight leading-snug">
               Half the battle is winning the account.
               <br />

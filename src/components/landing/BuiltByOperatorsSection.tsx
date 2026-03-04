@@ -85,7 +85,7 @@ export function BuiltByOperatorsSection() {
                 </p>
 
                 <Link
-                  href="/see-it-in-action"
+                  href="/demo"
                   className="inline-flex items-center text-yellow-400 font-semibold hover:text-yellow-300 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#050810] rounded"
                 >
                   So we built JANIBEAR →

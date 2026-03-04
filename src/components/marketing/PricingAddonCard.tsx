@@ -1,24 +1,29 @@
 'use client';
 
 import Link from 'next/link';
-import { Check } from 'lucide-react';
+import { CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { PricingAddon } from '@/lib/pricing';
+
+const ADDON_CATEGORY: Record<string, string> = {
+  lidar: 'LIDAR ENGINE',
+  'ai-proposal': 'AI AUTOMATION',
+  helphub: 'CLIENT EXPERIENCE',
+};
 
 interface PricingAddonCardProps {
   addon: PricingAddon;
 }
 
 export function PricingAddonCard({ addon }: PricingAddonCardProps) {
+  const category = addon.badge ?? ADDON_CATEGORY[addon.id] ?? 'ADD-ON';
   return (
-    <div className="relative flex flex-col rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm transition-all duration-300 hover:border-white/20 hover:shadow-lg md:p-8">
-      {addon.badge && (
-        <span className="absolute right-5 top-5 rounded-full border border-amber-400/30 bg-amber-500/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-amber-400">
-          {addon.badge}
-        </span>
-      )}
+    <div className="relative flex flex-col rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-md shadow-[0_20px_60px_rgba(0,0,0,0.35)] transition-all duration-300 hover:-translate-y-1 hover:border-indigo-400/40 md:p-8">
+      <p className="text-[10px] font-semibold uppercase tracking-widest text-indigo-400/90 mb-2">
+        {category}
+      </p>
 
-      <h3 className="font-heading text-xl font-semibold text-white pr-20">
+      <h3 className="font-heading text-xl font-semibold text-white">
         {addon.name}
       </h3>
 
@@ -32,9 +37,7 @@ export function PricingAddonCard({ addon }: PricingAddonCardProps) {
       <ul className="mt-6 flex-1 space-y-3" role="list">
         {addon.bullets.map((bullet) => (
           <li key={bullet} className="flex items-start gap-2.5 text-sm text-zinc-300">
-            <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-cyan-500/20 text-cyan-400">
-              <Check className="h-2.5 w-2.5" strokeWidth={2.5} aria-hidden />
-            </span>
+            <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" aria-hidden />
             {bullet}
           </li>
         ))}

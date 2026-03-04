@@ -10,11 +10,11 @@ export function SalesOpsResultsSection() {
             RESULTS
           </div>
 
-          <h2 className="mt-5 text-4xl font-extrabold tracking-tight text-amber-300 drop-shadow-[0_0_18px_rgba(250,204,21,0.35)] md:text-5xl">
+          <h2 className="mt-5 font-heading text-4xl md:text-5xl font-semibold tracking-tight text-white">
             Sales Wins Contracts. Ops Keeps Them.
           </h2>
 
-          <p className="mx-auto mt-4 max-w-2xl text-base text-zinc-400 md:text-lg">
+          <p className="mx-auto mt-4 max-w-2xl text-lg text-gray-400">
             JANIBEAR connects bidding + delivery so you don&apos;t win jobs you can&apos;t run—or lose jobs you already earned.
           </p>
         </div>
@@ -68,10 +68,10 @@ function ResultCard({
 }) {
   return (
     <div
-      className="rounded-2xl border border-amber-400/25 bg-amber-500/5 p-6 shadow-[0_0_0_1px_rgba(251,191,36,0.12),0_0_16px_rgba(251,191,36,0.06)] transition-all duration-200 hover:border-amber-400/40 hover:shadow-[0_0_0_1px_rgba(251,191,36,0.2),0_0_20px_rgba(251,191,36,0.1)]"
+      className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md p-6 shadow-[0_20px_60px_rgba(0,0,0,0.35)] transition-all duration-300 hover:-translate-y-1 hover:border-indigo-400/40"
     >
       <div className="flex items-center justify-center">
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-amber-400/20 bg-amber-500/10 text-lg">
+        <div className="flex size-12 items-center justify-center rounded-xl border border-indigo-400/20 bg-indigo-500/10 text-lg">
           {icon}
         </div>
       </div>

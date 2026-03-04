@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Check } from 'lucide-react';
+import { CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { PricingPlan } from '@/lib/pricing';
 
@@ -12,24 +12,27 @@ interface PricingPlanCardProps {
 export function PricingPlanCard({ plan }: PricingPlanCardProps) {
   return (
     <div
-      className={`relative flex flex-col rounded-2xl border bg-white/5 p-8 backdrop-blur-sm transition-all duration-300 hover:border-white/20 hover:shadow-xl md:p-10 ${
+      className={`relative flex flex-col rounded-2xl border bg-white/5 p-8 backdrop-blur-md shadow-[0_20px_60px_rgba(0,0,0,0.35)] transition-all duration-300 md:p-10 ${
         plan.mostPopular
-          ? 'border-cyan-400/40 shadow-[0_0_40px_rgba(34,211,238,0.12)]'
-          : 'border-white/10'
+          ? 'scale-[1.02] border-indigo-400/50 shadow-indigo-500/10 hover:-translate-y-1 hover:border-indigo-400/70'
+          : 'border-white/10 hover:-translate-y-1 hover:border-indigo-400/40'
       }`}
     >
       {plan.mostPopular && (
-        <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-          <span className="rounded-full border border-cyan-400/40 bg-cyan-500/15 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-cyan-400">
-            Most Popular
-          </span>
-        </div>
+        <>
+          <div className="absolute top-0 left-0 right-0 h-1 rounded-t-2xl bg-gradient-to-r from-indigo-500 to-purple-500" />
+          <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+            <span className="rounded-full bg-indigo-500 px-3 py-1 text-xs font-semibold text-white">
+              Most Popular
+            </span>
+          </div>
+        </>
       )}
 
       <p className="text-sm font-medium uppercase tracking-wider text-zinc-500">
         {plan.label}
       </p>
-      <h3 className="mt-2 font-heading text-2xl font-bold text-white md:text-3xl">
+      <h3 className="mt-2 font-heading text-2xl font-semibold text-white md:text-3xl">
         {plan.name}
       </h3>
 
@@ -40,12 +43,10 @@ export function PricingPlanCard({ plan }: PricingPlanCardProps) {
         <span className="text-sm text-zinc-400">{plan.suffix}</span>
       </div>
 
-      <ul className="mt-8 flex-1 space-y-4" role="list">
+      <ul className="mt-8 flex-1 space-y-3" role="list">
         {plan.bullets.map((bullet) => (
-          <li key={bullet} className="flex items-start gap-3 text-sm text-zinc-300">
-            <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-cyan-500/20 text-cyan-400">
-              <Check className="h-3 w-3" strokeWidth={2.5} aria-hidden />
-            </span>
+          <li key={bullet} className="flex items-start gap-2.5 text-sm text-zinc-300">
+            <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" aria-hidden />
             {bullet}
           </li>
         ))}
@@ -57,7 +58,7 @@ export function PricingPlanCard({ plan }: PricingPlanCardProps) {
           size="lg"
           className={`w-full rounded-xl font-semibold ${
             plan.mostPopular
-              ? 'bg-cyan-500 text-white hover:bg-cyan-400 shadow-[0_0_24px_rgba(34,211,238,0.2)]'
+              ? 'landing-cta text-white shadow-[0_4px_20px_rgba(99,102,241,0.4)] hover:shadow-[0_8px_32px_rgba(99,102,241,0.5)]'
               : 'bg-white/10 text-white hover:bg-white/15 border border-white/20'
           }`}
         >

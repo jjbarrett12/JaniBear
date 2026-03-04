@@ -25,7 +25,6 @@ const PERSONAS: Record<
     bullets: string[];
     accent: 'amber' | 'cyan' | 'purple';
     icon: typeof ClipboardCheck;
-    badge?: string;
     whatYouGet: string[];
     exampleWorkflow: string[];
   }
@@ -63,7 +62,6 @@ const PERSONAS: Record<
     ],
     accent: 'cyan',
     icon: Network,
-    badge: 'MOST POPULAR',
     whatYouGet: [
       'Franchise dashboards',
       'Territory routing',
@@ -159,21 +157,13 @@ function useCardMouseGlow(enabled: boolean) {
 }
 
 export default function PersonaSection() {
-  const [selected, setSelected] = useState<PersonaKey>('franchise');
-  const [previewKey, setPreviewKey] = useState<PersonaKey>('franchise');
+  const [selected, setSelected] = useState<PersonaKey | null>(null);
   const reducedMotion = useReducedMotion();
-
-  useEffect(() => {
-    setPreviewKey(selected);
-  }, [selected]);
-
-  const persona = PERSONAS[previewKey];
-  const accent = ACCENT_GLOW[persona.accent] ?? ACCENT_GLOW.cyan;
 
   return (
     <section
       id="who-its-for"
-      className="relative border-t border-zinc-800/80 bg-zinc-950 py-28"
+      className="relative py-28"
       aria-labelledby="persona-heading"
     >
       <div className="mx-auto max-w-7xl px-6">
@@ -191,65 +181,51 @@ export default function PersonaSection() {
           </p>
         </header>
 
-        <div className="mt-16 grid grid-cols-1 gap-10 lg:grid-cols-12">
-          {/* Cards area — col-span-7 */}
-          <div className="relative lg:col-span-7">
-            {/* Animated connector flow — desktop only */}
-            {!reducedMotion && (
-              <div
-                className="absolute inset-0 hidden lg:block"
-                aria-hidden
+        {/* Three equal cards only — no preview panel */}
+        <div className="relative mt-16 grid grid-cols-1 gap-8 md:grid-cols-3 md:gap-8">
+          {/* Animated connector flow — desktop only, behind cards */}
+          {!reducedMotion && (
+            <div
+              className="absolute inset-0 hidden md:block"
+              aria-hidden
+            >
+              <svg
+                className="h-full w-full"
+                preserveAspectRatio="none"
+                viewBox="0 0 300 100"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
               >
-                <svg
-                  className="h-full w-full"
-                  preserveAspectRatio="none"
-                  viewBox="0 0 300 100"
+                <path
+                  d="M 30 50 Q 100 20 150 50"
+                  stroke="rgba(255,255,255,0.2)"
+                  strokeWidth="1"
                   fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M 30 50 Q 100 20 150 50"
-                    stroke="rgba(255,255,255,0.2)"
-                    strokeWidth="1"
-                    fill="none"
-                    strokeLinecap="round"
-                    className="persona-connector-path"
-                  />
-                  <path
-                    d="M 150 50 Q 200 80 270 50"
-                    stroke="rgba(255,255,255,0.2)"
-                    strokeWidth="1"
-                    fill="none"
-                    strokeLinecap="round"
-                    className="persona-connector-path"
-                    style={{ animationDelay: '3s' }}
-                  />
-                </svg>
-              </div>
-            )}
-
-            <div className="relative grid grid-cols-1 gap-6 md:grid-cols-3">
-              {(Object.keys(PERSONAS) as PersonaKey[]).map((key) => (
-                <PersonaCard
-                  key={key}
-                  personaKey={key}
-                  isSelected={selected === key}
-                  reducedMotion={reducedMotion}
-                  onSelect={() => setSelected(key)}
+                  strokeLinecap="round"
+                  className="persona-connector-path"
                 />
-              ))}
+                <path
+                  d="M 150 50 Q 200 80 270 50"
+                  stroke="rgba(255,255,255,0.2)"
+                  strokeWidth="1"
+                  fill="none"
+                  strokeLinecap="round"
+                  className="persona-connector-path"
+                  style={{ animationDelay: '3s' }}
+                />
+              </svg>
             </div>
-          </div>
+          )}
 
-          {/* Preview panel — col-span-5 */}
-          <div className="lg:col-span-5">
-            <PreviewPanel
-              key={previewKey}
-              persona={persona}
-              accentShadow={accent.shadow}
+          {(Object.keys(PERSONAS) as PersonaKey[]).map((key) => (
+            <PersonaCard
+              key={key}
+              personaKey={key}
+              isSelected={selected === key}
               reducedMotion={reducedMotion}
+              onSelect={() => setSelected(key)}
             />
-          </div>
+          ))}
         </div>
       </div>
     </section>
@@ -287,7 +263,7 @@ function PersonaCard({
       }}
       onMouseMove={onMouseMove}
       onMouseLeave={onMouseLeave}
-      className={`group relative flex flex-col rounded-2xl border border-white/10 bg-zinc-950/40 p-8 backdrop-blur-xl transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 ${
+      className={`group relative flex min-h-[380px] flex-col rounded-2xl border border-white/10 bg-zinc-950/40 p-8 backdrop-blur-xl transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 ${
         isSelected ? accent.border : ''
       } ${!reducedMotion ? 'hover:scale-[1.03] hover:-translate-y-2' : ''}`}
       style={{
@@ -307,12 +283,6 @@ function PersonaCard({
           }}
           aria-hidden
         />
-      )}
-
-      {data.badge && (
-        <div className="absolute right-6 top-6 rounded-full border border-cyan-500/20 bg-cyan-500/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-cyan-400">
-          {data.badge}
-        </div>
       )}
 
       <div className="relative z-10 mb-5 flex h-14 w-14 items-center justify-center rounded-xl bg-zinc-900">
@@ -354,81 +324,18 @@ function PersonaCard({
           </li>
         ))}
       </ul>
-    </div>
-  );
-}
 
-function PreviewPanel({
-  persona,
-  accentShadow,
-  reducedMotion,
-}: {
-  persona: (typeof PERSONAS)[PersonaKey];
-  accentShadow: string;
-  reducedMotion: boolean;
-}) {
-  return (
-    <div
-      className={`rounded-2xl border border-white/10 bg-zinc-950/60 p-10 backdrop-blur-xl ${
-        !reducedMotion ? 'animate-fade-in-up' : ''
-      }`}
-      style={{ boxShadow: accentShadow }}
-    >
-      <h3 className="font-heading text-2xl font-semibold text-white">
-        {persona.title}
-      </h3>
-
-      <div className="mt-6">
-        <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500">
-          What you get
-        </p>
-        <ul className="mt-2 space-y-2">
-          {persona.whatYouGet.map((item) => (
-            <li
-              key={item}
-              className="flex items-center gap-2 text-sm text-zinc-300"
-            >
-              <span className="h-1 w-1 rounded-full bg-cyan-400" />
-              {item}
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div className="mt-6">
-        <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500">
-          Example workflow
-        </p>
-        <ul className="mt-2 space-y-2">
-          {persona.exampleWorkflow.map((step, i) => (
-            <li
-              key={step}
-              className="flex items-center gap-2 text-sm text-zinc-300"
-            >
-              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-zinc-800 text-[10px] font-bold text-zinc-400">
-                {i + 1}
-              </span>
-              {step}
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div className="mt-10 flex flex-col gap-3">
+      <div className="relative z-10 mt-auto pt-6">
         <Link
           href="/demo"
-          className="inline-flex items-center justify-center gap-2 rounded-xl bg-cyan-500 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-cyan-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950"
+          onClick={(e) => e.stopPropagation()}
+          className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-cyan-500 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-cyan-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950"
         >
           Book a Demo
           <ArrowRight className="h-4 w-4" />
         </Link>
-        <Link
-          href="/demo"
-          className="text-center text-sm font-medium text-cyan-400 hover:text-cyan-300 focus:outline-none focus-visible:underline"
-        >
-          See Enterprise Capabilities →
-        </Link>
       </div>
     </div>
   );
 }
+

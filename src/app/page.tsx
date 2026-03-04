@@ -275,7 +275,7 @@ export default function Home() {
       <OperatorVsBoardroomSection />
       <FinalCtaSection />
 
-      <footer className="text-zinc-400 py-12 border-t border-white/5">
+      <footer className="text-zinc-400 py-12">
         <div className="container mx-auto px-4 max-w-6xl">
           <div className="grid md:grid-cols-4 gap-8">
             <div className="[&>span]:bg-transparent [&>span]:shadow-none [&>span]:block">
@@ -314,7 +314,7 @@ export default function Home() {
               </ul>
             </div>
           </div>
-          <div className="border-t border-zinc-800 mt-8 pt-8 text-center text-sm text-zinc-500">
+          <div className="mt-8 pt-8 text-center text-sm text-zinc-500 border-t border-white/[0.06]">
             <p>&copy; {new Date().getFullYear()} <BrandName />. All rights reserved.</p>
           </div>
         </div>

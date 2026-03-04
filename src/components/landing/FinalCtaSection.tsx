@@ -12,7 +12,7 @@ export default function FinalCtaSection() {
   return (
     <section
       id="book-demo"
-      className="relative py-16 md:py-24 bg-black border-t border-zinc-800/50"
+      className="relative py-16 md:py-24"
       aria-labelledby="final-cta-heading"
     >
       <div className="container mx-auto px-4 max-w-2xl">

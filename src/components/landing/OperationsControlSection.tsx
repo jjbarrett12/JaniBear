@@ -48,7 +48,7 @@ export function OperationsControlSection() {
   return (
     <section
       id="operations-control"
-      className="relative py-[120px] border-t border-white/10"
+      className="relative py-[120px]"
       aria-labelledby="ops-control-heading"
     >
       <div className="mx-auto max-w-[1280px] px-4 sm:px-6">

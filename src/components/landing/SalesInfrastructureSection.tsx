@@ -51,7 +51,7 @@ export function SalesInfrastructureSection() {
   return (
     <section
       id="sales-infrastructure"
-      className="relative py-[110px] md:py-[120px] border-t border-white/5"
+      className="relative py-[110px] md:py-[120px]"
       aria-labelledby="sales-infra-heading"
     >
       <div className="mx-auto max-w-[1280px] px-4 sm:px-6">

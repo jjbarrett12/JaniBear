@@ -32,7 +32,7 @@ export function SectionWrap({
     >
       {topSeparator && (
         <div
-          className="absolute left-0 right-0 top-0 h-px z-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
+          className="absolute left-0 right-0 top-0 h-12 z-0 bg-gradient-to-b from-white/[0.04] to-transparent"
           aria-hidden
         />
       )}

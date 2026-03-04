@@ -2,7 +2,7 @@
 
 export function SalesOpsResultsSection() {
   return (
-    <section className="relative py-20 border-t border-white/10">
+    <section className="relative py-20">
       <div className="mx-auto max-w-6xl px-6">
         {/* Header — neon anchor */}
         <div className="text-center">

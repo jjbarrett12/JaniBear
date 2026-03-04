@@ -4,19 +4,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { HOMEPAGE } from '@/content/homepage';
 import { SectionWrap } from './SectionWrap';
-import { Check } from 'lucide-react';
-
-const PROOF_ROWS = [
-  'We bid buildings.',
-  'We ran crews.',
-  'We fixed failed inspections.',
-  'We lost sleep over client expectations.',
-] as const;
-
-const CHIPS = ['20+ Years', 'Operator-built', 'Account retention focus'] as const;
 
 export function BuiltByOperatorsSection() {
-  const { headline, subline, soWeBuiltIt } = HOMEPAGE.proofStrip;
+  const { headline, subline } = HOMEPAGE.proofStrip;
   return (
     <SectionWrap
       id="proof"
@@ -68,38 +58,39 @@ export function BuiltByOperatorsSection() {
                 borderLeftColor: 'rgba(251, 191, 36, 0.35)',
               }}
             >
-              <p className="text-xl md:text-2xl font-semibold text-white tracking-tight">
-                Not built in a boardroom.
-              </p>
-              <ul className="mt-6 space-y-4 flex-1">
-                {PROOF_ROWS.map((line) => (
-                  <li key={line} className="flex items-center gap-3 text-zinc-300">
-                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-amber-500/20 text-amber-400">
-                      <Check className="h-3.5 w-3.5" strokeWidth={2.5} aria-hidden />
-                    </span>
-                    <span className="text-base">{line}</span>
-                  </li>
-                ))}
-              </ul>
-              <div className="mt-6 flex flex-wrap gap-2">
-                {CHIPS.map((label) => (
-                  <span
-                    key={label}
-                    className="inline-flex items-center rounded-md border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-zinc-400"
-                  >
-                    {label}
-                  </span>
-                ))}
+              <div className="space-y-5 sm:space-y-6 text-slate-300 max-w-xl">
+                <p className="text-base sm:text-lg text-slate-300">
+                  JANIBEAR wasn&apos;t built in a boardroom. It was built inside a commercial cleaning company.
+                </p>
+
+                <div className="uppercase tracking-widest text-xs text-yellow-400 font-semibold">
+                  20+ YEARS IN THE FIELD
+                </div>
+
+                <ul className="space-y-2 text-slate-300 text-sm">
+                  <li>• Bid buildings</li>
+                  <li>• Managed crews</li>
+                  <li>• Fixed failed inspections</li>
+                  <li>• Lost sleep over client expectations</li>
+                </ul>
+
+                <p className="text-slate-400 text-sm leading-relaxed">
+                  When we went looking for software to run the business, we found generic CRMs, bloated platforms,
+                  and tools that required massive customization just to make them work for cleaning companies.
+                </p>
+
+                <p className="text-slate-300 font-semibold text-sm leading-relaxed">
+                  We didn&apos;t need another generic software tool. We needed a system that wins contracts, enforces
+                  accountability, and protects client relationships long-term.
+                </p>
+
+                <Link
+                  href="/see-it-in-action"
+                  className="inline-flex items-center text-yellow-400 font-semibold hover:text-yellow-300 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#050810] rounded"
+                >
+                  So we built JANIBEAR →
+                </Link>
               </div>
-              <Link
-                href="/demo"
-                className="mt-6 inline-flex items-center font-semibold text-amber-400 hover:text-amber-300 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#050810] rounded"
-              >
-                {soWeBuiltIt}
-                <span className="ml-1 border-b-2 border-amber-400/50 hover:border-amber-400 transition-colors">
-                  →
-                </span>
-              </Link>
             </div>
           </div>
         </div>

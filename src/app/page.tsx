@@ -13,7 +13,6 @@ import { OperationsControlSection } from '@/components/landing/OperationsControl
 import { SalesOpsResultsSection } from '@/components/landing/SalesOpsResultsSection';
 import { BuiltByOperatorsSection } from '@/components/landing/BuiltByOperatorsSection';
 import PersonaSection from '@/components/marketing/persona-section';
-import { ConversionWorkflowSection } from '@/components/marketing/ConversionWorkflowSection';
 import { DealPipeline } from '@/components/sections/DealPipeline';
 import TrustSection from '@/components/landing/TrustSection';
 import FinalCtaSection from '@/components/landing/FinalCtaSection';
@@ -259,10 +258,6 @@ export default function Home() {
 
       <hr className="landing-section-divider" />
 
-      {/* Deal Pipeline — $0 → $8,000 contract transformation */}
-      <DealPipeline />
-      <hr className="landing-section-divider" />
-
       {/* 3. Who it's for — persona cards (below the fold) */}
       <PersonaSection />
       <hr className="landing-section-divider" />
@@ -274,8 +269,8 @@ export default function Home() {
       <OperationsControlSection />
       <hr className="landing-section-divider" />
 
-      {/* 5. Conversion workflow — Scan → Scope → Price → Proposal → Win → Execute */}
-      <ConversionWorkflowSection />
+      {/* 5. Deal Pipeline — $0 → $8,000 contract transformation */}
+      <DealPipeline />
       <hr className="landing-section-divider" />
 
       {/* Review / Trust */}

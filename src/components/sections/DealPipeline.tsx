@@ -640,4 +640,8 @@ function DemoModal({ onClose }: { onClose: () => void }) {
           <Button variant="ghost" size="sm" className="text-zinc-400 hover:text-white" onClick={onClose}>
             Close
           </Button>
-        <
+        </div>
+      </div>
+    </div>
+  );
+}

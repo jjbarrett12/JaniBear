@@ -8,7 +8,7 @@ export const metadata = { title: 'Sign in | JANIBEAR' };
 
 function safeLandingRedirect(redirectParam: string | null): string {
   if (!redirectParam?.startsWith('/') || redirectParam.includes('//')) return '/api/auth/landing';
-  if (redirectParam.startsWith('/app/') || redirectParam === '/onboarding' || redirectParam.startsWith('/auth/')) {
+  if (redirectParam.startsWith('/app/') || redirectParam === '/onboarding' || redirectParam === '/launcher' || redirectParam.startsWith('/auth/')) {
     return `/api/auth/landing?redirect=${encodeURIComponent(redirectParam)}`;
   }
   return '/api/auth/landing';
@@ -17,13 +17,14 @@ function safeLandingRedirect(redirectParam: string | null): string {
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ redirect?: string }>;
+  searchParams: Promise<{ redirect?: string; next?: string }>;
 }) {
   const params = await searchParams;
+  const redirectTo = params.redirect ?? params.next ?? null;
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (user) {
-    redirect(safeLandingRedirect(params.redirect ?? null));
+    redirect(safeLandingRedirect(redirectTo));
   }
 
   const cookieStore = await cookies();
@@ -50,7 +51,7 @@ export default async function LoginPage({
           <h1 className="text-2xl font-bold text-white mt-4 mb-1">Welcome back</h1>
           <p className="text-zinc-400 text-sm">Sign in to your account to continue</p>
         </div>
-        <LoginForm defaultEmail={defaultEmail} redirectParam={params.redirect ?? undefined} />
+        <LoginForm defaultEmail={defaultEmail} redirectParam={redirectTo ?? undefined} />
       </div>
     </div>
   );

@@ -12,6 +12,7 @@ import { getNavAlertCounts } from '@/actions/nav-alerts';
 import { getImpersonateOrgId } from '@/actions/platform';
 import { resolveShellForOrg, isFranchiseeEnrolled } from '@/lib/shell';
 import { getProGearEnabled } from '@/lib/pro-gear-enabled';
+import { ServiceWorkerRegister } from '@/components/app/ServiceWorkerRegister';
 
 // Ensure layout always runs with current request (cookies) on client-side navigation
 export const dynamic = 'force-dynamic';
@@ -26,8 +27,9 @@ export default async function AppLayout({
   const supabase = await createClient();
   const impersonateOrgId = await getImpersonateOrgId();
 
-  const [organizationResult, navAlerts, shell, franchiseeEnrolled, proGearEnabled] = await Promise.all([
-    supabase.from('organizations').select('name, primary_color, secondary_color, logo_url').eq('id', org.org_id).maybeSingle(),
+  const [organizationResult, orgSettingsResult, navAlerts, shell, franchiseeEnrolled, proGearEnabled] = await Promise.all([
+    supabase.from('organizations').select('name, primary_color, secondary_color, logo_url, slug').eq('id', org.org_id).maybeSingle(),
+    supabase.from('org_settings').select('display_name, logo_url, primary_color, accent_color').eq('org_id', org.org_id).maybeSingle(),
     getNavAlertCounts(),
     resolveShellForOrg(org.org_id),
     isFranchiseeEnrolled(org.org_id),
@@ -41,7 +43,16 @@ export default async function AppLayout({
     organizationData = fallback.data ?? null;
   }
 
-  const orgName = organizationData?.name ?? (org.organizations as { name?: string } | null)?.name ?? null;
+  const settings = orgSettingsResult.data;
+  const orgName =
+    (settings?.display_name && settings.display_name.trim()) ? settings.display_name.trim()
+    : organizationData?.name ?? (org.organizations as { name?: string } | null)?.name ?? null;
+  const orgLogoUrl = (settings?.logo_url && settings.logo_url.trim()) ? settings.logo_url : organizationData?.logo_url ?? null;
+  const orgPrimaryColor = (settings?.primary_color && settings.primary_color.trim()) ? settings.primary_color : organizationData?.primary_color ?? null;
+  const orgSecondaryColor = (settings?.accent_color && settings.accent_color.trim()) ? settings.accent_color : organizationData?.secondary_color ?? null;
+  const workspaceTheme = organizationData
+    ? { ...organizationData, name: orgName, logo_url: orgLogoUrl, primary_color: orgPrimaryColor, secondary_color: orgSecondaryColor }
+    : organizationData;
   const impersonatingOrgName = impersonateOrgId && impersonateOrgId === org.org_id ? orgName : null;
 
   const pathname = (await headers()).get('x-pathname') ?? '';
@@ -62,7 +73,8 @@ export default async function AppLayout({
   }
 
   return (
-    <ThemeProvider orgId={org.org_id} initialTheme={organizationData ?? undefined}>
+    <ThemeProvider orgId={org.org_id} initialTheme={workspaceTheme ?? undefined}>
+      <ServiceWorkerRegister />
       <ThemeApplier />
       <ShellGuard shell={shell} />
       <div className="min-h-screen bg-background">

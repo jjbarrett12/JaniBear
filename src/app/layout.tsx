@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     title: appTitle,
     description: "AI software for janitorial sales and operations. Bidding, inspections, quality proof, and automation built for serious cleaning companies.",
   },
-  manifest: "/manifest.json",
+  manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
@@ -60,7 +60,7 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.png" type="image/png" sizes="32x32" />
         <link rel="icon" href="/favicon.png" type="image/png" sizes="any" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        <link rel="manifest" href="/manifest.json" />
+        <link rel="manifest" href="/manifest.webmanifest" />
         <meta name="theme-color" content="#3b82f6" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />

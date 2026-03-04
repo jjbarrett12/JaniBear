@@ -34,7 +34,7 @@ async function handleLanding(request: NextRequest) {
   const safeRedirect =
     redirectTo?.startsWith('/') &&
     !redirectTo.includes('//') &&
-    (redirectTo.startsWith('/app/') || redirectTo === '/onboarding' || redirectTo.startsWith('/auth/'));
+    (redirectTo.startsWith('/app/') || redirectTo === '/onboarding' || redirectTo === '/launcher' || redirectTo.startsWith('/auth/'));
   const destination = safeRedirect ? redirectTo : '/app/dashboard';
   if (GUARD_DEBUG) console.log('[GUARD] landing path=/api/auth/landing session=true org_id=' + membership.org_id + ' onboarded=true reason=set cookie redirect=' + destination);
   const res = NextResponse.redirect(new URL(destination, request.url));

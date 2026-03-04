@@ -1,9 +1,12 @@
 /**
  * Auth middleware: refresh Supabase session and protect routes.
+ * Workspace: resolve org from subdomain or /org/[slug], rewrite path when needed, attach org to request.
  * See project root AUTH_FLOW.md for the full sign-in flow — change this only with that doc in mind.
  */
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
+import { getOrgSlugFromRequest, getMarketingRootUrl } from '@/lib/workspace/org-resolver';
+import { allowSlugResolution, recordUnknownSlug, getClientIp } from '@/lib/workspace/slug-rate-limit';
 
 const PUBLIC_PATHS = [
   '/auth',
@@ -15,6 +18,7 @@ const PUBLIC_PATHS = [
   '/demo',
   '/contact',
   '/api',
+  '/launcher',
 ];
 
 const AUTH_DEBUG = process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_AUTH_DEBUG === '1';
@@ -90,8 +94,51 @@ export async function updateSession(request: NextRequest) {
       },
     });
 
-    const { data: { user } } = await supabase.auth.getUser();
     const pathname = request.nextUrl.pathname;
+    const host = request.nextUrl.host ?? request.headers.get('host') ?? '';
+
+    // ----- Workspace: resolve org from subdomain or /org/[slug] -----
+    // Privacy: same redirect for rate-limited, unknown slug, or known; no headers/cache that leak (see slug-rate-limit).
+    const orgResolution = getOrgSlugFromRequest(host, pathname);
+    let resolvedOrgId: string | null = null;
+    if (orgResolution.type === 'path' || orgResolution.type === 'subdomain') {
+      const clientIp = getClientIp(request);
+      if (!allowSlugResolution(clientIp)) {
+        const marketingRoot = getMarketingRootUrl(request.nextUrl);
+        return NextResponse.redirect(marketingRoot, 302);
+      }
+      let orgId: string | null = null;
+      let slugError = false;
+      try {
+        const { data, error } = await supabase.rpc('get_org_id_by_slug', {
+          p_slug: orgResolution.orgSlug,
+        });
+        if (error || !data) slugError = true;
+        else orgId = data as string;
+      } catch {
+        slugError = true;
+      }
+      if (slugError || !orgId) {
+        recordUnknownSlug(clientIp);
+        const marketingRoot = getMarketingRootUrl(request.nextUrl);
+        return NextResponse.redirect(marketingRoot, 302);
+      }
+      resolvedOrgId = orgId;
+      if (pathname === '/' || pathname === '') {
+        return NextResponse.redirect(new URL('/app/dashboard', request.url));
+      }
+      const requestHeaders = new Headers(request.headers);
+      requestHeaders.set('x-resolved-org-id', resolvedOrgId);
+      requestHeaders.set('x-org-slug', orgResolution.orgSlug);
+      if (orgResolution.type === 'path') {
+        const rewriteUrl = new URL(orgResolution.rewritePath, request.url);
+        response = NextResponse.rewrite(rewriteUrl, { request: { headers: requestHeaders } });
+      } else {
+        response = NextResponse.next({ request: { headers: requestHeaders } });
+      }
+    }
+
+    const { data: { user } } = await supabase.auth.getUser();
     const allCookies = getCookiesForRequest(request);
     const cookieNames = allCookies.map((c) => c.name).filter((n) => n.startsWith('sb-'));
 
@@ -135,31 +182,43 @@ export async function updateSession(request: NextRequest) {
       return response;
     }
 
-    // Set active_org_id when entering /app without it (so layout has org in one hop)
-    const hasOrgCookie = user && pathname.startsWith('/app/') ? allCookies.find((c) => c.name === 'active_org_id')?.value : undefined;
-    if (user && pathname.startsWith('/app/')) {
-      if (!hasOrgCookie) {
+    // Set active_org_id when entering /app without it (workspace: prefer resolved org when user is member)
+    const effectivePath = orgResolution.type === 'path' ? (orgResolution.rewritePath || pathname) : pathname;
+    const hasOrgCookie = user && effectivePath.startsWith('/app/') ? allCookies.find((c) => c.name === 'active_org_id')?.value : undefined;
+    if (user && effectivePath.startsWith('/app/')) {
+      let orgIdToSet: string | null = null;
+      if (resolvedOrgId) {
+        const { data: membership } = await supabase
+          .from('org_members')
+          .select('org_id')
+          .eq('user_id', user.id)
+          .eq('org_id', resolvedOrgId)
+          .maybeSingle();
+        if (membership?.org_id) orgIdToSet = resolvedOrgId;
+      }
+      if (!orgIdToSet && !hasOrgCookie) {
         const { data: membership } = await supabase
           .from('org_members')
           .select('org_id')
           .eq('user_id', user.id)
           .limit(1)
           .maybeSingle();
-        guardLog(pathname, {
-          session: true,
-          org_id: membership?.org_id ?? null,
-          onboarded: !!membership?.org_id,
-          reason: membership?.org_id ? 'set cookie on response' : 'no membership in middleware',
+        orgIdToSet = membership?.org_id ?? null;
+      }
+      guardLog(pathname, {
+        session: true,
+        org_id: orgIdToSet ?? null,
+        resolved_org: resolvedOrgId ?? null,
+        reason: orgIdToSet ? 'set cookie on response' : 'no membership in middleware',
+      });
+      if (orgIdToSet) {
+        response.cookies.set('active_org_id', orgIdToSet, {
+          path: '/',
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'lax',
+          maxAge: 60 * 60 * 24 * 365,
         });
-        if (membership?.org_id) {
-          response.cookies.set('active_org_id', membership.org_id, {
-            path: '/',
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
-            maxAge: 60 * 60 * 24 * 365,
-          });
-        }
       }
     }
 

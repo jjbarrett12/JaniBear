@@ -27,7 +27,10 @@ export async function GET(request: NextRequest) {
     nextPath &&
     nextPath.startsWith('/') &&
     !nextPath.includes('//') &&
-    (nextPath === '/auth/reset-password' || nextPath.startsWith('/auth/'));
+    (nextPath === '/auth/reset-password' ||
+      nextPath.startsWith('/auth/') ||
+      nextPath.startsWith('/app/') ||
+      nextPath === '/api/auth/landing');
   const destination = safeNext ? nextPath : '/api/auth/landing';
   const response = NextResponse.redirect(new URL(destination, baseUrl));
 

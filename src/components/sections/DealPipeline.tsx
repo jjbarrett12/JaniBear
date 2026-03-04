@@ -98,14 +98,28 @@ const DEAL_SUMMARY_BY_STEP: DealSummary[] = [
 ];
 
 const CARD_WIDTH_DESKTOP = 152;
-const SCROLL_SECTION_MIN_HEIGHT_VH = 220;
 
 export function DealPipeline() {
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: '-80px' });
   const reduceMotion = useReducedMotion();
   const [activeStep, setActiveStep] = useState(0);
+  const [hoveredStep, setHoveredStep] = useState<number | null>(null);
   const [demoModalOpen, setDemoModalOpen] = useState(false);
+
+  const displayStep = hoveredStep !== null ? hoveredStep : activeStep;
+  const summary = DEAL_SUMMARY_BY_STEP[displayStep];
+
+  const [travelStep, setTravelStep] = useState(0);
+  useEffect(() => {
+    if (reduceMotion) return;
+    const interval = setInterval(() => {
+      setTravelStep((prev) => (prev >= 5 ? 0 : prev + 1));
+    }, 1200);
+    return () => clearInterval(interval);
+  }, [reduceMotion]);
+
+  const connectorStep = hoveredStep !== null ? displayStep : travelStep;
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -123,8 +137,6 @@ export function DealPipeline() {
     setActiveStep(step);
   });
 
-  const summary = DEAL_SUMMARY_BY_STEP[activeStep];
-
   const duration = reduceMotion ? 0 : 0.35;
   const transition = { duration, ease: [0.25, 0.46, 0.45, 0.94] as const };
 
@@ -133,7 +145,6 @@ export function DealPipeline() {
       ref={sectionRef}
       id="deal-pipeline"
       className="relative overflow-hidden py-24 md:py-32"
-      style={{ minHeight: `${SCROLL_SECTION_MIN_HEIGHT_VH}vh` }}
       aria-labelledby="deal-pipeline-heading"
     >
       {/* Background */}
@@ -163,10 +174,13 @@ export function DealPipeline() {
         {/* Desktop: two columns — pipeline left (fixed-width cards + strong line), sticky Deal Summary right */}
         <div className="hidden md:grid md:grid-cols-[1fr,340px] md:gap-10 lg:gap-14 items-start">
           <PipelineStrip
-            activeStep={activeStep}
+            activeStep={displayStep}
+            connectorStep={connectorStep}
             isInView={isInView}
             reduceMotion={!!reduceMotion}
             transition={transition}
+            onStepHover={setHoveredStep}
+            onStepLeave={() => setHoveredStep(null)}
           />
           <motion.div
             className="sticky top-28"
@@ -176,7 +190,7 @@ export function DealPipeline() {
           >
             <DealSummaryCard
               summary={summary}
-              activeStep={activeStep}
+              activeStep={displayStep}
               reduceMotion={!!reduceMotion}
             />
           </motion.div>
@@ -186,17 +200,25 @@ export function DealPipeline() {
         <div className="md:hidden space-y-0">
           <div className="flex flex-col gap-0" role="tablist" aria-label="Deal pipeline steps">
             {STEPS.map((step, index) => (
-              <div key={step.id} className="flex flex-col items-stretch">
+              <div
+                key={step.id}
+                className="flex flex-col items-stretch"
+                onMouseEnter={() => setHoveredStep(index)}
+                onMouseLeave={() => setHoveredStep(null)}
+                onClick={() => setHoveredStep(index)}
+                onFocus={() => setHoveredStep(index)}
+                onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget)) setHoveredStep(null); }}
+              >
                 <PipelineStepCard
                   step={step}
                   index={index}
-                  isActive={activeStep === index}
-                  isHighlighted={activeStep >= index}
+                  isActive={displayStep === index}
+                  isHighlighted={displayStep >= index}
                   isInView={isInView}
                   reduceMotion={!!reduceMotion}
                   transition={transition}
                   showConnector={index < STEPS.length - 1}
-                  connectorProgress={activeStep > index ? 1 : activeStep === index ? 0.5 : 0}
+                  connectorProgress={displayStep > index ? 1 : displayStep === index ? 0.5 : 0}
                   variant="mobile"
                 />
                 {index < STEPS.length - 1 && (
@@ -228,7 +250,7 @@ export function DealPipeline() {
           </div>
           <AnimatePresence mode="wait">
             <motion.div
-              key={activeStep}
+              key={displayStep}
               className="mt-8"
               initial={reduceMotion ? false : { opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
@@ -237,7 +259,7 @@ export function DealPipeline() {
             >
               <DealSummaryCard
                 summary={summary}
-                activeStep={activeStep}
+                activeStep={displayStep}
                 reduceMotion={!!reduceMotion}
               />
             </motion.div>
@@ -276,22 +298,32 @@ export function DealPipeline() {
 
 function PipelineStrip({
   activeStep,
+  connectorStep,
   isInView,
   reduceMotion,
   transition,
+  onStepHover,
+  onStepLeave,
 }: {
   activeStep: number;
+  connectorStep: number;
   isInView: boolean;
   reduceMotion: boolean;
   transition: { duration: number; ease: readonly number[] };
+  onStepHover: (index: number) => void;
+  onStepLeave: () => void;
 }) {
   return (
-    <div className="flex items-center gap-0 w-full">
+    <div
+      className="flex items-center gap-0 w-full"
+      onMouseLeave={onStepLeave}
+    >
       {STEPS.flatMap((step, index) => [
         <div
           key={`card-${step.id}`}
           className="shrink-0 flex justify-center"
           style={{ width: CARD_WIDTH_DESKTOP }}
+          onMouseEnter={() => onStepHover(index)}
         >
           <PipelineStepCard
             step={step}
@@ -304,6 +336,8 @@ function PipelineStrip({
             showConnector={index < STEPS.length - 1}
             connectorProgress={activeStep > index ? 1 : activeStep === index ? 0.5 : 0}
             variant="desktop"
+            onSelect={() => onStepHover(index)}
+            onDeselect={onStepLeave}
           />
         </div>,
         ...(index < STEPS.length - 1
@@ -324,7 +358,7 @@ function PipelineStrip({
                     className="absolute inset-y-0 left-0 rounded-full origin-left"
                     initial={false}
                     animate={{
-                      scaleX: activeStep > index ? 1 : activeStep === index ? 0.5 : 0,
+                      scaleX: connectorStep > index ? 1 : connectorStep === index ? 0.5 : 0,
                     }}
                     transition={transition}
                     style={{
@@ -359,6 +393,8 @@ function PipelineStepCard({
   showConnector,
   connectorProgress,
   variant,
+  onSelect,
+  onDeselect,
 }: {
   step: (typeof STEPS)[number];
   index: number;
@@ -370,6 +406,8 @@ function PipelineStepCard({
   showConnector: boolean;
   connectorProgress: number;
   variant: 'desktop' | 'mobile';
+  onSelect?: () => void;
+  onDeselect?: () => void;
 }) {
   const Icon = step.icon;
   const isDim = !isHighlighted;
@@ -379,7 +417,14 @@ function PipelineStepCard({
       role="tab"
       aria-selected={isActive}
       aria-label={`${step.label}: ${step.metric}, ${step.time}`}
+      tabIndex={0}
+      onClick={onSelect}
+      onFocus={onSelect}
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node)) onDeselect?.();
+      }}
       className={`
+        cursor-pointer
         snap-center shrink-0 flex flex-col items-center text-center rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md px-4 py-5 min-h-[152px] md:min-h-[160px]
         shadow-[0_20px_60px_rgba(0,0,0,0.2)]
         focus-within:ring-2 focus-within:ring-indigo-400 focus-within:ring-offset-2 focus-within:ring-offset-[#0B0B0F]

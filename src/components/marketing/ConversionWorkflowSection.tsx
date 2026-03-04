@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 import {
@@ -11,7 +10,7 @@ import {
   CheckCircle2,
   ClipboardCheck,
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { CtaGlowButton } from '@/components/marketing/CtaGlowButton';
 
 const WORKFLOW_STEPS = [
   { id: 'scan', title: 'Scan', icon: Scan, description: 'Use native LiDAR to capture square footage, layout, and surfaces during a walkthrough.' },
@@ -136,28 +135,19 @@ export function ConversionWorkflowSection() {
           </div>
         </motion.div>
 
-        {/* CTA row — primary gradient button */}
+        {/* CTA row — cursor-tracking glow buttons */}
         <motion.div
           className="mt-16 flex flex-col items-center justify-center gap-4 sm:flex-row sm:gap-6"
           initial={{ opacity: 0, y: 12 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.4, delay: 0.3 }}
         >
-          <Button
-            asChild
-            size="lg"
-            className="landing-cta min-w-[200px] rounded-xl font-semibold text-white shadow-[0_4px_24px_rgba(99,102,241,0.4)] hover:shadow-[0_8px_32px_rgba(99,102,241,0.5)]"
-          >
-            <Link href="/demo">See a 2-Minute Demo</Link>
-          </Button>
-          <Button
-            asChild
-            variant="outline"
-            size="lg"
-            className="min-w-[200px] rounded-xl border-indigo-400/40 bg-transparent font-semibold text-indigo-400 hover:bg-indigo-400/10 hover:text-indigo-300"
-          >
-            <Link href="/demo">Try LiDAR Walkthrough</Link>
-          </Button>
+          <CtaGlowButton href="/demo" variant="primary">
+            See a 2-Minute Demo
+          </CtaGlowButton>
+          <CtaGlowButton href="/demo" variant="secondary">
+            Start a LiDAR Walkthrough
+          </CtaGlowButton>
         </motion.div>
       </div>
     </section>

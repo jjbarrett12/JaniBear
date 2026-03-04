@@ -526,6 +526,30 @@
     }
   }
 
+  /* Primary CTA: subtle gradient drift (indigo → purple → indigo) */
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  @keyframes pipeline-connector-shimmer {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 200% 50%; }
+  }
+  .pipeline-connector-shimmer {
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
+    background-size: 200% 100%;
+    animation: pipeline-connector-shimmer 2.5s ease-in-out infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pipeline-connector-shimmer { animation: none; }
+  }
+
+  .cta-gradient-animate {
+    animation: gradientShift 8s ease infinite;
+  }
+
   @keyframes pulsate {
     0%, 100% {
       opacity: 0.85;

@@ -14,6 +14,8 @@ import { SalesOpsResultsSection } from '@/components/landing/SalesOpsResultsSect
 import { BuiltByOperatorsSection } from '@/components/landing/BuiltByOperatorsSection';
 import PersonaSection from '@/components/marketing/persona-section';
 import { ConversionWorkflowSection } from '@/components/marketing/ConversionWorkflowSection';
+import { WalkthroughTransformationSection } from '@/components/landing/WalkthroughTransformationSection';
+import { DealPipeline } from '@/components/sections/DealPipeline';
 import TrustSection from '@/components/landing/TrustSection';
 import FinalCtaSection from '@/components/landing/FinalCtaSection';
 
@@ -256,8 +258,14 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 2. How it works — visual workflow / conversion */}
-      <ConversionWorkflowSection />
+      <hr className="landing-section-divider" />
+
+      {/* Walkthrough Transformation — before/after with draggable slider */}
+      <WalkthroughTransformationSection />
+      <hr className="landing-section-divider" />
+
+      {/* Deal Pipeline — $0 → $8,000 contract transformation */}
+      <DealPipeline />
 
       {/* 3. Who it's for — persona cards (below the fold) */}
       <PersonaSection />

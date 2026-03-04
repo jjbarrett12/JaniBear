@@ -23,8 +23,12 @@ export async function GET(request: NextRequest) {
   }
 
   const nextPath = requestUrl.searchParams.get('next');
-  const allowedNext = nextPath && (nextPath === '/auth/reset-password' || nextPath.startsWith('/auth/'));
-  const destination = allowedNext ? nextPath : '/api/auth/landing';
+  const safeNext =
+    nextPath &&
+    nextPath.startsWith('/') &&
+    !nextPath.includes('//') &&
+    (nextPath === '/auth/reset-password' || nextPath.startsWith('/auth/'));
+  const destination = safeNext ? nextPath : '/api/auth/landing';
   const response = NextResponse.redirect(new URL(destination, baseUrl));
 
   const supabase = createServerClient(

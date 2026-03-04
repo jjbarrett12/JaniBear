@@ -10,9 +10,12 @@ const COOKIE_MAX_AGE = 60 * 60 * 24 * 365; // 1 year
  * Use after onboarding so the first /app request has the cookie and avoids jitter.
  */
 export async function GET(request: NextRequest) {
-  const nextUrl = request.nextUrl.searchParams.get('next') || '/app/dashboard';
-  const allowedNext = nextUrl.startsWith('/app/') || nextUrl === '/onboarding' || nextUrl.startsWith('/auth/');
-  const target = allowedNext ? nextUrl : '/app/dashboard';
+  const nextParam = request.nextUrl.searchParams.get('next') || '/app/dashboard';
+  const safeNext =
+    nextParam.startsWith('/') &&
+    !nextParam.includes('//') &&
+    (nextParam.startsWith('/app/') || nextParam === '/onboarding' || nextParam.startsWith('/auth/'));
+  const target = safeNext ? nextParam : '/app/dashboard';
 
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();

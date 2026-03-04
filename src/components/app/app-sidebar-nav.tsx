@@ -1,6 +1,6 @@
 'use client';
 
-import Link from 'next/link';
+import { AppLink } from '@/components/app/app-link';
 import { usePathname } from 'next/navigation';
 import { useLanguage } from '@/contexts/language-context';
 import { getAppT } from '@/lib/app-translations';
@@ -74,49 +74,44 @@ export function AppSidebarNav({ premium }: { premium: boolean }) {
 
   return (
     <nav className="min-w-0 flex-1 space-y-2 overflow-y-auto p-2">
-      <Link
+      <AppLink
         href="/app/dashboard"
         className={navLinkClass(pathname === '/app/dashboard')}
-        prefetch={false}
       >
         <LayoutDashboard className="h-5 w-5 shrink-0" />
         <span className="truncate">{t('navDashboard')}</span>
-      </Link>
-      <Link
+      </AppLink>
+      <AppLink
         href="/app/financial-health"
         className={navLinkClass(pathname === '/app/financial-health')}
-        prefetch={false}
       >
         <Wallet className="h-5 w-5 shrink-0" />
         <span className="truncate">{t('navFinancialHealth')}</span>
-      </Link>
-      <Link
+      </AppLink>
+      <AppLink
         href="/app/kpis"
         className={navLinkClass(pathname === '/app/kpis')}
-        prefetch={false}
       >
         <BarChart3 className="h-5 w-5 shrink-0" />
         <span className="truncate">{t('navKpiDashboard')}</span>
-      </Link>
-      <Link
+      </AppLink>
+      <AppLink
         href="/app/university"
         className={navLinkClass(pathname.startsWith('/app/university'))}
-        prefetch={false}
       >
         <GraduationCap className="h-5 w-5 shrink-0" />
         <span className="truncate">{t('navUniversity')}</span>
         {premium && (
           <Badge variant="secondary" className="ml-auto text-[10px] px-1.5 py-0 shrink-0">Premium</Badge>
         )}
-      </Link>
-      <Link
+      </AppLink>
+      <AppLink
         href="/app/pro-gear"
         className={navLinkClass(pathname.startsWith('/app/pro-gear'))}
-        prefetch={false}
       >
         <ShoppingBag className="h-5 w-5 shrink-0" />
         <span className="truncate">{t('navProGear')}</span>
-      </Link>
+      </AppLink>
 
       <div className="space-y-0.5 pt-1">
         <p className="px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
@@ -126,15 +121,14 @@ export function AppSidebarNav({ premium }: { premium: boolean }) {
           const Icon = item.icon;
           const isActive = pathname.startsWith(item.href);
           return (
-            <Link
+            <AppLink
               key={`${item.href}-${item.labelKey}`}
               href={item.href}
               className={navLinkClass(isActive)}
-              prefetch={false}
             >
               <Icon className="h-5 w-5 shrink-0" />
               <span className="truncate">{t(item.labelKey)}</span>
-            </Link>
+            </AppLink>
           );
         })}
       </div>
@@ -147,28 +141,26 @@ export function AppSidebarNav({ premium }: { premium: boolean }) {
           const Icon = item.icon;
           const isActive = pathname.startsWith(item.href);
           return (
-            <Link
+            <AppLink
               key={`${item.href}-${item.labelKey}`}
               href={item.href}
               className={navLinkClass(isActive)}
-              prefetch={false}
             >
               <Icon className="h-5 w-5 shrink-0" />
               <span className="truncate">{t(item.labelKey)}</span>
-            </Link>
+            </AppLink>
           );
         })}
       </div>
 
       <div className="pt-1.5 mt-1 border-t border-border space-y-0.5">
-        <Link
+        <AppLink
           href="/app/settings"
           className={navLinkClass(pathname.startsWith('/app/settings'))}
-          prefetch={false}
         >
           <Settings className="h-5 w-5 shrink-0" />
           <span className="truncate">{t('navSettings')}</span>
-        </Link>
+        </AppLink>
       </div>
     </nav>
   );

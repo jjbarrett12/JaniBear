@@ -1,0 +1,43 @@
+---
+description: Design standards for billion-dollar SaaS polish (JaniBear OS)
+alwaysApply: true
+---
+
+# JaniBear Design — Billion-Dollar SaaS Vibes
+
+**Goal:** Every screen and component should feel like a top-tier, enterprise-grade SaaS. No generic templates; intentional, premium, and consistent.
+
+## Visual Language
+
+- **Landing:** Black (#000) base, white/off-white text, **gold/amber** (#fbbf24) as primary accent. Use subtle radial glows, light noise texture, gradient headlines (gold spectrum), and clear hierarchy. CTAs: primary = filled gold with shadow; secondary = outline, lower emphasis.
+- **App (authenticated):** CSS variables in `globals.css` drive theme. Light: clean whites, defined borders (`--border`), readable muted text. Dark: deep blue base (e.g. `227 53% 15%`), amber primary, clear card/surface separation. Support org branding (ThemeProvider) without breaking contrast.
+- **Typography:** `--font-heading` (Inter Tight) for headings; `--font-sans` (Source Sans 3) for body. Tight tracking on headlines (`tracking-tight`), clear hierarchy (size + weight), no cramped line-height.
+
+## Principles
+
+1. **Hierarchy** — One clear focal point per section. Headlines stand out; body and captions are legible but secondary. Use `font-heading` for titles, consistent scale (e.g. `text-2xl` → `text-3xl` for h1).
+2. **Spacing & rhythm** — Generous padding (e.g. `p-6`/`p-8` in cards, `space-y-6` between sections). Touch targets ≥ 44–48px where applicable (see UX_IMPROVEMENTS.md).
+3. **Surfaces & depth** — Cards and panels have clear borders and/or subtle shadows. Use `bg-card`, `border-border`, and semantic tokens so light/dark and branding stay consistent. Avoid flat gray blocks; use borders or soft shadows to separate content.
+4. **Motion** — Use Framer Motion sparingly: staggered reveals, gentle hover/focus (e.g. `transition-all duration-300`). No flashy or distracting animation.
+5. **Consistency** — Reuse shadcn/ui components and design tokens. Same radius scale (`--radius`), same primary/muted/border semantics across landing and app. Icons: Lucide, consistent size within context (e.g. `h-4 w-4` in lists, `h-5 w-5` in buttons).
+
+## Do
+
+- Use semantic color tokens (`primary`, `muted-foreground`, `border`, `card`) so theming and dark mode work everywhere.
+- Prefer `rounded-lg` / `rounded-xl` / `rounded-2xl` for cards and modals; avoid sharp corners on key surfaces.
+- Ensure focus states are visible (e.g. `ring-2 ring-primary/60` for accessibility).
+- Keep landing and app clearly scoped (e.g. `.landing-page` and `.landing-header` in globals.css) so marketing pages don’t inherit app chrome.
+
+## Don’t
+
+- Don’t use default blue or random accent colors; amber/gold is the brand accent for JaniBear.
+- Don’t crowd layouts; leave breathing room and align to a simple grid (e.g. `max-w-6xl mx-auto` for content).
+- Don’t mix generic “AI slop” aesthetics (purple gradients, same Inter everywhere, floating blobs); the codebase uses black + gold + clear structure.
+- Don’t break mobile: keep responsive spacing, touch targets, and readable text (see UX_IMPROVEMENTS.md).
+
+## Reference
+
+- **Tokens & theme:** `src/app/globals.css` (CSS variables, landing overrides).
+- **Landing:** `src/app/page.tsx`, `src/components/landing/*`.
+- **App shell:** `src/app/app/layout.tsx`, `src/components/app/app-sidebar.tsx`, `src/components/dashboard/*`.
+- **Scale goal:** BUILD_AGENT_BRIEF.md — “Billion-dollar SaaS.”

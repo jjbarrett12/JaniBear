@@ -16,8 +16,8 @@ export default async function SignupPage() {
       .select('org_id')
       .eq('user_id', user.id)
       .limit(1)
-      .single();
-    redirect(membership ? '/app/dashboard' : '/onboarding');
+      .maybeSingle();
+    redirect(membership ? '/api/auth/landing' : '/onboarding');
   }
 
   return (

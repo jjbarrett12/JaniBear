@@ -37,6 +37,22 @@ function redirectToApp(pathname: string): string | null {
 
 type CookieEntry = { name: string; value: string; options?: Record<string, unknown> };
 
+/** In Edge (e.g. Vercel), request.cookies can be empty even when Cookie header is sent. Parse header as fallback. */
+function getCookiesForRequest(request: NextRequest): { name: string; value: string }[] {
+  const fromStore = request.cookies.getAll();
+  if (fromStore.length > 0) return fromStore;
+  const raw = request.headers.get('cookie');
+  if (!raw?.trim()) return [];
+  return raw.split(';').map((part) => {
+    const eq = part.trim().indexOf('=');
+    if (eq <= 0) return { name: '', value: '' };
+    return {
+      name: part.slice(0, eq).trim(),
+      value: part.slice(eq + 1).trim(),
+    };
+  }).filter((c) => c.name.length > 0);
+}
+
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({ request });
   /** True when Supabase auth called setAll (session refresh). We no longer redirect; we return response with cookies set. */
@@ -56,7 +72,7 @@ export async function updateSession(request: NextRequest) {
     const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
       cookies: {
         getAll() {
-          return request.cookies.getAll();
+          return getCookiesForRequest(request);
         },
         setAll(cookiesToSet: CookieEntry[]) {
           didSetAuthCookies = true;
@@ -71,8 +87,9 @@ export async function updateSession(request: NextRequest) {
 
     const { data: { user } } = await supabase.auth.getUser();
     const pathname = request.nextUrl.pathname;
+    const allCookies = getCookiesForRequest(request);
+    const cookieNames = allCookies.map((c) => c.name).filter((n) => n.startsWith('sb-'));
 
-    const cookieNames = request.cookies.getAll().map((c) => c.name).filter((n) => n.startsWith('sb-'));
     if (process.env.NODE_ENV === 'development' && pathname.startsWith('/app/')) {
       console.log('[REDIRECT] [A] middleware path=', pathname, 'user=', user?.id ?? null, 'authCookieCount=', cookieNames.length);
     }
@@ -96,17 +113,23 @@ export async function updateSession(request: NextRequest) {
       return NextResponse.redirect(new URL(appRedirect, request.url));
     }
 
+    // Protected path but no user: redirect to login for non-/app/ routes. For /app/*, let the
+    // layout handle auth so Node (which may receive cookies when Edge doesn't) can run and redirect if needed.
     if (!user && !isPublicPath(pathname)) {
-      if (process.env.NODE_ENV === 'development') {
-        console.log('[REDIRECT] origin=middleware path=', pathname, 'authCookieCount=', cookieNames.length);
+      if (!pathname.startsWith('/app/')) {
+        if (process.env.NODE_ENV === 'development') {
+          console.log('[REDIRECT] origin=middleware path=', pathname, 'authCookieCount=', cookieNames.length);
+        }
+        debugLog('no user, redirect to login', { pathname, authCookieCount: cookieNames.length });
+        return NextResponse.redirect(new URL('/auth/login', request.url));
       }
-      debugLog('no user, redirect to login', { pathname, authCookieCount: cookieNames.length });
-      return NextResponse.redirect(new URL('/auth/login', request.url));
+      // /app/* with no user: pass through; layout will redirect if it also sees no session
+      return response;
     }
 
     // Set active_org_id when entering /app without it (so layout has org in one hop)
     if (user && pathname.startsWith('/app/')) {
-      const hasOrgCookie = request.cookies.get('active_org_id')?.value;
+      const hasOrgCookie = allCookies.find((c) => c.name === 'active_org_id')?.value;
       if (!hasOrgCookie) {
         const { data: membership } = await supabase
           .from('org_members')
@@ -136,14 +159,19 @@ export async function updateSession(request: NextRequest) {
       debugLog('auth refresh (no redirect)', { pathname, cookiesSet: authCookiesSet.length });
     }
 
-    // Pass user id to layout via header so layout can trust middleware auth when cookies() is empty on client nav
+    // Pass user id to layout via header so layout can trust middleware auth when cookies() is empty on client nav.
+    // When creating a new response we must re-set cookies with path: '/' so they are not path-scoped to the
+    // current URL (e.g. /app/dashboard). Otherwise the browser only sends them for that path and session
+    // is lost on client-side navigation to e.g. /app/settings.
     if (user && pathname.startsWith('/app/')) {
       const requestHeaders = new Headers(request.headers);
       requestHeaders.set('x-middleware-user-id', user.id);
       const resWithHeader = NextResponse.next({
         request: { headers: requestHeaders },
       });
-      response.cookies.getAll().forEach((c) => resWithHeader.cookies.set(c.name, c.value));
+      response.cookies.getAll().forEach(({ name, value, ...options }) =>
+        resWithHeader.cookies.set(name, value, { ...options, path: '/' })
+      );
       return resWithHeader;
     }
 

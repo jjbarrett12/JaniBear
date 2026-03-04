@@ -36,9 +36,9 @@ export function InspectionChart({ data }: InspectionChartProps) {
           <p className="text-sm text-gray-500 dark:text-gray-400">Average scores over time</p>
         </CardHeader>
         <CardContent>
-          <div className="h-[200px] w-full">
+          <div className="h-[200px] min-h-[200px] w-full min-w-[200px]">
             {data.length > 0 ? (
-              <ResponsiveContainer width="100%" height="100%">
+              <ResponsiveContainer width="100%" height="100%" minHeight={200}>
                 <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                   <defs>
                     <linearGradient id="scoreGradient" x1="0" y1="0" x2="0" y2="1">

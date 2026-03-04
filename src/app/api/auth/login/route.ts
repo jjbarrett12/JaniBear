@@ -1,9 +1,12 @@
 /**
  * Password login — see project root AUTH_FLOW.md.
  * Form POST only; session cookies set on same response as redirect.
+ * Handles remember_me so login form checkbox works.
  */
 import { createServerClient } from '@supabase/ssr';
 import { NextRequest, NextResponse } from 'next/server';
+
+const REMEMBER_EMAIL_COOKIE = 'janibear_remember_email';
 
 export async function GET(request: NextRequest) {
   return NextResponse.redirect(new URL('/auth/login', request.nextUrl.origin));
@@ -13,6 +16,7 @@ export async function POST(request: NextRequest) {
   const formData = await request.formData();
   const email = (formData.get('email') as string)?.trim();
   const password = formData.get('password') as string;
+  const rememberMe = formData.get('remember_me') === '1' || formData.get('remember_me') === 'on';
 
   const baseUrl = request.nextUrl.origin;
   const loginErrorUrl = new URL('/auth/login', baseUrl);
@@ -54,6 +58,17 @@ export async function POST(request: NextRequest) {
   if (!data.user) {
     loginErrorUrl.searchParams.set('error', 'invalid');
     return NextResponse.redirect(loginErrorUrl);
+  }
+
+  if (rememberMe) {
+    successRedirect.cookies.set(REMEMBER_EMAIL_COOKIE, email, {
+      path: '/',
+      maxAge: 60 * 60 * 24 * 365,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+    });
+  } else {
+    successRedirect.cookies.set(REMEMBER_EMAIL_COOKIE, '', { path: '/', maxAge: 0 });
   }
 
   return successRedirect;

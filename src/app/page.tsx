@@ -191,23 +191,22 @@ export default function Home() {
         </Link>
       </div>
 
-      {/* Hero: billion-dollar aesthetic — headline, MacBook dashboard, dual engines, CTAs */}
-      <section className="relative w-full overflow-hidden pt-16 md:pt-20 pb-16 md:pb-24 min-h-[90vh] flex flex-col">
+      {/* Hero: headline, tagline, device + cards, CTAs */}
+      <section className="relative w-full overflow-hidden pt-20 md:pt-24 pb-20 md:pb-28 min-h-[90vh] flex flex-col">
         {/* Backdrop: scrubber.png/jpg in public, or fallback to Unsplash */}
         <div className="absolute inset-0 pointer-events-none" aria-hidden>
           <HeroBackdropImage />
-          {/* Overlay for contrast (no blur so scrubber stays sharp) */}
           <div className="absolute inset-0 bg-black/45" />
           <div className="absolute inset-0 bg-gradient-to-b from-zinc-950/70 via-black/55 to-black/80" />
         </div>
-        {/* Radial glow only (no grid) */}
         <div className="absolute inset-0 pointer-events-none" aria-hidden>
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[160%] max-w-6xl h-[90%] bg-gradient-radial-hero opacity-50" />
         </div>
         <div className="absolute inset-0 pointer-events-none opacity-[0.05] hero-noise" aria-hidden />
 
         <div className="relative container mx-auto px-4 flex-1 flex flex-col items-center">
-          {/* Headline + subtitle + tagline */}
+          <div className="w-full max-w-6xl mx-auto flex flex-col items-center">
+          {/* Headline + subtitle */}
           <div className="text-center max-w-4xl mx-auto">
             <h1
               className={`font-heading text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-[2.75rem] font-bold text-white tracking-tight leading-[1.1] transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
@@ -225,23 +224,41 @@ export default function Home() {
             >
               <BrandName /> combines sales growth and operational control into one platform — helping commercial cleaning companies win contracts, prove quality, and scale without adding supervisors.
             </p>
+          </div>
+
+          {/* Tagline + arrows (wrapper so arrows start at tagline and arch down to cards) */}
+          <div className="relative w-full max-w-6xl mx-auto">
             <p
-              className={`mt-5 font-heading text-xl md:text-2xl font-bold transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+              className={`mt-6 font-heading text-xl md:text-2xl lg:text-3xl xl:text-[1.75rem] font-bold text-center transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
               style={{ transitionDelay: '120ms' }}
             >
-              <span className="bg-gradient-to-r from-amber-100 via-amber-300 to-yellow-300 bg-clip-text text-transparent drop-shadow-[0_0_24px_rgba(251,191,36,0.45)]">
+              <span className="hero-tagline-gradient">
                 Two managers&apos; worth of output. One platform.
               </span>
             </p>
+            {/* Arrows: from above the tagline (left/right), sweep down to Sales + Quality cards — match reference sketch */}
+            <div className="absolute left-0 right-0 top-full w-full h-[220px] md:h-[260px] pointer-events-none hidden lg:block" aria-hidden style={{ marginTop: '2px' }}>
+              <svg viewBox="0 0 100 100" className="w-full h-full" preserveAspectRatio="none" fill="none" stroke="rgba(251,191,36,0.7)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <defs>
+                  <marker id="hero-arrowhead" markerWidth="10" markerHeight="8" refX="8" refY="4" orient="auto">
+                    <path d="M0 0 L8 4 L0 8 Z" fill="rgba(251,191,36,0.95)" />
+                  </marker>
+                </defs>
+                {/* Left: from above & left of tagline, graceful arc down to Sales Engine card */}
+                <path d="M 28 0 Q 2 50 10 98" markerEnd="url(#hero-arrowhead)" />
+                {/* Right: from above & right of tagline, graceful arc down to Quality Control card */}
+                <path d="M 72 0 Q 98 50 90 98" markerEnd="url(#hero-arrowhead)" />
+              </svg>
+            </div>
           </div>
 
           {/* Laptop + side callouts: grid on large, stack on small */}
           <div
-            className={`w-full max-w-6xl mx-auto mt-10 md:mt-14 flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-4 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            className={`relative w-full max-w-6xl mx-auto mt-12 md:mt-16 flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-6 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '160ms' }}
           >
             {/* Sales Engine — left */}
-            <div className="w-full lg:max-w-[240px] order-2 lg:order-1 rounded-xl border border-amber-400/40 bg-zinc-900/80 backdrop-blur p-5 shadow-[0_0_40px_rgba(251,191,36,0.08)]">
+            <div className="w-full lg:max-w-[260px] order-2 lg:order-1 rounded-2xl border border-amber-400/50 bg-zinc-900/90 backdrop-blur-xl p-6 shadow-[0_0_50px_rgba(251,191,36,0.12)] hover:shadow-[0_0_60px_rgba(251,191,36,0.18)] hover:border-amber-400/60 transition-all duration-300">
               <div className="w-10 h-10 rounded-lg bg-amber-500/20 border border-amber-400/30 flex items-center justify-center mb-4 text-amber-300">
                 <Briefcase className="h-5 w-5" />
               </div>
@@ -257,13 +274,13 @@ export default function Home() {
               <p className="mt-3 text-xs text-zinc-400 leading-snug">Win contracts without hiring a sales manager.</p>
             </div>
 
-            {/* Laptop + phone: hero-devices.png/jpg in public, or fallback to MacBook mock */}
+            {/* Laptop + phone mockup */}
             <div className="order-1 lg:order-2 relative flex-shrink-0">
               <HeroCenterImage />
             </div>
 
             {/* Quality Control Engine — right */}
-            <div className="w-full lg:max-w-[240px] order-3 rounded-xl border border-amber-400/40 bg-zinc-900/80 backdrop-blur p-5 shadow-[0_0_40px_rgba(251,191,36,0.08)]">
+            <div className="w-full lg:max-w-[260px] order-3 rounded-2xl border border-amber-400/50 bg-zinc-900/90 backdrop-blur-xl p-6 shadow-[0_0_50px_rgba(251,191,36,0.12)] hover:shadow-[0_0_60px_rgba(251,191,36,0.18)] hover:border-amber-400/60 transition-all duration-300">
               <div className="w-10 h-10 rounded-lg bg-amber-500/20 border border-amber-400/30 flex items-center justify-center mb-4 text-amber-300">
                 <ClipboardCheck className="h-5 w-5" />
               </div>
@@ -280,19 +297,21 @@ export default function Home() {
             </div>
           </div>
 
+          </div>
+
           {/* Bottom CTAs */}
           <div
-            className={`flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center mt-8 md:mt-10 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            className={`flex flex-col sm:flex-row gap-4 sm:gap-5 justify-center items-center mt-10 md:mt-12 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: '240ms' }}
           >
             <Link href="/demo">
-              <Button size="lg" className="landing-cta landing-cta-lg text-base px-8 h-12">
+              <Button size="lg" className="landing-cta landing-cta-lg text-base font-semibold px-8 h-12 rounded-xl shadow-[0_4px_24px_rgba(251,191,36,0.35)] hover:shadow-[0_6px_32px_rgba(251,191,36,0.45)] transition-shadow">
                 Book a 15-Minute Demo
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
             <Link href="/demo">
-              <Button variant="outline" size="lg" className="landing-cta-secondary border-amber-400/50 text-zinc-300 hover:bg-white/5 hover:border-amber-400/70 h-12 px-6">
+              <Button variant="outline" size="lg" className="landing-cta-secondary border-2 border-amber-400/50 text-zinc-200 hover:bg-white/5 hover:border-amber-400/70 h-12 px-6 rounded-xl font-medium">
                 See a Real Inspection Report
               </Button>
             </Link>
@@ -302,7 +321,7 @@ export default function Home() {
 
       <section id="features" className="relative pt-16 md:pt-20 pb-20 md:pb-24 bg-zinc-950/80 border-t border-zinc-800/50">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-14 md:mb-16">
+          <div className="rounded-2xl border border-zinc-700/70 bg-zinc-900/50 px-6 py-8 md:px-10 md:py-10 mb-12 md:mb-14 max-w-4xl mx-auto text-center shadow-lg shadow-black/20">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-400/30 text-amber-300 text-sm font-medium mb-5">
               <Brain className="h-4 w-4" />
               <span>Powered by AI</span>
@@ -348,7 +367,7 @@ export default function Home() {
 
       <section id="operations-qa" className="relative py-20 md:py-24 bg-black border-t border-zinc-800/50">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-14 md:mb-16">
+          <div className="rounded-2xl border border-zinc-700/70 bg-zinc-900/50 px-6 py-8 md:px-10 md:py-10 mb-12 md:mb-14 max-w-4xl mx-auto text-center shadow-lg shadow-black/20">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-400/30 text-emerald-300 text-sm font-medium mb-5">
               <ClipboardCheck className="h-4 w-4" />
               <span>Operations & QA</span>
@@ -394,7 +413,7 @@ export default function Home() {
 
       <section className="py-20 md:py-24 bg-zinc-950/80 border-t border-zinc-800/50">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-14 md:mb-16">
+          <div className="rounded-2xl border border-zinc-700/70 bg-zinc-900/50 px-6 py-8 md:px-10 md:py-10 mb-12 md:mb-14 max-w-4xl mx-auto text-center shadow-lg shadow-black/20">
             <h2 className="font-heading text-3xl md:text-5xl font-bold text-white mb-4 tracking-tight">
               Measurable Results for Janitorial Companies
             </h2>
@@ -425,56 +444,97 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Built by Operators — story block: headline + copy, anchored in card */}
       <section className="py-20 md:py-24 bg-black border-t border-zinc-800/50">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-14 md:mb-16">
-            <h2 className="font-heading text-3xl md:text-5xl font-bold text-white mb-4 tracking-tight">
-              Built by Janitorial Operators, For Janitorial Operators
-            </h2>
-            <p className="text-lg md:text-xl text-zinc-400 max-w-xl mx-auto">
-              Designed by janitorial industry experts to not only win business, but keep it.
-            </p>
+          <div className="max-w-5xl mx-auto rounded-2xl border border-zinc-700/70 bg-zinc-900/50 p-6 md:p-10 lg:p-12 shadow-lg shadow-black/20 overflow-hidden">
+            <div className="grid md:grid-cols-[1fr,1fr] gap-10 md:gap-14 items-center">
+              {/* Left: headline */}
+              <div className="relative md:pl-2">
+                <h2 className="font-heading text-3xl sm:text-4xl md:text-4xl lg:text-5xl font-bold text-white tracking-tight leading-[1.08]">
+                  Built by Operators.
+                  <br />
+                  Not Venture
+                  <br />
+                  Capital.
+                </h2>
+                <div className="absolute -left-2 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-amber-400/40 to-transparent hidden md:block" aria-hidden />
+              </div>
+              {/* Right: story */}
+              <div className="space-y-6 text-zinc-300 md:border-l border-zinc-700/60 md:pl-10">
+              <p className="text-base md:text-lg leading-relaxed">
+                <BrandName /> wasn&apos;t built in a boardroom. It was built inside a commercial cleaning company.
+              </p>
+              <p className="text-sm font-semibold text-white uppercase tracking-wider">
+                20+ years in the field.
+              </p>
+              <ul className="space-y-2 text-base">
+                {['We\'ve bid buildings.', 'Managed crews.', 'Fixed failed inspections.', 'Lost sleep over client expectations.'].map((item) => (
+                  <li key={item} className="flex items-center gap-2">
+                    <Check className="h-4 w-4 text-amber-400 shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <p className="text-base md:text-lg leading-relaxed">
+                We didn&apos;t need another generic software tool. We needed a system that wins contracts, enforces accountability, and protects client relationships long term.
+              </p>
+              <p className="text-base">
+                <Link
+                  href="/demo"
+                  className="font-semibold text-amber-400 hover:text-amber-300 underline underline-offset-4 decoration-amber-400/60 hover:decoration-amber-300 transition-colors"
+                >
+                  So we built it.
+                </Link>
+              </p>
+            </div>
+            </div>
           </div>
-          <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
-            {[
-              { icon: UserCheck, label: 'Janitorial Sales Reps', desc: 'Close more deals faster' },
-              { icon: Building2, label: 'Owner-Operators', desc: 'Scale without hiring' },
-              { icon: Users, label: 'Franchise Operators', desc: '', note: 'We cater to both Area Franchisors and Unit Franchisees' },
-              { icon: Target, label: 'Facility Services', desc: 'Expand into janitorial' },
-            ].map((item, index) => {
-              const Icon = item.icon;
-              return (
-                <div key={index} className="flex flex-col items-center p-8 rounded-2xl bg-zinc-900/50 border border-zinc-700/80 hover:border-cyan-400/40 transition-all duration-300 text-center">
-                  <div className="w-14 h-14 rounded-xl bg-cyan-500/15 border border-cyan-400/20 text-cyan-300 flex items-center justify-center mb-4">
-                    <Icon className="h-7 w-7" />
+          {/* Who it's for — compact row */}
+          <div className="mt-16 pt-16 border-t border-zinc-800/80">
+            <p className="text-center text-sm font-medium text-zinc-500 uppercase tracking-wider mb-8">
+              Built for operators like you
+            </p>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+              {[
+                { icon: UserCheck, label: 'Janitorial Sales Reps', desc: 'Close more deals faster' },
+                { icon: Building2, label: 'Owner-Operators', desc: 'Scale without hiring' },
+                { icon: Users, label: 'Franchise Operators', desc: 'Area & unit franchisees' },
+                { icon: Target, label: 'Facility Services', desc: 'Expand into janitorial' },
+              ].map((item, index) => {
+                const Icon = item.icon;
+                return (
+                  <div key={index} className="flex flex-col items-center p-6 rounded-2xl bg-zinc-900/50 border border-zinc-700/80 hover:border-amber-400/40 transition-all duration-300 text-center">
+                    <div className="w-12 h-12 rounded-xl bg-amber-500/15 border border-amber-400/20 text-amber-300 flex items-center justify-center mb-3">
+                      <Icon className="h-6 w-6" />
+                    </div>
+                    <span className="font-semibold text-white text-sm mb-0.5">{item.label}</span>
+                    <span className="text-zinc-400 text-xs">{item.desc}</span>
                   </div>
-                  <span className="font-semibold text-white text-base mb-1">{item.label}</span>
-                  {item.desc ? <span className="text-zinc-400 text-sm">{item.desc}</span> : null}
-                  {'note' in item && item.note && (
-                    <span className="text-zinc-500 text-xs mt-2">{item.note}</span>
-                  )}
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </div>
       </section>
 
       <section className="py-20 md:py-24 bg-zinc-950/80 border-t border-zinc-800/50">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <div className="flex items-center justify-center gap-2 mb-6">
-              <div className="px-4 py-2 rounded-full bg-amber-500/10 border border-amber-400/30 text-amber-300 text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5">
-                <Plus className="h-3.5 w-3.5" />
-                Sales Module
+          <div className="max-w-4xl mx-auto">
+            <div className="rounded-2xl border border-zinc-700/70 bg-zinc-900/50 px-6 py-8 md:px-10 md:py-10 mb-10 text-center shadow-lg shadow-black/20">
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <div className="px-4 py-2 rounded-full bg-amber-500/10 border border-amber-400/30 text-amber-300 text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5">
+                  <Plus className="h-3.5 w-3.5" />
+                  Sales Module
+                </div>
               </div>
+              <h2 className="font-heading text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">
+                Complete Sales Management
+              </h2>
+              <p className="text-lg text-zinc-400 max-w-2xl mx-auto">
+                From first walkthrough to closed deal—building capture, proposals, follow-ups, and pricing—all in one platform.
+              </p>
             </div>
-            <h2 className="font-heading text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">
-              Complete Sales Management
-            </h2>
-            <p className="text-lg text-zinc-400 mb-12 max-w-2xl mx-auto">
-              From first walkthrough to closed deal—building capture, proposals, follow-ups, and pricing—all in one platform.
-            </p>
             <div className="grid sm:grid-cols-2 md:grid-cols-5 gap-5">
               {[
                 { icon: Camera, label: 'Building Capture' },
@@ -503,19 +563,21 @@ export default function Home() {
 
       <section className="py-20 md:py-24 bg-black border-t border-zinc-800/50">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <div className="flex items-center justify-center gap-2 mb-6">
-              <div className="px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-400/30 text-emerald-300 text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5">
-                <Plus className="h-3.5 w-3.5" />
-                Operations Module
+          <div className="max-w-4xl mx-auto">
+            <div className="rounded-2xl border border-zinc-700/70 bg-zinc-900/50 px-6 py-8 md:px-10 md:py-10 mb-10 text-center shadow-lg shadow-black/20">
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <div className="px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-400/30 text-emerald-300 text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5">
+                  <Plus className="h-3.5 w-3.5" />
+                  Operations Module
+                </div>
               </div>
+              <h2 className="font-heading text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">
+                Complete Operations Management
+              </h2>
+              <p className="text-lg text-zinc-400 max-w-2xl mx-auto">
+                After you win the bid, manage inspections, crews, compliance, purchase orders, and invoicing—all in one platform.
+              </p>
             </div>
-            <h2 className="font-heading text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">
-              Complete Operations Management
-            </h2>
-            <p className="text-lg text-zinc-400 mb-12 max-w-2xl mx-auto">
-              After you win the bid, manage inspections, crews, compliance, purchase orders, and invoicing—all in one platform.
-            </p>
             <div className="grid sm:grid-cols-2 md:grid-cols-5 gap-5">
               {[
                 { icon: ClipboardCheck, label: 'Inspections' },
@@ -543,8 +605,8 @@ export default function Home() {
       </section>
 
       <section id="book-demo" className="relative py-20 md:py-24 bg-zinc-950/80 border-t border-zinc-800/50">
-        <div className="container mx-auto px-4 text-center">
-          <div className="max-w-2xl mx-auto">
+        <div className="container mx-auto px-4">
+          <div className="max-w-2xl mx-auto rounded-2xl border border-amber-400/40 bg-zinc-900/60 px-6 py-10 md:px-12 md:py-12 text-center shadow-xl shadow-black/30 ring-1 ring-amber-400/20">
             <h2 className="font-heading text-3xl md:text-5xl font-bold text-white mb-5 tracking-tight">
               Ready to Book a 15-Minute Demo?
             </h2>

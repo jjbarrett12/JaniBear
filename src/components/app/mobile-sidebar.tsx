@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { AppLink } from '@/components/app/app-link';
 import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { 
@@ -127,7 +128,7 @@ export function MobileSidebar({ logoUrl }: MobileSidebarProps) {
           <aside className="fixed top-0 left-0 z-50 h-full w-80 bg-white dark:bg-gray-900 shadow-xl lg:hidden transform transition-transform duration-300">
             <div className="flex h-full flex-col">
               <div className="flex min-h-16 items-center justify-between border-b border-border px-4 py-2 bg-[hsl(220,30%,97%)] dark:bg-card">
-                <Link href="/app/dashboard" className="flex min-h-[3.5rem] w-full items-center bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block [&>span]:!relative [&>span]:w-full [&>span]:h-full">
+                <AppLink href="/app/dashboard" className="flex min-h-[3.5rem] w-full items-center bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block [&>span]:!relative [&>span]:w-full [&>span]:h-full">
                   {logoUrl ? (
                     <Image
                       src={logoUrl}
@@ -149,7 +150,7 @@ export function MobileSidebar({ logoUrl }: MobileSidebarProps) {
                       unoptimized
                     />
                   )}
-                </Link>
+                </AppLink>
                 <Button
                   variant="ghost"
                   size="icon"
@@ -165,7 +166,7 @@ export function MobileSidebar({ logoUrl }: MobileSidebarProps) {
               </div>
 
               <nav className="flex-1 space-y-4 p-4 overflow-y-auto">
-                <Link
+                <AppLink
                   href="/app/dashboard"
                   className={`flex items-center gap-3 rounded-lg px-4 py-3 text-base font-medium transition-colors min-h-[48px] ${
                     pathname === '/app/dashboard'
@@ -175,8 +176,8 @@ export function MobileSidebar({ logoUrl }: MobileSidebarProps) {
                 >
                   <LayoutDashboard className="h-5 w-5 shrink-0" />
                   {t('navDashboard')}
-                </Link>
-                <Link
+                </AppLink>
+                <AppLink
                   href="/app/university"
                   className={`flex items-center gap-3 rounded-lg px-4 py-3 text-base font-medium transition-colors min-h-[48px] ${
                     pathname.startsWith('/app/university')
@@ -186,7 +187,7 @@ export function MobileSidebar({ logoUrl }: MobileSidebarProps) {
                 >
                   <GraduationCap className="h-5 w-5 shrink-0" />
                   {t('navUniversity')}
-                </Link>
+                </AppLink>
 
                 <div className="space-y-1">
                   <p className="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
@@ -196,7 +197,7 @@ export function MobileSidebar({ logoUrl }: MobileSidebarProps) {
                     const Icon = item.icon;
                     const isActive = pathname.startsWith(item.href);
                     return (
-                      <Link
+                      <AppLink
                         key={`${item.href}-${item.labelKey}`}
                         href={item.href}
                         className={`flex items-center gap-3 rounded-lg px-4 py-3 text-base font-medium transition-colors min-h-[44px] ${
@@ -207,7 +208,7 @@ export function MobileSidebar({ logoUrl }: MobileSidebarProps) {
                       >
                         <Icon className="h-5 w-5 shrink-0" />
                         {t(item.labelKey)}
-                      </Link>
+                      </AppLink>
                     );
                   })}
                 </div>
@@ -220,7 +221,7 @@ export function MobileSidebar({ logoUrl }: MobileSidebarProps) {
                     const Icon = item.icon;
                     const isActive = pathname.startsWith(item.href);
                     return (
-                      <Link
+                      <AppLink
                         key={`${item.href}-${item.labelKey}`}
                         href={item.href}
                         className={`flex items-center gap-3 rounded-lg px-4 py-3 text-base font-medium transition-colors min-h-[44px] ${
@@ -231,13 +232,13 @@ export function MobileSidebar({ logoUrl }: MobileSidebarProps) {
                       >
                         <Icon className="h-5 w-5 shrink-0" />
                         {t(item.labelKey)}
-                      </Link>
+                      </AppLink>
                     );
                   })}
                 </div>
 
                 <div className="pt-2 border-t dark:border-gray-800">
-                  <Link
+                  <AppLink
                     href="/app/settings"
                     className={`flex items-center gap-3 rounded-lg px-4 py-3 text-base font-medium transition-colors min-h-[44px] ${
                       pathname.startsWith('/app/settings')
@@ -247,7 +248,7 @@ export function MobileSidebar({ logoUrl }: MobileSidebarProps) {
                   >
                     <Settings className="h-5 w-5 shrink-0" />
                     {t('navSettings')}
-                  </Link>
+                  </AppLink>
                 </div>
               </nav>
 

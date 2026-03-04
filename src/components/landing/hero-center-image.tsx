@@ -39,8 +39,7 @@ export function HeroCenterImage() {
   return (
     <>
       <div className="absolute -inset-6 bg-amber-400/10 rounded-3xl blur-2xl" aria-hidden />
-      {/* Larger centerpiece; use hero-devices-transparent.png for true transparency (no blend mode) */}
-      <div className="relative w-[360px] sm:w-[440px] md:w-[520px] lg:w-[580px]">
+      <div className="relative w-[420px] sm:w-[520px] md:w-[620px] lg:w-[720px]">
         <Image
           src={src}
           alt="JANIBEAR on laptop and phone"

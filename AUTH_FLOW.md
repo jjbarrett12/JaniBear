@@ -12,9 +12,10 @@ This doc describes the **only** supported sign-in flow. Changing auth (login, mi
 
 1. User submits the **form** on `/auth/login` with `action="/api/auth/login"` and `method="POST"`.
 2. **POST /api/auth/login** (Route Handler):
-   - Reads `email` / `password` from form body.
+   - Reads `email` / `password` (and optional `remember_me`) from form body.
    - Calls `supabase.auth.signInWithPassword()`.
    - Sets **session cookies** on the **same response** that does the redirect (no second hop).
+   - If `remember_me` is checked, sets **`janibear_remember_email`** cookie; otherwise clears it.
    - Redirects to **GET /api/auth/landing** (302).
 3. **GET /api/auth/landing** (Route Handler):
    - Uses server Supabase client (reads cookies from the request).

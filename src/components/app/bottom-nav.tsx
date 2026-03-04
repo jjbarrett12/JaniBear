@@ -1,6 +1,6 @@
 'use client';
 
-import Link from 'next/link';
+import { AppLink } from '@/components/app/app-link';
 import { usePathname } from 'next/navigation';
 import { useLanguage } from '@/contexts/language-context';
 import { getAppT } from '@/lib/app-translations';
@@ -34,7 +34,7 @@ export function BottomNav() {
           const isActive = pathname === item.href || (item.href !== '/app/dashboard' && pathname.startsWith(item.href));
           
           return (
-            <Link
+            <AppLink
               key={item.href}
               href={item.href}
               className={`relative flex flex-col items-center justify-center flex-1 h-full min-w-0 px-2 transition-colors ${
@@ -50,7 +50,7 @@ export function BottomNav() {
               {isActive && (
                 <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-0.5 rounded-full bg-primary" aria-hidden />
               )}
-            </Link>
+            </AppLink>
           );
         })}
       </div>

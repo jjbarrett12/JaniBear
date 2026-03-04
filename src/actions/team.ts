@@ -43,6 +43,38 @@ export async function updateMemberRole(
     .eq('id', membershipId);
   if (error) return { error: error.message };
   revalidatePath('/app/settings/team');
+  revalidatePath('/app/admin/users');
+  return {};
+}
+
+/** Remove a member from the organization. Caller must be owner/admin; cannot remove owner. */
+export async function removeMember(membershipId: string): Promise<{ error?: string }> {
+  const supabase = await createClient();
+  const userId = await getCurrentUserId();
+  const orgId = await getActiveOrgIdFromCookie();
+  if (!userId || !orgId) return { error: 'Unauthorized' };
+
+  const { data: caller } = await supabase
+    .from('org_members')
+    .select('role')
+    .eq('org_id', orgId)
+    .eq('user_id', userId)
+    .single();
+  if (!caller || !['owner', 'admin'].includes(caller.role))
+    return { error: 'Forbidden' };
+
+  const { data: target } = await supabase
+    .from('org_members')
+    .select('id, org_id, role')
+    .eq('id', membershipId)
+    .single();
+  if (!target || target.org_id !== orgId) return { error: 'Membership not found' };
+  if (target.role === 'owner') return { error: 'Cannot remove owner' };
+
+  const { error } = await supabase.from('org_members').delete().eq('id', membershipId);
+  if (error) return { error: error.message };
+  revalidatePath('/app/settings/team');
+  revalidatePath('/app/admin/users');
   return {};
 }
 
@@ -89,7 +121,38 @@ export async function createOrgInvite(
   const base = process.env.NEXT_PUBLIC_APP_URL ?? '';
   const inviteLink = `${base.replace(/\/$/, '')}/app/join-org?token=${encodeURIComponent(token)}`;
   revalidatePath('/app/settings/team');
+  revalidatePath('/app/admin/invites');
   return { inviteLink };
+}
+
+/** Revoke an org invite. Caller must be owner/admin. */
+export async function revokeInvite(inviteId: string): Promise<{ error?: string }> {
+  const supabase = await createClient();
+  const userId = await getCurrentUserId();
+  const orgId = await getActiveOrgIdFromCookie();
+  if (!userId || !orgId) return { error: 'Unauthorized' };
+
+  const { data: caller } = await supabase
+    .from('org_members')
+    .select('role')
+    .eq('org_id', orgId)
+    .eq('user_id', userId)
+    .single();
+  if (!caller || !['owner', 'admin'].includes(caller.role))
+    return { error: 'Forbidden' };
+
+  const { data: invite } = await supabase
+    .from('org_invites')
+    .select('id, org_id')
+    .eq('id', inviteId)
+    .single();
+  if (!invite || invite.org_id !== orgId) return { error: 'Invite not found' };
+
+  const { error } = await supabase.from('org_invites').delete().eq('id', inviteId);
+  if (error) return { error: error.message };
+  revalidatePath('/app/settings/team');
+  revalidatePath('/app/admin/invites');
+  return {};
 }
 
 /** Accept an org invite by token. User must be signed in. */

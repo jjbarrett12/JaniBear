@@ -1,58 +1,26 @@
-import { createClient } from '@/lib/supabase/server';
-import { getCurrentUser } from '@/lib/auth';
+/**
+ * RBAC permission keys — single source of truth for permission checks.
+ * Must match role_permissions table in DB; enforcement is server/db.
+ */
 
-export type Role = 'owner' | 'admin' | 'sales' | 'ops' | 'inspector' | 'cleaner' | 'client';
+export const PERMISSIONS = {
+  ORG_MANAGE_USERS: 'org.manage_users',
+  ORG_MANAGE_SETTINGS: 'org.manage_settings',
+  BILLING_MANAGE: 'billing.manage',
+  DASHBOARD_MANAGEMENT_VIEW: 'dashboard.management.view',
+  DASHBOARD_OPS_VIEW: 'dashboard.ops.view',
+  DASHBOARD_SALES_VIEW: 'dashboard.sales.view',
+  TASKS_MANAGE: 'tasks.manage',
+  TASKS_COMPLETE: 'tasks.complete',
+  INSPECTIONS_VIEW: 'inspections.view',
+  INSPECTIONS_CREATE: 'inspections.create',
+  REPORTS_VIEW: 'reports.view',
+} as const;
 
-export type Permission = 
-  | 'manage_users'
-  | 'view_kpis'
-  | 'run_inspections'
-  | 'manage_ops'
-  | 'view_client_portal';
+export type PermissionKey = (typeof PERMISSIONS)[keyof typeof PERMISSIONS];
 
-const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
-  owner: ['manage_users', 'view_kpis', 'run_inspections', 'manage_ops'],
-  admin: ['manage_users', 'view_kpis', 'run_inspections', 'manage_ops'],
-  sales: ['view_kpis'],
-  ops: ['manage_ops', 'run_inspections'],
-  inspector: ['run_inspections'],
-  cleaner: [],
-  client: ['view_client_portal'],
-};
+/** Roles that can manage users and invites (for Admin UI gating). */
+export const ROLES_WITH_MANAGE_USERS: string[] = ['owner', 'admin'];
 
-// Map existing roles to new roles if necessary
-const LEGACY_ROLE_MAP: Record<string, Role> = {
-  'manager': 'admin',
-  'client_viewer': 'client',
-  'inspector': 'inspector',
-  'owner': 'owner'
-};
-
-export async function hasPermission(permission: Permission): Promise<boolean> {
-  const supabase = await createClient();
-  const user = await getCurrentUser();
-  if (!user) return false;
-
-  const { data: member } = await supabase
-    .from('org_members')
-    .select('role')
-    .eq('user_id', user.id)
-    .single();
-
-  if (!member) return false;
-  
-  // Normalize role
-  let role = member.role as Role;
-  if (!ROLE_PERMISSIONS[role] && LEGACY_ROLE_MAP[member.role]) {
-    role = LEGACY_ROLE_MAP[member.role];
-  }
-
-  return ROLE_PERMISSIONS[role]?.includes(permission) ?? false;
-}
-
-export async function requirePermission(permission: Permission) {
-  const allowed = await hasPermission(permission);
-  if (!allowed) {
-    throw new Error(`Unauthorized: Missing permission ${permission}`);
-  }
-}
+/** Roles that can view management dashboard. */
+export const ROLES_WITH_MANAGEMENT_VIEW: string[] = ['owner', 'admin', 'manager'];

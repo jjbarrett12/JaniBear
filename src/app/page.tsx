@@ -5,7 +5,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Check, Menu, X } from 'lucide-react';
-import { BrandName } from '@/components/ui/brand-name';
 import { HeroBackdropImage } from '@/components/landing/hero-backdrop-image';
 import { HeroCenterImage } from '@/components/landing/hero-center-image';
 import { HOMEPAGE } from '@/content/homepage';
@@ -286,51 +285,6 @@ export default function Home() {
       <SalesOpsResultsSection />
       <hr className="landing-section-divider" />
       <FinalCtaSection />
-
-      <footer className="text-zinc-400 py-12">
-        <div className="container mx-auto px-4 max-w-6xl">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div className="[&>span]:bg-transparent [&>span]:shadow-none [&>span]:block">
-              <Image src="/logo.png" alt="JANIBEAR" width={220} height={72} className="h-14 md:h-16 w-auto mb-4 object-contain bg-transparent" unoptimized />
-              <p className="text-sm text-zinc-500">
-                The operating system for commercial cleaning. Win bids. Keep accounts. Catch margin leaks.
-              </p>
-            </div>
-            <div>
-              <h4 className="text-white font-semibold mb-4 text-sm">Product</h4>
-              <ul className="space-y-2 text-sm">
-                <li><Link href="/demo" className="hover:text-white transition-colors">Get a Private Demo</Link></li>
-                <li><Link href="/pricing" className="hover:text-white transition-colors">See Plans</Link></li>
-                <li><Link href="/survey" className="hover:text-white transition-colors">Find Your Plan</Link></li>
-                <li><Link href="/#sales-infrastructure" className="hover:text-white transition-colors">Platform</Link></li>
-                <li><Link href="/#operations-control" className="hover:text-white transition-colors">Modules</Link></li>
-                <li><Link href="/#why-janibear-wins" className="hover:text-white transition-colors">Why Janibear</Link></li>
-                <li><Link href="/#who-its-for" className="hover:text-white transition-colors">Who It&apos;s For</Link></li>
-                <li><Link href="/contact" className="hover:text-white transition-colors">Contact</Link></li>
-                <li><Link href="/auth/login" className="hover:text-white transition-colors">Sign In</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-white font-semibold mb-4 text-sm">Company</h4>
-              <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-white transition-colors">About</a></li>
-                <li><Link href="/contact" className="hover:text-white transition-colors">Contact</Link></li>
-                <li><Link href="/contact" className="hover:text-white transition-colors">Support</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-white font-semibold mb-4 text-sm">Legal</h4>
-              <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Terms of Service</a></li>
-              </ul>
-            </div>
-          </div>
-          <div className="mt-8 pt-8 text-center text-sm text-zinc-500 border-t border-white/[0.06]">
-            <p>&copy; {new Date().getFullYear()} <BrandName />. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 

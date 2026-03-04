@@ -15,6 +15,7 @@
     "deploy": "node scripts/deploy-to-live.js",
     "delpoy": "npm run deploy",
     "lint": "next lint",
+    "check:footer": "node scripts/check-footer-links.mjs",
     "generate-icons": "node scripts/create-icons.js",
     "test:imports": "node scripts/test-imports.js"
   },

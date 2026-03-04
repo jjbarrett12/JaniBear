@@ -33,7 +33,7 @@ export const PLANS: readonly PricingPlan[] = [
   {
     id: 'cub',
     name: 'Cub',
-    label: 'Field Crew',
+    label: 'FIELD CREWS',
     price: '$9',
     suffix: '/ user / month',
     bullets: [
@@ -49,7 +49,7 @@ export const PLANS: readonly PricingPlan[] = [
   {
     id: 'grizzly',
     name: 'Grizzly',
-    label: 'Sales & Estimating',
+    label: 'SALES & BIDDING',
     price: '$89',
     suffix: '/ user / month',
     bullets: [
@@ -66,7 +66,7 @@ export const PLANS: readonly PricingPlan[] = [
   {
     id: 'kodiak',
     name: 'Kodiak',
-    label: 'Operations & Management',
+    label: 'OPERATIONS & LEADERSHIP',
     price: '$129',
     suffix: '/ user / month',
     bullets: [
@@ -112,7 +112,7 @@ export const ADDONS: readonly PricingAddon[] = [
     id: 'helphub',
     name: 'HelpHub QR',
     price: '$29',
-    suffix: '/ location / month',
+    suffix: '/ company / month',
     bullets: [
       'QR issue reporting',
       'Client portal',

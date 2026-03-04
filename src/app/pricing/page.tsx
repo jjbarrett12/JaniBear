@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { PricingPlanCard } from '@/components/marketing/PricingPlanCard';
 import { PricingAddonCard } from '@/components/marketing/PricingAddonCard';
+import { RoleFlow } from '@/components/pricing/RoleFlow';
 import {
   PLANS,
   ADDONS,
@@ -45,17 +46,17 @@ export default function PricingPage() {
 
       <main className="relative z-0">
         {/* Section 1: Hero */}
-        <section className="mx-auto max-w-4xl px-6 pt-20 pb-16 md:pt-28 md:pb-24 text-center">
+        <section className="mx-auto max-w-[900px] px-6 py-20 text-center">
           <motion.h1
-            className="font-heading text-4xl md:text-5xl font-semibold tracking-tight text-white"
+            className="font-heading text-4xl md:text-6xl font-semibold tracking-tight text-white max-w-[900px] mx-auto"
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
           >
-            Simple Pricing for Growing Cleaning Companies
+            Pricing Built for How Cleaning Companies Actually Work
           </motion.h1>
           <motion.p
-            className="mt-6 text-lg text-gray-400 leading-relaxed"
+            className="text-lg md:text-xl text-zinc-400 mt-6 max-w-[820px] mx-auto leading-relaxed"
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.08 }}
@@ -63,7 +64,7 @@ export default function PricingPage() {
             JANIBEAR scales with your team — from field crews to multi-location operations.
           </motion.p>
           <motion.p
-            className="mt-4 text-sm font-medium text-zinc-500"
+            className="text-sm text-zinc-500 mt-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.4, delay: 0.16 }}
@@ -73,20 +74,24 @@ export default function PricingPage() {
         </section>
 
         <hr className="landing-section-divider" />
-        {/* Section 2: Role-based plans */}
+        {/* Section 2: Choose the roles your team needs */}
         <section
-          className="relative mx-auto max-w-7xl px-6 py-16 md:py-24"
+          className="relative mx-auto max-w-7xl px-6 py-16 md:py-20"
           aria-labelledby="plans-heading"
         >
           <header className="mx-auto max-w-2xl text-center">
-            <h2 id="plans-heading" className="font-heading text-4xl md:text-5xl font-semibold tracking-tight text-white">
-              Role-based plans
+            <h2 id="plans-heading" className="font-heading text-3xl md:text-4xl font-semibold tracking-tight text-white">
+              Choose the Roles Your Team Needs
             </h2>
-            <p className="mt-4 text-lg text-gray-400">
-              Price by who uses it — not by how fast you grow.
+            <p className="text-zinc-400 mt-4">
+              Price by who uses JANIBEAR — not by contracts, locations, or square footage.
             </p>
           </header>
-          <div className="mt-14 grid grid-cols-1 gap-8 md:grid-cols-3 md:gap-8 lg:gap-10">
+          <RoleFlow />
+          <p className="text-zinc-400 text-sm text-center mb-10 mt-8">
+            No contracts. No per-location fees. Scale your team without surprise pricing.
+          </p>
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3 md:gap-8 lg:gap-10">
             {PLANS.map((plan) => (
               <PricingPlanCard key={plan.id} plan={plan} />
             ))}

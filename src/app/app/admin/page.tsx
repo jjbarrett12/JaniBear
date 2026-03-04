@@ -11,6 +11,7 @@ import {
   Receipt, 
   Phone,
   Settings,
+  Shield,
   TrendingUp,
   Clock,
   CheckCircle2,
@@ -78,6 +79,14 @@ export default async function AdminPage(props: { searchParams?: Promise<{ demo?:
   };
 
   const adminFeatures = [
+    {
+      title: 'Team & access',
+      description: 'Users, invites, roles, and audit log',
+      href: '/app/admin/team',
+      icon: Shield,
+      color: 'text-sky-600',
+      bgColor: 'bg-sky-50 dark:bg-sky-950/30',
+    },
     {
       title: 'Employees',
       description: 'Manage employees, roles, and permissions',

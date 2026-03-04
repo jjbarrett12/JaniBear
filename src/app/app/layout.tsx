@@ -49,6 +49,18 @@ export default async function AppLayout({
     redirect('/app/franchise');
   }
 
+  // Users with onboarding_status = 'pending' can only access onboarding (safe: no row = no redirect)
+  if (!pathname.startsWith('/app/onboarding')) {
+    const { data: settings } = await supabase
+      .from('org_settings')
+      .select('onboarding_status')
+      .eq('org_id', org.org_id)
+      .maybeSingle();
+    if (settings?.onboarding_status === 'pending') {
+      redirect('/app/onboarding');
+    }
+  }
+
   return (
     <ThemeProvider orgId={org.org_id} initialTheme={organizationData ?? undefined}>
       <ThemeApplier />

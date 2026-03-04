@@ -45,6 +45,7 @@ import {
   Percent,
   Radar,
   Workflow,
+  Shield,
 } from 'lucide-react';
 
 export type OrgType = 'independent' | 'franchisee' | 'franchisor';
@@ -166,7 +167,7 @@ function buildOperationsSection(input: NavFactoryInput): NavSection {
   };
 }
 
-/** System section: Admin Dashboard, Commission, Renewals, Automations, Users & Roles, AI Settings, Training (University), Pro Gear, Organization, Audit. */
+/** System section: Admin Dashboard, Commission, Renewals, Automations, Users, Invites, Roles, Audit, AI Settings, Training, Pro Gear, Organization. */
 function buildSystemSection(input: NavFactoryInput): NavSection {
   const { orgType } = input;
   const base: NavItem[] = [
@@ -174,12 +175,14 @@ function buildSystemSection(input: NavFactoryInput): NavSection {
     { href: '/app/admin', labelKey: 'navCommissionDashboard', icon: Percent },
     { href: '/app/admin', labelKey: 'navRenewalRadar', icon: Radar },
     { href: '/app/admin', labelKey: 'navWorkflows', icon: Workflow },
-    { href: '/app/admin', labelKey: 'navUsersAndRoles', icon: Users },
+    { href: '/app/admin/users', labelKey: 'navAdminUsers', icon: Users },
+    { href: '/app/admin/invites', labelKey: 'navAdminInvites', icon: UserPlus },
+    { href: '/app/admin/roles', labelKey: 'navAdminRoles', icon: Shield },
+    { href: '/app/admin/audit', labelKey: 'navAdminAudit', icon: FileText },
     { href: '/app/admin/ai-settings', labelKey: 'navAiSettings', icon: Sparkles },
     { href: '/app/university', labelKey: 'navTraining', icon: GraduationCap },
     { href: '/app/pro-gear', labelKey: 'navProGear', icon: ShoppingBag },
     { href: '/app/settings', labelKey: 'navOrganization', icon: Settings },
-    { href: '/app/audit', labelKey: 'navAuditLogs', icon: FileText },
   ];
   const items =
     orgType === 'franchisee'

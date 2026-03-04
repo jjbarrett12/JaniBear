@@ -12,10 +12,10 @@ interface PricingPlanCardProps {
 export function PricingPlanCard({ plan }: PricingPlanCardProps) {
   return (
     <div
-      className={`relative flex flex-col rounded-2xl border bg-white/5 p-8 backdrop-blur-md shadow-[0_20px_60px_rgba(0,0,0,0.35)] transition-all duration-300 md:p-10 ${
+      className={`relative flex flex-col rounded-2xl border bg-white/5 p-8 backdrop-blur-md shadow-[0_20px_60px_rgba(0,0,0,0.35)] transition-all duration-300 md:p-10 hover:border-indigo-500/40 hover:shadow-lg ${
         plan.mostPopular
-          ? 'scale-[1.02] border-indigo-400/50 shadow-indigo-500/10 hover:-translate-y-1 hover:border-indigo-400/70'
-          : 'border-white/10 hover:-translate-y-1 hover:border-indigo-400/40'
+          ? 'md:scale-[1.03] border-indigo-500/60 shadow-indigo-500/20'
+          : 'border-white/10'
       }`}
     >
       {plan.mostPopular && (

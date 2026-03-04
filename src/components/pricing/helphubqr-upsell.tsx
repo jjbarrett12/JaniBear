@@ -21,7 +21,7 @@ export function HelpHubQRUpsell() {
           <h3 className="text-sm font-semibold text-white">HelpHubQR</h3>
         </div>
         <p className="text-xs text-zinc-500 mt-1">
-          QR issue reporting → ops tasks. $29/location (Cub & Grizzly). Kodiak: included.
+          QR issue reporting → ops tasks. $29/company/month (Cub & Grizzly). Kodiak: included.
         </p>
       </CardHeader>
       <CardContent className="py-3 px-4">

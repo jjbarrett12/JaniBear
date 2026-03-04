@@ -205,7 +205,7 @@ export default function Home() {
             {HOMEPAGE.hero.subhead}
           </p>
 
-          <div className="w-full flex justify-center mt-1 md:mt-2 -translate-y-10 md:-translate-y-16">
+          <div className="w-full flex justify-center mt-1 md:mt-2 -translate-y-10 md:-translate-y-16 relative z-10">
             <HeroCenterImage />
           </div>
 

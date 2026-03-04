@@ -54,18 +54,18 @@ const PERSONAS: Record<
   franchise: {
     title: 'Franchise Systems',
     description:
-      'Standardize how every location sells, inspects, and reports.',
+      'Standardize how every location sells, operates, and reports.',
     bullets: [
       'Franchise Performance Dashboards',
       'Territory Lead Routing',
-      'Brand Standard Inspections',
+      'Brand Standard Reporting',
     ],
     accent: 'cyan',
     icon: Network,
     whatYouGet: [
       'Franchise dashboards',
       'Territory routing',
-      'Standardized inspections',
+      'Brand standard reporting',
     ],
     exampleWorkflow: [
       'Assign territories',
@@ -99,21 +99,27 @@ const PERSONAS: Record<
 
 const ACCENT_GLOW: Record<
   string,
-  { border: string; shadow: string; glow: string }
+  { border: string; borderDefault: string; shadow: string; shadowDefault: string; glow: string }
 > = {
   amber: {
-    border: 'border-amber-400/40',
-    shadow: '0 0 50px rgba(245, 158, 11, 0.35)',
+    border: 'border-amber-400/60',
+    borderDefault: 'border-amber-400/45',
+    shadow: '0 0 50px rgba(245, 158, 11, 0.4)',
+    shadowDefault: '0 0 32px rgba(245, 158, 11, 0.2)',
     glow: 'rgba(255, 255, 255, 0.08)',
   },
   cyan: {
-    border: 'border-cyan-400/40',
-    shadow: '0 0 50px rgba(34, 211, 238, 0.35)',
+    border: 'border-cyan-400/60',
+    borderDefault: 'border-cyan-400/45',
+    shadow: '0 0 50px rgba(34, 211, 238, 0.4)',
+    shadowDefault: '0 0 32px rgba(34, 211, 238, 0.2)',
     glow: 'rgba(255, 255, 255, 0.08)',
   },
   purple: {
-    border: 'border-violet-400/40',
-    shadow: '0 0 50px rgba(139, 92, 246, 0.35)',
+    border: 'border-violet-400/60',
+    borderDefault: 'border-violet-400/45',
+    shadow: '0 0 50px rgba(139, 92, 246, 0.4)',
+    shadowDefault: '0 0 32px rgba(139, 92, 246, 0.2)',
     glow: 'rgba(255, 255, 255, 0.08)',
   },
 };
@@ -263,11 +269,11 @@ function PersonaCard({
       }}
       onMouseMove={onMouseMove}
       onMouseLeave={onMouseLeave}
-      className={`group relative flex min-h-[380px] flex-col rounded-2xl border border-white/10 bg-zinc-950/40 p-8 backdrop-blur-xl transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 ${
-        isSelected ? accent.border : ''
+      className={`group relative flex min-h-[380px] flex-col rounded-2xl border bg-zinc-950/40 p-8 backdrop-blur-xl transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 ${
+        isSelected ? accent.border : accent.borderDefault
       } ${!reducedMotion ? 'hover:scale-[1.03] hover:-translate-y-2' : ''}`}
       style={{
-        boxShadow: isSelected ? accent.shadow : undefined,
+        boxShadow: isSelected ? accent.shadow : accent.shadowDefault,
         ['--x' as string]: vars ? `${vars.x}px` : undefined,
         ['--y' as string]: vars ? `${vars.y}px` : undefined,
       }}

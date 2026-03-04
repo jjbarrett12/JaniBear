@@ -3,8 +3,15 @@
 import Image from 'next/image';
 import { useState } from 'react';
 
-/** Hero background: stadium hero (match filename in public/). Use correct path for "stadium hero3.png". */
-const BACKDROP_PATHS = ['/stadium%20hero3.png', '/stadium-hero3.png', '/stadium%20hero%203.png'];
+/** Hero background: stadium only (no laptop/devices). Overlay devices are in HeroCenterImage. */
+const BACKDROP_PATHS = [
+  '/stadium.png',
+  '/stadium%20hero3.png',
+  '/stadium-hero3.png',
+  '/stadium%20hero%203.png',
+  '/stadium%20hero2.png',
+  '/Stadium%20Hero%20.png',
+];
 
 /** Small dark blur placeholder so something shows immediately while the full image loads. */
 const BLUR_DATA_URL =

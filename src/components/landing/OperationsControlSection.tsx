@@ -65,45 +65,45 @@ export function OperationsControlSection() {
       aria-labelledby="ops-control-heading"
     >
       <div className="mx-auto max-w-[1280px] px-4 sm:px-6">
-        {/* Boxed pill header — Protect the Revenue */}
-        <div className="flex justify-center mb-8">
-          <span
-            className="inline-flex items-center rounded-full border-2 border-emerald-400/70 bg-zinc-900/95 px-5 py-2.5 text-sm font-bold uppercase tracking-wider text-emerald-400"
-            style={{
-              boxShadow: '0 0 0 1px rgba(52, 211, 153, 0.2), 0 0 20px rgba(52, 211, 153, 0.15), inset 0 1px 0 rgba(255,255,255,0.05)',
-              textShadow: '0 0 12px rgba(52, 211, 153, 0.4)',
-            }}
+        {/* Section intro — anchored in card */}
+        <div className="rounded-2xl border border-zinc-700/70 bg-zinc-900/50 px-6 py-8 md:px-10 md:py-10 mb-12 md:mb-16 max-w-4xl mx-auto text-center shadow-lg shadow-black/20">
+          <div className="flex justify-center mb-5">
+            <span
+              className="inline-flex items-center rounded-full border-2 border-emerald-400/70 bg-zinc-900/95 px-5 py-2.5 text-sm font-bold uppercase tracking-wider text-emerald-400"
+              style={{
+                boxShadow: '0 0 0 1px rgba(52, 211, 153, 0.2), 0 0 20px rgba(52, 211, 153, 0.15), inset 0 1px 0 rgba(255,255,255,0.05)',
+                textShadow: '0 0 12px rgba(52, 211, 153, 0.4)',
+              }}
+            >
+              Protect the Revenue
+            </span>
+          </div>
+          <h2
+            id="ops-control-heading"
+            className="font-heading text-4xl sm:text-5xl md:text-6xl font-bold text-white tracking-tight text-center leading-[1.1]"
           >
-            Protect the Revenue
-          </span>
+            Winning the Account Is Only Half the Battle.
+          </h2>
+          <p className="mx-auto mt-6 max-w-[900px] text-center text-lg md:text-xl text-white font-medium leading-relaxed">
+            High attrition rates kill janitorial companies. What happens after the contract is signed determines whether you stay a $100K company — or scale into a $100M operation.
+          </p>
         </div>
 
-        {/* Main headline */}
-        <h2
-          id="ops-control-heading"
-          className="font-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white tracking-tight text-center leading-[1.1]"
-        >
-          Winning the Account Is Only Half the Battle.
-        </h2>
-
-        {/* Subheader — strong white, no soft gray */}
-        <p className="mx-auto mt-6 max-w-[900px] text-center text-lg md:text-xl text-white font-medium leading-relaxed">
-          High attrition rates kill janitorial companies. What happens after the contract is signed determines whether you stay a $100K company — or scale into a $100M operation.
-        </p>
-
-        {/* Dominance statement — 64px vertical spacing, emerald underline + glow */}
-        <div className="my-16 md:my-[64px] text-center">
-          <p
-            className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight inline-block border-b-4 border-emerald-400 pb-2"
-            style={{
-              textShadow: EMERALD_GLOW,
-              boxShadow: '0 0 20px rgba(52, 211, 153, 0.15)',
-            }}
-          >
-            You don&apos;t need better cleaners.
-            <br />
-            You need better processes.
-          </p>
+        {/* Dominance statement — in card */}
+        <div className="mb-16 md:mb-20">
+          <div className="rounded-2xl border border-emerald-400/30 bg-zinc-900/50 px-6 py-8 md:px-10 md:py-10 max-w-3xl mx-auto text-center shadow-lg shadow-black/20">
+            <p
+              className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight border-b-4 border-emerald-400 pb-2 inline-block"
+              style={{
+                textShadow: EMERALD_GLOW,
+                boxShadow: '0 0 20px rgba(52, 211, 153, 0.15)',
+              }}
+            >
+              You don&apos;t need better cleaners.
+              <br />
+              You need better processes.
+            </p>
+          </div>
         </div>
 
         {/* Single row of 4 cards */}
@@ -158,13 +158,15 @@ export function OperationsControlSection() {
           })}
         </div>
 
-        {/* Final dominance divider */}
-        <div className="mt-20 md:mt-24 pt-16 border-t border-white/20">
-          <p className="text-center text-lg md:text-xl font-bold text-white tracking-tight leading-snug max-w-[800px] mx-auto">
-            Half the battle is winning the account.
-            <br />
-            The difference between $100K and $100M is what happens next.
-          </p>
+        {/* Final tagline — in card */}
+        <div className="mt-20 md:mt-24">
+          <div className="rounded-2xl border border-zinc-700/70 bg-zinc-900/50 px-6 py-8 max-w-2xl mx-auto text-center shadow-lg shadow-black/20">
+            <p className="text-lg md:text-xl font-bold text-white tracking-tight leading-snug">
+              Half the battle is winning the account.
+              <br />
+              The difference between $100K and $100M is what happens next.
+            </p>
+          </div>
         </div>
       </div>
     </section>

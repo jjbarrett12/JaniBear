@@ -26,9 +26,10 @@ export function BuiltByOperatorsSection() {
       aria-labelledby="proof-heading"
     >
       <div className="container mx-auto px-4 max-w-7xl">
-        <div className="grid grid-cols-1 gap-12 md:grid-cols-2 md:gap-16 md:items-center">
-          {/* Left: kicker + headline + subhead + watermark */}
-          <div className="relative flex flex-col justify-center order-2 md:order-1">
+        <div className="rounded-2xl border border-zinc-700/70 bg-zinc-900/50 p-6 md:p-10 lg:p-12 shadow-lg shadow-black/20 overflow-hidden">
+          <div className="grid grid-cols-1 gap-12 md:grid-cols-2 md:gap-16 md:items-center">
+            {/* Left: kicker + headline + subhead + watermark */}
+            <div className="relative flex flex-col justify-center order-2 md:order-1">
             <div className="relative">
               {/* Watermark: large JANIBEAR behind headline, 5–8% opacity */}
               <Image
@@ -101,6 +102,7 @@ export function BuiltByOperatorsSection() {
               </Link>
             </div>
           </div>
+        </div>
         </div>
       </div>
     </SectionWrap>

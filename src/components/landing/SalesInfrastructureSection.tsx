@@ -68,21 +68,19 @@ export function SalesInfrastructureSection() {
       aria-labelledby="sales-infra-heading"
     >
       <div className="mx-auto max-w-[1280px] px-4 sm:px-6">
-        {/* Boxed pill header — for Sales Teams that want to Dominate */}
-        <div className="flex justify-center mb-8">
-          <span
-            className="inline-flex items-center rounded-full border-2 border-amber-400/70 bg-zinc-900/95 px-5 py-2.5 text-sm font-bold uppercase tracking-wider text-amber-300"
-            style={{
-              boxShadow: '0 0 0 1px rgba(255, 193, 7, 0.2), 0 0 20px rgba(255, 193, 7, 0.15), inset 0 1px 0 rgba(255,255,255,0.05)',
-              textShadow: '0 0 12px rgba(255, 193, 7, 0.4)',
-            }}
-          >
-            For Sales Teams That Want to Dominate
-          </span>
-        </div>
-
-        {/* Header */}
-        <div className="text-center mb-16 md:mb-20">
+        {/* Section intro — anchored in card so it doesn't float */}
+        <div className="rounded-2xl border border-zinc-700/70 bg-zinc-900/50 px-6 py-8 md:px-10 md:py-10 mb-12 md:mb-16 max-w-4xl mx-auto text-center shadow-lg shadow-black/20">
+          <div className="flex justify-center mb-5">
+            <span
+              className="inline-flex items-center rounded-full border-2 border-amber-400/70 bg-zinc-900/95 px-5 py-2.5 text-sm font-bold uppercase tracking-wider text-amber-300"
+              style={{
+                boxShadow: '0 0 0 1px rgba(255, 193, 7, 0.2), 0 0 20px rgba(255, 193, 7, 0.15), inset 0 1px 0 rgba(255,255,255,0.05)',
+                textShadow: '0 0 12px rgba(255, 193, 7, 0.4)',
+              }}
+            >
+              For Sales Teams That Want to Dominate
+            </span>
+          </div>
           <h2
             id="sales-infra-heading"
             className="font-heading text-3xl sm:text-4xl md:text-5xl font-bold text-white tracking-tight"
@@ -142,14 +140,16 @@ export function SalesInfrastructureSection() {
           })}
         </div>
 
-        {/* Divider line + tagline */}
-        <div className="mt-20 md:mt-24 pt-16 border-t border-white/10">
-          <p
-            className="text-center text-lg md:text-xl font-bold text-white tracking-tight"
-            style={{ textShadow: `0 0 24px rgba(255, 193, 7, 0.2)` }}
-          >
-            Sales isn&apos;t guesswork. It&apos;s a system.
-          </p>
+        {/* Tagline — in card so it doesn't float */}
+        <div className="mt-20 md:mt-24">
+          <div className="rounded-2xl border border-zinc-700/70 bg-zinc-900/50 px-6 py-8 max-w-2xl mx-auto text-center shadow-lg shadow-black/20">
+            <p
+              className="text-lg md:text-xl font-bold text-white tracking-tight"
+              style={{ textShadow: `0 0 24px rgba(255, 193, 7, 0.2)` }}
+            >
+              Sales isn&apos;t guesswork. It&apos;s a system.
+            </p>
+          </div>
         </div>
       </div>
     </section>

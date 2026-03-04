@@ -17,16 +17,23 @@ export async function POST(request: NextRequest) {
   const email = (formData.get('email') as string)?.trim();
   const password = formData.get('password') as string;
   const rememberMe = formData.get('remember_me') === '1' || formData.get('remember_me') === 'on';
+  const redirectParam = (formData.get('redirect') as string)?.trim() || null;
 
   const baseUrl = request.nextUrl.origin;
   const loginErrorUrl = new URL('/auth/login', baseUrl);
+  if (redirectParam) loginErrorUrl.searchParams.set('redirect', redirectParam);
 
   if (!email || !password) {
     loginErrorUrl.searchParams.set('error', 'missing');
     return NextResponse.redirect(loginErrorUrl);
   }
 
-  const successRedirect = NextResponse.redirect(new URL('/api/auth/landing', baseUrl));
+  const landingPath =
+    redirectParam?.startsWith('/') && !redirectParam.includes('//') &&
+    (redirectParam.startsWith('/app/') || redirectParam === '/onboarding' || redirectParam.startsWith('/auth/'))
+      ? `/api/auth/landing?redirect=${encodeURIComponent(redirectParam)}`
+      : '/api/auth/landing';
+  const successRedirect = NextResponse.redirect(new URL(landingPath, baseUrl));
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

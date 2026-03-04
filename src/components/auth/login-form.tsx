@@ -28,10 +28,11 @@ function FacebookIcon({ className }: { className?: string }) {
   );
 }
 
-type LoginFormProps = { defaultEmail?: string };
+type LoginFormProps = { defaultEmail?: string; redirectParam?: string };
 
-export function LoginForm({ defaultEmail = '' }: LoginFormProps) {
+export function LoginForm({ defaultEmail = '', redirectParam }: LoginFormProps) {
   const searchParams = useSearchParams();
+  const redirect = redirectParam ?? searchParams.get('redirect') ?? '';
   const [email, setEmail] = useState(defaultEmail);
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -199,6 +200,7 @@ export function LoginForm({ defaultEmail = '' }: LoginFormProps) {
             setIsSubmitting(true);
             setSubmitError(null);
             const formData = new FormData(e.currentTarget as HTMLFormElement);
+            if (redirect) formData.set('redirect', redirect);
             try {
               const res = await fetch('/api/auth/login', {
                 method: 'POST',

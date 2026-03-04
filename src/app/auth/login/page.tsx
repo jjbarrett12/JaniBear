@@ -6,11 +6,24 @@ import { LoginForm } from '@/components/auth/login-form';
 
 export const metadata = { title: 'Sign in | JANIBEAR' };
 
-export default async function LoginPage() {
+function safeLandingRedirect(redirectParam: string | null): string {
+  if (!redirectParam?.startsWith('/') || redirectParam.includes('//')) return '/api/auth/landing';
+  if (redirectParam.startsWith('/app/') || redirectParam === '/onboarding' || redirectParam.startsWith('/auth/')) {
+    return `/api/auth/landing?redirect=${encodeURIComponent(redirectParam)}`;
+  }
+  return '/api/auth/landing';
+}
+
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ redirect?: string }>;
+}) {
+  const params = await searchParams;
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (user) {
-    redirect('/api/auth/landing');
+    redirect(safeLandingRedirect(params.redirect ?? null));
   }
 
   const cookieStore = await cookies();
@@ -37,7 +50,7 @@ export default async function LoginPage() {
           <h1 className="text-2xl font-bold text-white mt-4 mb-1">Welcome back</h1>
           <p className="text-zinc-400 text-sm">Sign in to your account to continue</p>
         </div>
-        <LoginForm defaultEmail={defaultEmail} />
+        <LoginForm defaultEmail={defaultEmail} redirectParam={params.redirect ?? undefined} />
       </div>
     </div>
   );

@@ -30,8 +30,14 @@ async function handleLanding(request: NextRequest) {
     return NextResponse.redirect(new URL('/onboarding', request.url));
   }
 
-  if (GUARD_DEBUG) console.log('[GUARD] landing path=/api/auth/landing session=true org_id=' + membership.org_id + ' onboarded=true reason=set cookie redirect=dashboard');
-  const res = NextResponse.redirect(new URL('/app/dashboard', request.url));
+  const redirectTo = request.nextUrl.searchParams.get('redirect');
+  const safeRedirect =
+    redirectTo?.startsWith('/') &&
+    !redirectTo.includes('//') &&
+    (redirectTo.startsWith('/app/') || redirectTo === '/onboarding' || redirectTo.startsWith('/auth/'));
+  const destination = safeRedirect ? redirectTo : '/app/dashboard';
+  if (GUARD_DEBUG) console.log('[GUARD] landing path=/api/auth/landing session=true org_id=' + membership.org_id + ' onboarded=true reason=set cookie redirect=' + destination);
+  const res = NextResponse.redirect(new URL(destination, request.url));
   res.cookies.set(ACTIVE_ORG_COOKIE, membership.org_id, {
     path: '/',
     httpOnly: true,

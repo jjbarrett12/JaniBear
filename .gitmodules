@@ -1,0 +1,3 @@
+[submodule "apps/janibear-scan"]
+    path = apps/janibear-scan
+    url = https://github.com/jjbarrett12/JaniBear-scan.git

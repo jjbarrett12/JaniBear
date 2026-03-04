@@ -18,7 +18,6 @@ CREATE TABLE leads (
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Walk-through appointments
 CREATE TABLE walkthrough_appointments (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -31,7 +30,6 @@ CREATE TABLE walkthrough_appointments (
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Proposal formulas (org-specific calculation rules)
 CREATE TABLE proposal_formulas (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -43,7 +41,6 @@ CREATE TABLE proposal_formulas (
   is_default BOOLEAN DEFAULT false,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Proposals (link to lead and optional bid)
 CREATE TABLE proposals (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -60,28 +57,22 @@ CREATE TABLE proposals (
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 CREATE INDEX idx_leads_org_id ON leads(org_id);
 CREATE INDEX idx_leads_status ON leads(status);
 CREATE INDEX idx_leads_created_at ON leads(created_at);
 CREATE INDEX idx_walkthrough_appointments_lead_id ON walkthrough_appointments(lead_id);
 CREATE INDEX idx_proposals_lead_id ON proposals(lead_id);
 CREATE INDEX idx_proposal_formulas_org_id ON proposal_formulas(org_id);
-
 -- RLS for sales tables
 ALTER TABLE leads ENABLE ROW LEVEL SECURITY;
 ALTER TABLE walkthrough_appointments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE proposal_formulas ENABLE ROW LEVEL SECURITY;
 ALTER TABLE proposals ENABLE ROW LEVEL SECURITY;
-
 CREATE POLICY "Org members can manage leads"
   ON leads FOR ALL USING (is_org_member(org_id, auth.uid()));
-
 CREATE POLICY "Org members can manage walkthrough_appointments"
   ON walkthrough_appointments FOR ALL USING (is_org_member(org_id, auth.uid()));
-
 CREATE POLICY "Org members can manage proposal_formulas"
   ON proposal_formulas FOR ALL USING (is_org_member(org_id, auth.uid()));
-
 CREATE POLICY "Org members can manage proposals"
   ON proposals FOR ALL USING (is_org_member(org_id, auth.uid()));

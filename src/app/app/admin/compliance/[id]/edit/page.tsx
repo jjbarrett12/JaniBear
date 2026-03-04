@@ -23,6 +23,9 @@ export default async function EditCompliancePage({
   if (!member) {
     redirect('/app/dashboard');
   }
+  if (!['owner', 'admin', 'manager'].includes(member.role)) {
+    redirect('/app/admin');
+  }
 
   const { data: compliance } = await supabase
     .from('compliance_records')

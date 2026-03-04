@@ -1,32 +1,8 @@
 import { NextResponse } from 'next/server';
 import { requireOperatorOrg } from '@/lib/api-guard';
-import OpenAI from 'openai';
+import { getAIService } from '@/lib/ai/openai-service';
 
-const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
-
-export async function POST(request: Request) {
-  try {
-    const guard = await requireOperatorOrg();
-    if (!guard.ok) return guard.response;
-
-    const body = await request.json();
-    const { documentText, documentType = 'schedule' } = body;
-
-    if (!documentText) {
-      return NextResponse.json(
-        { error: 'Missing document text' },
-        { status: 400 }
-      );
-    }
-
-    if (!openai) {
-      return NextResponse.json(
-        { error: 'OpenAI not configured' },
-        { status: 500 }
-      );
-    }
-
-    const systemPrompt = `You are an expert at extracting structured data from janitorial service schedules and contracts.
+const SYSTEM_PROMPT = `You are an expert at extracting structured data from janitorial service schedules and contracts.
 
 Extract the following information from the document and return it as JSON:
 
@@ -50,25 +26,32 @@ Extract the following information from the document and return it as JSON:
 
 Be thorough but only include information that is clearly present in the document.`;
 
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: `Please extract the service schedule information from this ${documentType}:\n\n${documentText}` },
-      ],
-      response_format: { type: 'json_object' },
-      temperature: 0.3,
-    });
+export async function POST(request: Request) {
+  try {
+    const guard = await requireOperatorOrg();
+    if (!guard.ok) return guard.response;
 
-    const content = response.choices[0]?.message?.content;
-    if (!content) {
+    const orgId = guard.context.activeOrgId!;
+    const body = await request.json();
+    const { documentText, documentType = 'schedule' } = body;
+
+    if (!documentText) {
       return NextResponse.json(
-        { error: 'Failed to extract data from document' },
-        { status: 500 }
+        { error: 'Missing document text' },
+        { status: 400 }
       );
     }
 
-    const extractedData = JSON.parse(content);
+    const aiService = await getAIService(orgId);
+    if (!aiService) {
+      return NextResponse.json(
+        { error: 'AI service not configured. Set OPENAI_API_KEY or configure AI in admin settings.' },
+        { status: 503 }
+      );
+    }
+
+    const userPrompt = `Please extract the service schedule information from this ${documentType}:\n\n${documentText}`;
+    const extractedData = await aiService.generateJson(SYSTEM_PROMPT, userPrompt, { temperature: 0.3 });
 
     return NextResponse.json({
       success: true,

@@ -23,6 +23,9 @@ export default async function EditSDSPage({
   if (!member) {
     redirect('/app/dashboard');
   }
+  if (!['owner', 'admin', 'manager'].includes(member.role)) {
+    redirect('/app/admin');
+  }
 
   const { data: sds } = await supabase
     .from('sds_sheets')

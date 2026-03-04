@@ -2,45 +2,57 @@ import Image from 'next/image';
 import { AppLink } from '@/components/app/app-link';
 import { createClient } from '@/lib/supabase/server';
 import { requireOrg } from '@/lib/auth';
-import { isPremiumPlan } from '@/lib/is-premium';
+import { isPremiumPlan, getPlanType } from '@/lib/is-premium';
+import { getNavAlertCounts } from '@/actions/nav-alerts';
+import type { NavAlertCounts } from '@/actions/nav-alerts';
+import type { ShellKey } from '@/lib/shell';
 import { GlobalSearch } from '@/components/search/global-search';
-import { NotificationBell } from '@/components/notifications/notification-bell';
 import { MobileSidebar } from '@/components/app/mobile-sidebar';
 import { BottomNav } from '@/components/app/bottom-nav';
-import { DarkModeToggle } from '@/components/app/dark-mode-toggle';
-import { LanguageSwitcher } from '@/components/app/language-switcher';
 import { AppSidebarNav } from '@/components/app/app-sidebar-nav';
 import { AppSidebarFooter } from '@/components/app/app-sidebar-footer';
 
-export async function AppSidebar() {
+export async function AppSidebar({
+  navAlerts: navAlertsProp,
+  shell,
+  franchiseeEnrolled,
+  proGearEnabled = false,
+}: { navAlerts?: NavAlertCounts | null; shell?: ShellKey; franchiseeEnrolled?: boolean; proGearEnabled?: boolean } = {}) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   const org = await requireOrg();
-  
-  // Get organization branding and premium status for University
-  const [organization, premium] = await Promise.all([
+
+  const [organizationResult, premium, planType, navAlertsFetched] = await Promise.all([
     supabase.from('organizations').select('logo_url').eq('id', org.org_id).maybeSingle(),
     isPremiumPlan(org.org_id),
+    getPlanType(org.org_id),
+    navAlertsProp == null ? getNavAlertCounts() : Promise.resolve(navAlertsProp),
   ]);
-  const orgData = organization?.data ?? null;
-  
+  // If logo_url column doesn't exist yet (migration not run), treat as no custom logo
+  const orgData = organizationResult.error && /column|could not find/i.test(organizationResult.error.message ?? '')
+    ? null
+    : (organizationResult.data ?? null);
+  const navAlerts = navAlertsFetched ?? navAlertsProp ?? null;
+  const operationsLocked = !premium;
+
   return (
     <>
       {/* Mobile Sidebar */}
-      <MobileSidebar logoUrl={orgData?.logo_url} />
+      <MobileSidebar logoUrl={orgData?.logo_url} navAlerts={navAlerts} shell={shell} franchiseeEnrolled={franchiseeEnrolled} proGearEnabled={proGearEnabled} operationsLocked={operationsLocked} />
 
-      {/* Desktop Sidebar - w-56 so it doesn't overlap main content */}
-      <aside className="hidden lg:flex fixed left-0 top-0 z-40 h-screen w-56 shrink-0 overflow-hidden border-r border-border bg-card">
+      {/* Desktop Sidebar - w-56 so it doesn't overlap main content; uses brand primary for color */}
+      <aside className="hidden lg:flex fixed left-0 top-0 z-40 h-screen w-56 shrink-0 overflow-hidden border-r-2 border-primary bg-primary/15 dark:bg-primary/20">
         <div className="flex h-full min-w-0 flex-1 flex-col">
-          <div className="flex flex-col shrink-0 border-b border-border px-3 py-3 bg-[hsl(220,30%,97%)] dark:bg-card">
-            <AppLink href="/app/dashboard" className="flex h-16 w-full min-w-0 items-center justify-center bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block [&>span]:!relative [&>span]:h-full [&>span]:w-full">
+          {/* Logo box at top — larger logo for visibility */}
+          <div className="flex shrink-0 border-b border-primary/30 bg-primary/20 dark:bg-primary/25 min-h-[8rem] flex flex-col items-center justify-center px-4 py-4">
+            <AppLink href="/app/dashboard" className="flex items-center justify-center min-h-[4.5rem] w-full bg-transparent [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block [&>span]:!relative [&>span]:h-20 [&>span]:w-full [&>span]:max-w-[200px]">
               {orgData?.logo_url ? (
                 <Image
                   src={orgData.logo_url}
                   alt="Company Logo"
-                  width={220}
-                  height={72}
-                  className="h-14 w-full max-h-14 object-contain object-center bg-transparent"
+                  width={200}
+                  height={80}
+                  className="h-20 w-full max-h-20 object-contain object-center bg-transparent"
                   priority
                   unoptimized
                 />
@@ -48,28 +60,21 @@ export async function AppSidebar() {
                 <Image
                   src="/logo.png"
                   alt="JANIBEAR Logo"
-                  width={220}
-                  height={72}
-                  className="h-14 w-full max-h-14 object-contain object-center bg-transparent [&>img]:bg-transparent dark:[&>img]:drop-shadow-[0_0_8px_rgba(255,255,255,0.15)] dark:[&>img]:brightness-110"
+                  width={200}
+                  height={80}
+                  className="h-20 w-full max-h-20 object-contain object-center bg-transparent [&>img]:bg-transparent dark:[&>img]:drop-shadow-[0_0_8px_rgba(255,255,255,0.15)] dark:[&>img]:brightness-110"
                   priority
                   unoptimized
                 />
               )}
             </AppLink>
           </div>
-          
-          <div className="min-w-0 shrink-0 space-y-2 border-b border-border px-3 py-2">
-            <div className="min-w-0">
-              <GlobalSearch />
-            </div>
-            <div className="flex items-center justify-between gap-2">
-              <LanguageSwitcher />
-              <DarkModeToggle />
-              <NotificationBell />
-            </div>
+
+          <div className="min-w-0 shrink-0 border-b border-border px-3 py-2">
+            <GlobalSearch />
           </div>
           
-          <AppSidebarNav premium={premium} />
+          <AppSidebarNav premium={premium} planType={planType} navAlerts={navAlerts} shell={shell} franchiseeEnrolled={franchiseeEnrolled} proGearEnabled={proGearEnabled} operationsLocked={operationsLocked} />
 
           <AppSidebarFooter userEmail={user?.email} />
         </div>

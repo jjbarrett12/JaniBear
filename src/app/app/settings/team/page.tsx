@@ -4,16 +4,11 @@ import { redirect } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Users, UserPlus, Mail, Shield } from 'lucide-react';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
+import { ArrowLeft, Users, UserPlus } from 'lucide-react';
+import { checkSeatLimit } from '@/lib/org-limits';
+import { updateMemberRole } from '@/actions/team';
+import { TeamMembersTable } from './team-members-table';
+import { InviteUserForm } from './invite-user-form';
 
 export default async function SettingsTeamPage() {
   const org = await requireOrg();
@@ -31,11 +26,18 @@ export default async function SettingsTeamPage() {
     redirect('/app/settings');
   }
 
-  const { data: members } = await supabase
-    .from('org_members')
-    .select('id, user_id, role, status, created_at, profiles(full_name)')
-    .eq('org_id', org.org_id)
-    .order('created_at', { ascending: false });
+  const [seatCheck, { data: members }] = await Promise.all([
+    checkSeatLimit(org.org_id),
+    supabase
+      .from('org_members')
+      .select('id, user_id, role, status, created_at, profiles(full_name)')
+      .eq('org_id', org.org_id)
+      .order('created_at', { ascending: false }),
+  ]);
+
+  const limit = seatCheck.limit ?? 5;
+  const current = seatCheck.current ?? 0;
+  const seatAllowed = seatCheck.allowed ?? false;
 
   return (
     <div className="space-y-6">
@@ -57,42 +59,33 @@ export default async function SettingsTeamPage() {
             <UserPlus className="h-5 w-5" />
             Invite user
           </CardTitle>
-          <CardDescription>Create an invite link for a new team member (use org_invites or account invite flow)</CardDescription>
+          <CardDescription>Create an invite link for a new team member. They sign in or sign up and accept the link to join your organization.</CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">Invite flow: use existing org_invites or account_invites. API: POST /api/admin/users/reset-password with their email to send a reset link.</p>
+          <InviteUserForm seatAllowed={seatAllowed} />
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Users className="h-5 w-5" />
-            Members
-          </CardTitle>
-          <CardDescription>Disable access or force password reset via API: POST /api/admin/users/disable | enable | reset-password</CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <Users className="h-5 w-5" />
+                Members
+              </CardTitle>
+              <CardDescription>
+                {current} / {limit} seats used. Change roles, disable access, or send a password reset.
+              </CardDescription>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Role</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {(members ?? []).map((m) => (
-                <TableRow key={m.id}>
-                  <TableCell>{(m.profiles as { full_name?: string } | null)?.full_name ?? m.user_id}</TableCell>
-                  <TableCell><Badge variant="secondary">{m.role}</Badge></TableCell>
-                  <TableCell><Badge variant={m.status === 'active' ? 'default' : 'outline'}>{m.status ?? 'active'}</Badge></TableCell>
-                  <TableCell className="text-right text-sm text-muted-foreground">Disable / Reset password (API or future UI)</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <TeamMembersTable
+            members={members ?? []}
+            currentUserId={userId}
+            updateMemberRole={updateMemberRole}
+          />
         </CardContent>
       </Card>
     </div>

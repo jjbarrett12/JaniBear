@@ -17,9 +17,9 @@ export default async function LoginPage() {
   const defaultEmail = cookieStore.get('janibear_remember_email')?.value ?? undefined;
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-10 sm:py-12 relative overflow-hidden">
-      {/* Background: clean gradient, no grid */}
-      <div className="absolute inset-0 bg-gradient-to-b from-white to-amber-50/40 dark:from-gray-950 dark:to-amber-950/10" aria-hidden />
+    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-10 sm:py-12 relative overflow-hidden text-white">
+      {/* Background: dark backdrop */}
+      <div className="absolute inset-0 bg-gradient-to-b from-zinc-900 via-zinc-950 to-black" aria-hidden />
       <div className="w-full max-w-[420px] relative z-10">
         <div className="text-center mb-8">
           <div className="flex justify-center [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block" style={{ lineHeight: 0 }}>
@@ -34,8 +34,8 @@ export default async function LoginPage() {
               unoptimized
             />
           </div>
-          <h1 className="text-2xl font-bold text-zinc-900 dark:text-white mt-4 mb-1">Welcome back</h1>
-          <p className="text-zinc-500 dark:text-zinc-400 text-sm">Sign in to your account to continue</p>
+          <h1 className="text-2xl font-bold text-white mt-4 mb-1">Welcome back</h1>
+          <p className="text-zinc-400 text-sm">Sign in to your account to continue</p>
         </div>
         <LoginForm defaultEmail={defaultEmail} />
       </div>

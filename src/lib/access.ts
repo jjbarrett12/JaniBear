@@ -5,6 +5,7 @@
  */
 import { createClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
+import { getIsPlatformAdmin } from '@/lib/platform-guard';
 
 export type EffectiveAccess = {
   plan: { code: string; name: string } | null;
@@ -29,7 +30,7 @@ export async function getEffectiveAccess(
 ): Promise<EffectiveAccess | null> {
   const supabase = await createClient();
 
-  const [entitlementsRes, membershipRes, subRes, addonsRes, rolePermsRes, profileRes] =
+  const [entitlementsRes, membershipRes, subRes, addonsRes, rolePermsRes, isPlatformAdminRes] =
     await Promise.all([
       supabase.rpc('get_effective_entitlements', { p_org_id: tenantId }),
       supabase
@@ -50,7 +51,7 @@ export async function getEffectiveAccess(
         .eq('org_id', tenantId)
         .or('status.eq.active,status.is.null'),
       supabase.from('role_permissions').select('role, feature_id, can_read, can_write'),
-      supabase.from('profiles').select('is_platform_admin').eq('id', userId).maybeSingle(),
+      getIsPlatformAdmin(userId),
     ]);
 
   const membership = membershipRes.data;
@@ -103,7 +104,7 @@ export async function getEffectiveAccess(
     });
   }
 
-  const isPlatformAdmin = (profileRes.data as { is_platform_admin?: boolean } | null)?.is_platform_admin === true;
+  const isPlatformAdmin = isPlatformAdminRes === true;
 
   return {
     plan: planInfo,

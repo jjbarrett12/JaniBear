@@ -159,7 +159,13 @@ export const surveyTranslations = {
 
 export type SurveyTranslationKey = keyof (typeof surveyTranslations)['en'];
 
+/** Get survey translator for locale. Uses English fallback for missing keys so every module works in every language. */
 export function getSurveyT(locale: Locale) {
-  const t = surveyTranslations[locale] ?? surveyTranslations.en;
-  return (key: SurveyTranslationKey): string => t[key];
+  const localeMap = surveyTranslations[locale] ?? surveyTranslations.en;
+  const enMap = surveyTranslations.en as Record<SurveyTranslationKey, string>;
+  return (key: SurveyTranslationKey): string => {
+    const value = (localeMap as Record<SurveyTranslationKey, string | undefined>)[key];
+    if (value != null && value !== '') return value;
+    return enMap[key] ?? (key as string);
+  };
 }

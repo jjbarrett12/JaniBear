@@ -156,12 +156,11 @@ export function StatsCards({ stats }: StatsCardsProps) {
             variants={cardVariants}
           >
             <Link href={card.href}>
-              <Card className="group relative overflow-hidden rounded-xl border-0 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer h-full bg-card">
-                <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${card.gradient}`} />
-                <CardContent className="p-4 pt-5">
-                  <div className="flex items-start justify-between mb-2">
-                    <div className={`p-2.5 rounded-xl bg-gradient-to-br ${card.gradient} shadow-lg`}>
-                      <Icon className="h-5 w-5 text-white" />
+              <Card className="group rounded-2xl border border-border bg-card shadow-[0_1px_3px_rgba(0,0,0,0.3)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.35)] transition-shadow duration-150 cursor-pointer h-full">
+                <CardContent className="p-6">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-muted/60 text-muted-foreground">
+                      <Icon className="h-5 w-5" />
                     </div>
                     {showTrend && (
                       <div
@@ -175,22 +174,22 @@ export function StatsCards({ stats }: StatsCardsProps) {
                     )}
                   </div>
                   <div className="space-y-0.5">
-                    <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
                       {card.title}
                     </p>
-                    <p className="font-heading text-2xl font-bold text-gray-900 dark:text-white group-hover:text-gray-700 dark:group-hover:text-gray-200 transition-colors">
+                    <p className="font-heading text-2xl font-bold tracking-tight text-foreground">
                       {card.value.toLocaleString()}
                     </p>
                     {card.timeframe && (
-                      <p className="text-[11px] text-gray-400 dark:text-gray-500 font-medium">
+                      <p className="text-xs text-muted-foreground font-medium">
                         {card.timeframe}
                       </p>
                     )}
                     {card.subtitle && (
-                      <p className="text-xs text-gray-500 dark:text-gray-400">{card.subtitle}</p>
+                      <p className="text-xs text-muted-foreground">{card.subtitle}</p>
                     )}
                     {card.comparison && (
-                      <p className="text-[11px] text-gray-500 dark:text-gray-400 leading-tight">
+                      <p className="text-xs text-muted-foreground leading-tight">
                         {card.comparison}
                       </p>
                     )}

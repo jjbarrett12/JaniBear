@@ -38,8 +38,8 @@ export function HeroCenterImage() {
 
   return (
     <>
-      <div className="absolute -inset-6 bg-amber-400/10 rounded-3xl blur-2xl" aria-hidden />
-      <div className="relative w-[420px] sm:w-[520px] md:w-[620px] lg:w-[720px]">
+      <div className="absolute -inset-4 bg-amber-400/15 rounded-3xl blur-3xl" aria-hidden />
+      <div className="relative w-[520px] sm:w-[640px] md:w-[780px] lg:w-[900px] xl:w-[1000px] drop-shadow-[0_8px_48px_rgba(0,0,0,0.5)] leading-[0] block">
         <Image
           src={src}
           alt="JANIBEAR on laptop and phone"

@@ -3,16 +3,13 @@
 
 -- Ensure proposals has html column (used by get_proposal_public)
 ALTER TABLE proposals ADD COLUMN IF NOT EXISTS html TEXT;
-
 ALTER TABLE proposals
   ADD COLUMN IF NOT EXISTS client_signature_data TEXT,
   ADD COLUMN IF NOT EXISTS client_signed_at TIMESTAMPTZ,
   ADD COLUMN IF NOT EXISTS client_signer_name TEXT;
-
 COMMENT ON COLUMN proposals.client_signature_data IS 'Base64 PNG of drawn signature';
 COMMENT ON COLUMN proposals.client_signed_at IS 'When customer electronically signed';
 COMMENT ON COLUMN proposals.client_signer_name IS 'Printed/typed name of signer';
-
 -- RPC: record signature when customer accepts via public token (no auth required)
 CREATE OR REPLACE FUNCTION accept_proposal_with_signature(
   token_input TEXT,
@@ -65,7 +62,6 @@ BEGIN
   RETURN jsonb_build_object('success', true);
 END;
 $$;
-
 -- Update get_proposal_public to return signature status
 CREATE OR REPLACE FUNCTION get_proposal_public(token_input TEXT)
 RETURNS TABLE (

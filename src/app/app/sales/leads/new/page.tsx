@@ -2,9 +2,9 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { createClient } from '@/lib/supabase/client';
+import { createLead } from '@/actions/leads';
 import { LeadImport, type LeadImportSource, type ParsedLead } from '@/components/sales/lead-import';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -17,28 +17,8 @@ export default function NewLeadPage() {
   const handleImport = async (source: LeadImportSource, data: ParsedLead) => {
     setIsLoading(true);
     setError(null);
-    const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      setError('Not signed in.');
-      setIsLoading(false);
-      return;
-    }
-    const { data: membership } = await supabase
-      .from('org_members')
-      .select('org_id')
-      .eq('user_id', user.id)
-      .limit(1)
-      .single();
-    if (!membership?.org_id) {
-      setError('Organization not found.');
-      setIsLoading(false);
-      return;
-    }
-    const { data: lead, error: insertError } = await supabase
-      .from('leads')
-      .insert({
-        org_id: membership.org_id,
+    try {
+      const result = await createLead({
         source,
         contact_name: data.contact_name ?? null,
         company: data.company ?? null,
@@ -49,17 +29,17 @@ export default function NewLeadPage() {
         state: data.state ?? null,
         zip: data.zip ?? null,
         raw_text: data.raw_text ?? null,
-        status: 'new',
-        created_by_user_id: user.id,
-      })
-      .select('id')
-      .single();
-    setIsLoading(false);
-    if (insertError) {
-      setError(insertError.message);
-      return;
+      });
+      if (!result.ok) {
+        setError(result.error);
+        return;
+      }
+      router.push(`/app/sales/leads/${result.leadId}`);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Failed to save lead');
+    } finally {
+      setIsLoading(false);
     }
-    if (lead?.id) router.push(`/app/sales/leads/${lead.id}`);
   };
 
   return (

@@ -1,22 +1,14 @@
 import { requireOrg } from '@/lib/auth';
-import { MapView } from '@/components/map/map-view';
+import { getTerritoryMapData } from '@/lib/territory-map-data';
+import { TerritoryMapPage } from '@/components/territory-map/TerritoryMapPage';
 
 /**
- * Map: customer locations and crews (operator/franchisee) or franchisee orgs (franchisor).
- * JaniBear OS: franchisors see franchisees only; operators see locations + crew assignments.
+ * Map module (Executive): Sales mode = graph areas, territories, prospects.
+ * Operations mode = map crews, customers, sites, franchisees.
  */
 export default async function MapPage() {
-  await requireOrg();
+  const org = await requireOrg();
+  const data = await getTerritoryMapData(org.org_id);
 
-  return (
-    <div className="space-y-4">
-      <div>
-        <h1 className="text-2xl font-semibold text-foreground">Map</h1>
-        <p className="text-muted-foreground">
-          Customer locations and crews for sales targeting and operations. Franchisors see franchisee locations.
-        </p>
-      </div>
-      <MapView />
-    </div>
-  );
+  return <TerritoryMapPage data={data} orgId={org.org_id} />;
 }

@@ -11,19 +11,23 @@ import {
   AlertCircle,
   Users,
   FileText,
-  Loader2
+  Loader2,
+  Building2,
+  Contact
 } from 'lucide-react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { formatDate } from '@/lib/utils';
 
 interface SearchResult {
   id: string;
-  type: 'location' | 'inspection' | 'issue' | 'crew' | 'template';
+  type: 'location' | 'inspection' | 'issue' | 'crew' | 'template' | 'account' | 'contact';
   title: string;
   subtitle?: string;
   href: string;
 }
+
+const SEARCH_PLACEHOLDER = 'Search';
 
 export function GlobalSearch() {
   const [query, setQuery] = useState('');
@@ -32,6 +36,8 @@ export function GlobalSearch() {
   const [isOpen, setIsOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const pathname = usePathname();
+  const placeholder = SEARCH_PLACEHOLDER;
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -71,8 +77,42 @@ export function GlobalSearch() {
         if (!membership) return;
 
         const searchResults: SearchResult[] = [];
+        const inCrm = (pathname ?? '').startsWith('/app/crm');
 
-        // Search locations
+        // In CRM context: search accounts (clients) and contacts first
+        if (inCrm) {
+          const { data: clients } = await supabase
+            .from('clients')
+            .select('id, name')
+            .eq('org_id', membership.org_id)
+            .ilike('name', `%${query}%`)
+            .limit(5);
+          if (clients) {
+            clients.forEach((c: { id: string; name: string }) => {
+              searchResults.push({ id: c.id, type: 'account', title: c.name, href: `/app/crm/clients/${c.id}` });
+            });
+          }
+          const { data: contacts } = await supabase
+            .from('crm_contacts')
+            .select('id, first_name, last_name, email, client_id')
+            .eq('org_id', membership.org_id)
+            .or(`first_name.ilike.%${query}%,last_name.ilike.%${query}%,email.ilike.%${query}%`)
+            .limit(5);
+          if (contacts) {
+            contacts.forEach((c: { id: string; first_name?: string | null; last_name?: string | null; email?: string | null; client_id?: string }) => {
+              const name = [c.first_name, c.last_name].filter(Boolean).join(' ') || c.email || 'Contact';
+              searchResults.push({
+                id: c.id,
+                type: 'contact',
+                title: name,
+                subtitle: c.email ?? undefined,
+                href: c.client_id ? `/app/crm/clients/${c.client_id}` : '/app/crm',
+              });
+            });
+          }
+        }
+
+        // Search locations (facilities)
         const { data: locations } = await supabase
           .from('facilities')
           .select('id, name, address_line1, city, account_id')
@@ -170,7 +210,7 @@ export function GlobalSearch() {
 
     const debounce = setTimeout(search, 300);
     return () => clearTimeout(debounce);
-  }, [query]);
+  }, [query, pathname]);
 
   const handleResultClick = (href: string) => {
     setIsOpen(false);
@@ -184,6 +224,8 @@ export function GlobalSearch() {
     issue: AlertCircle,
     crew: Users,
     template: FileText,
+    account: Building2,
+    contact: Contact,
   };
 
   return (
@@ -192,7 +234,7 @@ export function GlobalSearch() {
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
         <Input
           type="text"
-          placeholder="Search locations, inspections, issues..."
+          placeholder={placeholder}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => query.length >= 2 && setIsOpen(true)}

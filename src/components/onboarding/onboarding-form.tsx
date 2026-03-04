@@ -138,7 +138,19 @@ export function OnboardingForm() {
         throw new Error(`Profile: ${profileError.message}`);
       }
 
-      // Create organization with selected account type (determines which dashboard they see)
+      // When 051 is applied, only platform admin can INSERT organizations; signup uses create_org_for_signup RPC.
+      const { data: orgIdFromRpc, error: rpcError } = await supabase.rpc('create_org_for_signup', {
+        org_name: orgName,
+        owner_user_id: currentUserId,
+      });
+
+      if (!rpcError && orgIdFromRpc) {
+        // RPC succeeded (051 applied); org and membership created. Optionally set org_type if column exists (e.g. via separate update by app if allowed).
+        window.location.href = '/auth/set-org-and-continue?next=/app/dashboard';
+        return;
+      }
+
+      // Fallback: direct insert when 051 not applied (RLS allows insert for new org / first membership)
       const { data: org, error: orgError } = await supabase
         .from('organizations')
         .insert({ name: orgName, org_type: orgType })
@@ -150,7 +162,6 @@ export function OnboardingForm() {
         throw new Error(`Organization: ${orgError.message}`);
       }
 
-      // Create org membership as owner (RLS allows insert own first membership)
       const { error: memberError } = await supabase
         .from('org_members')
         .insert({

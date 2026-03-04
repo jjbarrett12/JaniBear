@@ -3,77 +3,79 @@ import Link from 'next/link';
 import { requireOrg } from '@/lib/auth';
 import { getUserContext, isFranchisor } from '@/lib/user-context';
 import { isSalesRepRole } from '@/types/sales';
-import { DashboardHeader } from '@/components/dashboard/dashboard-header';
-import { StatsCards } from '@/components/dashboard/stats-cards';
-import { QuickActions } from '@/components/dashboard/quick-actions';
-import { RecentActivity } from '@/components/dashboard/recent-activity';
-import { TodaysSchedule } from '@/components/dashboard/todays-schedule';
-import { InspectionChart } from '@/components/dashboard/charts/inspection-chart';
-import { getOperatorDashboardData } from '@/lib/dashboard-data';
+import { resolveShellForOrg } from '@/lib/shell';
+import { PageLayout } from '@/components/enterprise';
+import { CommandCenterHeader } from '@/components/dashboard/CommandCenterHeader';
+import { DashboardWithExecutiveToggle } from '@/components/dashboard/DashboardWithExecutiveToggle';
+import { DashboardDataProvider } from '@/contexts/dashboard-data-context';
+import { getCommandCenterData } from '@/lib/command-center-data';
+import { getExecutiveMode } from '@/actions/executive-mode';
+import { CommandCenterSection } from './components/CommandCenterSection';
 import { Award } from 'lucide-react';
 
+export const revalidate = 60;
+
 /**
- * Dashboard: layout already ran requireOrg(), so we have an org. Only redirect franchisors to /franchisor.
- * Do not redirect to /api/auth/landing here — that can cause a redirect loop when the cookie isn't set yet.
+ * Owner Command Center: daily control view with customizable widget layout.
+ * Today section (view-powered) at top; then widgets: revenue, risk, crew, accounts, quality, AR, pipeline, AI.
  */
 export default async function DashboardPage() {
   const org = await requireOrg();
+  const shell = await resolveShellForOrg(org.org_id);
+  if (shell === 'franchisor') {
+    redirect('/app/franchise');
+  }
   const { context } = await getUserContext();
 
   if (isFranchisor(context)) {
-    redirect('/franchisor');
+    redirect('/app/franchise');
   }
   if (isSalesRepRole(context.role, context.roleEnum)) {
     redirect('/app/sales-dashboard');
   }
-  const data = await getOperatorDashboardData(org.org_id);
-  const safeData = {
-    userName: data.userName,
-    stats: data.stats,
-    chartData: data.chartData,
-    schedules: data.schedules,
-    activities: data.activities,
-  };
 
+  const [data, executivePref] = await Promise.all([
+    getCommandCenterData(org.org_id),
+    getExecutiveMode(org.org_id),
+  ]);
   const isFranchisee = context.orgType === 'franchisee';
+  const isExecutiveEligible = ['owner', 'admin', 'manager'].includes((context.role ?? '').toLowerCase());
 
   return (
-    <div className="space-y-6 pb-8">
-      <DashboardHeader
-        userName={safeData.userName}
-        subtitle={
-          isFranchisee
-            ? "Here's what's happening at your franchise location."
-            : "Here's what's happening with your business today."
-        }
-      />
-      {isFranchisee && (
-        <div className="rounded-lg border border-border bg-muted/40 px-4 py-3 flex items-center justify-between gap-4 flex-wrap">
-          <p className="text-sm text-muted-foreground">
-            You&apos;re viewing your franchise location. Compare outcomes and optional standards in KPI Dashboard and Financial Health.
-          </p>
-          <Link
-            href="/app/templates"
-            className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
-          >
-            <Award className="h-4 w-4" />
-            View suggested brand standards
-          </Link>
-        </div>
-      )}
-      <StatsCards stats={safeData.stats} />
-      <QuickActions />
-      <div className="grid gap-6 lg:grid-cols-3">
-        <div className="lg:col-span-2 space-y-6">
-          <InspectionChart data={safeData.chartData} />
-          <div className="grid gap-6 md:grid-cols-2">
-            <TodaysSchedule items={safeData.schedules} />
+    <PageLayout>
+      <DashboardDataProvider data={data}>
+        <CommandCenterHeader
+          userName={data.userName}
+          subtitle="Here's what's happening with your business today."
+        />
+        <CommandCenterSection orgId={org.org_id} />
+        {isFranchisee && (
+          <div className="rounded-2xl border border-border bg-muted/30 px-6 py-4 flex items-center justify-between gap-4 flex-wrap mb-6">
+            <p className="text-sm text-muted-foreground">
+              You&apos;re viewing your franchise location. Compare outcomes and optional standards in KPI Dashboard and Financial Health.
+            </p>
+            <Link
+              href="/app/templates"
+              className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
+            >
+              <Award className="h-4 w-4 shrink-0" />
+              View suggested brand standards
+            </Link>
           </div>
-        </div>
-        <div className="lg:col-span-1">
-          <RecentActivity activities={safeData.activities} />
-        </div>
-      </div>
-    </div>
+        )}
+
+        <DashboardWithExecutiveToggle
+          orgId={org.org_id}
+          initialExecutiveMode={executivePref.enabled}
+          isExecutiveEligible={isExecutiveEligible}
+          widgetGridProps={{
+            moduleKey: 'dashboard',
+            role: context.role,
+            roleEnum: context.roleEnum,
+            isAdmin: isExecutiveEligible,
+          }}
+        />
+      </DashboardDataProvider>
+    </PageLayout>
   );
 }

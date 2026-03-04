@@ -191,7 +191,32 @@ export function LoginForm({ defaultEmail = '' }: LoginFormProps) {
           </Button>
         </form>
       ) : (
-        <form action="/api/auth/login" method="POST" className="space-y-4">
+        <form
+          className="space-y-4"
+          onSubmit={async (e) => {
+            e.preventDefault();
+            if (isSubmitting || !email?.trim() || !password) return;
+            setIsSubmitting(true);
+            setSubmitError(null);
+            const formData = new FormData(e.currentTarget as HTMLFormElement);
+            try {
+              const res = await fetch('/api/auth/login', {
+                method: 'POST',
+                body: formData,
+                redirect: 'manual',
+              });
+              const location = res.headers.get('Location');
+              if (location) {
+                window.location.href = location;
+                return;
+              }
+              setSubmitError({ error: 'Sign-in failed. Please try again.' });
+            } catch {
+              setSubmitError({ error: 'Network error. Please try again.' });
+            }
+            setIsSubmitting(false);
+          }}
+        >
           <div className="space-y-2">
             <Label htmlFor="login-email" className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Email</Label>
             <Input
@@ -282,9 +307,16 @@ export function LoginForm({ defaultEmail = '' }: LoginFormProps) {
           <Button
             type="submit"
             className="w-full h-12 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-semibold text-[15px] shadow-sm"
-            disabled={!!oauthLoading}
+            disabled={!!oauthLoading || isSubmitting}
           >
-            Sign in
+            {isSubmitting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Signing in…
+              </>
+            ) : (
+              'Sign in'
+            )}
           </Button>
         </form>
       )}
@@ -305,9 +337,9 @@ export function LoginForm({ defaultEmail = '' }: LoginFormProps) {
         </p>
         <p className="text-sm text-zinc-500">
           Stuck or can&apos;t sign in?{' '}
-          <Link href="/auth/logout" className="text-amber-600 hover:text-amber-700 underline">
+          <a href="/auth/logout" className="text-amber-600 hover:text-amber-700 underline">
             Sign out and try again
-          </Link>
+          </a>
         </p>
       </div>
     </div>

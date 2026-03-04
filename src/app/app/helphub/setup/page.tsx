@@ -26,8 +26,19 @@ export default async function HelpHubSetupPage() {
 
   return (
     <FeatureGate feature="helphub_qr" allowed={hasFeature(access, 'helphub_qr')} fallback={
-      <div className="rounded-md border bg-card p-6 text-center text-muted-foreground">
-        <p>HelpHub QR is not enabled for your plan. Upgrade or enable the HelpHub QR add-on.</p>
+      <div className="rounded-md border bg-card p-8 text-center max-w-lg mx-auto">
+        <p className="text-muted-foreground mb-2">HelpHub QR is not enabled for your plan. Upgrade or enable the HelpHub QR add-on.</p>
+        <p className="text-sm text-muted-foreground mb-6">
+          HelpHub QR lets customers submit service requests via a unique link or QR code per location; submissions become ops tasks and you get proof-of-response logs.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <Button asChild>
+            <Link href="/pricing">See plans & enable</Link>
+          </Button>
+          <Button asChild variant="outline">
+            <Link href="/contact">Contact us</Link>
+          </Button>
+        </div>
       </div>
     }>
     <div className="space-y-6">
@@ -42,7 +53,7 @@ export default async function HelpHubSetupPage() {
             HelpHubQR — Setup by customer
           </h1>
           <p className="text-gray-600 dark:text-gray-400 mt-1">
-            Use the link or QR for each location so that customer can submit service requests
+            Use the link or QR for each site so that customer can submit service requests
           </p>
         </div>
       </div>
@@ -93,7 +104,7 @@ export default async function HelpHubSetupPage() {
                       />
                     </div>
                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                      Print or display at this location so visitors can scan to submit a request.
+                      Print or display at this site so visitors can scan to submit a request.
                     </p>
                   </div>
                 </CardContent>
@@ -104,10 +115,10 @@ export default async function HelpHubSetupPage() {
       ) : (
         <Card>
           <CardContent className="py-10 text-center text-gray-600 dark:text-gray-400">
-            <p>No locations yet. Add locations first, then return here to get ticket links and QR codes.</p>
-            <Link href="/app/locations">
+            <p>No sites yet. Add sites first, then return here to get ticket links and QR codes.</p>
+            <Link href="/app/sites">
               <Button variant="secondary" className="mt-4">
-                Go to Locations
+                Go to Sites
               </Button>
             </Link>
           </CardContent>

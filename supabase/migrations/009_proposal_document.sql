@@ -13,6 +13,5 @@ ALTER TABLE proposals
   ADD COLUMN IF NOT EXISTS pricing_line_items JSONB DEFAULT '[]',
   ADD COLUMN IF NOT EXISTS acceptance_terms TEXT,
   ADD COLUMN IF NOT EXISTS valid_until_date DATE;
-
 -- pricing_line_items: [{ "description": string, "quantity": number, "unit": string, "unit_price": number, "amount": number }, ...]
 COMMENT ON COLUMN proposals.pricing_line_items IS 'Array of { description, quantity?, unit?, unit_price?, amount } for customizable pricing table';

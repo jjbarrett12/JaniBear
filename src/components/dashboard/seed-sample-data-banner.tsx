@@ -27,7 +27,7 @@ export function SeedSampleDataBanner() {
   return (
     <div className="rounded-lg border border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-950/40 px-4 py-3 flex flex-wrap items-center justify-between gap-3">
       <p className="text-sm text-amber-900 dark:text-amber-100">
-        Your dashboard is showing sample numbers. Load sample data so Locations, Inspections, Issues, Crews, and Schedules have real data when you click through.
+        Your dashboard is showing sample numbers. Load sample data so Sites, Inspections, Issues, Crews, and Schedules have real data when you click through.
       </p>
       <div className="flex items-center gap-2">
         {message && (

@@ -1,10 +1,15 @@
 # Hero images (required)
 
-The hero uses **only these two images**. No other backdrop or foreground images.
+The hero uses a **backdrop image** and a **foreground devices image**.
 
-1. **scrubber.png** (or scrubber.jpg) – Your ride-on scrubber / large venue photo. **Background.**
-2. **hero-devices-transparent.png** – Laptop + phone with JANIBEAR UI **with transparent background** (recommended). Fallbacks: `hero-devices.png` or `Laptop and phone display .png`.
+## Backdrop (background)
 
-Put both files in this `public` folder. Use the transparent PNG for the devices so the scrubber shows through.
+**stadium-hero3.png** – Basketball court in a dimly lit arena, empty blue seats, cleaning crew in the distance. Optional: same image can include laptop + phone on the court (composite). Save your chosen hero background as `stadium-hero3.png` in this `public` folder. If the file is missing, the hero shows a dark background.
 
-If either file is missing, the hero will show a dark area or a short “Add … to public/” message until you add the file.
+## Foreground (devices)
+
+- **hero-devices-transparent.png** – Laptop + phone with JANIBEAR UI **with transparent background** (recommended). Fallbacks: `hero-devices.png` or `Laptop and phone display .png`.
+
+Put the devices image in `public` as well. Use a transparent PNG so the backdrop shows through.
+
+If the backdrop is missing, the hero falls back to the next path in the list, or a dark area if all fail.

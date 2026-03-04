@@ -6,7 +6,7 @@ import { getEffectiveAccessForCurrentUser } from '@/lib/access';
  * POST /api/admin/users/reset-password
  * Send password reset email to the user (Supabase Auth recover flow).
  * Allowed: platform admin OR tenant admin for a user in their org.
- * Body: { email: string }
+ * Body: { email: string } or { membershipId: string }
  */
 export async function POST(request: NextRequest) {
   const access = await getEffectiveAccessForCurrentUser();
@@ -14,35 +14,63 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  let body: { email?: string };
+  let body: { email?: string; membershipId?: string };
   try {
     body = await request.json();
   } catch {
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
   }
-  const email = typeof body.email === 'string' ? body.email.trim() : '';
-  if (!email) {
-    return NextResponse.json({ error: 'Body must include email' }, { status: 400 });
-  }
 
   const supabase = await createClient();
   const activeOrgId = await getActiveOrgId();
-  if (!access.isPlatformAdmin) {
+
+  let email: string;
+  if (typeof body.membershipId === 'string' && body.membershipId) {
+    const { data: row } = await supabase
+      .from('org_members')
+      .select('org_id, user_id')
+      .eq('id', body.membershipId)
+      .single();
+    if (!row) {
+      return NextResponse.json({ error: 'Membership not found' }, { status: 404 });
+    }
+    const canAct =
+      access.isPlatformAdmin ||
+      (access.role &&
+        ['owner', 'admin', 'manager'].includes(access.role) &&
+        activeOrgId === row.org_id);
+    if (!canAct) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
     const { createAdminClient } = await import('@/lib/supabase/admin');
     const admin = createAdminClient();
-    const { data: list } = await admin.auth.admin.listUsers({ perPage: 1000 });
-    const user = list.users.find((u) => u.email?.toLowerCase() === email.toLowerCase());
-    if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    const { data: user } = await admin.auth.admin.getUserById(row.user_id);
+    if (!user?.user?.email) {
+      return NextResponse.json({ error: 'User or email not found' }, { status: 404 });
     }
-    const { data: mem } = await supabase
-      .from('org_members')
-      .select('org_id')
-      .eq('user_id', user.id)
-      .eq('org_id', activeOrgId ?? '')
-      .maybeSingle();
-    if (!mem) {
-      return NextResponse.json({ error: 'User is not in your organization' }, { status: 403 });
+    email = user.user.email;
+  } else {
+    email = typeof body.email === 'string' ? body.email.trim() : '';
+    if (!email) {
+      return NextResponse.json({ error: 'Body must include email or membershipId' }, { status: 400 });
+    }
+    if (!access.isPlatformAdmin) {
+      const { createAdminClient } = await import('@/lib/supabase/admin');
+      const admin = createAdminClient();
+      const { data: list } = await admin.auth.admin.listUsers({ perPage: 1000 });
+      const user = list.users.find((u) => u.email?.toLowerCase() === email.toLowerCase());
+      if (!user) {
+        return NextResponse.json({ error: 'User not found' }, { status: 404 });
+      }
+      const { data: mem } = await supabase
+        .from('org_members')
+        .select('org_id')
+        .eq('user_id', user.id)
+        .eq('org_id', activeOrgId ?? '')
+        .maybeSingle();
+      if (!mem) {
+        return NextResponse.json({ error: 'User is not in your organization' }, { status: 403 });
+      }
     }
   }
 

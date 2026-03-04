@@ -33,6 +33,7 @@ export async function updateProGearProductAction(
   data: {
     name?: string;
     slug?: string;
+    sku?: string | null;
     brand?: string;
     description?: string;
     retail_price_cents?: number | null;
@@ -55,6 +56,21 @@ export async function updateProGearProductAction(
   if (error) return false;
   revalidatePath('/app/pro-gear');
   revalidatePath('/app/pro-gear/admin');
+  return true;
+}
+
+export async function updateContactRequestStatusAction(
+  requestId: string,
+  status: 'new' | 'contacted' | 'closed'
+) {
+  if (!(await ensureAdmin())) return false;
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from('pro_gear_contact_requests')
+    .update({ status, updated_at: new Date().toISOString() })
+    .eq('id', requestId);
+  if (error) return false;
+  revalidatePath('/app/pro-gear/admin/contact-requests');
   return true;
 }
 
@@ -122,6 +138,7 @@ export async function importProGearCsvAction(
   for (const r of rows) {
     const payload = {
       slug: r.slug,
+      sku: r.sku || null,
       name: r.name,
       category: r.category,
       brand: r.brand || null,

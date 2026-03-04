@@ -1,22 +1,29 @@
 import { createClient } from '@/lib/supabase/server';
 import { requireOrg } from '@/lib/auth';
 import { BrandingSettings } from '@/components/settings/branding-settings';
+import { BenchmarkingSettings } from '@/components/settings/benchmarking-settings';
+import { ProfilePhotoSettings } from '@/components/settings/profile-photo-settings';
 import { OrgSwitcher } from '@/components/settings/org-switcher';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Settings, Palette, Upload, Users } from 'lucide-react';
+import { Button, buttonVariants } from '@/components/ui/button';
+import { Settings, Palette, Upload, Users, Database } from 'lucide-react';
+import { cn } from '@/lib/utils';
+
+const ADMIN_ROLES = ['owner', 'admin', 'manager'];
 
 export default async function SettingsPage() {
   const org = await requireOrg();
   const supabase = await createClient();
+  const role = (org as { role?: string }).role ?? null;
+  const canManageBenchmarking = role !== null && ADMIN_ROLES.includes(role.toLowerCase());
 
-  // Get organization with branding data
+  // Get organization with branding data (.maybeSingle() so RLS/empty doesn't throw)
   const { data: organization } = await supabase
     .from('organizations')
-    .select('id, name, primary_color, secondary_color, logo_url, custom_branding')
+    .select('id, name, primary_color, secondary_color, logo_url')
     .eq('id', org.org_id)
-    .single();
+    .maybeSingle();
 
   return (
     <div className="space-y-6">
@@ -26,15 +33,32 @@ export default async function SettingsPage() {
       </div>
 
       <div className="space-y-6">
+        <ProfilePhotoSettings />
         <BrandingSettings
           orgId={org.org_id}
           initialData={{
             primary_color: organization?.primary_color,
             secondary_color: organization?.secondary_color,
             logo_url: organization?.logo_url,
-            custom_branding: organization?.custom_branding,
           }}
         />
+        {canManageBenchmarking && <BenchmarkingSettings orgId={org.org_id} />}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Database className="h-5 w-5" />
+              Test data
+            </CardTitle>
+            <CardDescription>
+              Add sample leads, customers, locations, and more so you can test modules and see what&apos;s broken. No data = nothing to test.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Link href="/app/settings/test-data">
+              <Button variant="secondary">Open Test data</Button>
+            </Link>
+          </CardContent>
+        </Card>
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -49,6 +73,25 @@ export default async function SettingsPage() {
             </Link>
           </CardContent>
         </Card>
+        {canManageBenchmarking && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Settings className="h-5 w-5" />
+                AI Control Center
+              </CardTitle>
+              <CardDescription>Control AI features, automation rules, privacy, and spending</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Link
+                href="/app/settings/ai"
+                className={cn(buttonVariants({ variant: 'secondary' }))}
+              >
+                Open AI Control Center
+              </Link>
+            </CardContent>
+          </Card>
+        )}
         <Card>
           <CardHeader>
             <CardTitle>Organization</CardTitle>

@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { updateAccount } from '@/actions/accounts';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -90,26 +91,21 @@ export function AccountEditForm({ account }: { account: Account }) {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
-    const supabase = createClient();
-    const { error } = await supabase
-      .from('accounts')
-      .update({
-        name: name.trim(),
-        status,
-        logo_url: logoUrl,
-        billing_contact_name: billing_contact_name.trim() || null,
-        billing_email: billing_email.trim() || null,
-        billing_phone: billing_phone.trim() || null,
-        billing_terms: billing_terms.trim() || null,
-        contract_value_monthly: contract_value_monthly ? parseFloat(contract_value_monthly) : null,
-        notes: notes.trim() || null,
-        user_limit: Math.max(1, parseInt(user_limit, 10) || 5),
-        updated_at: new Date().toISOString(),
-      })
-      .eq('id', account.id);
-
+    const { error } = await updateAccount(account.id, {
+      name: name.trim(),
+      status,
+      logo_url: logoUrl,
+      billing_contact_name: billing_contact_name.trim() || null,
+      billing_email: billing_email.trim() || null,
+      billing_phone: billing_phone.trim() || null,
+      billing_terms: billing_terms.trim() || null,
+      contract_value_monthly: contract_value_monthly ? parseFloat(contract_value_monthly) : null,
+      notes: notes.trim() || null,
+      user_limit: Math.max(1, parseInt(user_limit, 10) || 5),
+    });
     setLoading(false);
     if (error) {
+      toast({ title: 'Update failed', description: error, variant: 'destructive' });
       return;
     }
     router.push(`/app/accounts/${account.id}`);

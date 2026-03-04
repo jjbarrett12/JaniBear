@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -9,11 +8,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { createAccountWithFacilities, createBuildingAsAccountBatch } from '@/actions/accounts';
 
-type Step = 'choose' | 'multi' | 'single';
+type Step = 'multi' | 'single';
 
 export function AccountOnboardingForm() {
-  const router = useRouter();
-  const [step, setStep] = useState<Step>('choose');
+  const [step, setStep] = useState<Step>('multi');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -66,12 +64,15 @@ export function AccountOnboardingForm() {
       setError(result.error);
       return;
     }
+    if (!result.accountId) {
+      setError('Account was not created. Please try again.');
+      return;
+    }
     if (result.inviteLink && firstAdminEmail.trim()) {
       const fullLink = typeof window !== 'undefined' ? `${window.location.origin}${result.inviteLink}` : result.inviteLink;
       navigator.clipboard.writeText(fullLink).catch(() => {});
     }
-    router.push(`/app/accounts/${result.accountId}`);
-    router.refresh();
+    window.location.href = `/app/accounts/${result.accountId}`;
   };
 
   const submitSingle = async (e: React.FormEvent) => {
@@ -96,50 +97,24 @@ export function AccountOnboardingForm() {
       setError(result.error);
       return;
     }
-    router.push(result.accountIds.length ? `/app/accounts/${result.accountIds[0]}` : '/app/accounts');
-    router.refresh();
+    if (result.accountIds?.length) {
+      window.location.href = `/app/accounts/${result.accountIds[0]}`;
+    } else {
+      window.location.href = '/app/accounts';
+    }
   };
-
-  if (step === 'choose') {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>How do you organize your clients?</CardTitle>
-          <CardDescription>
-            Choose how accounts and buildings are set up. You can always add or move facilities later.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <button
-            type="button"
-            onClick={() => setStep('multi')}
-            className="w-full text-left p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors"
-          >
-            <span className="font-medium block">One account can have multiple buildings</span>
-            <span className="text-sm text-muted-foreground">Recommended for property managers or one client with several sites.</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setStep('single')}
-            className="w-full text-left p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors"
-          >
-            <span className="font-medium block">Each building is treated as its own account</span>
-            <span className="text-sm text-muted-foreground">One account per building; good when each site is billed separately.</span>
-          </button>
-        </CardContent>
-      </Card>
-    );
-  }
 
   if (step === 'multi') {
     return (
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-          <div>
-            <CardTitle>New account with facilities</CardTitle>
-            <CardDescription>One account, multiple buildings</CardDescription>
+        <CardHeader>
+          <div className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle>New account with facilities</CardTitle>
+              <CardDescription>One account, multiple buildings. You can add or move facilities later.</CardDescription>
+            </div>
+            <Button type="button" variant="ghost" size="sm" onClick={() => setStep('single')}>One account per building</Button>
           </div>
-          <Button variant="ghost" onClick={() => setStep('choose')}>Back</Button>
         </CardHeader>
         <CardContent>
           <form onSubmit={submitMulti} className="space-y-6">
@@ -214,12 +189,14 @@ export function AccountOnboardingForm() {
 
   return (
     <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
-        <div>
-          <CardTitle>Each building as its own account</CardTitle>
-          <CardDescription>We’ll create one account per building</CardDescription>
+      <CardHeader>
+        <div className="flex flex-row items-center justify-between">
+          <div>
+            <CardTitle>Each building as its own account</CardTitle>
+            <CardDescription>We’ll create one account per building</CardDescription>
+          </div>
+          <Button type="button" variant="ghost" size="sm" onClick={() => setStep('multi')}>One account, multiple buildings</Button>
         </div>
-        <Button variant="ghost" onClick={() => setStep('choose')}>Back</Button>
       </CardHeader>
       <CardContent>
         <form onSubmit={submitSingle} className="space-y-6">

@@ -1,7 +1,8 @@
 /**
  * Shared dashboard data fetching for operator dashboards (owner-operator and franchisee).
- * Real data only — no sample/demo numbers.
+ * Real data only — no sample/demo numbers. Cached 60s.
  */
+import { unstable_cache } from 'next/cache';
 import { createClient } from '@/lib/supabase/server';
 import { getCurrentUser } from '@/lib/auth';
 
@@ -54,10 +55,36 @@ const EMPTY_STATS: DashboardStats = {
   },
 };
 
-export async function getOperatorDashboardData(orgId: string): Promise<OperatorDashboardData> {
-  const supabase = await createClient();
-  const user = await getCurrentUser();
+const DASHBOARD_CACHE_REVALIDATE_SECONDS = 60;
 
+export async function getOperatorDashboardData(orgId: string): Promise<OperatorDashboardData> {
+  const user = await getCurrentUser();
+  try {
+    const data = await unstable_cache(
+      async () => {
+        const supabase = await createClient();
+        return getOperatorDashboardDataInner(orgId, supabase);
+      },
+      ['operator-dashboard', orgId],
+      { revalidate: DASHBOARD_CACHE_REVALIDATE_SECONDS }
+    )();
+    return { ...data, userName: user?.user_metadata?.full_name?.split(' ')[0] || 'there' };
+  } catch (err) {
+    console.error('getOperatorDashboardData failed:', err);
+    return {
+      ...EMPTY_STATS,
+      chartData: [],
+      schedules: [],
+      activities: [],
+      userName: user?.user_metadata?.full_name?.split(' ')[0] || 'there',
+    };
+  }
+}
+
+async function getOperatorDashboardDataInner(
+  orgId: string,
+  supabase: Awaited<ReturnType<typeof createClient>>
+): Promise<Omit<OperatorDashboardData, 'userName'> & { userName: string }> {
   try {
     const now = new Date();
     const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
@@ -144,7 +171,6 @@ export async function getOperatorDashboardData(orgId: string): Promise<OperatorD
     });
     activities.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 
-    const userName = user?.user_metadata?.full_name?.split(' ')[0] || 'there';
     const inspectionsLast7 = inspectionsLast7Result.count ?? 0;
     const inspectionsLast30 = inspectionsLast30Result.count ?? 0;
     const inspectionsPrev30 = inspectionsPrev30Result.count ?? 0;
@@ -176,7 +202,7 @@ export async function getOperatorDashboardData(orgId: string): Promise<OperatorD
       chartData,
       schedules: formattedSchedules,
       activities,
-      userName,
+      userName: 'there',
     };
   } catch (err) {
     console.error('getOperatorDashboardData failed:', err);
@@ -185,7 +211,7 @@ export async function getOperatorDashboardData(orgId: string): Promise<OperatorD
       chartData: [],
       schedules: [],
       activities: [],
-      userName: user?.user_metadata?.full_name?.split(' ')[0] || 'there',
+      userName: 'there',
     };
   }
 }

@@ -6,7 +6,7 @@
 -- 1. Accounts table
 -- =============================================================================
 CREATE TABLE IF NOT EXISTS accounts (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
   name TEXT NOT NULL,
   status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'inactive')),
@@ -27,7 +27,7 @@ CREATE INDEX IF NOT EXISTS idx_accounts_org_name ON accounts(org_id, name);
 -- 2. Facilities table
 -- =============================================================================
 CREATE TABLE IF NOT EXISTS facilities (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
   account_id UUID NOT NULL REFERENCES accounts(id) ON DELETE CASCADE,
   name TEXT NOT NULL,
@@ -178,7 +178,19 @@ CREATE INDEX IF NOT EXISTS idx_crew_assignments_facility_id ON crew_assignments(
 -- schedules
 ALTER TABLE schedules ADD COLUMN IF NOT EXISTS facility_id UUID REFERENCES facilities(id) ON DELETE CASCADE;
 UPDATE schedules s SET facility_id = m.facility_id FROM _loc_fac_map m WHERE s.location_id = m.location_id;
-DO $$ BEGIN IF (SELECT COUNT(*) FROM _loc_fac_map) > 0 THEN ALTER TABLE schedules DROP CONSTRAINT IF EXISTS schedules_location_id_fkey; ALTER TABLE schedules DROP COLUMN IF EXISTS location_id; ALTER TABLE schedules ALTER COLUMN facility_id SET NOT NULL; END IF; END; $$;
+DO $$
+BEGIN
+  IF (SELECT COUNT(*) FROM _loc_fac_map) > 0 THEN
+    ALTER TABLE schedules DROP CONSTRAINT IF EXISTS schedules_location_id_fkey;
+    BEGIN
+      ALTER TABLE schedules DROP COLUMN IF EXISTS location_id;
+      ALTER TABLE schedules ALTER COLUMN facility_id SET NOT NULL;
+    EXCEPTION WHEN SQLSTATE '2BP01' THEN
+      NULL; -- leave location_id in place if views depend on it
+    END;
+  END IF;
+END;
+$$;
 CREATE INDEX IF NOT EXISTS idx_schedules_facility_id ON schedules(facility_id);
 
 -- inspections
@@ -253,8 +265,18 @@ $$;
 -- =============================================================================
 -- 6. Drop locations table and mapping table
 -- =============================================================================
--- Drop locations only if we migrated (so all references are now facility_id)
-DO $$ BEGIN IF (SELECT COUNT(*) FROM _loc_fac_map) > 0 AND EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'locations') THEN DROP TABLE locations; END IF; END; $$;
+-- Drop locations only if we migrated and no other objects depend on it
+DO $$
+BEGIN
+  IF (SELECT COUNT(*) FROM _loc_fac_map) > 0 AND EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'locations') THEN
+    BEGIN
+      DROP TABLE locations;
+    EXCEPTION WHEN SQLSTATE '2BP01' THEN
+      NULL;
+    END;
+  END IF;
+END;
+$$;
 DROP TABLE IF EXISTS _loc_fac_map;
 
 -- =============================================================================

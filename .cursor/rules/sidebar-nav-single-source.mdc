@@ -1,0 +1,37 @@
+---
+description: Sidebar and app nav — single source of truth; avoid drift between desktop and mobile
+globs: src/lib/nav/**/*.ts, src/components/app/app-sidebar*.tsx, src/components/app/mobile-sidebar.tsx, src/lib/app-translations.ts
+alwaysApply: false
+---
+
+# Sidebar & navigation: single source of truth
+
+## Rule
+
+- **All app sidebar/navigation structure comes from one place:** `src/lib/nav/navFactory.ts`.
+- **Desktop** (`app-sidebar-nav.tsx`) and **mobile** (`mobile-sidebar.tsx`) both consume it via `getNavSectionsForShell()` in `src/lib/nav/shellNav.ts`.
+- **Do not** add or edit nav item arrays (hrefs, labels, icons) inside `mobile-sidebar.tsx` or `app-sidebar-nav.tsx`. Those components only render data from the nav factory.
+
+## When adding or changing a sidebar item
+
+1. **Edit only:** `src/lib/nav/navFactory.ts`
+   - Add or change the item in the correct section builder: `buildExecutiveSection`, `buildSalesSection`, `buildLaunchSection`, `buildOperationsSection`, `buildSystemSection`, or `buildFranchisorSections`.
+   - Use an existing `AppTranslationKey` for the label, or add a new one (step 2).
+2. **If the label is new:** add the key and strings in `src/lib/app-translations.ts` (e.g. `navMyNewPage: 'My New Page'` in EN and ES).
+3. **Optional:** If the item should show an alert badge (e.g. handoffs, open issues, missed tasks), add `alertKey` to the item in `navFactory.ts` and ensure that key exists in `NavAlertCounts` in `src/actions/nav-alerts.ts`.
+
+## File roles
+
+| File | Role |
+|------|------|
+| `src/lib/nav/navFactory.ts` | **Only place** that defines sections and items (href, labelKey, icon, alertKey). |
+| `src/lib/nav/shellNav.ts` | Maps shell (owner_operator / franchisee / franchisor) to org type and calls `buildNavSections`. |
+| `src/components/app/app-sidebar-nav.tsx` | Renders sections from `getNavSectionsForShell()`; do not add items here. |
+| `src/components/app/mobile-sidebar.tsx` | Renders same sections from `getNavSectionsForShell()` with mobile layout; do not add items here. |
+| `src/lib/app-translations.ts` | Add new `nav*` keys here when you add new items in navFactory. |
+
+## Checklist before shipping sidebar changes
+
+- [ ] Change made in `navFactory.ts` only (no duplicate arrays in mobile or desktop components).
+- [ ] New labels added to `app-translations.ts` if needed.
+- [ ] Both desktop and mobile sidebars will pick up the change automatically (no extra edits in `mobile-sidebar.tsx` or `app-sidebar-nav.tsx` for the new link).

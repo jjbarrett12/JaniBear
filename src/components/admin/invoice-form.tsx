@@ -151,7 +151,7 @@ export function InvoiceForm({ invoice, locations }: InvoiceFormProps) {
       const invoiceData = {
         org_id: orgMember.org_id,
         invoice_number: invoice?.invoice_number || undefined,
-        location_id: data.location_id || null,
+        location_id: (data.location_id && data.location_id !== '__none__') ? data.location_id : null,
         invoice_date: data.invoice_date || new Date().toISOString().split('T')[0],
         due_date: data.due_date,
         status: data.status,
@@ -271,14 +271,14 @@ export function InvoiceForm({ invoice, locations }: InvoiceFormProps) {
                 <div>
                   <Label htmlFor="location_id">Location (Optional)</Label>
                   <Select
-                    value={watch('location_id')}
-                    onValueChange={(value) => setValue('location_id', value)}
+                    value={watch('location_id') ?? '__none__'}
+                    onValueChange={(value) => setValue('location_id', value === '__none__' ? undefined : value)}
                   >
                     <SelectTrigger className="h-14">
                       <SelectValue placeholder="Select location" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">None</SelectItem>
+                      <SelectItem value="__none__">None</SelectItem>
                       {locations.map((loc) => (
                         <SelectItem key={loc.id} value={loc.id}>
                           {loc.name}

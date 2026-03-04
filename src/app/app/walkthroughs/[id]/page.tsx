@@ -30,7 +30,8 @@ export default async function WalkthroughDetailPage({ params }: { params: Promis
     .from('walkthroughs')
     .select(`
       *,
-      sites:locations (*),
+      locations (*),
+      sites (name, address),
       opportunities (
         *,
         clients (*)
@@ -123,7 +124,7 @@ export default async function WalkthroughDetailPage({ params }: { params: Promis
               </Badge>
             </div>
             <p className="text-muted-foreground">
-              {scope?.site?.address || walkthrough.sites?.address || 'No address'}
+              {scope?.site?.address || walkthrough.locations?.address || walkthrough.sites?.address || 'No address'}
             </p>
           </div>
         </div>

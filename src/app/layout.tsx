@@ -22,12 +22,14 @@ export const viewport: Viewport = {
 
 const siteUrl = process.env.NEXT_PUBLIC_APP_URL || "https://janibear.com";
 
+const appTitle = "JANIBEAR | The Cleaning Company OS";
+
 export const metadata: Metadata = {
-  title: "JANIBEAR – AI Software for Janitorial Sales & Operations",
+  title: appTitle,
   description: "AI software for janitorial sales and operations. Bidding, inspections, quality proof, and automation built for serious cleaning companies.",
   metadataBase: new URL(siteUrl),
   openGraph: {
-    title: "JANIBEAR – AI Software for Janitorial Sales & Operations",
+    title: appTitle,
     description: "AI software for janitorial sales and operations. Bidding, inspections, quality proof, and automation built for serious cleaning companies.",
     url: siteUrl,
     siteName: "JANIBEAR",
@@ -35,14 +37,14 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "JANIBEAR – AI Software for Janitorial Sales & Operations",
+    title: appTitle,
     description: "AI software for janitorial sales and operations. Bidding, inspections, quality proof, and automation built for serious cleaning companies.",
   },
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "JANIBEAR",
+    title: appTitle,
   },
 };
 
@@ -61,7 +63,7 @@ export default function RootLayout({
         <meta name="theme-color" content="#3b82f6" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content="JANIBEAR" />
+        <meta name="apple-mobile-web-app-title" content="JANIBEAR | The Cleaning Company OS" />
       </head>
       <body className={`${sourceSans.variable} ${interTight.variable} ${sourceSans.className} font-sans`}>
         <LanguageProvider>

@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { requireOrg } from '@/lib/auth';
 import { revalidatePath } from 'next/cache';
+import { logAudit } from '@/lib/audit-log';
 
 export type CreateAccountWithFacilitiesPayload = {
   account_name: string;
@@ -143,6 +144,59 @@ export async function createBuildingAsAccountBatch(
 
   revalidatePath('/app/accounts');
   return { created: accountIds.length, accountIds };
+}
+
+/** Update account (pricing/contract, billing, etc.). Logs to audit_log. */
+export type UpdateAccountPayload = {
+  name?: string;
+  status?: 'active' | 'inactive';
+  contract_value_monthly?: number | null;
+  billing_contact_name?: string | null;
+  billing_email?: string | null;
+  billing_phone?: string | null;
+  billing_terms?: string | null;
+  notes?: string | null;
+  user_limit?: number;
+  logo_url?: string | null;
+};
+
+export async function updateAccount(accountId: string, payload: UpdateAccountPayload): Promise<{ error?: string }> {
+  const org = await requireOrg();
+  const supabase = await createClient();
+
+  const { data: before } = await supabase.from('accounts').select('*').eq('id', accountId).eq('org_id', org.org_id).single();
+  if (!before) return { error: 'Account not found' };
+
+  const updates: Record<string, unknown> = { updated_at: new Date().toISOString() };
+  if (payload.name !== undefined) updates.name = payload.name;
+  if (payload.status !== undefined) updates.status = payload.status;
+  if (payload.contract_value_monthly !== undefined) updates.contract_value_monthly = payload.contract_value_monthly;
+  if (payload.billing_contact_name !== undefined) updates.billing_contact_name = payload.billing_contact_name;
+  if (payload.billing_email !== undefined) updates.billing_email = payload.billing_email;
+  if (payload.billing_phone !== undefined) updates.billing_phone = payload.billing_phone;
+  if (payload.billing_terms !== undefined) updates.billing_terms = payload.billing_terms;
+  if (payload.notes !== undefined) updates.notes = payload.notes;
+  if (payload.user_limit !== undefined) updates.user_limit = payload.user_limit;
+  if (payload.logo_url !== undefined) updates.logo_url = payload.logo_url;
+
+  const { data: after, error } = await supabase.from('accounts').update(updates).eq('id', accountId).eq('org_id', org.org_id).select().single();
+  if (error) return { error: error.message };
+
+  const action = payload.contract_value_monthly !== undefined && (before as { contract_value_monthly?: number }).contract_value_monthly !== payload.contract_value_monthly
+    ? 'pricing_change'
+    : 'account_update';
+  await logAudit({
+    orgId: org.org_id,
+    action,
+    entityType: 'account',
+    entityId: accountId,
+    beforeState: before as Record<string, unknown>,
+    afterState: after as Record<string, unknown>,
+  });
+
+  revalidatePath('/app/accounts');
+  revalidatePath(`/app/accounts/${accountId}`);
+  return {};
 }
 
 /** Set a facility as the primary for its account (clears primary on others). */

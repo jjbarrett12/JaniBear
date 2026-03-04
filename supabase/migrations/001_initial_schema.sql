@@ -1,13 +1,11 @@
 -- Enable UUID extension
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
 -- Organizations
 CREATE TABLE organizations (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   name TEXT NOT NULL,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- User profiles (linked to auth.users)
 CREATE TABLE profiles (
   id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
@@ -17,7 +15,6 @@ CREATE TABLE profiles (
   language_preference TEXT DEFAULT 'en' CHECK (language_preference IN ('en', 'es')),
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Organization memberships with roles
 CREATE TABLE org_members (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -27,7 +24,6 @@ CREATE TABLE org_members (
   created_at TIMESTAMPTZ DEFAULT NOW(),
   UNIQUE(org_id, user_id)
 );
-
 -- Locations (buildings/accounts)
 CREATE TABLE locations (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -41,7 +37,6 @@ CREATE TABLE locations (
   notes TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Location areas (sub-areas within a location)
 CREATE TABLE location_areas (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -51,7 +46,6 @@ CREATE TABLE location_areas (
   sort_order INTEGER DEFAULT 0,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Service contracts (uploaded PDFs/documents)
 CREATE TABLE service_contracts (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -61,7 +55,6 @@ CREATE TABLE service_contracts (
   storage_path TEXT NOT NULL,
   uploaded_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Bids/Estimates
 CREATE TABLE bids (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -83,7 +76,6 @@ CREATE TABLE bids (
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Supply/chemical usage tracking for cost calculations
 CREATE TABLE supply_usage (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -96,7 +88,6 @@ CREATE TABLE supply_usage (
   usage_per_restroom NUMERIC,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Crews (teams of workers)
 CREATE TABLE crews (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -104,7 +95,6 @@ CREATE TABLE crews (
   name TEXT NOT NULL,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Crew members
 CREATE TABLE crew_members (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -115,7 +105,6 @@ CREATE TABLE crew_members (
   created_at TIMESTAMPTZ DEFAULT NOW(),
   UNIQUE(crew_id, user_id)
 );
-
 -- Crew assignments to locations
 CREATE TABLE crew_assignments (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -127,7 +116,6 @@ CREATE TABLE crew_assignments (
   is_active BOOLEAN DEFAULT true,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Templates (inspection forms)
 CREATE TABLE templates (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -137,7 +125,6 @@ CREATE TABLE templates (
   is_active BOOLEAN DEFAULT true,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Template sections
 CREATE TABLE template_sections (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -147,7 +134,6 @@ CREATE TABLE template_sections (
   sort_order INTEGER DEFAULT 0,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Template items (questions/tasks)
 CREATE TABLE template_items (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -161,7 +147,6 @@ CREATE TABLE template_items (
   sort_order INTEGER DEFAULT 0,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Schedules (recurring inspections/tasks)
 CREATE TABLE schedules (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -176,7 +161,6 @@ CREATE TABLE schedules (
   is_active BOOLEAN DEFAULT true,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Task assignments (individual tasks from schedule assigned to crew members)
 CREATE TABLE task_assignments (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -187,7 +171,6 @@ CREATE TABLE task_assignments (
   due_date DATE NOT NULL,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Task completions (tracking when individuals complete tasks)
 CREATE TABLE task_completions (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -198,7 +181,6 @@ CREATE TABLE task_completions (
   photos JSONB, -- Array of photo storage paths
   UNIQUE(task_assignment_id)
 );
-
 -- Inspections
 CREATE TABLE inspections (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -214,7 +196,6 @@ CREATE TABLE inspections (
   lng NUMERIC,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Inspection section scores
 CREATE TABLE inspection_section_scores (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -224,7 +205,6 @@ CREATE TABLE inspection_section_scores (
   score NUMERIC,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Inspection responses (answers to items)
 CREATE TABLE inspection_responses (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -236,7 +216,6 @@ CREATE TABLE inspection_responses (
   notes TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Inspection photos
 CREATE TABLE inspection_photos (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -247,7 +226,6 @@ CREATE TABLE inspection_photos (
   caption TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Issues (tickets from failed items)
 CREATE TABLE issues (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -264,7 +242,6 @@ CREATE TABLE issues (
   created_at TIMESTAMPTZ DEFAULT NOW(),
   resolved_at TIMESTAMPTZ
 );
-
 -- Issue comments
 CREATE TABLE issue_comments (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -274,7 +251,6 @@ CREATE TABLE issue_comments (
   body TEXT NOT NULL,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Issue photos
 CREATE TABLE issue_photos (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -284,7 +260,6 @@ CREATE TABLE issue_photos (
   caption TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Report shares (public token-based access)
 CREATE TABLE report_shares (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -294,7 +269,6 @@ CREATE TABLE report_shares (
   expires_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Indexes for performance
 CREATE INDEX idx_org_members_org_id ON org_members(org_id);
 CREATE INDEX idx_org_members_user_id ON org_members(user_id);

@@ -63,7 +63,7 @@ export function DashboardHeader({
       </div>
       <div className="flex items-center gap-2">
         <span
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium bg-card border border-border text-muted-foreground shadow-sm"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-card border border-border text-muted-foreground"
           aria-label={`Today is ${dateStr}`}
         >
           <Calendar className="h-4 w-4 text-primary shrink-0" />

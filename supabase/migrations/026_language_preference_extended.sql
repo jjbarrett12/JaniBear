@@ -5,7 +5,6 @@
 ALTER TABLE profiles DROP CONSTRAINT IF EXISTS profiles_language_preference_check;
 ALTER TABLE profiles ADD CONSTRAINT profiles_language_preference_check
   CHECK (language_preference IN ('en', 'es', 'pt', 'it', 'ru', 'uk', 'zh', 'vi', 'tl', 'fr', 'ar', 'ko'));
-
 -- employees (from 007_ai_admin_features / 010_foundation_update) — only if table exists
 DO $$
 BEGIN

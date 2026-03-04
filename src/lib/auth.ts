@@ -1,11 +1,15 @@
 import { createClient } from './supabase/server';
 import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
+import { cookies } from 'next/headers';
 import { getActiveOrgIdFromCookie } from './user-context';
+import { isPlatformAdmin } from './platform-guard';
 
 const MIDDLEWARE_USER_ID_HEADER = 'x-middleware-user-id';
+const IMPERSONATE_COOKIE = 'impersonate_org_id';
 
 const AUTH_DEBUG = process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_AUTH_DEBUG === '1';
+const GUARD_DEBUG = process.env.NODE_ENV === 'development' && (process.env.NEXT_PUBLIC_AUTH_DEBUG === '1' || process.env.NEXT_PUBLIC_GUARD_DEBUG === '1');
 
 export async function getCurrentUser() {
   const supabase = await createClient();
@@ -78,21 +82,57 @@ export async function getCurrentOrg() {
 
 /**
  * Returns current user's org membership and org details (includes org_type for JANIBEAR OS gating).
- * Shape: { org_id, role, organizations: { name, org_type: 'franchisor' | 'franchisee' | 'independent', ... } }
- * Only redirects to /onboarding when the user has zero org memberships (initial signup). Once they have an org, always dashboard.
+ * Shape: { org_id, role, organizations: { name, org_type: ... } }
+ * When platform admin is impersonating (impersonate_org_id cookie set), returns that org's context so /app shows that tenant.
  */
 export async function requireOrg() {
+  const user = await getCurrentUser();
   const headersList = await headers();
   const middlewareUserId = headersList.get(MIDDLEWARE_USER_ID_HEADER);
-  if (middlewareUserId) {
-    const org = await getOrgForUserId(middlewareUserId);
-    if (org) return org;
-  }
+  const effectiveUserId = user?.id ?? middlewareUserId;
 
-  const user = await getCurrentUser();
-  if (!user) {
+  if (!effectiveUserId) {
+    if (GUARD_DEBUG) console.log('[GUARD] requireOrg path=layout session=false org_id=null reason=no user redirect=login');
     if (process.env.NODE_ENV === 'development') console.log('[REDIRECT] origin=layout (requireOrg getCurrentUser null)');
     redirect('/auth/login');
+  }
+
+  const cookieStore = await cookies();
+  const impersonateOrgId = cookieStore.get(IMPERSONATE_COOKIE)?.value;
+  if (impersonateOrgId && (await isPlatformAdmin())) {
+    const supabase = await createClient();
+    const { data: orgRow } = await supabase
+      .from('organizations')
+      .select('id, name, org_type')
+      .eq('id', impersonateOrgId)
+      .single();
+    if (orgRow) {
+      if (GUARD_DEBUG) console.log('[GUARD] requireOrg path=layout impersonating org_id=' + orgRow.id);
+      return {
+        org_id: orgRow.id,
+        role: 'owner',
+        organizations: { id: orgRow.id, name: orgRow.name, org_type: orgRow.org_type ?? 'independent' },
+      };
+    }
+  }
+
+  if (middlewareUserId) {
+    const org = await getOrgForUserId(middlewareUserId);
+    if (org) {
+      if (GUARD_DEBUG) console.log('[GUARD] requireOrg path=layout session=true org_id=' + org.org_id + ' reason=header+getOrgForUserId');
+      return org;
+    }
+    const supabase = await createClient();
+    const { data: firstByUserId } = await supabase
+      .from('org_members')
+      .select('org_id, role, organizations(*)')
+      .eq('user_id', middlewareUserId)
+      .limit(1)
+      .maybeSingle();
+    if (firstByUserId) {
+      if (GUARD_DEBUG) console.log('[GUARD] requireOrg path=layout session=true org_id=' + firstByUserId.org_id + ' reason=header+firstMembership fallback');
+      return firstByUserId;
+    }
   }
 
   let org = await getCurrentOrg();
@@ -101,7 +141,7 @@ export async function requireOrg() {
     const { data: firstMembership } = await supabase
       .from('org_members')
       .select('org_id, role, organizations(*)')
-      .eq('user_id', user.id)
+      .eq('user_id', effectiveUserId)
       .limit(1)
       .maybeSingle();
     if (firstMembership) {
@@ -109,8 +149,10 @@ export async function requireOrg() {
     }
   }
   if (!org) {
+    if (GUARD_DEBUG) console.log('[GUARD] requireOrg path=layout session=true org_id=null onboarded=false reason=no org redirect=landing');
     redirect('/api/auth/landing');
   }
+  if (GUARD_DEBUG) console.log('[GUARD] requireOrg path=layout session=true org_id=' + org.org_id + ' reason=currentUser+getCurrentOrg');
   return org;
 }
 

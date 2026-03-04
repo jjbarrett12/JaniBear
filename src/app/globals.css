@@ -2,18 +2,45 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Landing page: black theme, white text */
+/* Landing page: single continuous backdrop (dark navy/black), no hard section bands */
 .landing-page {
-  background-color: #000 !important;
+  background-color: #050810 !important;
   color: #fff;
+  position: relative;
+  min-height: 100vh;
 }
-/* Nav: black background, white text; no border so it blends with hero */
+.landing-page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 100% 80% at 20% 20%, rgba(30, 41, 59, 0.25) 0%, transparent 50%),
+    radial-gradient(ellipse 80% 100% at 80% 80%, rgba(49, 46, 129, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 60% at 50% 50%, rgba(15, 23, 42, 0.4) 0%, transparent 70%);
+}
+.landing-page .landing-page-content {
+  position: relative;
+  z-index: 1;
+}
+/* Optional faint noise over the whole page (reduces banding) */
+.landing-page-noise {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+}
+/* Nav: match page backdrop so no harsh band; white text */
 .landing-header {
-  background: #000 !important;
+  background: #050810 !important;
   border: none !important;
 }
 .landing-header.landing-header-scrolled {
-  background: rgba(0, 0, 0, 0.95) !important;
+  background: rgba(5, 8, 16, 0.95) !important;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
@@ -55,28 +82,31 @@
     max-height: 8rem !important;
   }
 }
+/* CTA: neon yellow to match logo yellow (#FACC15) */
 .landing-page .landing-cta {
-  background: #fbbf24 !important;
+  background: #facc15 !important;
   color: #000 !important;
   border: none !important;
-  box-shadow: 0 4px 14px rgba(251, 191, 36, 0.4);
+  box-shadow: 0 4px 14px rgba(250, 204, 21, 0.45);
   transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 .landing-page .landing-cta:hover {
-  background: #fcd34d !important;
+  background: #fde047 !important;
   color: #000 !important;
   transform: translateY(-1px);
-  box-shadow: 0 8px 24px rgba(251, 191, 36, 0.45);
+  box-shadow: 0 8px 24px rgba(250, 204, 21, 0.5);
 }
 .landing-page .landing-cta-lg {
   font-size: 1.125rem;
-  padding-left: 2rem;
-  padding-right: 2rem;
-  height: 3.5rem;
-  box-shadow: 0 4px 14px rgba(251, 191, 36, 0.4);
+  padding-left: 2.5rem;
+  padding-right: 2.5rem;
+  min-height: 3.625rem;
+  box-shadow: 0 4px 32px rgba(250, 204, 21, 0.5);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 .landing-page .landing-cta-lg:hover {
-  box-shadow: 0 8px 28px rgba(251, 191, 36, 0.5);
+  box-shadow: 0 8px 40px rgba(250, 204, 21, 0.6);
+  transform: translateY(-2px) scale(1.03);
 }
 .landing-page .landing-outline {
   background: transparent !important;
@@ -108,13 +138,13 @@
   background: rgba(255, 255, 255, 0.04) !important;
 }
 
-/* Hero: subtle radial glow (premium depth) */
+/* Hero: radial glow so headline + device dominate the fold */
 .bg-gradient-radial-hero {
   background: radial-gradient(
-    ellipse 80% 70% at 50% 0%,
-    rgba(251, 191, 36, 0.08) 0%,
-    rgba(251, 191, 36, 0.02) 40%,
-    transparent 70%
+    ellipse 85% 75% at 50% 38%,
+    rgba(251, 191, 36, 0.12) 0%,
+    rgba(251, 191, 36, 0.04) 35%,
+    transparent 65%
   );
 }
 
@@ -155,15 +185,29 @@
 }
 .landing-page .hero-headline {
   letter-spacing: -0.02em;
-  line-height: 1.08;
+  line-height: 1.2;
 }
-/* Hero headline: gradient text to make it pop */
+/* Hero headline: gradient neon yellow — webkit for Safari */
 .landing-page .hero-headline-gradient {
-  background: linear-gradient(135deg, #fef3c7 0%, #fcd34d 25%, #f59e0b 50%, #fbbf24 75%, #fde68a 100%);
+  display: inline-block;
+  background: linear-gradient(135deg, #fef08a 0%, #fde047 25%, #facc15 50%, #fde047 75%, #fef08a 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  filter: drop-shadow(0 0 24px rgba(251, 191, 36, 0.25));
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 28px rgba(250, 204, 21, 0.4)) drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+/* Hero tagline: bold gold gradient so it pops (inline-block required for clip) */
+.landing-page .hero-tagline-gradient {
+  display: inline-block;
+  background: linear-gradient(120deg, #fef08a 0%, #facc15 25%, #f59e0b 50%, #fbbf24 75%, #fde047 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 24px rgba(251, 191, 36, 0.5)) drop-shadow(0 2px 8px rgba(0,0,0,0.4));
+  padding-bottom: 0.1em;
 }
 /* Hero tagline: bold gold gradient so it pops (inline-block required for clip) */
 .landing-page .hero-tagline-gradient {
@@ -185,8 +229,8 @@
   display: inline-block;
 }
 .landing-page .hero-subhead {
-  font-weight: 400;
-  letter-spacing: 0.04em;
+  font-weight: 600;
+  letter-spacing: 0.02em;
 }
 .landing-page .hero-micro {
   letter-spacing: 0.035em;
@@ -204,7 +248,8 @@
     --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-    --primary: 38 92% 50%;
+    /* App default: blue; overridden by ThemeApplier from Settings > Branding */
+    --primary: 221 91% 60%;
     --primary-foreground: 0 0% 100%;
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
@@ -218,7 +263,7 @@
     /* Darker borders and inputs in light mode for clearer separation */
     --border: 214 28% 82%;
     --input: 214 28% 82%;
-    --ring: 38 92% 50%;
+    --ring: 221 91% 60%;
     --radius: 0.5rem;
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
@@ -231,30 +276,31 @@
     --health-red: 0 72% 51%;
   }
 
-  /* Dark mode: #121B3A bg, #F3F4F6 text, #F28C28 accent, #3B4FA3 dividers */
+  /* Dark mode: Enterprise — Deep Navy page, card surface lighter so tiles read as elevated */
   .dark {
-    --background: 227 53% 15%;
-    --foreground: 220 20% 96%;
-    --card: 227 53% 15%;
-    --card-foreground: 220 20% 96%;
-    --popover: 227 53% 15%;
-    --popover-foreground: 220 20% 96%;
-    --primary: 31 89% 55%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 227 47% 22%;
-    --secondary-foreground: 220 20% 96%;
-    --muted: 227 47% 22%;
-    --muted-foreground: 220 15% 70%;
-    --accent: 31 89% 55%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 220 20% 96%;
-    --border: 227 47% 44%;
-    --input: 227 47% 44%;
-    --ring: 31 89% 55%;
-    --chart-1: 31 89% 55%;
+    --background: 222 50% 6%;
+    --foreground: 210 20% 96%;
+    --card: 218 28% 22%;
+    --card-foreground: 210 20% 96%;
+    --popover: 218 28% 22%;
+    --popover-foreground: 210 20% 96%;
+    /* App default: blue; overridden by ThemeApplier from Settings > Branding */
+    --primary: 221 91% 60%;
+    --primary-foreground: 222 47% 8%;
+    --secondary: 217 33% 22%;
+    --secondary-foreground: 210 20% 96%;
+    --muted: 217 25% 25%;
+    --muted-foreground: 215 16% 57%;
+    --accent: 221 91% 60%;
+    --accent-foreground: 222 47% 8%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 210 20% 96%;
+    --border: 215 18% 28%;
+    --input: 215 20% 25%;
+    --ring: 221 91% 60%;
+    --chart-1: 221 91% 60%;
     --chart-2: 160 60% 45%;
-    --chart-3: 227 47% 44%;
+    --chart-3: 217 33% 35%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
     --health-green: 142 70% 45%;
@@ -273,9 +319,9 @@
   body {
     @apply bg-background text-foreground;
   }
-  /* Clear focus ring for mouse users, visible for keyboard */
+  /* Clear focus ring for mouse users, visible for keyboard (uses --ring so brand colors apply) */
   :focus-visible {
-    @apply outline-none ring-2 ring-amber-500/60 ring-offset-2 ring-offset-background;
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
   }
   :focus:not(:focus-visible) {
     @apply outline-none ring-0;
@@ -291,6 +337,23 @@
   color: hsl(var(--muted-foreground)) !important;
 }
 
+/* KPI Command Center: dark charcoal, enterprise, state-only color, no shadows */
+.dark .kpi-executive-console,
+.dark .kpi-command-center {
+  background-color: #0E1117;
+  min-height: 100%;
+}
+.dark .kpi-executive-console .kpi-card-elevated,
+.dark .kpi-command-center .kpi-card-elevated {
+  background-color: #151A22;
+  border-color: rgba(255, 255, 255, 0.06);
+  box-shadow: none;
+}
+.dark .kpi-executive-console .kpi-card-elevated:hover,
+.dark .kpi-command-center .kpi-card-elevated:hover {
+  background-color: #1a1f28;
+}
+
 /* Light mode: darker text and borders for better contrast (sidebar, cards, badges, descriptions) */
 :root main .text-gray-500,
 :root main .text-gray-400,
@@ -300,6 +363,40 @@
 :root .border-border,
 :root [class*="border-border"] {
   border-color: hsl(var(--border)) !important;
+}
+
+/* Elevated card: dashboard KPI tiles, charts, widgets. Premium enterprise depth, solid and colorful. */
+.elevated-card {
+  background: hsl(var(--card));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-left: 3px solid hsl(var(--primary) / 0.6);
+  border-radius: 17px;
+  box-shadow:
+    0 12px 30px rgba(0, 0, 0, 0.45),
+    0 4px 10px rgba(0, 0, 0, 0.35);
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.elevated-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.15);
+  border-left-color: hsl(var(--primary) / 0.85);
+  box-shadow:
+    0 16px 36px rgba(0, 0, 0, 0.5),
+    0 6px 14px rgba(0, 0, 0, 0.4);
+}
+.elevated-card-accent {
+  box-shadow:
+    0 12px 30px rgba(0, 0, 0, 0.45),
+    0 4px 10px rgba(0, 0, 0, 0.35),
+    0 0 0 1px hsl(var(--primary) / 0.12),
+    0 0 24px hsl(var(--primary) / 0.1);
+}
+.elevated-card-accent:hover {
+  box-shadow:
+    0 16px 36px rgba(0, 0, 0, 0.5),
+    0 6px 14px rgba(0, 0, 0, 0.4),
+    0 0 0 1px hsl(var(--primary) / 0.14),
+    0 0 28px hsl(var(--primary) / 0.12);
 }
 
 /* Improved touch targets for mobile */
@@ -409,6 +506,19 @@
   }
 }
 
+/* Sheet (drawer) slide-in from right */
+@keyframes sheet-slide-in-right {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+.sheet-animate-in-right {
+  animation: sheet-slide-in-right 0.25s ease-out;
+}
+
 /* Hide scrollbar for proposal sample scroll (keep functionality) */
 .hide-scrollbar {
   -ms-overflow-style: none;
@@ -466,6 +576,23 @@
 }
 .landing-page .landing-header button.landing-nav-link:hover,
 .landing-page .landing-header a.landing-nav-link:hover {
+  color: #fff !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Force landing header styling to win over theme/Tailwind (high specificity) */
+body .landing-page .landing-header {
+  background: #000 !important;
+  border: none !important;
+}
+body .landing-page .landing-header a:not(.landing-cta),
+body .landing-page .landing-header button:not(.landing-cta) {
+  color: #fafafa !important;
+  background: transparent !important;
+  border: none !important;
+}
+body .landing-page .landing-header a:not(.landing-cta):hover,
+body .landing-page .landing-header button:not(.landing-cta):hover {
   color: #fff !important;
   background: rgba(255, 255, 255, 0.1) !important;
 }

@@ -20,10 +20,14 @@ export type AccountListItem = {
 export function AccountsListWithFilter({
   accounts,
   hasNewButton = true,
+  getAccountHref,
 }: {
   accounts: AccountListItem[];
   hasNewButton?: boolean;
+  /** Optional: override detail link (e.g. Sales uses /app/sales/accounts/[id]) */
+  getAccountHref?: (id: string) => string;
 }) {
+  const hrefFor = getAccountHref ?? ((id: string) => `/app/accounts/${id}`);
   const [filter, setFilter] = useState<'all' | 'active' | 'inactive'>('active');
 
   const filtered =
@@ -80,7 +84,7 @@ export function AccountsListWithFilter({
           {filtered.map((account) => {
             const locationLine = [account.primary_city, account.primary_state].filter(Boolean).join(', ');
             return (
-              <Link key={account.id} href={`/app/accounts/${account.id}`}>
+              <Link key={account.id} href={hrefFor(account.id)}>
                 <Card className="hover:shadow-md transition-shadow cursor-pointer h-full dark:bg-gray-800 dark:border-gray-700">
                   <CardHeader className="pb-2">
                     <div className="flex items-start justify-between gap-2">

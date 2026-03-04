@@ -8,8 +8,8 @@
 DROP POLICY IF EXISTS "Authenticated users can upload inspection photos" ON storage.objects;
 DROP POLICY IF EXISTS "Authenticated users can read inspection photos" ON storage.objects;
 DROP POLICY IF EXISTS "Public can read inspection photos" ON storage.objects;
-
 -- Org-isolated: first path segment must be org_id and user must be member
+DROP POLICY IF EXISTS "Org members can insert inspection photos" ON storage.objects;
 CREATE POLICY "Org members can insert inspection photos"
 ON storage.objects FOR INSERT
 TO authenticated
@@ -19,7 +19,7 @@ WITH CHECK (
     SELECT org_id::text FROM org_members WHERE user_id = auth.uid()
   )
 );
-
+DROP POLICY IF EXISTS "Org members can select inspection photos" ON storage.objects;
 CREATE POLICY "Org members can select inspection photos"
 ON storage.objects FOR SELECT
 TO authenticated
@@ -29,7 +29,7 @@ USING (
     SELECT org_id::text FROM org_members WHERE user_id = auth.uid()
   )
 );
-
+DROP POLICY IF EXISTS "Org members can delete inspection photos" ON storage.objects;
 CREATE POLICY "Org members can delete inspection photos"
 ON storage.objects FOR DELETE
 TO authenticated

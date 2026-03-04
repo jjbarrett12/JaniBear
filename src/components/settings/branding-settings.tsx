@@ -1,12 +1,14 @@
 'use client';
 
 import { useState, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
+import { useTheme } from '@/lib/theme-provider';
 import { Upload, X, Image as ImageIcon } from 'lucide-react';
 import Image from 'next/image';
 
@@ -16,18 +18,27 @@ interface BrandingSettingsProps {
     primary_color?: string | null;
     secondary_color?: string | null;
     logo_url?: string | null;
-    custom_branding?: boolean;
   };
 }
 
 export function BrandingSettings({ orgId, initialData }: BrandingSettingsProps) {
+  const router = useRouter();
   const { toast } = useToast();
+  const { setTheme } = useTheme();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [primaryColor, setPrimaryColor] = useState(initialData?.primary_color || '#3b82f6');
   const [secondaryColor, setSecondaryColor] = useState(initialData?.secondary_color || '#64748b');
   const [logoUrl, setLogoUrl] = useState(initialData?.logo_url || null);
   const [isUploading, setIsUploading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [showSchemaHelp, setShowSchemaHelp] = useState(false);
+
+  const BRANDING_MIGRATION_SQL = `-- Add branding columns to organizations (run in Supabase SQL Editor)
+ALTER TABLE organizations ADD COLUMN IF NOT EXISTS primary_color TEXT DEFAULT NULL;
+ALTER TABLE organizations ADD COLUMN IF NOT EXISTS secondary_color TEXT DEFAULT NULL;
+ALTER TABLE organizations ADD COLUMN IF NOT EXISTS logo_url TEXT DEFAULT NULL;
+ALTER TABLE organizations ADD COLUMN IF NOT EXISTS custom_branding BOOLEAN DEFAULT false;
+CREATE INDEX IF NOT EXISTS idx_organizations_custom_branding ON organizations(custom_branding) WHERE custom_branding = true;`;
 
   const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -43,11 +54,11 @@ export function BrandingSettings({ orgId, initialData }: BrandingSettingsProps) 
       return;
     }
 
-    // Validate file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
+    // Validate file size (max 20MB for larger/high-res logos)
+    if (file.size > 20 * 1024 * 1024) {
       toast({
         title: 'File too large',
-        description: 'Logo must be less than 5MB',
+        description: 'Logo must be less than 20MB',
         variant: 'destructive',
       });
       return;
@@ -57,9 +68,10 @@ export function BrandingSettings({ orgId, initialData }: BrandingSettingsProps) 
     const supabase = createClient();
 
     try {
-      // Delete old logo if exists
+      // Delete old logo if exists (path is everything after bucket name in URL)
       if (logoUrl) {
-        const oldPath = logoUrl.split('/').pop();
+        const pathMatch = logoUrl.match(/organization-logos\/(.+)$/);
+        const oldPath = pathMatch ? pathMatch[1] : null;
         if (oldPath) {
           await supabase.storage.from('organization-logos').remove([oldPath]);
         }
@@ -78,8 +90,8 @@ export function BrandingSettings({ orgId, initialData }: BrandingSettingsProps) 
         });
 
       if (uploadError) {
-        if (uploadError.message?.includes('Bucket not found') || uploadError.message?.includes('not found')) {
-          throw new Error('Logo storage is not set up. Run migration 005_create_logo_storage_bucket.sql in Supabase SQL Editor.');
+        if (uploadError.message?.includes('Bucket not found') || uploadError.message?.includes('not found') || uploadError.message?.includes('bucket') || uploadError.message?.includes('storage')) {
+          throw new Error('Logo storage is not set up. Run the Supabase migration 074_organization_logos_storage_ensure.sql in the SQL Editor (Dashboard → SQL Editor), or run: supabase db push');
         }
         throw uploadError;
       }
@@ -90,6 +102,17 @@ export function BrandingSettings({ orgId, initialData }: BrandingSettingsProps) 
         .getPublicUrl(filePath);
 
       setLogoUrl(publicUrl);
+
+      // Persist logo_url to organizations so it survives refresh
+      const { error: updateError } = await supabase
+        .from('organizations')
+        .update({ logo_url: publicUrl })
+        .eq('id', orgId);
+      if (updateError) {
+        console.warn('Logo uploaded but organizations update failed:', updateError);
+      }
+
+      router.refresh();
       toast({
         title: 'Logo uploaded',
         description: 'Logo has been uploaded successfully',
@@ -110,52 +133,92 @@ export function BrandingSettings({ orgId, initialData }: BrandingSettingsProps) 
     if (!logoUrl) return;
 
     const supabase = createClient();
-    const path = logoUrl.split('/').pop();
-    
+    const pathMatch = logoUrl.match(/organization-logos\/(.+)$/);
+    const path = pathMatch ? pathMatch[1] : null;
+
     if (path) {
-      await supabase.storage.from('organization-logos').remove([`${orgId}/${path}`]);
+      await supabase.storage.from('organization-logos').remove([path]);
+    }
+
+    const { error } = await supabase
+      .from('organizations')
+      .update({ logo_url: null })
+      .eq('id', orgId);
+    if (error) {
+      toast({
+        title: 'Remove failed',
+        description: error.message ?? 'Could not clear logo from organization',
+        variant: 'destructive',
+      });
+      return;
     }
 
     setLogoUrl(null);
+    router.refresh();
     toast({
       title: 'Logo removed',
       description: 'Logo has been removed',
     });
   };
 
+  const normalizeHex = (v: string) => {
+    const s = (v || '').trim();
+    if (!s) return s;
+    if (s.startsWith('#')) return s;
+    if (/^[0-9A-Fa-f]{6}$/.test(s)) return `#${s}`;
+    return s;
+  };
+
   const handleSave = async () => {
     setIsSaving(true);
     const supabase = createClient();
+    const primary = normalizeHex(primaryColor);
+    const secondary = normalizeHex(secondaryColor);
 
     try {
       const { error } = await supabase
         .from('organizations')
         .update({
-          primary_color: primaryColor,
-          secondary_color: secondaryColor,
+          primary_color: primary || null,
+          secondary_color: secondary || null,
           logo_url: logoUrl,
-          custom_branding: !!(primaryColor || secondaryColor || logoUrl),
         })
         .eq('id', orgId);
 
       if (error) throw error;
 
-      toast({
-        title: 'Settings saved',
-        description: 'Your branding settings have been saved',
+      setTheme({
+        primary: primary || primaryColor,
+        secondary: secondary || secondaryColor,
+        logoUrl: logoUrl ?? null,
       });
 
-      // Reload to apply changes
-      setTimeout(() => window.location.reload(), 1000);
+      // Re-fetch layout data so sidebar/header get new logo and next full load uses new colors
+      router.refresh();
+
+      toast({
+        title: 'Settings saved',
+        description: 'Brand colors and logo are applied across the app.',
+      });
     } catch (error: any) {
       console.error('Error saving branding:', error);
       const msg = error.message || 'Failed to save settings';
-      const hint = error.code === '42501' || msg.includes('policy') || msg.includes('row-level security')
-        ? ' Only org owners and managers can save branding. Run migration 021_org_branding_manager_update.sql in Supabase if you are a manager.'
-        : '';
+      const isSchemaError =
+        msg.includes('schema cache') ||
+        msg.includes('custom_branding') ||
+        msg.includes("'logo_url'") ||
+        msg.includes("'primary_color'") ||
+        msg.includes("'secondary_color'") ||
+        /Could not find the .* column/.test(msg);
+      if (isSchemaError) setShowSchemaHelp(true);
+      const hint = isSchemaError
+        ? ' Run the SQL below in Supabase SQL Editor (Dashboard → SQL Editor → New query → paste → Run), then try saving again.'
+        : error.code === '42501' || msg.includes('policy') || msg.includes('row-level security')
+          ? ' Only org owners and managers can save branding. If you are a manager, ask your admin to run migration 055_org_branding_update_policy.sql in Supabase.'
+          : '';
       toast({
         title: 'Save failed',
-        description: msg + hint,
+        description: (isSchemaError ? 'Database is missing branding columns. ' : '') + msg + hint,
         variant: 'destructive',
       });
     } finally {
@@ -166,9 +229,9 @@ export function BrandingSettings({ orgId, initialData }: BrandingSettingsProps) 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Branding & Customization</CardTitle>
+        <CardTitle>Branding &amp; company colors</CardTitle>
         <CardDescription>
-          Your logo appears in the sidebar. Upload your own to replace the default JANIBEAR logo, or remove it to use the default.
+          Set your company colors and logo. Colors apply app-wide: buttons, links, focus rings, sidebar accents, and primary actions. Logo appears in the sidebar. If colors or logo don’t update, run migrations 070 and 074 in Supabase SQL Editor.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-8">
@@ -184,6 +247,7 @@ export function BrandingSettings({ orgId, initialData }: BrandingSettingsProps) 
                   width={120}
                   height={60}
                   className="h-16 w-auto object-contain border rounded p-2 bg-white"
+                  unoptimized
                 />
                 <Button
                   type="button"
@@ -222,7 +286,7 @@ export function BrandingSettings({ orgId, initialData }: BrandingSettingsProps) 
                 {isUploading ? 'Uploading...' : logoUrl ? 'Change Logo' : 'Upload Logo'}
               </Button>
               <p className="text-xs text-gray-500 mt-1">
-                PNG, JPG, or SVG. Max 5MB. Recommended: 200x60px. Leave empty to keep the default JANIBEAR logo.
+                PNG, JPG, or SVG. Max 20MB. Recommended: 400x120px or larger for a clear sidebar logo. Leave empty to keep the default JANIBEAR logo.
               </p>
             </div>
           </div>
@@ -249,7 +313,7 @@ export function BrandingSettings({ orgId, initialData }: BrandingSettingsProps) 
               />
             </div>
             <p className="text-xs text-gray-500">
-              Used for buttons, links, and primary actions
+              Buttons, links, focus rings, and primary actions across the app
             </p>
           </div>
 
@@ -272,7 +336,7 @@ export function BrandingSettings({ orgId, initialData }: BrandingSettingsProps) 
               />
             </div>
             <p className="text-xs text-gray-500">
-              Used for secondary elements and accents
+              Secondary buttons, borders, and accents app-wide
             </p>
           </div>
         </div>
@@ -315,10 +379,36 @@ export function BrandingSettings({ orgId, initialData }: BrandingSettingsProps) 
           onClick={handleSave}
           disabled={isSaving}
           size="lg"
-          className="w-full h-14 text-lg"
+          className="w-full h-14 text-lg text-white border-0"
+          style={{ backgroundColor: primaryColor }}
         >
           {isSaving ? 'Saving...' : 'Save Branding Settings'}
         </Button>
+
+        {showSchemaHelp && (
+          <div className="rounded-lg border border-amber-500/50 bg-amber-500/10 p-4 space-y-3">
+            <p className="text-sm font-medium text-amber-800 dark:text-amber-200">
+              Fix: run this SQL in Supabase
+            </p>
+            <p className="text-xs text-muted-foreground">
+              Supabase Dashboard → SQL Editor → New query → paste the SQL below → Run. Then try saving again.
+            </p>
+            <pre className="text-xs bg-muted p-3 rounded overflow-x-auto whitespace-pre-wrap font-mono">
+              {BRANDING_MIGRATION_SQL}
+            </pre>
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              onClick={() => {
+                navigator.clipboard.writeText(BRANDING_MIGRATION_SQL);
+                toast({ title: 'SQL copied', description: 'Paste in Supabase SQL Editor and run.' });
+              }}
+            >
+              Copy SQL
+            </Button>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

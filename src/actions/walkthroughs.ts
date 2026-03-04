@@ -9,7 +9,7 @@ import { z } from 'zod';
 
 const createWalkthroughSchema = z.object({
   opportunity_id: z.string().optional(),
-  site_id: z.string().optional(), // If not linked to opportunity yet
+  location_id: z.string().optional(), // Canonical facility; do not use site_id for new rows
   scheduled_at: z.string(),
   notes: z.string().optional(),
 });
@@ -21,7 +21,7 @@ export async function createWalkthrough(formData: FormData) {
   
   const rawData = {
     opportunity_id: formData.get('opportunity_id') as string,
-    site_id: formData.get('site_id') as string,
+    location_id: formData.get('location_id') as string,
     scheduled_at: formData.get('scheduled_at') as string,
     notes: formData.get('notes') as string,
   };
@@ -33,7 +33,7 @@ export async function createWalkthrough(formData: FormData) {
     .insert({
       org_id: org.org_id,
       opportunity_id: rawData.opportunity_id || null,
-      site_id: rawData.site_id || null,
+      location_id: rawData.location_id || null,
       scheduled_at: rawData.scheduled_at,
       status: 'scheduled',
     })

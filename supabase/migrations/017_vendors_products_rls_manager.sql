@@ -9,7 +9,6 @@ CREATE POLICY "Managers can manage vendors"
     WHERE user_id = auth.uid()
     AND role IN ('owner', 'admin', 'manager', 'ops')
   ));
-
 DROP POLICY IF EXISTS "Managers can manage products" ON products;
 CREATE POLICY "Managers can manage products"
   ON products FOR ALL

@@ -199,7 +199,34 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 pb-24">
+      {/* Sticky save bar so Save is always visible */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 p-4 safe-bottom">
+        <div className="container max-w-5xl mx-auto flex gap-4 justify-end">
+          <Button
+            type="button"
+            variant="outline"
+            size="lg"
+            className="h-12"
+            onClick={() => router.back()}
+          >
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            size="lg"
+            className="h-12 min-w-[180px]"
+            disabled={isSubmitting}
+          >
+            {isSubmitting
+              ? 'Saving...'
+              : employee
+              ? 'Update Employee'
+              : 'Create Employee'}
+          </Button>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
           <Card>
@@ -506,30 +533,6 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
             </CardContent>
           </Card>
         </div>
-      </div>
-
-      <div className="flex gap-4">
-        <Button
-          type="submit"
-          size="lg"
-          className="h-14 text-lg flex-1"
-          disabled={isSubmitting}
-        >
-          {isSubmitting
-            ? 'Saving...'
-            : employee
-            ? 'Update Employee'
-            : 'Create Employee'}
-        </Button>
-        <Button
-          type="button"
-          variant="outline"
-          size="lg"
-          className="h-14 text-lg"
-          onClick={() => router.back()}
-        >
-          Cancel
-        </Button>
       </div>
     </form>
   );

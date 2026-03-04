@@ -7,33 +7,29 @@
 -- Profiles: paid member flag for Pro Gear access
 ALTER TABLE profiles ADD COLUMN IF NOT EXISTS is_paid_member BOOLEAN NOT NULL DEFAULT false;
 COMMENT ON COLUMN profiles.is_paid_member IS 'When true, user can access Member Pro Gear; admin roles can bypass';
-
 -- Product category enum
 DO $$ BEGIN
   CREATE TYPE pro_gear_category AS ENUM ('gloves', 'equipment');
 EXCEPTION
   WHEN duplicate_object THEN NULL;
 END $$;
-
 -- Order status enum
 DO $$ BEGIN
   CREATE TYPE pro_gear_order_status AS ENUM ('draft', 'submitted', 'confirmed', 'shipped', 'canceled');
 EXCEPTION
   WHEN duplicate_object THEN NULL;
 END $$;
-
 -- Private label inquiry status enum
 DO $$ BEGIN
   CREATE TYPE pro_gear_inquiry_status AS ENUM ('new', 'contacted', 'quoted', 'closed');
 EXCEPTION
   WHEN duplicate_object THEN NULL;
 END $$;
-
 -- ---------------------------------------------------------------------------
 -- pro_gear_products (catalog; no org — global member catalog)
 -- ---------------------------------------------------------------------------
-CREATE TABLE pro_gear_products (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+CREATE TABLE IF NOT EXISTS pro_gear_products (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   slug TEXT NOT NULL UNIQUE,
   name TEXT NOT NULL,
   category pro_gear_category NOT NULL,
@@ -58,19 +54,16 @@ CREATE TABLE pro_gear_products (
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
-
-CREATE INDEX idx_pro_gear_products_slug ON pro_gear_products(slug);
-CREATE INDEX idx_pro_gear_products_category_active ON pro_gear_products(category, active);
-CREATE INDEX idx_pro_gear_products_featured ON pro_gear_products(featured) WHERE featured = true;
-
+CREATE INDEX IF NOT EXISTS idx_pro_gear_products_slug ON pro_gear_products(slug);
+CREATE INDEX IF NOT EXISTS idx_pro_gear_products_category_active ON pro_gear_products(category, active);
+CREATE INDEX IF NOT EXISTS idx_pro_gear_products_featured ON pro_gear_products(featured) WHERE featured = true;
 COMMENT ON COLUMN pro_gear_products.glove_fields IS 'Optional: material, color, thickness_mil, size_range, case_count';
 COMMENT ON COLUMN pro_gear_products.equipment_fields IS 'Optional: type, power, width_in, battery, warranty_years';
-
 -- ---------------------------------------------------------------------------
 -- pro_gear_orders (user-scoped; no Stripe — order request only)
 -- ---------------------------------------------------------------------------
-CREATE TABLE pro_gear_orders (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+CREATE TABLE IF NOT EXISTS pro_gear_orders (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   status pro_gear_order_status NOT NULL DEFAULT 'draft',
   subtotal_cents INT NOT NULL DEFAULT 0,
@@ -80,15 +73,13 @@ CREATE TABLE pro_gear_orders (
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
-
-CREATE INDEX idx_pro_gear_orders_user ON pro_gear_orders(user_id);
-CREATE INDEX idx_pro_gear_orders_status ON pro_gear_orders(status);
-
+CREATE INDEX IF NOT EXISTS idx_pro_gear_orders_user ON pro_gear_orders(user_id);
+CREATE INDEX IF NOT EXISTS idx_pro_gear_orders_status ON pro_gear_orders(status);
 -- ---------------------------------------------------------------------------
 -- pro_gear_order_items
 -- ---------------------------------------------------------------------------
-CREATE TABLE pro_gear_order_items (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+CREATE TABLE IF NOT EXISTS pro_gear_order_items (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   order_id UUID NOT NULL REFERENCES pro_gear_orders(id) ON DELETE CASCADE,
   product_id UUID NOT NULL REFERENCES pro_gear_products(id) ON DELETE RESTRICT,
   quantity INT NOT NULL CHECK (quantity > 0),
@@ -96,14 +87,12 @@ CREATE TABLE pro_gear_order_items (
   line_total_cents INT NOT NULL,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
-CREATE INDEX idx_pro_gear_order_items_order ON pro_gear_order_items(order_id);
-
+CREATE INDEX IF NOT EXISTS idx_pro_gear_order_items_order ON pro_gear_order_items(order_id);
 -- ---------------------------------------------------------------------------
 -- pro_gear_private_label_inquiries
 -- ---------------------------------------------------------------------------
-CREATE TABLE pro_gear_private_label_inquiries (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+CREATE TABLE IF NOT EXISTS pro_gear_private_label_inquiries (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   product_id UUID NOT NULL REFERENCES pro_gear_products(id) ON DELETE CASCADE,
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   company_name TEXT,
@@ -116,11 +105,9 @@ CREATE TABLE pro_gear_private_label_inquiries (
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
-
-CREATE INDEX idx_pro_gear_pl_inquiries_product ON pro_gear_private_label_inquiries(product_id);
-CREATE INDEX idx_pro_gear_pl_inquiries_user ON pro_gear_private_label_inquiries(user_id);
-CREATE INDEX idx_pro_gear_pl_inquiries_status ON pro_gear_private_label_inquiries(status);
-
+CREATE INDEX IF NOT EXISTS idx_pro_gear_pl_inquiries_product ON pro_gear_private_label_inquiries(product_id);
+CREATE INDEX IF NOT EXISTS idx_pro_gear_pl_inquiries_user ON pro_gear_private_label_inquiries(user_id);
+CREATE INDEX IF NOT EXISTS idx_pro_gear_pl_inquiries_status ON pro_gear_private_label_inquiries(status);
 -- ---------------------------------------------------------------------------
 -- RLS
 -- ---------------------------------------------------------------------------
@@ -128,28 +115,27 @@ ALTER TABLE pro_gear_products ENABLE ROW LEVEL SECURITY;
 ALTER TABLE pro_gear_orders ENABLE ROW LEVEL SECURITY;
 ALTER TABLE pro_gear_order_items ENABLE ROW LEVEL SECURITY;
 ALTER TABLE pro_gear_private_label_inquiries ENABLE ROW LEVEL SECURITY;
-
 -- Products: authenticated can read active; admins can manage (via service role or app check)
+DROP POLICY IF EXISTS "Authenticated read active pro_gear_products" ON pro_gear_products;
 CREATE POLICY "Authenticated read active pro_gear_products"
   ON pro_gear_products FOR SELECT TO authenticated
   USING (active = true);
-
 -- Orders: user sees own only
+DROP POLICY IF EXISTS "Users manage own pro_gear_orders" ON pro_gear_orders;
 CREATE POLICY "Users manage own pro_gear_orders"
   ON pro_gear_orders FOR ALL TO authenticated
   USING (user_id = auth.uid());
-
+DROP POLICY IF EXISTS "Users manage own pro_gear_order_items" ON pro_gear_order_items;
 CREATE POLICY "Users manage own pro_gear_order_items"
   ON pro_gear_order_items FOR ALL TO authenticated
   USING (
     order_id IN (SELECT id FROM pro_gear_orders WHERE user_id = auth.uid())
   );
-
 -- Private label: user sees own; product required
+DROP POLICY IF EXISTS "Users manage own pro_gear_private_label_inquiries" ON pro_gear_private_label_inquiries;
 CREATE POLICY "Users manage own pro_gear_private_label_inquiries"
   ON pro_gear_private_label_inquiries FOR ALL TO authenticated
   USING (user_id = auth.uid());
-
 -- Admin policies: allow org admins (owner, admin, manager) to read all orders/inquiries and manage products.
 -- We use a helper: user is in org_members with admin-like role (any org).
 CREATE OR REPLACE FUNCTION is_pro_gear_admin()
@@ -161,35 +147,34 @@ RETURNS BOOLEAN AS $$
     LIMIT 1
   );
 $$ LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public;
-
 -- Admins can read all products (including inactive) and update (for admin UI)
+DROP POLICY IF EXISTS "Admins read all pro_gear_products" ON pro_gear_products;
 CREATE POLICY "Admins read all pro_gear_products"
   ON pro_gear_products FOR SELECT TO authenticated
   USING (is_pro_gear_admin());
-
+DROP POLICY IF EXISTS "Admins update pro_gear_products" ON pro_gear_products;
 CREATE POLICY "Admins update pro_gear_products"
   ON pro_gear_products FOR UPDATE TO authenticated
   USING (is_pro_gear_admin());
-
+DROP POLICY IF EXISTS "Admins insert pro_gear_products" ON pro_gear_products;
 CREATE POLICY "Admins insert pro_gear_products"
   ON pro_gear_products FOR INSERT TO authenticated
   WITH CHECK (is_pro_gear_admin());
-
 -- Admins can read all orders and inquiries (for admin UI)
+DROP POLICY IF EXISTS "Admins read all pro_gear_orders" ON pro_gear_orders;
 CREATE POLICY "Admins read all pro_gear_orders"
   ON pro_gear_orders FOR SELECT TO authenticated
   USING (is_pro_gear_admin());
-
+DROP POLICY IF EXISTS "Admins read all pro_gear_order_items" ON pro_gear_order_items;
 CREATE POLICY "Admins read all pro_gear_order_items"
   ON pro_gear_order_items FOR SELECT TO authenticated
   USING (is_pro_gear_admin());
-
+DROP POLICY IF EXISTS "Admins read all pro_gear_private_label_inquiries" ON pro_gear_private_label_inquiries;
 CREATE POLICY "Admins read all pro_gear_private_label_inquiries"
   ON pro_gear_private_label_inquiries FOR SELECT TO authenticated
   USING (is_pro_gear_admin());
-
+DROP POLICY IF EXISTS "Admins update pro_gear_private_label_inquiries" ON pro_gear_private_label_inquiries;
 CREATE POLICY "Admins update pro_gear_private_label_inquiries"
   ON pro_gear_private_label_inquiries FOR UPDATE TO authenticated
   USING (is_pro_gear_admin());
-
 GRANT EXECUTE ON FUNCTION is_pro_gear_admin() TO authenticated;

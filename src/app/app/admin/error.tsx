@@ -23,7 +23,7 @@ export default function AdminError({
           <div className="flex items-center gap-2">
             <AlertCircle className="h-5 w-5 text-destructive" />
             <CardTitle>Admin section couldn&apos;t load</CardTitle>
-          </CardHeader>
+          </div>
           <CardDescription>
             Something went wrong. You can try again or go back to the dashboard.
           </CardDescription>

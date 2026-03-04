@@ -49,10 +49,9 @@ export default function Home() {
   return (
     <div className="landing-page min-h-screen bg-black text-white pb-20 md:pb-0" style={{ backgroundColor: '#000', color: '#fff' }}>
       <nav
-        className={`landing-header sticky top-0 z-50 h-14 md:h-16 py-0 flex items-center overflow-visible transition-all duration-300 bg-black text-white ${
+        className={`landing-header sticky top-0 z-50 h-14 md:h-16 py-0 flex items-center overflow-visible transition-all duration-300 bg-black text-white bg-[#050810]/95 backdrop-blur-sm ${
           navScrolled ? 'landing-header-scrolled shadow-sm' : ''
         }`}
-        className="bg-[#050810]/95 backdrop-blur-sm"
       >
         <div className="container relative mx-auto px-4 h-full flex items-center justify-between gap-4 min-h-0">
           <Link href="/" className="landing-logo-wrap flex items-center shrink-0 bg-transparent text-white [&>span]:bg-transparent [&>span]:shadow-none [&>span]:block">

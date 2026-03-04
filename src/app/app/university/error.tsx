@@ -23,7 +23,7 @@ export default function UniversityError({
           <div className="flex items-center gap-2">
             <AlertCircle className="h-5 w-5 text-destructive" />
             <CardTitle>University couldn&apos;t load</CardTitle>
-          </CardHeader>
+          </div>
           <CardDescription>
             Something went wrong loading training content. You can try again or go back.
           </CardDescription>

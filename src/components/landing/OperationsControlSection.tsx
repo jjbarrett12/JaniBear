@@ -42,18 +42,6 @@ const cards = [
     subline: 'Execution becomes predictable.',
     Icon: Users,
   },
-  {
-    badge: 'RISK CONTROL',
-    title: 'Early Attrition & Churn Detection',
-    bullets: [
-      'Account health scoring',
-      'Issue escalation tracking',
-      'Margin monitoring',
-      'Churn risk alerts',
-    ],
-    subline: 'Protect revenue before it disappears.',
-    Icon: ShieldAlert,
-  },
 ];
 
 export function OperationsControlSection() {
@@ -88,14 +76,14 @@ export function OperationsControlSection() {
           </p>
         </div>
 
-        {/* Single row of 4 cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 md:gap-8">
+        {/* Single row of 3 cards — larger */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
           {cards.map((card) => {
             const Icon = card.Icon;
             return (
               <article
                 key={card.badge}
-                className="group rounded-2xl p-6 md:p-8 bg-black border border-emerald-400/40 transition-all duration-200 hover:-translate-y-1 hover:border-emerald-400/70 min-w-0"
+                className="group rounded-2xl p-8 md:p-10 bg-black border border-emerald-400/40 transition-all duration-200 hover:-translate-y-1 hover:border-emerald-400/70 min-w-0"
                 style={{
                   boxShadow: CARD_BORDER,
                   boxSizing: 'border-box',

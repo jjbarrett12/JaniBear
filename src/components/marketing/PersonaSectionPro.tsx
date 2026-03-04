@@ -193,20 +193,10 @@ export default function PersonaSectionPro() {
           </p>
         </header>
 
-        <div className="mt-16 grid grid-cols-1 gap-8 lg:grid-cols-3 lg:gap-6">
-          {/* Cards column (2/3 on desktop) */}
+        <div className="mt-16 grid grid-cols-1 gap-8 lg:grid-cols-3 lg:gap-8">
+          {/* Cards column (2/3 on desktop) — 3 larger cards */}
           <div className="relative lg:col-span-2">
-            {/* SVG network lines - desktop only */}
-            {!reducedMotion && (
-              <div
-                className="absolute inset-0 hidden lg:block"
-                aria-hidden
-              >
-                <NetworkLines reducedMotion={false} />
-              </div>
-            )}
-
-            <div className="relative grid grid-cols-1 gap-6 md:grid-cols-3">
+            <div className="relative grid grid-cols-1 gap-8 md:grid-cols-3">
               {(Object.keys(PERSONAS) as PersonaKey[]).map((key) => (
                 <PersonaCard
                   key={key}
@@ -266,7 +256,7 @@ function PersonaCard({
       }}
       onMouseMove={onMouseMove}
       onMouseLeave={onMouseLeave}
-      className={`group relative flex flex-col rounded-2xl border bg-zinc-950/40 p-6 backdrop-blur-xl transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 ${
+      className={`group relative flex flex-col rounded-2xl border bg-zinc-950/40 p-8 md:p-10 backdrop-blur-xl transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 ${
         isSelected ? styles.focusRing : 'border-white/10 focus-visible:ring-white/30'
       } ${!reducedMotion ? 'hover:-translate-y-0.5' : ''}`}
       style={{
@@ -294,19 +284,19 @@ function PersonaCard({
       )}
 
       <div
-        className={`relative z-10 mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl border bg-zinc-800/80 backdrop-blur-sm ${data.accent === 'amber' ? 'border-amber-400/30 text-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.15)]' : data.accent === 'cyan' ? 'border-cyan-400/30 text-cyan-400 shadow-[0_0_20px_rgba(34,211,238,0.15)]' : 'border-violet-400/30 text-violet-400 shadow-[0_0_20px_rgba(139,92,246,0.15)]'}`}
+        className={`relative z-10 mb-5 inline-flex h-12 w-12 items-center justify-center rounded-xl border bg-zinc-800/80 backdrop-blur-sm ${data.accent === 'amber' ? 'border-amber-400/30 text-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.15)]' : data.accent === 'cyan' ? 'border-cyan-400/30 text-cyan-400 shadow-[0_0_20px_rgba(34,211,238,0.15)]' : 'border-violet-400/30 text-violet-400 shadow-[0_0_20px_rgba(139,92,246,0.15)]'}`}
       >
-        <Icon className="h-5 w-5" strokeWidth={1.75} />
+        <Icon className="h-6 w-6" strokeWidth={1.75} />
       </div>
 
-      <h3 className="relative z-10 font-heading text-lg font-semibold text-white">
+      <h3 className="relative z-10 font-heading text-xl font-semibold text-white">
         {data.title}
       </h3>
-      <p className="relative z-10 mt-1 text-sm text-zinc-400">{data.desc}</p>
+      <p className="relative z-10 mt-2 text-base text-zinc-400">{data.desc}</p>
 
-      <ul className="relative z-10 mt-4 space-y-1.5">
+      <ul className="relative z-10 mt-5 space-y-2">
         {data.bullets.slice(0, 3).map((b) => (
-          <li key={b} className="flex items-center gap-2 text-xs text-zinc-300">
+          <li key={b} className="flex items-center gap-2 text-sm text-zinc-300">
             <span
               className={`h-1 w-1 rounded-full ${data.accent === 'amber' ? 'bg-amber-400' : data.accent === 'cyan' ? 'bg-cyan-400' : 'bg-violet-400'}`}
             />
@@ -396,71 +386,3 @@ function PreviewPanel({
   );
 }
 
-function NetworkLines({ reducedMotion }: { reducedMotion: boolean }) {
-  const [offset, setOffset] = useState(0);
-
-  useEffect(() => {
-    if (reducedMotion) return;
-    let raf: number;
-    const tick = () => {
-      setOffset((o) => (o + 0.4) % 100);
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [reducedMotion]);
-
-  return (
-    <svg
-      className="h-full w-full"
-      preserveAspectRatio="none"
-      viewBox="0 0 100 100"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <defs>
-        <linearGradient id="persona-line-glow" x1="0" y1="0" x2="1" y2="0" gradientUnits="userSpaceOnUse">
-          <stop stopColor="rgba(255,255,255,0.22)" />
-          <stop offset="0.5" stopColor="rgba(255,255,255,0.06)" />
-          <stop offset="1" stopColor="rgba(255,255,255,0.22)" />
-        </linearGradient>
-      </defs>
-      {/* Left -> middle */}
-      <path
-        d="M 16 50 Q 33 35 50 50"
-        stroke="rgba(255,255,255,0.1)"
-        strokeWidth="0.35"
-        fill="none"
-        strokeLinecap="round"
-      />
-      <path
-        d="M 16 50 Q 33 35 50 50"
-        stroke="url(#persona-line-glow)"
-        strokeWidth="0.3"
-        fill="none"
-        strokeLinecap="round"
-        strokeDasharray="3 5"
-        strokeDashoffset={-offset}
-        style={{ filter: 'blur(0.3px)' }}
-      />
-      {/* Middle -> right */}
-      <path
-        d="M 50 50 Q 67 65 84 50"
-        stroke="rgba(255,255,255,0.1)"
-        strokeWidth="0.35"
-        fill="none"
-        strokeLinecap="round"
-      />
-      <path
-        d="M 50 50 Q 67 65 84 50"
-        stroke="url(#persona-line-glow)"
-        strokeWidth="0.3"
-        fill="none"
-        strokeLinecap="round"
-        strokeDasharray="3 5"
-        strokeDashoffset={-(offset + 50) % 100}
-        style={{ filter: 'blur(0.3px)' }}
-      />
-    </svg>
-  );
-}

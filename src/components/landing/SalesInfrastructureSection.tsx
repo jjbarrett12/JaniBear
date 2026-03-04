@@ -1,6 +1,6 @@
 'use client';
 
-import { Check, ScanLine, FileText, LayoutDashboard, Zap } from 'lucide-react';
+import { Check, ScanLine, FileText, LayoutDashboard } from 'lucide-react';
 
 const CARD_BORDER_GLOW = `0 0 0 1px rgba(255, 193, 7, 0.25), 0 0 20px rgba(255, 193, 7, 0.08)`;
 const CARD_BORDER_GLOW_HOVER = `0 0 0 1px rgba(255, 193, 7, 0.45), 0 0 28px rgba(255, 193, 7, 0.18)`;
@@ -45,19 +45,6 @@ const cards = [
     subline: "No more deals living in someone's memory.",
     Icon: LayoutDashboard,
   },
-  {
-    badge: 'Sales Automation & Competition',
-    title: 'Automated Follow-Up & Performance Competition',
-    body: 'Follow-ups trigger automatically based on behavior, timing, and deal stage. Even solo reps can benchmark against national teams.',
-    bullets: [
-      'Smart follow-up sequences',
-      'Auto-reminders',
-      'Close-rate leaderboards',
-      'National benchmarking (opt-in)',
-    ],
-    subline: 'Make performance visible. Watch output rise.',
-    Icon: Zap,
-  },
 ];
 
 export function SalesInfrastructureSection() {
@@ -92,14 +79,14 @@ export function SalesInfrastructureSection() {
           </p>
         </div>
 
-        {/* Single row of 4 cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 md:gap-8">
+        {/* Single row of 3 cards — larger */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
           {cards.map((card) => {
             const Icon = card.Icon;
             return (
               <article
                 key={card.badge}
-                className="group rounded-2xl p-6 md:p-8 bg-zinc-900/80 border min-w-0 border-amber-400/20 transition-all duration-200 hover:-translate-y-1 hover:border-amber-400/40"
+                className="group rounded-2xl p-8 md:p-10 bg-zinc-900/80 border min-w-0 border-amber-400/20 transition-all duration-200 hover:-translate-y-1 hover:border-amber-400/40"
                 style={{
                   boxShadow: `${CARD_BORDER_GLOW}, inset 0 1px 0 rgba(255,255,255,0.03)`,
                 }}

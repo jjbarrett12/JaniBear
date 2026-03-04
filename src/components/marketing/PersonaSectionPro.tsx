@@ -6,7 +6,6 @@ import {
   useRef,
   useState,
   type MouseEvent,
-  type ReactNode,
 } from 'react';
 import Link from 'next/link';
 import {
@@ -14,7 +13,6 @@ import {
   Network,
   Building2,
   ArrowRight,
-  ListChecks,
 } from 'lucide-react';
 
 type PersonaKey = 'operators' | 'franchise' | 'enterprise';
@@ -65,7 +63,6 @@ const PERSONAS: Record<
     ctaHref: '/demo',
     icon: Network,
     accent: 'cyan',
-    badge: 'MOST POPULAR',
     bestFor: 'Franchise systems and multi-unit operators under one brand.',
     whatYouGet: ['Location-level dashboards', 'Lead routing by territory', 'Brand standard compliance'],
     exampleWorkflow: ['Set brand standards', 'Franchisees adopt & report', 'Corporate views outcomes'],
@@ -152,16 +149,8 @@ function useCardMouseGlow(enabled: boolean) {
 }
 
 export default function PersonaSectionPro() {
-  const [selected, setSelected] = useState<PersonaKey>('franchise');
-  const [previewKey, setPreviewKey] = useState<PersonaKey>('franchise');
+  const [selected, setSelected] = useState<PersonaKey | null>(null);
   const reducedMotion = useReducedMotion();
-
-  useEffect(() => {
-    setPreviewKey(selected);
-  }, [selected]);
-
-  const persona = PERSONAS[previewKey];
-  const accentStyles = ACCENT_STYLES[persona.accent] ?? ACCENT_STYLES.cyan;
 
   return (
     <section
@@ -193,31 +182,17 @@ export default function PersonaSectionPro() {
           </p>
         </header>
 
-        <div className="mt-16 grid grid-cols-1 gap-8 lg:grid-cols-3 lg:gap-8">
-          {/* Cards column (2/3 on desktop) — 3 larger cards */}
-          <div className="relative lg:col-span-2">
-            <div className="relative grid grid-cols-1 gap-8 md:grid-cols-3">
-              {(Object.keys(PERSONAS) as PersonaKey[]).map((key) => (
-                <PersonaCard
-                  key={key}
-                  personaKey={key}
-                  isSelected={selected === key}
-                  reducedMotion={reducedMotion}
-                  onSelect={() => setSelected(key)}
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* Preview panel (1/3 on desktop) */}
-          <div className="lg:col-span-1">
-            <PreviewPanel
-              key={previewKey}
-              persona={persona}
-              accentStyles={accentStyles}
+        {/* Three equal cards only — no preview panel */}
+        <div className="mt-16 grid grid-cols-1 gap-8 md:grid-cols-3 md:gap-8">
+          {(Object.keys(PERSONAS) as PersonaKey[]).map((key) => (
+            <PersonaCard
+              key={key}
+              personaKey={key}
+              isSelected={selected === key}
               reducedMotion={reducedMotion}
+              onSelect={() => setSelected(key)}
             />
-          </div>
+          ))}
         </div>
       </div>
     </section>
@@ -256,7 +231,7 @@ function PersonaCard({
       }}
       onMouseMove={onMouseMove}
       onMouseLeave={onMouseLeave}
-      className={`group relative flex flex-col rounded-2xl border bg-zinc-950/40 p-8 md:p-10 backdrop-blur-xl transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 ${
+      className={`group relative flex min-h-[320px] flex-col rounded-2xl border bg-zinc-950/40 p-8 md:p-10 backdrop-blur-xl transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 ${
         isSelected ? styles.focusRing : 'border-white/10 focus-visible:ring-white/30'
       } ${!reducedMotion ? 'hover:-translate-y-0.5' : ''}`}
       style={{
@@ -304,85 +279,17 @@ function PersonaCard({
           </li>
         ))}
       </ul>
-    </div>
-  );
-}
 
-function PreviewPanel({
-  persona,
-  accentStyles,
-  reducedMotion,
-}: {
-  persona: (typeof PERSONAS)[PersonaKey];
-  accentStyles: { glow: string; border: string };
-  reducedMotion: boolean;
-}) {
-  const Icon = persona.icon;
-
-  return (
-    <div
-      className={`rounded-2xl border border-white/10 bg-zinc-950/60 p-6 backdrop-blur-xl md:p-8 ${!reducedMotion ? 'animate-fade-in-up transition-all duration-300' : ''}`}
-      style={{
-        boxShadow: `0 0 30px ${accentStyles.glow}`,
-      }}
-    >
-      <div
-        className={`mb-4 inline-flex h-10 w-10 items-center justify-center rounded-xl ${persona.accent === 'amber' ? 'bg-amber-500/15 text-amber-400' : persona.accent === 'cyan' ? 'bg-cyan-500/15 text-cyan-400' : 'bg-violet-500/15 text-violet-400'}`}
-      >
-        <Icon className="h-5 w-5" strokeWidth={1.75} />
-      </div>
-
-      <h3 className="font-heading text-xl font-semibold text-white">
-        {persona.title}
-      </h3>
-      <p className="mt-2 text-sm text-zinc-400">{persona.bestFor}</p>
-
-      <div className="mt-6">
-        <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500">
-          What you get
-        </p>
-        <ul className="mt-2 space-y-2">
-          {persona.whatYouGet.map((item) => (
-            <li key={item} className="flex items-center gap-2 text-sm text-zinc-300">
-              <ListChecks className="h-4 w-4 shrink-0 text-zinc-500" />
-              {item}
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div className="mt-6">
-        <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500">
-          Example workflow
-        </p>
-        <ul className="mt-2 space-y-2">
-          {persona.exampleWorkflow.map((step, i) => (
-            <li key={step} className="flex items-center gap-2 text-sm text-zinc-300">
-              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-zinc-800 text-[10px] font-bold text-zinc-400">
-                {i + 1}
-              </span>
-              {step}
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div className="mt-8 flex flex-col gap-3">
+      <div className="relative z-10 mt-auto pt-6">
         <Link
-          href={persona.ctaHref}
-          className="inline-flex items-center justify-center gap-2 rounded-lg bg-cyan-500 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-cyan-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950"
+          href={data.ctaHref}
+          onClick={(e) => e.stopPropagation()}
+          className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-cyan-500 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-cyan-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950"
         >
           Book a Demo
           <ArrowRight className="h-4 w-4" />
         </Link>
-        <Link
-          href={persona.ctaHref}
-          className="text-center text-sm font-medium text-cyan-400 hover:text-cyan-300 focus:outline-none focus-visible:underline"
-        >
-          {persona.cta} →
-        </Link>
       </div>
     </div>
   );
 }
-

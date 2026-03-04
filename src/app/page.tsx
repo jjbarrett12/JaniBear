@@ -14,7 +14,7 @@ import { OperationsControlSection } from '@/components/landing/OperationsControl
 import { SalesOpsResultsSection } from '@/components/landing/SalesOpsResultsSection';
 import { BuiltByOperatorsSection } from '@/components/landing/BuiltByOperatorsSection';
 import { OperatorVsBoardroomSection } from '@/components/sections/OperatorVsBoardroomSection';
-import PersonaSectionPro from '@/components/marketing/PersonaSectionPro';
+import PersonaSection from '@/components/marketing/persona-section';
 import TrustSection from '@/components/landing/TrustSection';
 import FinalCtaSection from '@/components/landing/FinalCtaSection';
 
@@ -256,7 +256,7 @@ export default function Home() {
       </section>
 
       {/* 2. Who it's for — persona cards + preview (below the fold) */}
-      <PersonaSectionPro />
+      <PersonaSection />
 
       {/* 3. Sales Infrastructure — category-defining differentiator */}
       <SalesInfrastructureSection />

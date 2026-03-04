@@ -14,7 +14,7 @@ import { OperationsControlSection } from '@/components/landing/OperationsControl
 import { SalesOpsResultsSection } from '@/components/landing/SalesOpsResultsSection';
 import { BuiltByOperatorsSection } from '@/components/landing/BuiltByOperatorsSection';
 import { OperatorVsBoardroomSection } from '@/components/sections/OperatorVsBoardroomSection';
-import WhoItsForSection from '@/components/landing/WhoItsForSection';
+import PersonaSectionPro from '@/components/marketing/PersonaSectionPro';
 import TrustSection from '@/components/landing/TrustSection';
 import FinalCtaSection from '@/components/landing/FinalCtaSection';
 
@@ -255,10 +255,13 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 2. Sales Infrastructure — category-defining differentiator */}
+      {/* 2. Who it's for — persona cards + preview (below the fold) */}
+      <PersonaSectionPro />
+
+      {/* 3. Sales Infrastructure — category-defining differentiator */}
       <SalesInfrastructureSection />
 
-      {/* 3. Operations Control — protect the revenue */}
+      {/* 4. Operations Control — protect the revenue */}
       <OperationsControlSection />
 
       {/* Review / Trust */}
@@ -270,7 +273,6 @@ export default function Home() {
       {/* Results (Sales/Ops), Why, Who, Final CTA */}
       <SalesOpsResultsSection />
       <OperatorVsBoardroomSection />
-      <WhoItsForSection />
       <FinalCtaSection />
 
       <footer className="text-zinc-400 py-12 border-t border-white/5">

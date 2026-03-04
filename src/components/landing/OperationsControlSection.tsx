@@ -2,7 +2,6 @@
 
 import { Check, LayoutDashboard, ClipboardCheck, Users, ShieldAlert } from 'lucide-react';
 
-const EMERALD_GLOW = '0 0 24px rgba(52, 211, 153, 0.25)';
 const CARD_BORDER = '0 0 0 1px rgba(52, 211, 153, 0.4), 0 0 24px rgba(52, 211, 153, 0.12)';
 const CARD_BORDER_HOVER = '0 0 0 1px rgba(52, 211, 153, 0.7), 0 0 32px rgba(52, 211, 153, 0.22)';
 
@@ -87,23 +86,6 @@ export function OperationsControlSection() {
           <p className="mx-auto mt-6 max-w-[900px] text-center text-lg md:text-xl text-white font-medium leading-relaxed">
             High attrition rates kill janitorial companies. What happens after the contract is signed determines whether you stay a $100K company — or scale into a $100M operation.
           </p>
-        </div>
-
-        {/* Dominance statement — in card */}
-        <div className="mb-16 md:mb-20">
-          <div className="rounded-2xl border border-emerald-400/30 bg-zinc-900/50 px-6 py-8 md:px-10 md:py-10 max-w-3xl mx-auto text-center shadow-lg shadow-black/20">
-            <p
-              className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight border-b-4 border-emerald-400 pb-2 inline-block"
-              style={{
-                textShadow: EMERALD_GLOW,
-                boxShadow: '0 0 20px rgba(52, 211, 153, 0.15)',
-              }}
-            >
-              You don&apos;t need better cleaners.
-              <br />
-              You need better processes.
-            </p>
-          </div>
         </div>
 
         {/* Single row of 4 cards */}

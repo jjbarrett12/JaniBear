@@ -2,41 +2,49 @@
 
 import { X, Check } from 'lucide-react';
 
-const BOARDROOM_ITEMS = [
+const ROWS: Array<{
+  boardroom: { title: string; sub: string };
+  janibear: { title: string; sub: string };
+}> = [
   {
-    title: "Designed by people who've never cleaned a building.",
-    sub: 'Generic SaaS logic applied to field work.',
+    boardroom: {
+      title: "Designed by people who've never cleaned a building.",
+      sub: 'Generic SaaS logic applied to field work.',
+    },
+    janibear: {
+      title: 'Built inside a commercial cleaning company.',
+      sub: '20+ years operating. 30,000 buildings bid.',
+    },
   },
   {
-    title: '6 logins. 4 spreadsheets. Zero visibility.',
-    sub: 'Sales, ops, and finance live in different tools.',
+    boardroom: {
+      title: '6 logins. 4 spreadsheets. Zero visibility.',
+      sub: 'Sales, ops, and finance live in different tools.',
+    },
+    janibear: {
+      title: 'Sales, scope, contracts, inspections — one system.',
+      sub: 'No disconnect between growth and execution.',
+    },
   },
   {
-    title: "You find out there's a problem when the account cancels.",
-    sub: 'No early warning system.',
+    boardroom: {
+      title: "You find out there's a problem when the account cancels.",
+      sub: 'No early warning system.',
+    },
+    janibear: {
+      title: 'Account health alerts before revenue drops.',
+      sub: '30/60/90 decay tracking built-in.',
+    },
   },
   {
-    title: 'Still building proposals in Word.',
-    sub: 'Manual scope creation slows growth.',
-  },
-];
-
-const JANIBEAR_ITEMS = [
-  {
-    title: 'Built inside a commercial cleaning company.',
-    sub: '20+ years operating. 30,000 buildings bid.',
-  },
-  {
-    title: 'Sales, scope, contracts, inspections — one system.',
-    sub: 'No disconnect between growth and execution.',
-  },
-  {
-    title: 'Account health alerts before revenue drops.',
-    sub: '30/60/90 decay tracking built-in.',
-  },
-  {
-    title: 'AI builds scopes and proposals in minutes.',
-    sub: 'Focus on winning, not formatting.',
+    boardroom: {
+      title: 'Still building proposals in Word.',
+      sub: 'Manual scope creation slows growth.',
+    },
+    janibear: {
+      title: 'AI builds scopes and proposals in minutes.',
+      sub: 'Focus on winning, not formatting.',
+    },
   },
 ];
 
@@ -47,7 +55,7 @@ export function OperatorVsBoardroomSection() {
       className="bg-[#0E1116] py-32 md:py-40"
       aria-labelledby="operator-vs-boardroom-heading"
     >
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-6xl mx-auto px-6">
         {/* Header */}
         <div className="mx-auto max-w-2xl text-center">
           <h2
@@ -61,84 +69,64 @@ export function OperatorVsBoardroomSection() {
           </p>
         </div>
 
-        {/* Cards + optional divider */}
-        <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-8 md:gap-0 mt-24 md:mt-28 items-stretch">
-          {/* Left card — Boardroom (muted, weaker) */}
-          <div className="md:pr-4">
-            <div className="h-full rounded-2xl border border-zinc-700/80 bg-zinc-900/90 p-8 md:p-10 flex flex-col">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-zinc-500 mb-8">
+        {/* Single comparison table */}
+        <div className="mt-16 md:mt-20 rounded-2xl border border-zinc-700/80 bg-zinc-900/80 overflow-hidden shadow-xl">
+          <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-zinc-700/80">
+            {/* Column headers */}
+            <div className="p-6 md:p-8 border-b md:border-b-0 md:border-r border-zinc-700/80 bg-zinc-900/95">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-zinc-500">
                 Boardroom Software
               </p>
-              <ul className="space-y-7 flex-1">
-                {BOARDROOM_ITEMS.map((item, i) => (
-                  <li key={i} className="flex items-start gap-4">
-                    <span
-                      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-red-950/50 border border-red-900/40 shadow-[0_0_12px_rgba(185,28,28,0.08)]"
-                      aria-hidden
-                    >
-                      <X className="h-4 w-4 text-red-400/80" strokeWidth={2.25} />
-                    </span>
-                    <div>
-                      <p className="text-zinc-400 font-semibold leading-snug text-[15px]">{item.title}</p>
-                      <p className="mt-1.5 text-sm text-zinc-500">{item.sub}</p>
-                    </div>
-                  </li>
-                ))}
-              </ul>
+            </div>
+            <div className="p-6 md:p-8 bg-zinc-900/60 border-l-0 border-amber-400/20 md:border-l-4">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-amber-400">
+                JANIBEAR
+              </p>
             </div>
           </div>
 
-          {/* Divider — understated */}
-          <div className="hidden md:flex flex-col items-center justify-center px-4 py-8">
-            <span className="text-[10px] font-medium uppercase tracking-[0.25em] text-zinc-600 whitespace-nowrap [writing-mode:vertical-lr] rotate-180">
-              The difference is experience
-            </span>
-          </div>
-
-          {/* Right card — JANIBEAR (dominant) */}
-          <div className="md:pl-4">
+          {ROWS.map((row, i) => (
             <div
-              className="relative h-full rounded-2xl overflow-hidden flex flex-col"
-              style={{
-                padding: 'clamp(1.75rem, 4vw, 2.75rem)',
-                border: '1px solid rgba(245, 158, 11, 0.35)',
-                backgroundColor: 'rgba(10, 10, 12, 0.98)',
-                boxShadow: '0 0 40px rgba(245, 158, 11, 0.07)',
-                transform: 'scale(1.025)',
-              }}
+              key={i}
+              className={`grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-zinc-700/60 hover:bg-zinc-800/30 transition-colors ${i < ROWS.length - 1 ? 'border-b border-zinc-700/60' : ''}`}
             >
-              {/* Inner gradient warmth */}
-              <div
-                className="absolute inset-0 pointer-events-none"
-                style={{
-                  background: 'linear-gradient(180deg, rgba(245,158,11,0.04) 0%, transparent 35%, transparent 100%)',
-                }}
-                aria-hidden
-              />
-              <div className="relative">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-amber-400/95 mb-8">
-                  JANIBEAR
-                </p>
-                <ul className="space-y-7 flex-1">
-                  {JANIBEAR_ITEMS.map((item, i) => (
-                    <li key={i} className="flex items-start gap-4">
-                      <span
-                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-amber-400/25 bg-amber-500/10 shadow-[0_0_24px_rgba(245,158,11,0.09)]"
-                        aria-hidden
-                      >
-                        <Check className="h-4 w-4 text-amber-400" strokeWidth={2.25} />
-                      </span>
-                      <div>
-                        <p className="text-white font-semibold leading-snug text-[15px]">{item.title}</p>
-                        <p className="mt-1.5 text-sm text-zinc-400">{item.sub}</p>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
+              {/* Boardroom cell */}
+              <div className="flex items-start gap-4 p-6 md:p-8">
+                <span
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-red-950/50 border border-red-900/40 mt-0.5"
+                  aria-hidden
+                >
+                  <X className="h-4 w-4 text-red-400/80" strokeWidth={2.25} />
+                </span>
+                <div className="min-w-0">
+                  <p className="text-zinc-400 font-semibold leading-snug text-[15px] md:text-base">
+                    {row.boardroom.title}
+                  </p>
+                  <p className="mt-1.5 text-sm text-zinc-500">{row.boardroom.sub}</p>
+                </div>
+              </div>
+              {/* JANIBEAR cell */}
+              <div className="flex items-start gap-4 p-6 md:p-8 md:bg-amber-500/[0.03] md:border-l-4 md:border-l-amber-400/30">
+                <span
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-amber-400/25 bg-amber-500/10 mt-0.5"
+                  aria-hidden
+                >
+                  <Check className="h-4 w-4 text-amber-400" strokeWidth={2.25} />
+                </span>
+                <div className="min-w-0">
+                  <p className="text-white font-semibold leading-snug text-[15px] md:text-base">
+                    {row.janibear.title}
+                  </p>
+                  <p className="mt-1.5 text-sm text-zinc-400">{row.janibear.sub}</p>
+                </div>
               </div>
             </div>
-          </div>
+          ))}
         </div>
+
+        <p className="mt-8 text-center text-xs font-medium uppercase tracking-[0.2em] text-zinc-500">
+          The difference is experience
+        </p>
       </div>
     </section>
   );

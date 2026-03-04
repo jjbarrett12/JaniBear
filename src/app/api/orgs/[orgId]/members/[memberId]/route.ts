@@ -52,6 +52,21 @@ export async function PATCH(
     return NextResponse.json({ error: 'Cannot change owner role' }, { status: 400 });
   }
 
+  if (updates.role === 'owner') {
+    const { data: caller } = await auth.supabase
+      .from('org_members')
+      .select('role')
+      .eq('org_id', orgId)
+      .eq('user_id', auth.userId)
+      .single();
+    if (caller?.role !== 'owner') {
+      return NextResponse.json(
+        { error: 'Only an owner can assign the owner role' },
+        { status: 403 }
+      );
+    }
+  }
+
   const { error } = await auth.supabase
     .from('org_members')
     .update(updates)

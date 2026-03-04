@@ -54,6 +54,25 @@
   0% { transform: translate(0, 0); }
   100% { transform: translate(60px, 40px); }
 }
+
+/* Walkthrough transformation section: animated grid + scan sweep */
+.transform-section-grid {
+  background-size: 48px 48px;
+  animation: transform-section-grid 20s linear infinite;
+}
+@keyframes transform-section-grid {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(48px, 48px); }
+}
+.scan-sweep {
+  animation: scan-sweep 3s ease-in-out infinite;
+}
+@keyframes scan-sweep {
+  0%, 100% { transform: translateY(-100%); opacity: 0; }
+  10% { opacity: 0.6; }
+  50% { transform: translateY(100%); opacity: 0.6; }
+  90% { opacity: 0; }
+}
 .landing-page .landing-page-content {
   position: relative;
   z-index: 1;

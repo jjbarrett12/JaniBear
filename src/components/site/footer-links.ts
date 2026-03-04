@@ -21,12 +21,9 @@ export const FOOTER_PRODUCT: FooterColumn = {
   links: [
     { label: 'Get a Private Demo', href: '/demo' },
     { label: 'See Plans', href: '/pricing' },
-    { label: 'Find Your Plan', href: '/survey' },
     { label: 'Platform', href: '/#sales-infrastructure' },
-    { label: 'Modules', href: '/#operations-control' },
-    { label: 'Why JANIBEAR', href: '/#why-janibear-wins' },
+    { label: 'Why JANIBEAR', href: '/why-janibear' },
     { label: "Who It's For", href: '/#who-its-for' },
-    { label: 'Reusable Work Gloves', href: '/app/pro-gear/gloves' },
     { label: 'Contact', href: '/contact' },
     { label: 'Sign In', href: '/auth/login' },
   ],

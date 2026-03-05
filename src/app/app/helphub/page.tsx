@@ -1,37 +1,50 @@
-import { requireOrg } from '@/lib/auth';
-import { getEffectiveAccessForCurrentUser, hasFeature } from '@/lib/access';
-import { FeatureGate } from '@/components/access/feature-gate';
+import { redirect } from 'next/navigation';
+import { headers } from 'next/headers';
+import { getServerContextOrThrow } from '@/lib/auth/serverGuards';
+import { requirePermission } from '@/lib/auth/requirePermission';
+import { requireEntitlement } from '@/lib/billing/requireEntitlement';
+import { isAuthzError, isAuthContextError, getAuthContextRedirectPath } from '@/lib/auth/errors';
+import { isEntitlementError } from '@/lib/billing/errors';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Ticket, QrCode } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+
 export default async function HelpHubQRPage() {
-  await requireOrg();
-  const access = await getEffectiveAccessForCurrentUser();
+  const ctx = await getServerContextOrThrow();
+  const pathname = (await headers()).get('x-pathname') ?? '/app/helphub';
+
+  try {
+    await requirePermission({
+      orgId: ctx.orgId,
+      userId: ctx.userId,
+      permission: 'dashboard.exec',
+      pathname,
+    });
+  } catch (e) {
+    if (isAuthzError(e)) redirect('/app/forbidden');
+    if (isAuthContextError(e)) redirect(getAuthContextRedirectPath(e.code));
+    throw e;
+  }
+
+  try {
+    await requireEntitlement({
+      orgId: ctx.orgId,
+      userId: ctx.userId,
+      moduleKey: 'helphubqr',
+      pathname,
+    });
+  } catch (e) {
+    if (isEntitlementError(e)) {
+      const from = encodeURIComponent(pathname || '/app/helphub');
+      redirect(`/app/upgrade?module=helphubqr&from=${from}`);
+    }
+    redirect('/app/authz-error');
+  }
 
   return (
-    <FeatureGate
-      feature="helphub_qr"
-      allowed={hasFeature(access, 'helphub_qr')}
-      fallback={
-        <div className="rounded-md border bg-card p-8 text-center max-w-lg mx-auto">
-          <h1 className="text-2xl font-bold text-foreground mb-2">HelpHubQR</h1>
-          <p className="text-muted-foreground mb-2">HelpHub QR is not enabled for your plan. Upgrade or enable the HelpHub QR add-on.</p>
-          <p className="text-sm text-muted-foreground mb-6">
-            HelpHub QR lets customers submit service requests via a unique link or QR code per location; submissions become ops tasks and you get proof-of-response logs.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Button asChild>
-              <Link href="/pricing">See plans & enable</Link>
-            </Button>
-            <Button asChild variant="outline">
-              <Link href="/contact">Contact us</Link>
-            </Button>
-          </div>
-        </div>
-      }
-    >
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-foreground">HelpHubQR</h1>
@@ -80,6 +93,5 @@ export default async function HelpHubQRPage() {
         </Link>
       </div>
     </div>
-    </FeatureGate>
   );
 }

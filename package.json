@@ -16,6 +16,7 @@
     "delpoy": "npm run deploy",
     "lint": "next lint",
     "check:footer": "node scripts/check-footer-links.mjs",
+    "audit:sidebar-routes": "node scripts/audit-sidebar-routes.mjs",
     "generate-icons": "node scripts/create-icons.js",
     "test:imports": "node scripts/test-imports.js",
     "test:e2e": "playwright test",

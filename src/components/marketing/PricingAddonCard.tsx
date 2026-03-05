@@ -11,11 +11,16 @@ const ADDON_CATEGORY: Record<string, string> = {
   helphub: 'CLIENT EXPERIENCE',
 };
 
+/** When user is in app with org, use this for "Add to plan" (self-serve upgrade). Otherwise /demo. */
+const DEFAULT_CTA_HREF = '/demo';
+
 interface PricingAddonCardProps {
   addon: PricingAddon;
+  /** Override for "Add to plan" link. If provided (e.g. /app/upgrade?module=helphubqr), goes to in-app upgrade; else /demo. */
+  ctaHref?: string;
 }
 
-export function PricingAddonCard({ addon }: PricingAddonCardProps) {
+export function PricingAddonCard({ addon, ctaHref = DEFAULT_CTA_HREF }: PricingAddonCardProps) {
   const category = addon.badge ?? ADDON_CATEGORY[addon.id] ?? 'ADD-ON';
   return (
     <div className="relative flex flex-col rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-md shadow-[0_20px_60px_rgba(0,0,0,0.35)] transition-all duration-300 hover:-translate-y-1 hover:border-indigo-400/40 md:p-8">
@@ -49,7 +54,7 @@ export function PricingAddonCard({ addon }: PricingAddonCardProps) {
         size="sm"
         className="mt-6 w-full rounded-lg border-white/20 bg-white/5 text-white hover:bg-white/10"
       >
-        <Link href="/demo">Add to plan</Link>
+        <Link href={ctaHref}>Add to plan</Link>
       </Button>
     </div>
   );

@@ -1,7 +1,11 @@
+import { redirect } from 'next/navigation';
+import { headers } from 'next/headers';
 import { createClient } from '@/lib/supabase/server';
-import { requireOrg } from '@/lib/auth';
-import { getEffectiveAccessForCurrentUser, hasFeature } from '@/lib/access';
-import { FeatureGate } from '@/components/access/feature-gate';
+import { getServerContextOrThrow } from '@/lib/auth/serverGuards';
+import { requirePermission } from '@/lib/auth/requirePermission';
+import { requireEntitlement } from '@/lib/billing/requireEntitlement';
+import { isAuthzError, isAuthContextError, getAuthContextRedirectPath } from '@/lib/auth/errors';
+import { isEntitlementError } from '@/lib/billing/errors';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -14,33 +18,45 @@ const baseUrl =
     : '';
 
 export default async function HelpHubSetupPage() {
-  const org = await requireOrg();
-  const access = await getEffectiveAccessForCurrentUser();
-  const supabase = await createClient();
+  const ctx = await getServerContextOrThrow();
+  const pathname = (await headers()).get('x-pathname') ?? '/app/helphub/setup';
 
+  try {
+    await requirePermission({
+      orgId: ctx.orgId,
+      userId: ctx.userId,
+      permission: 'dashboard.exec',
+      pathname,
+    });
+  } catch (e) {
+    if (isAuthzError(e)) redirect('/app/forbidden');
+    if (isAuthContextError(e)) redirect(getAuthContextRedirectPath(e.code));
+    throw e;
+  }
+
+  try {
+    await requireEntitlement({
+      orgId: ctx.orgId,
+      userId: ctx.userId,
+      moduleKey: 'helphubqr',
+      pathname,
+    });
+  } catch (e) {
+    if (isEntitlementError(e)) {
+      const from = encodeURIComponent(pathname || '/app/helphub/setup');
+      redirect(`/app/upgrade?module=helphubqr&from=${from}`);
+    }
+    redirect('/app/authz-error');
+  }
+
+  const supabase = await createClient();
   const { data: locations } = await supabase
     .from('locations')
     .select('id, name, address, city, state')
-    .eq('org_id', org.org_id)
+    .eq('org_id', ctx.orgId)
     .order('name');
 
   return (
-    <FeatureGate feature="helphub_qr" allowed={hasFeature(access, 'helphub_qr')} fallback={
-      <div className="rounded-md border bg-card p-8 text-center max-w-lg mx-auto">
-        <p className="text-muted-foreground mb-2">HelpHub QR is not enabled for your plan. Upgrade or enable the HelpHub QR add-on.</p>
-        <p className="text-sm text-muted-foreground mb-6">
-          HelpHub QR lets customers submit service requests via a unique link or QR code per location; submissions become ops tasks and you get proof-of-response logs.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <Button asChild>
-            <Link href="/pricing">See plans & enable</Link>
-          </Button>
-          <Button asChild variant="outline">
-            <Link href="/contact">Contact us</Link>
-          </Button>
-        </div>
-      </div>
-    }>
     <div className="space-y-6">
       <div className="flex items-center gap-4">
         <Link href="/app/helphub">
@@ -125,6 +141,5 @@ export default async function HelpHubSetupPage() {
         </Card>
       )}
     </div>
-    </FeatureGate>
   );
 }

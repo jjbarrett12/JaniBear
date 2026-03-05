@@ -4,6 +4,8 @@ import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlertCircle } from 'lucide-react';
+import { AppLink } from '@/components/app/app-link';
+import { appRoutes } from '@/lib/routes';
 
 export default function DashboardError({
   error,
@@ -35,7 +37,7 @@ export default function DashboardError({
           <div className="flex gap-2">
             <Button onClick={reset}>Try again</Button>
             <Button variant="outline" asChild>
-              <a href="/app/dashboard">Refresh dashboard</a>
+              <AppLink href={appRoutes.dashboard()}>Refresh dashboard</AppLink>
             </Button>
           </div>
         </CardContent>

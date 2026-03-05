@@ -4,6 +4,8 @@ import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlertCircle } from 'lucide-react';
+import { AppLink } from '@/components/app/app-link';
+import { appRoutes } from '@/lib/routes';
 
 export default function UniversityError({
   error,
@@ -35,7 +37,7 @@ export default function UniversityError({
           <div className="flex gap-2">
             <Button onClick={reset}>Try again</Button>
             <Button variant="outline" asChild>
-              <a href="/app/university">Back to University</a>
+              <AppLink href={appRoutes.university()}>Back to University</AppLink>
             </Button>
           </div>
         </CardContent>

@@ -5,8 +5,6 @@ import { Toaster } from "@/components/ui/toaster";
 import { PWAInstaller } from "@/components/app/pwa-installer";
 import { DarkModeProvider } from "@/components/app/dark-mode-provider";
 import { LanguageProvider } from "@/contexts/language-context";
-import { ConditionalFooter } from "@/components/site/ConditionalFooter";
-
 const sourceSans = Source_Sans_3({ subsets: ["latin"], variable: "--font-sans" });
 const interTight = Inter_Tight({
   subsets: ["latin"],
@@ -71,7 +69,6 @@ export default function RootLayout({
         <LanguageProvider>
           <DarkModeProvider>
             {children}
-            <ConditionalFooter />
             <Toaster />
             <PWAInstaller />
           </DarkModeProvider>

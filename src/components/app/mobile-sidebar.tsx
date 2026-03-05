@@ -2,9 +2,11 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { AppLink } from '@/components/app/app-link';
 import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
+import { authRoutes } from '@/lib/routes';
 import { Settings, X, Menu, Lock } from 'lucide-react';
 import { OperationsUpgradeModal, OPERATIONS_UPGRADE_TOOLTIP } from '@/components/app/operations-upgrade-modal';
 import { GlobalSearch } from '@/components/search/global-search';
@@ -293,7 +295,7 @@ export function MobileSidebar({ logoUrl, navAlerts, shell, franchiseeEnrolled, p
 
               <div className="border-t dark:border-gray-800 p-4">
                 <Button asChild variant="outline" className="w-full h-12 text-base">
-                  <a href="/auth/logout">{t('signOut')}</a>
+                  <Link href={authRoutes.logout()}>{t('signOut')}</Link>
                 </Button>
               </div>
             </div>

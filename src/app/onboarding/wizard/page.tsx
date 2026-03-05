@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
-import { OnboardingWizard } from '@/components/onboarding/onboarding-wizard';
+import { SeatOnboardingWizard } from '@/components/onboarding/seat-onboarding-wizard';
 
 export default async function OnboardingWizardPage() {
   const supabase = await createClient();
@@ -24,7 +24,7 @@ export default async function OnboardingWizardPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#0B0B0F] via-[#0F1117] to-[#090A0E] text-white">
       <div className="mx-auto max-w-2xl px-4 py-12 md:py-16">
-        <OnboardingWizard />
+        <SeatOnboardingWizard />
       </div>
     </div>
   );

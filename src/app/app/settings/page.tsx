@@ -1,8 +1,9 @@
 import { redirect } from 'next/navigation';
+import { headers } from 'next/headers';
 import { createClient } from '@/lib/supabase/server';
 import { requireOrg, getCurrentUserId } from '@/lib/auth';
 import { requirePermission } from '@/lib/auth/requirePermission';
-import { isAuthzError } from '@/lib/auth/errors';
+import { isAuthzError, isAuthContextError, getAuthContextRedirectPath } from '@/lib/auth/errors';
 import { BrandingSettings } from '@/components/settings/branding-settings';
 import { BenchmarkingSettings } from '@/components/settings/benchmarking-settings';
 import { ProfilePhotoSettings } from '@/components/settings/profile-photo-settings';
@@ -19,11 +20,13 @@ export default async function SettingsPage() {
   const org = await requireOrg();
   const userId = await getCurrentUserId();
   if (!userId) redirect('/auth/login');
+  const pathname = (await headers()).get('x-pathname') ?? '/app/settings';
   try {
-    await requirePermission({ orgId: org.org_id, userId, permission: 'settings.branding' });
+    await requirePermission({ orgId: org.org_id, userId, permission: 'settings.branding', pathname });
   } catch (e) {
     if (isAuthzError(e)) redirect('/app/forbidden');
-    throw e;
+    if (isAuthContextError(e)) redirect(getAuthContextRedirectPath(e.code));
+    redirect('/app/authz-error');
   }
   const supabase = await createClient();
   const role = (org as { role?: string }).role ?? null;

@@ -36,5 +36,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Failed to create organization' }, { status: 500 });
   }
 
+  await auth.supabase
+    .from('organizations')
+    .update({ owner_user_id: auth.userId })
+    .eq('id', orgId);
+
   return NextResponse.json({ org_id: orgId });
 }

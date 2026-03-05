@@ -2,6 +2,7 @@
 
 import type { FinanceAttentionAlert } from '@/lib/financial-health-mock';
 import { AlertTriangle } from 'lucide-react';
+import { AppLink } from '@/components/app/app-link';
 
 const SEVERITY_STYLES: Record<
   FinanceAttentionAlert['severity'],
@@ -57,6 +58,14 @@ export function FinanceAttentionAlerts({ alerts, onAlertClick }: FinanceAttentio
             </div>
           );
           if (alert.href) {
+            const isInternal = alert.href.startsWith('/') && !alert.href.startsWith('//');
+            if (isInternal) {
+              return (
+                <AppLink key={alert.id} href={alert.href} className="block focus:outline-none focus:ring-2 focus:ring-primary rounded-lg">
+                  {content}
+                </AppLink>
+              );
+            }
             return (
               <a key={alert.id} href={alert.href} className="block focus:outline-none focus:ring-2 focus:ring-primary rounded-lg">
                 {content}

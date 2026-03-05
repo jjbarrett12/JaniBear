@@ -27,14 +27,29 @@ export default async function AppLayout({
   const supabase = await createClient();
   const impersonateOrgId = await getImpersonateOrgId();
 
+  const pathname = (await headers()).get('x-pathname') ?? '';
+
   const [organizationResult, orgSettingsResult, navAlerts, shell, franchiseeEnrolled, proGearEnabled] = await Promise.all([
-    supabase.from('organizations').select('name, primary_color, secondary_color, logo_url, slug').eq('id', org.org_id).maybeSingle(),
+    supabase.from('organizations').select('name, primary_color, secondary_color, logo_url, slug, billing_status, past_due_since, locked_since').eq('id', org.org_id).maybeSingle(),
     supabase.from('org_settings').select('display_name, logo_url, primary_color, accent_color').eq('org_id', org.org_id).maybeSingle(),
     getNavAlertCounts(),
     resolveShellForOrg(org.org_id),
     isFranchiseeEnrolled(org.org_id),
     getProGearEnabled(org.org_id),
   ]);
+
+  const billing = organizationResult.data;
+  const billingLocked =
+    billing?.billing_status === 'canceled' ||
+    (billing?.billing_status === 'past_due' && !!billing?.locked_since);
+  const allowedWhenLocked =
+    pathname === '/app/billing' ||
+    pathname.startsWith('/app/upgrade') ||
+    pathname.startsWith('/app/onboarding') ||
+    pathname.startsWith('/app/onboarding/');
+  if (billingLocked && !allowedWhenLocked) {
+    redirect('/app/billing');
+  }
 
   // If branding columns don't exist yet (migration not run), fall back to name-only so login/dashboard still work
   let organizationData = organizationResult.data;
@@ -55,7 +70,6 @@ export default async function AppLayout({
     : organizationData;
   const impersonatingOrgName = impersonateOrgId && impersonateOrgId === org.org_id ? orgName : null;
 
-  const pathname = (await headers()).get('x-pathname') ?? '';
   if (shell === 'franchisor' && pathname.startsWith('/app/') && !pathname.startsWith('/app/franchise') && pathname !== '/app/settings' && !pathname.startsWith('/app/settings/') && pathname !== '/app/kpis' && !pathname.startsWith('/app/kpis/') && pathname !== '/app/kpi' && !pathname.startsWith('/app/kpi/') && pathname !== '/app/benchmarks' && !pathname.startsWith('/app/benchmarks/')) {
     redirect('/app/franchise');
   }

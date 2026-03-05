@@ -11,6 +11,7 @@ import { MobileSidebar } from '@/components/app/mobile-sidebar';
 import { BottomNav } from '@/components/app/bottom-nav';
 import { AppSidebarNav } from '@/components/app/app-sidebar-nav';
 import { AppSidebarFooter } from '@/components/app/app-sidebar-footer';
+import { AppPromoSlot } from '@/components/app/app-promo-slot';
 
 export async function AppSidebar({
   navAlerts: navAlertsProp,
@@ -22,12 +23,16 @@ export async function AppSidebar({
   const { data: { user } } = await supabase.auth.getUser();
   const org = await requireOrg();
 
-  const [organizationResult, premium, planType, navAlertsFetched] = await Promise.all([
+  const [organizationResult, premium, planType, navAlertsFetched, memberRow] = await Promise.all([
     supabase.from('organizations').select('logo_url').eq('id', org.org_id).maybeSingle(),
     isPremiumPlan(org.org_id),
     getPlanType(org.org_id),
     navAlertsProp == null ? getNavAlertCounts() : Promise.resolve(navAlertsProp),
+    supabase.from('org_members').select('role').eq('org_id', org.org_id).eq('user_id', user?.id ?? '').maybeSingle(),
   ]);
+  const role = ((memberRow as { data?: { role?: string } | null })?.data?.role ?? '').toLowerCase();
+  const billingManagerRoles = ['super_kodiak', 'kodiak', 'owner', 'admin', 'org.owner', 'org.admin'];
+  const showPromoToRole = role ? billingManagerRoles.includes(role) : true;
   // If logo_url column doesn't exist yet (migration not run), treat as no custom logo
   const orgData = organizationResult.error && /column|could not find/i.test(organizationResult.error.message ?? '')
     ? null
@@ -73,10 +78,15 @@ export async function AppSidebar({
           <div className="min-w-0 shrink-0 border-b border-border px-3 py-2">
             <GlobalSearch />
           </div>
-          
-          <AppSidebarNav premium={premium} planType={planType} navAlerts={navAlerts} shell={shell} franchiseeEnrolled={franchiseeEnrolled} proGearEnabled={proGearEnabled} operationsLocked={operationsLocked} />
 
-          <AppSidebarFooter userEmail={user?.email} />
+          <div className="min-h-0 flex-1 overflow-y-auto">
+            <AppSidebarNav premium={premium} planType={planType} navAlerts={navAlerts} shell={shell} franchiseeEnrolled={franchiseeEnrolled} proGearEnabled={proGearEnabled} operationsLocked={operationsLocked} />
+          </div>
+
+          <div className="mt-auto flex shrink-0 flex-col">
+            <AppPromoSlot variant="progear" allowedByRole={showPromoToRole} />
+            <AppSidebarFooter userEmail={user?.email} />
+          </div>
         </div>
       </aside>
     </>

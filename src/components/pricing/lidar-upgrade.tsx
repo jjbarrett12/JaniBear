@@ -35,7 +35,7 @@ export function LidarUpgrade() {
           ))}
         </ul>
         <Button asChild variant="ghost" size="sm" className="w-full mt-3 text-xs text-violet-400 hover:text-violet-300 hover:bg-violet-500/5">
-          <Link href="/contact">Add LiDAR upgrade</Link>
+          <Link href="/app/upgrade?module=lidar_unlimited">Add to plan</Link>
         </Button>
       </CardContent>
     </Card>

@@ -3,6 +3,7 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { TrendingUp, TrendingDown } from 'lucide-react';
+import { AppLink } from '@/components/app/app-link';
 
 export interface KpiCardProps {
   title: string;
@@ -69,8 +70,16 @@ export function KpiCard({
   );
 
   if (href) {
+    const isInternal = typeof href === 'string' && (href.startsWith('/') && !href.startsWith('//'));
+    if (isInternal) {
+      return (
+        <AppLink href={href} className="block min-w-0 outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-2xl">
+          {content}
+        </AppLink>
+      );
+    }
     return (
-      <a href={href} className="block min-w-0 outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-2xl">
+      <a href={href} className="block min-w-0 outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-2xl" target="_blank" rel="noopener noreferrer">
         {content}
       </a>
     );

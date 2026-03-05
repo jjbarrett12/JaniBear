@@ -13,7 +13,14 @@ import {
   ROI_METRICS,
 } from '@/lib/pricing';
 
-export default function PricingPage() {
+/** Addon id (from ADDONS) -> href for "Add to plan". When in app with org, use /app/upgrade?module=... */
+export type AddonCtaMap = Record<string, string>;
+
+interface PricingPageClientProps {
+  addonCtaMap: AddonCtaMap;
+}
+
+export function PricingPageClient({ addonCtaMap }: PricingPageClientProps) {
   return (
     <div className="landing-page min-h-screen text-white">
       <div className="landing-page-network-lines absolute inset-0 pointer-events-none" aria-hidden />
@@ -45,7 +52,6 @@ export default function PricingPage() {
       </nav>
 
       <main className="relative z-0">
-        {/* Section 1: Hero */}
         <section className="mx-auto max-w-[900px] px-6 py-20 text-center">
           <motion.h1
             className="font-heading text-4xl md:text-6xl font-semibold tracking-tight text-white max-w-[900px] mx-auto"
@@ -74,7 +80,6 @@ export default function PricingPage() {
         </section>
 
         <hr className="landing-section-divider" />
-        {/* Section 2: Choose the roles your team needs */}
         <section
           className="relative mx-auto max-w-7xl px-6 py-16 md:py-20"
           aria-labelledby="plans-heading"
@@ -99,7 +104,6 @@ export default function PricingPage() {
         </section>
 
         <hr className="landing-section-divider" />
-        {/* Section 3: Platform Add-ons */}
         <section
           className="relative mx-auto max-w-7xl px-6 py-16 md:py-24"
           aria-labelledby="addons-heading"
@@ -114,12 +118,15 @@ export default function PricingPage() {
           </header>
           <div className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
             {ADDONS.map((addon) => (
-              <PricingAddonCard key={addon.id} addon={addon} />
+              <PricingAddonCard
+                key={addon.id}
+                addon={addon}
+                ctaHref={addonCtaMap[addon.id] ?? '/demo'}
+              />
             ))}
           </div>
         </section>
 
-        {/* Section 4: ROI strip */}
         <section
           className="relative overflow-hidden py-16 md:py-20"
           aria-labelledby="roi-heading"
@@ -148,7 +155,6 @@ export default function PricingPage() {
         </section>
 
         <hr className="landing-section-divider" />
-        {/* Section 5: Enterprise CTA */}
         <section
           className="relative mx-auto max-w-4xl px-6 py-20 md:py-28"
           aria-labelledby="enterprise-heading"

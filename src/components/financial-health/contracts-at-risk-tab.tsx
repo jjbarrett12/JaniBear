@@ -13,6 +13,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Info } from 'lucide-react';
+import { AppLink } from '@/components/app/app-link';
+import { appRoutes } from '@/lib/routes';
 
 const MOCK_RISK_ROWS = [
   { siteName: 'Tech Campus West', clientName: 'TechCo', riskScore: 78, gmTrend: '-2%', overdueStatus: '$5.1k', issueTrend: 'Up', lastInspectionScore: 82, primaryReason: 'Low margin + late payer' },
@@ -108,10 +110,10 @@ export function ContractsAtRiskTab() {
                 </section>
                 <div className="flex flex-wrap gap-2 pt-2 border-t border-border">
                   <Button variant="outline" size="sm" className="text-xs" asChild>
-                    <a href="/app/inspections">Inspections</a>
+                    <AppLink href={appRoutes.inspections()}>Inspections</AppLink>
                   </Button>
                   <Button variant="outline" size="sm" className="text-xs" asChild>
-                    <a href="/app/issues">Issues</a>
+                    <AppLink href={appRoutes.issues()}>Issues</AppLink>
                   </Button>
                   <Button variant="outline" size="sm" className="text-xs" disabled>Contract</Button>
                   <Button variant="outline" size="sm" className="text-xs" disabled>Invoices</Button>

@@ -3,6 +3,8 @@
 import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { SiteProfitabilityRow } from '@/lib/financial-health-mock';
+import { AppLink } from '@/components/app/app-link';
+import { appRoutes } from '@/lib/routes';
 
 interface SiteFinanceDrawerProps {
   site: SiteProfitabilityRow | null;
@@ -59,7 +61,7 @@ export function SiteFinanceDrawer({ site, onClose }: SiteFinanceDrawerProps) {
           </h3>
           <div className="flex flex-wrap gap-2">
             <Button variant="outline" size="sm" className="text-xs" asChild>
-              <a href={`/app/sites/${site.siteId}`}>View site</a>
+              <AppLink href={appRoutes.site(site.siteId)}>View site</AppLink>
             </Button>
             <Button variant="outline" size="sm" className="text-xs" disabled>
               View contract scope

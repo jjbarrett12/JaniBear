@@ -1,17 +1,20 @@
 import { redirect } from 'next/navigation';
+import { headers } from 'next/headers';
 import { requireOrg, getCurrentUserId } from '@/lib/auth';
 import { requirePermission } from '@/lib/auth/requirePermission';
-import { isAuthzError } from '@/lib/auth/errors';
+import { isAuthzError, isAuthContextError, getAuthContextRedirectPath } from '@/lib/auth/errors';
 
 export default async function SalesPage() {
   const org = await requireOrg();
   const userId = await getCurrentUserId();
   if (!userId) redirect('/auth/login');
+  const pathname = (await headers()).get('x-pathname') ?? '/app/sales';
   try {
-    await requirePermission({ orgId: org.org_id, userId, permission: 'dashboard.sales' });
+    await requirePermission({ orgId: org.org_id, userId, permission: 'dashboard.sales', pathname });
   } catch (e) {
     if (isAuthzError(e)) redirect('/app/forbidden');
-    throw e;
+    if (isAuthContextError(e)) redirect(getAuthContextRedirectPath(e.code));
+    redirect('/app/authz-error');
   }
   return (
     <div className="p-6">

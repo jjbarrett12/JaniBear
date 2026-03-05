@@ -1,7 +1,8 @@
 import { redirect } from 'next/navigation';
+import { headers } from 'next/headers';
 import { requireOrg, getCurrentUserId } from '@/lib/auth';
 import { requirePermission } from '@/lib/auth/requirePermission';
-import { isAuthzError } from '@/lib/auth/errors';
+import { isAuthzError, isAuthContextError, getAuthContextRedirectPath } from '@/lib/auth/errors';
 import { createClient } from '@/lib/supabase/server';
 import { ExecutiveDashboard } from '@/components/executive/ExecutiveDashboard';
 import { getDemoExecutiveData } from '@/components/executive/data/demoExecutiveData';
@@ -18,16 +19,18 @@ export default async function ExecutivePage() {
   const org = await requireOrg();
   const userId = await getCurrentUserId();
   if (!userId) redirect('/auth/login');
-
+  const pathname = (await headers()).get('x-pathname') ?? '/app/executive';
   try {
     await requirePermission({
       orgId: org.org_id,
       userId,
       permission: 'dashboard.exec',
+      pathname,
     });
   } catch (e) {
     if (isAuthzError(e)) redirect('/app/forbidden');
-    throw e;
+    if (isAuthContextError(e)) redirect(getAuthContextRedirectPath(e.code));
+    redirect('/app/authz-error');
   }
 
   // TODO: Wire real data — e.g. getExecutiveDashboardData(org.org_id)

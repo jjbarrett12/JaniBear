@@ -1,9 +1,10 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Lock, Rocket, ClipboardCheck, Users, Calendar } from 'lucide-react';
+import { marketingRoutes } from '@/lib/routes';
 
 export const OPERATIONS_UPGRADE_TOOLTIP = 'Available in Grizzly plan. Automate service execution and quality control.';
 
@@ -13,12 +14,6 @@ export interface OperationsUpgradeModalProps {
 }
 
 export function OperationsUpgradeModal({ open, onOpenChange }: OperationsUpgradeModalProps) {
-  const router = useRouter();
-  const handleUpgrade = () => {
-    onOpenChange(false);
-    router.push('/pricing');
-  };
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent onPointerDownOutside={() => onOpenChange(false)} onEscapeKeyDown={() => onOpenChange(false)} className="sm:max-w-md">
@@ -39,7 +34,9 @@ export function OperationsUpgradeModal({ open, onOpenChange }: OperationsUpgrade
         </ul>
         <DialogFooter className="gap-2 sm:gap-0">
           <Button variant="outline" onClick={() => onOpenChange(false)}>Maybe later</Button>
-          <Button onClick={handleUpgrade}>See Grizzly plan</Button>
+          <Button asChild>
+            <Link href={marketingRoutes.pricing()} onClick={() => onOpenChange(false)}>See Grizzly plan</Link>
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -62,7 +62,7 @@ Use this checklist to verify tenant-specific workspace URLs, PWA install, and au
 ## C) PWA
 
 - [ ] **Dynamic manifest**  
-  `GET /manifest.webmanifest` returns JSON. On workspace host (subdomain or path), `name` is `"JANIBEAR — {org display name}"`; on marketing host, `name` is `"JANIBEAR"`. `start_url: "/app/dashboard"`, `display: "standalone"`, icons (192 + 512, any + maskable).
+  `GET /manifest.webmanifest` returns JSON. On workspace host (subdomain or path), `name` is `"JANIBEAR — {org display name}"`; on marketing host, `name` is `"JANIBEAR"`. `start_url: "/auth/login"` (PWA opens to login; after login user goes to dashboard). `display: "standalone"`, icons (192 + 512, any + maskable).
 
 - [ ] **Manifest referenced in layout**  
   Root layout (or head) has `<link rel="manifest" href="/manifest.webmanifest" />` and metadata `manifest: "/manifest.webmanifest"`.
@@ -86,7 +86,7 @@ Use this checklist to verify tenant-specific workspace URLs, PWA install, and au
   On iPhone/iPad, install prompt shows "Add to Home Screen" instructions (share → Add to Home Screen).
 
 - [ ] **Standalone window**  
-  After install, launch from desktop/home screen; app opens in its own window (no browser chrome).
+  After install, launch from desktop/home screen; app opens in its own window (no browser chrome). First screen is login (`start_url: "/auth/login"`); after sign-in, user is sent to dashboard.
 
 ---
 
@@ -106,6 +106,9 @@ Use this checklist to verify tenant-specific workspace URLs, PWA install, and au
 
 - [ ] **Session persists**  
   Close PWA or tab; reopen workspace URL. Session persists; no forced re-login (within cookie/session lifetime).
+
+- [ ] **Single session (no account sharing)**  
+  On each login (password or OAuth), all other sessions for that user are revoked (`signOut({ scope: 'others' })`). Only the device/browser that just signed in remains active. If the same account is used on another device, the previous session is invalid and will get signed out on next token refresh. Login page shows notice: "One device per account — signing in elsewhere signs out other sessions."
 
 ---
 
@@ -175,6 +178,14 @@ https://janibear.com/org/{orgSlug}/app/dashboard
 ```
 
 Replace `{orgSlug}` with the organization’s `slug` from `organizations.slug`.
+
+---
+
+## Deployment verification (e.g. for /launcher 404 fix)
+
+- **Hosting:** Likely Vercel; confirm Production is wired to the correct branch (e.g. `main`).
+- **Latest code:** Ensure the commit that adds or fixes `src/app/launcher/*` is on the deployed branch and that the latest deploy completed successfully (Vercel dashboard → Deployments).
+- **Confirm route:** After deploy, open `https://janibear.com/launcher` — should render the launcher (login redirect when unauthenticated, or org list / single-org redirect when authenticated). If you see a 404, trigger a redeploy from the correct branch and clear any CDN cache if applicable.
 
 ---
 

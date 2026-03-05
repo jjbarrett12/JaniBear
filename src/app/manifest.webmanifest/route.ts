@@ -6,23 +6,23 @@ const DEFAULT_NAME = 'JANIBEAR';
 const BASE_MANIFEST = {
   short_name: 'JANIBEAR',
   description: 'The operating system for commercial cleaning. Win bids. Keep accounts. Catch margin leaks.',
-  start_url: '/app/dashboard',
+  start_url: '/auth/login',
   display: 'standalone' as const,
   background_color: '#0f172a',
   theme_color: '#3b82f6',
   orientation: 'any' as const,
   scope: '/',
   icons: [
-    { src: '/logo.png', sizes: '192x192', type: 'image/png', purpose: 'any' as const },
-    { src: '/logo.png', sizes: '512x512', type: 'image/png', purpose: 'any' as const },
-    { src: '/logo.png', sizes: '192x192', type: 'image/png', purpose: 'maskable' as const },
-    { src: '/logo.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' as const },
+    { src: '/icon-pwa.png', sizes: '192x192', type: 'image/png', purpose: 'any' as const },
+    { src: '/icon-pwa.png', sizes: '512x512', type: 'image/png', purpose: 'any' as const },
+    { src: '/icon-pwa.png', sizes: '192x192', type: 'image/png', purpose: 'maskable' as const },
+    { src: '/icon-pwa.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' as const },
   ],
   categories: ['business', 'productivity'],
   shortcuts: [
-    { name: 'Dashboard', short_name: 'Dashboard', description: 'Open workspace dashboard', url: '/app/dashboard', icons: [{ src: '/logo.png', sizes: '192x192' }] },
-    { name: 'New Inspection', short_name: 'Inspect', description: 'Start a new inspection', url: '/app/inspections/start', icons: [{ src: '/logo.png', sizes: '192x192' }] },
-    { name: 'My Tasks', short_name: 'Tasks', description: 'View my tasks', url: '/app/tasks', icons: [{ src: '/logo.png', sizes: '192x192' }] },
+    { name: 'Dashboard', short_name: 'Dashboard', description: 'Open workspace dashboard', url: '/app/dashboard', icons: [{ src: '/icon-pwa.png', sizes: '192x192' }] },
+    { name: 'New Inspection', short_name: 'Inspect', description: 'Start a new inspection', url: '/app/inspections/start', icons: [{ src: '/icon-pwa.png', sizes: '192x192' }] },
+    { name: 'My Tasks', short_name: 'Tasks', description: 'View my tasks', url: '/app/tasks', icons: [{ src: '/icon-pwa.png', sizes: '192x192' }] },
   ],
 };
 

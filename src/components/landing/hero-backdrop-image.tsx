@@ -3,8 +3,9 @@
 import Image from 'next/image';
 import { useState } from 'react';
 
-/** Hero background: stadium only (no laptop/devices). Overlay devices are in HeroCenterImage. */
+/** Hero background: stadium/arena only (no laptop/devices). Overlay devices are in HeroCenterImage. */
 const BACKDROP_PATHS = [
+  '/hero-stadium.png',
   '/stadium.png',
   '/stadium%20hero3.png',
   '/stadium-hero3.png',

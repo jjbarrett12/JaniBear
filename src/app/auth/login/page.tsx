@@ -50,6 +50,7 @@ export default async function LoginPage({
           </div>
           <h1 className="text-2xl font-bold text-white mt-4 mb-1">Welcome back</h1>
           <p className="text-zinc-400 text-sm">Sign in to your account to continue</p>
+          <p className="text-zinc-500 text-xs mt-1">One device per account — signing in elsewhere signs out other sessions.</p>
         </div>
         <LoginForm defaultEmail={defaultEmail} redirectParam={redirectTo ?? undefined} />
       </div>

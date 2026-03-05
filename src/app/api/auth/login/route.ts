@@ -67,6 +67,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.redirect(loginErrorUrl);
   }
 
+  // Single-session: revoke all other sessions for this user to prevent account sharing
+  await supabase.auth.signOut({ scope: 'others' });
+
   if (rememberMe) {
     successRedirect.cookies.set(REMEMBER_EMAIL_COOKIE, email, {
       path: '/',

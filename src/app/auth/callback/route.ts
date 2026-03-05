@@ -60,5 +60,8 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
+  // Single-session: revoke all other sessions for this user to prevent account sharing
+  await supabase.auth.signOut({ scope: 'others' });
+
   return response;
 }

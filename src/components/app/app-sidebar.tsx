@@ -12,6 +12,7 @@ import { BottomNav } from '@/components/app/bottom-nav';
 import { AppSidebarNav } from '@/components/app/app-sidebar-nav';
 import { AppSidebarFooter } from '@/components/app/app-sidebar-footer';
 import { AppPromoSlot } from '@/components/app/app-promo-slot';
+import { SystemFooter } from '@/components/app/system-footer';
 
 export async function AppSidebar({
   navAlerts: navAlertsProp,
@@ -86,6 +87,7 @@ export async function AppSidebar({
           <div className="mt-auto flex shrink-0 flex-col">
             <AppPromoSlot variant="progear" allowedByRole={showPromoToRole} />
             <AppSidebarFooter userEmail={user?.email} />
+            <SystemFooter />
           </div>
         </div>
       </aside>

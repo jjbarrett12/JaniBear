@@ -171,8 +171,8 @@ export function DealPipeline() {
           </p>
         </motion.header>
 
-        {/* Desktop: two columns — pipeline left (fixed-width cards + strong line), sticky Deal Summary right */}
-        <div className="hidden md:grid md:grid-cols-[1fr,340px] md:gap-10 lg:gap-14 items-start">
+        {/* Desktop: pipeline full width, then Deal Summary below */}
+        <div className="hidden md:block">
           <PipelineStrip
             activeStep={displayStep}
             connectorStep={connectorStep}
@@ -182,18 +182,24 @@ export function DealPipeline() {
             onStepHover={setHoveredStep}
             onStepLeave={() => setHoveredStep(null)}
           />
-          <motion.div
-            className="sticky top-28"
-            initial={{ opacity: 0, x: 12 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ ...transition, delay: 0.1 }}
-          >
-            <DealSummaryCard
-              summary={summary}
-              activeStep={displayStep}
-              reduceMotion={!!reduceMotion}
-            />
-          </motion.div>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={displayStep}
+              className="mt-10 flex justify-center"
+              initial={reduceMotion ? false : { opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={transition}
+            >
+              <div className="w-full max-w-md">
+                <DealSummaryCard
+                  summary={summary}
+                  activeStep={displayStep}
+                  reduceMotion={!!reduceMotion}
+                />
+              </div>
+            </motion.div>
+          </AnimatePresence>
         </div>
 
         {/* Mobile: vertical stack — steps with connectors, scroll-driven activeStep */}

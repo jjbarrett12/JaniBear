@@ -306,6 +306,80 @@
   color: #a1a1aa !important;
 }
 
+/* Hero: gentle vignette (edges darker, lift contrast) */
+.hero-vignette {
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 100% 100% at 50% 45%,
+    transparent 0%,
+    transparent 45%,
+    rgba(0, 0, 0, 0.15) 75%,
+    rgba(0, 0, 0, 0.4) 100%
+  );
+}
+/* Hero: headline is brightest — ensure dominance */
+.landing-page .hero-headline {
+  text-shadow: 0 0 40px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+.landing-page .hero-subhead {
+  color: rgba(228, 228, 231, 0.95) !important; /* zinc-200, slightly dimmer than headline */
+}
+
+/* Hero: subtle cinematic background breath (radial glow opacity) */
+@keyframes hero-bg-breath {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 0.32; }
+}
+.hero-bg-breath {
+  animation: hero-bg-breath 8s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-bg-breath {
+    animation: none !important;
+    opacity: 0.24;
+  }
+}
+
+/* Hero: legacy motion layers (disabled when prefers-reduced-motion) */
+@keyframes hero-shimmer-pulse {
+  0%, 100% { opacity: 0.08; }
+  50% { opacity: 0.16; }
+}
+@keyframes hero-parallax-drift {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(1px, 0.5px); }
+  50% { transform: translate(-1px, 1px); }
+  75% { transform: translate(-0.5px, -0.5px); }
+}
+@keyframes hero-particle-drift {
+  0% { transform: translate(0, 0); opacity: 0.15; }
+  100% { transform: translate(8px, 24px); opacity: 0.4; }
+}
+@keyframes hero-kpi-risk-pulse {
+  0%, 100% { box-shadow: 0 0 12px rgba(251, 113, 133, 0.25); }
+  50% { box-shadow: 0 0 20px rgba(251, 113, 133, 0.45); }
+}
+.hero-shimmer-layer {
+  animation: hero-shimmer-pulse 6s ease-in-out infinite;
+}
+.hero-parallax-layer {
+  animation: hero-parallax-drift 12s ease-in-out infinite;
+}
+.hero-particle {
+  animation: hero-particle-drift 14s ease-in-out infinite;
+}
+.hero-kpi-risk {
+  animation: hero-kpi-risk-pulse 2.5s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-shimmer-layer,
+  .hero-parallax-layer,
+  .hero-particle,
+  .hero-kpi-risk {
+    animation: none !important;
+  }
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

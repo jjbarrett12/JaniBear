@@ -11,12 +11,15 @@ export const dynamic = 'force-dynamic';
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ redirect?: string; next?: string; session?: string; error?: string; reason?: string }>;
+  searchParams?: Record<string, string | string[] | undefined>;
 }) {
-  const params = await searchParams;
-  const redirectTo = params.redirect ?? params.next ?? null;
+  const asString = (v: string | string[] | undefined) => (typeof v === 'string' ? v : Array.isArray(v) ? v[0] : undefined);
+  const redirectTo = asString(searchParams?.redirect) ?? asString(searchParams?.next) ?? null;
+  const session = asString(searchParams?.session);
+  const errorParam = asString(searchParams?.error);
+  const reasonParam = asString(searchParams?.reason);
 
-  if (params.session === 'invalid') {
+  if (session === 'invalid') {
     const nextUrl = redirectTo
       ? `/auth/login?redirect=${encodeURIComponent(redirectTo)}`
       : '/auth/login';
@@ -49,15 +52,15 @@ export default async function LoginPage({
   }
 
   const urlError =
-    params.error === 'session'
+    errorParam === 'session'
       ? 'Session could not be established. Please sign in again.'
-      : params.reason === 'missing_cookie' || params.error === 'missing_cookie'
+      : reasonParam === 'missing_cookie' || errorParam === 'missing_cookie'
         ? 'Session wasn\'t ready. Please sign in again.'
-        : params.error === 'invalid'
+        : errorParam === 'invalid'
           ? 'Invalid email or password. Please try again.'
-          : params.error === 'missing'
+          : errorParam === 'missing'
             ? 'Email and password are required.'
-            : params.error === 'unconfirmed'
+            : errorParam === 'unconfirmed'
               ? 'Your email is not confirmed yet. Check your inbox (and spam) for the confirmation link.'
               : null;
 

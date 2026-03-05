@@ -1,29 +1,15 @@
-import { createServerClient } from '@supabase/ssr';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { supabaseServer } from '@/lib/supabase/server';
 
-export async function GET(request: Request) {
+export const dynamic = 'force-dynamic';
+
+export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url);
-  const baseUrl = requestUrl.origin || process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '');
+  const baseUrl = requestUrl.origin;
   const loginUrl = new URL('/auth/login', baseUrl);
 
   const response = NextResponse.redirect(loginUrl);
-
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll();
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) => {
-            response.cookies.set(name, value, options ?? { path: '/' });
-          });
-        },
-      },
-    }
-  );
+  const supabase = await supabaseServer({ request, response });
 
   try {
     await supabase.auth.signOut();

@@ -1,14 +1,23 @@
 /**
  * Auth redirect hardening: password login reaches dashboard without loop;
  * already signed-in at /auth/login ends at /app/dashboard and never hits clear-session.
- * Requires seeded test user: run `npm run seed:test` first, or set E2E_LOGIN_EMAIL / E2E_LOGIN_PASSWORD.
+ * Requires E2E_LOGIN_EMAIL and E2E_LOGIN_PASSWORD.
  */
 import { test, expect } from '@playwright/test';
 
-const E2E_EMAIL = process.env.E2E_LOGIN_EMAIL ?? 'salesrep@janibear.test';
-const E2E_PASSWORD = process.env.E2E_LOGIN_PASSWORD ?? 'Password123!';
+const E2E_EMAIL = process.env.E2E_LOGIN_EMAIL;
+const E2E_PASSWORD = process.env.E2E_LOGIN_PASSWORD;
+
+test.beforeEach(() => {
+  test.skip(
+    !E2E_EMAIL || !E2E_PASSWORD,
+    'Set E2E_LOGIN_EMAIL and E2E_LOGIN_PASSWORD to run auth redirect E2E tests.'
+  );
+});
 
 test.describe('Auth redirect — no loop', () => {
+  test.describe.configure({ mode: 'serial' });
+
   test('password login reaches /app/dashboard without returning to /auth/login', async ({
     page,
     baseURL,
@@ -16,8 +25,8 @@ test.describe('Auth redirect — no loop', () => {
     const base = baseURL ?? 'http://localhost:3001';
     await page.goto(`${base}/auth/login`, { waitUntil: 'domcontentloaded' });
 
-    await page.getByLabel(/email/i).fill(E2E_EMAIL);
-    await page.getByLabel(/password/i).fill(E2E_PASSWORD);
+    await page.getByLabel(/email/i).fill(E2E_EMAIL!);
+    await page.getByLabel(/password/i).fill(E2E_PASSWORD!);
     await page.getByRole('button', { name: /sign in/i }).click();
 
     // Should end at app or onboarding; must not land back on login within timeout.
@@ -34,8 +43,8 @@ test.describe('Auth redirect — no loop', () => {
 
     // 1) Log in first
     await page.goto(`${base}/auth/login`, { waitUntil: 'domcontentloaded' });
-    await page.getByLabel(/email/i).fill(E2E_EMAIL);
-    await page.getByLabel(/password/i).fill(E2E_PASSWORD);
+    await page.getByLabel(/email/i).fill(E2E_EMAIL!);
+    await page.getByLabel(/password/i).fill(E2E_PASSWORD!);
     await page.getByRole('button', { name: /sign in/i }).click();
     await expect(page).toHaveURL(/\/(app\/dashboard|app\/|onboarding)/, { timeout: 20000 });
 
@@ -46,7 +55,7 @@ test.describe('Auth redirect — no loop', () => {
       if (u.includes('/api/auth/clear-session')) clearSessionRequests.push(u);
     });
 
-    await page.goto(`${base}/auth/login`, { waitUntil: 'networkidle' });
+    await page.goto(`${base}/auth/login`, { waitUntil: 'domcontentloaded' });
     await expect(page).toHaveURL(/\/(app\/dashboard|app\/)/, { timeout: 10000 });
     expect(clearSessionRequests).toHaveLength(0);
   });

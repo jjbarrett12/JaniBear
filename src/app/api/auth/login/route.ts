@@ -3,10 +3,31 @@
  * Form POST only; session cookies set on same response as redirect.
  * Handles remember_me so login form checkbox works.
  */
-import { createServerClient } from '@supabase/ssr';
 import { NextRequest, NextResponse } from 'next/server';
+import { supabaseServer } from '@/lib/supabase/server';
 
 const REMEMBER_EMAIL_COOKIE = 'janibear_remember_email';
+export const dynamic = 'force-dynamic';
+const DEBUG_AUTH =
+  process.env.NODE_ENV === 'development' &&
+  (process.env.NEXT_PUBLIC_AUTH_DEBUG === '1' || process.env.DEBUG_AUTH === '1');
+
+function getFormString(formData: unknown, key: string, trim = true): string | undefined {
+  if (!formData || typeof formData !== 'object' || !('get' in formData)) return undefined;
+  const maybeGet = (formData as { get?: unknown }).get;
+  if (typeof maybeGet !== 'function') return undefined;
+  const value = maybeGet.call(formData, key) as unknown;
+  if (typeof value !== 'string') return undefined;
+  return trim ? value.trim() : value;
+}
+
+function isSafeRedirectPath(path: string): boolean {
+  return (
+    path.startsWith('/') &&
+    !path.includes('//') &&
+    (path.startsWith('/app/') || path === '/onboarding' || path === '/launcher' || path.startsWith('/auth/'))
+  );
+}
 
 export async function GET(request: NextRequest) {
   return NextResponse.redirect(new URL('/auth/login', request.nextUrl.origin));
@@ -14,10 +35,11 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   const formData = await request.formData();
-  const email = (formData.get('email') as string)?.trim();
-  const password = formData.get('password') as string;
-  const rememberMe = formData.get('remember_me') === '1' || formData.get('remember_me') === 'on';
-  const redirectParam = (formData.get('redirect') as string)?.trim() || null;
+  const email = getFormString(formData, 'email') ?? '';
+  const password = getFormString(formData, 'password', false) ?? '';
+  const rememberValue = getFormString(formData, 'remember_me') ?? '';
+  const rememberMe = rememberValue === '1' || rememberValue.toLowerCase() === 'on';
+  const redirectParam = getFormString(formData, 'redirect') ?? null;
 
   const baseUrl = request.nextUrl.origin;
   const loginErrorUrl = new URL('/auth/login', baseUrl);
@@ -30,30 +52,13 @@ export async function POST(request: NextRequest) {
 
   // Redirect to /auth/continue first so the browser commits session cookies before hitting landing (avoids redirect loop / throttling).
   const landingPath =
-    redirectParam?.startsWith('/') && !redirectParam.includes('//') &&
-    (redirectParam.startsWith('/app/') || redirectParam === '/onboarding' || redirectParam === '/launcher' || redirectParam.startsWith('/auth/'))
+    redirectParam && isSafeRedirectPath(redirectParam)
       ? `/api/auth/landing?redirect=${encodeURIComponent(redirectParam)}`
       : '/api/auth/landing';
   const continueUrl = new URL('/auth/continue', baseUrl);
   continueUrl.searchParams.set('next', landingPath);
   const successRedirect = NextResponse.redirect(continueUrl);
-
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll();
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) => {
-            successRedirect.cookies.set(name, value, { ...options, path: '/' });
-          });
-        },
-      },
-    }
-  );
+  const supabase = await supabaseServer({ request, response: successRedirect });
 
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
@@ -84,10 +89,12 @@ export async function POST(request: NextRequest) {
     successRedirect.cookies.set(REMEMBER_EMAIL_COOKIE, '', { path: '/', maxAge: 0 });
   }
 
-  const DEBUG_AUTH = process.env.NODE_ENV === 'development' && (process.env.NEXT_PUBLIC_AUTH_DEBUG === '1' || process.env.DEBUG_AUTH === '1');
   if (DEBUG_AUTH) {
     const cookieCount = successRedirect.cookies.getAll().length;
-    console.log('[AUTH_DEBUG] POST /api/auth/login signIn succeeded', { redirectTo: continueUrl.toString(), setCookieCount: cookieCount });
+    console.log('[AUTH_DEBUG] POST /api/auth/login signIn succeeded', {
+      redirectTo: continueUrl.toString(),
+      setCookieCount: cookieCount,
+    });
   }
 
   return successRedirect;

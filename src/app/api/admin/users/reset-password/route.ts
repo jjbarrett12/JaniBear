@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { getEffectiveAccessForCurrentUser } from '@/lib/access';
+import { serverEnv } from '@/lib/env';
 
 /**
  * POST /api/admin/users/reset-password
@@ -74,8 +75,8 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseAnon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const supabaseUrl = serverEnv.SUPABASE_URL;
+  const supabaseAnon = serverEnv.SUPABASE_ANON_KEY;
   if (!supabaseUrl || !supabaseAnon) {
     return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
   }

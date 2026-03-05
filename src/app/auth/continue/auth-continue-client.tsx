@@ -1,42 +1,16 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { createClient } from '@/lib/supabase/client';
-
-const RETRY_DELAY_MS = 500;
-const MAX_ATTEMPTS = 25;
+import { useEffect } from 'react';
 
 export function AuthContinueClient({ defaultNext }: { defaultNext: string }) {
-  const [status, setStatus] = useState<'redirecting' | 'error'>('redirecting');
-
   useEffect(() => {
-    const supabase = createClient();
-    let cancelled = false;
-
-    const tryRedirect = async () => {
-      for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (cancelled) return;
-        if (session) {
-          window.location.replace(defaultNext);
-          return;
-        }
-        await new Promise((r) => setTimeout(r, RETRY_DELAY_MS));
-      }
-
-      if (cancelled) return;
-      setStatus('error');
-      window.location.replace('/auth/login?error=session');
-    };
-
-    tryRedirect();
-
-    return () => {
-      cancelled = true;
-    };
+    // Cookie-based auth (server-set httpOnly cookies) can leave client auth state empty.
+    // Do not wait for browser Supabase session; navigate to next route immediately.
+    const timer = window.setTimeout(() => {
+      window.location.replace(defaultNext);
+    }, 50);
+    return () => window.clearTimeout(timer);
   }, [defaultNext]);
-
-  if (status === 'error') return null;
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-zinc-50 via-white to-amber-50/30">

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
 import { UniversityFolderContent } from './university-folder-content';
+import { publicEnv } from '@/lib/env';
 
 export default async function UniversityFolderPage({
   params,
@@ -41,9 +42,7 @@ export default async function UniversityFolderPage({
     .order('sort_order');
 
   const bucket = 'university-uploads';
-  const baseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-    ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${bucket}`
-    : '';
+  const baseUrl = `${publicEnv.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${bucket}`;
 
   return (
     <div className="space-y-6">

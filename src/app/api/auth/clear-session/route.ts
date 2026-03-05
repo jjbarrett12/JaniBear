@@ -12,6 +12,18 @@ const COOKIE_OPTS = {
   secure: process.env.NODE_ENV === 'production',
   sameSite: 'lax' as const,
 };
+export const dynamic = 'force-dynamic';
+
+function listCookieNames(request: NextRequest): string[] {
+  const fromStore = request.cookies.getAll().map((c) => c.name);
+  if (fromStore.length > 0) return fromStore;
+  const raw = request.headers.get('cookie');
+  if (!raw?.trim()) return [];
+  return raw
+    .split(';')
+    .map((part) => part.trim().split('=')[0]?.trim() ?? '')
+    .filter((name) => name.length > 0);
+}
 
 export async function GET(request: NextRequest) {
   const next = request.nextUrl.searchParams.get('next') || '/auth/login';
@@ -20,10 +32,10 @@ export async function GET(request: NextRequest) {
   const res = NextResponse.redirect(new URL(safeNext, request.url));
 
   // Clear Supabase auth cookies (sb-*)
-  const cookies = request.cookies.getAll();
-  for (const c of cookies) {
-    if (c.name.startsWith('sb-')) {
-      res.cookies.set(c.name, '', COOKIE_OPTS);
+  const cookieNames = listCookieNames(request);
+  for (const name of cookieNames) {
+    if (name.startsWith('sb-')) {
+      res.cookies.set(name, '', COOKIE_OPTS);
     }
   }
   res.cookies.set('active_org_id', '', COOKIE_OPTS);

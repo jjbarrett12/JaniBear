@@ -1,10 +1,18 @@
 import { redirect } from 'next/navigation';
-import { createClient } from '@/lib/supabase/server';
+import { getUserOrNull } from '@/lib/supabase/server';
 import { AuthContinueClient } from './auth-continue-client';
 
 const ALLOWED_PATHS = ['/app/', '/onboarding', '/auth/', '/api/auth/landing'];
 const DEFAULT_NEXT = '/app/dashboard';
 const DEBUG_AUTH = process.env.NODE_ENV === 'development' && (process.env.NEXT_PUBLIC_AUTH_DEBUG === '1' || process.env.DEBUG_AUTH === '1');
+
+type ContinueSearchParams = Record<string, string | string[] | undefined>;
+
+function asString(value: string | string[] | undefined): string | undefined {
+  if (typeof value === 'string') return value;
+  if (Array.isArray(value)) return value[0];
+  return undefined;
+}
 
 function getValidNext(next: string | undefined): string {
   if (!next) return DEFAULT_NEXT;
@@ -23,13 +31,11 @@ export const dynamic = 'force-dynamic';
 export default async function AuthContinuePage({
   searchParams,
 }: {
-  searchParams: Promise<{ next?: string }>;
+  searchParams?: ContinueSearchParams;
 }) {
-  const params = await searchParams;
-  const next = getValidNext(params.next);
+  const next = getValidNext(asString(searchParams?.next));
 
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const user = await getUserOrNull();
   if (DEBUG_AUTH) {
     console.log('[AUTH_DEBUG] /auth/continue', { hasUser: !!user, next });
   }

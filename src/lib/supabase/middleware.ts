@@ -7,6 +7,7 @@ import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 import { getOrgSlugFromRequest, getMarketingRootUrl } from '@/lib/workspace/org-resolver';
 import { allowSlugResolution, recordUnknownSlug, getClientIp } from '@/lib/workspace/slug-rate-limit';
+import { serverEnv } from '@/lib/env';
 
 const PUBLIC_PATHS = [
   '/auth',
@@ -44,8 +45,6 @@ function redirectToApp(pathname: string): string | null {
   return null;
 }
 
-type CookieEntry = { name: string; value: string; options?: Record<string, unknown> };
-
 /** In Edge (e.g. Vercel), request.cookies can be empty even when Cookie header is sent. Parse header as fallback. */
 function getCookiesForRequest(request: NextRequest): { name: string; value: string }[] {
   const fromStore = request.cookies.getAll();
@@ -66,26 +65,17 @@ export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({ request });
   /** True when Supabase auth called setAll (session refresh). We no longer redirect; we return response with cookies set. */
   let didSetAuthCookies = false;
-  const authCookiesSet: CookieEntry[] = [];
-
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-  if (!supabaseUrl || !supabaseAnonKey) {
-    if (isPublicPath(request.nextUrl.pathname)) return response;
-    debugLog('missing env, redirect to login');
-    return NextResponse.redirect(new URL('/auth/login', request.url));
-  }
+  let authCookiesSetCount = 0;
 
   try {
-    const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
+    const supabase = createServerClient(serverEnv.SUPABASE_URL, serverEnv.SUPABASE_ANON_KEY, {
       cookies: {
         getAll() {
           return getCookiesForRequest(request);
         },
-        setAll(cookiesToSet: CookieEntry[]) {
+        setAll(cookiesToSet) {
           didSetAuthCookies = true;
-          authCookiesSet.push(...cookiesToSet);
+          authCookiesSetCount += cookiesToSet.length;
           response = NextResponse.next({ request });
           cookiesToSet.forEach(({ name, value, options }) =>
             response.cookies.set(name, value, { ...options, path: '/' })
@@ -229,7 +219,7 @@ export async function updateSession(request: NextRequest) {
     // runs in the same request with the incoming cookies. Supabase refreshes proactively before
     // expiry, so getUser() in the layout typically still succeeds with the existing cookies.
     if (didSetAuthCookies && pathname.startsWith('/app/')) {
-      debugLog('auth refresh (no redirect)', { pathname, cookiesSet: authCookiesSet.length });
+      debugLog('auth refresh (no redirect)', { pathname, cookiesSet: authCookiesSetCount });
     }
 
     // Pass user id to layout via header so layout can trust middleware auth when cookies() is empty on client nav.

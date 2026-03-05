@@ -4,12 +4,13 @@
  * Uses request.cookies (and Cookie header fallback) so we see the same session as the browser sent.
  * On Vercel Edge / some runtimes, request.cookies can be empty; parsing Cookie header fixes "already signed in" → bounce back to login.
  */
-import { createServerClient } from '@supabase/ssr';
 import { NextRequest, NextResponse } from 'next/server';
+import { supabaseServer } from '@/lib/supabase/server';
 
 const ACTIVE_ORG_COOKIE = 'active_org_id';
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
 const GUARD_DEBUG = process.env.NODE_ENV === 'development' && (process.env.NEXT_PUBLIC_AUTH_DEBUG === '1' || process.env.NEXT_PUBLIC_GUARD_DEBUG === '1' || process.env.DEBUG_AUTH === '1');
+export const dynamic = 'force-dynamic';
 
 function getCookiesFromRequest(request: NextRequest): { name: string; value: string }[] {
   const fromStore = request.cookies.getAll();
@@ -27,21 +28,10 @@ function getCookiesFromRequest(request: NextRequest): { name: string; value: str
 }
 
 async function handleLanding(request: NextRequest) {
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return getCookiesFromRequest(request);
-        },
-        setAll() {
-          // Session refresh cookies: not applied here; landing only reads session and redirects.
-        },
-      },
-    }
-  );
-  const { data: { user } } = await supabase.auth.getUser();
+  const refreshResponse = NextResponse.next();
+  const supabase = await supabaseServer({ request, response: refreshResponse });
+  const { data } = await supabase.auth.getUser();
+  const user = data.user ?? null;
   const allCookies = getCookiesFromRequest(request);
   const sbCookieCount = allCookies.filter((c) => c.name.startsWith('sb-')).length;
   if (GUARD_DEBUG) {
@@ -71,13 +61,21 @@ async function handleLanding(request: NextRequest) {
   }
 
   const redirectTo = request.nextUrl.searchParams.get('redirect');
-  const safeRedirect =
-    redirectTo?.startsWith('/') &&
-    !redirectTo.includes('//') &&
-    (redirectTo.startsWith('/app/') || redirectTo === '/onboarding' || redirectTo === '/launcher' || redirectTo.startsWith('/auth/'));
-  const destination = safeRedirect ? redirectTo : '/app/dashboard';
+  const safeRedirect = Boolean(
+    redirectTo &&
+      redirectTo.startsWith('/') &&
+      !redirectTo.includes('//') &&
+      (redirectTo.startsWith('/app/') ||
+        redirectTo === '/onboarding' ||
+        redirectTo === '/launcher' ||
+        redirectTo.startsWith('/auth/'))
+  );
+  const destination = safeRedirect && redirectTo ? redirectTo : '/app/dashboard';
   if (GUARD_DEBUG) console.log('[GUARD] landing path=/api/auth/landing session=true org_id=' + membership.org_id + ' onboarded=true reason=set cookie redirect=' + destination);
   const redirectRes = NextResponse.redirect(new URL(destination, request.url));
+  refreshResponse.cookies.getAll().forEach(({ name, value, ...options }) => {
+    redirectRes.cookies.set(name, value, { ...options, path: '/' });
+  });
   redirectRes.cookies.set(ACTIVE_ORG_COOKIE, membership.org_id, {
     path: '/',
     httpOnly: true,

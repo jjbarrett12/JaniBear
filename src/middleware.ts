@@ -10,9 +10,8 @@ const SECURITY_HEADERS: Record<string, string> = {
 export async function middleware(request: NextRequest) {
   try {
     const response = await updateSession(request);
-    const pathname = request.nextUrl.pathname;
     const res = response instanceof NextResponse ? response : NextResponse.next({ request });
-    SECURITY_HEADERS.forEach((value, key) => res.headers.set(key, value));
+    Object.entries(SECURITY_HEADERS).forEach(([key, value]) => res.headers.set(key, value));
     return res;
   } catch (e) {
     console.error('[middleware] auth/session error', e);

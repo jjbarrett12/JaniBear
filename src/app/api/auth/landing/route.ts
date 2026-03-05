@@ -9,7 +9,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 const ACTIVE_ORG_COOKIE = 'active_org_id';
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
-const GUARD_DEBUG = process.env.NODE_ENV === 'development' && (process.env.NEXT_PUBLIC_AUTH_DEBUG === '1' || process.env.NEXT_PUBLIC_GUARD_DEBUG === '1');
+const GUARD_DEBUG = process.env.NODE_ENV === 'development' && (process.env.NEXT_PUBLIC_AUTH_DEBUG === '1' || process.env.NEXT_PUBLIC_GUARD_DEBUG === '1' || process.env.DEBUG_AUTH === '1');
 
 function getCookiesFromRequest(request: NextRequest): { name: string; value: string }[] {
   const fromStore = request.cookies.getAll();
@@ -42,9 +42,19 @@ async function handleLanding(request: NextRequest) {
     }
   );
   const { data: { user } } = await supabase.auth.getUser();
+  const allCookies = getCookiesFromRequest(request);
+  const sbCookieCount = allCookies.filter((c) => c.name.startsWith('sb-')).length;
+  if (GUARD_DEBUG) {
+    console.log('[AUTH_DEBUG] GET /api/auth/landing', { hasUser: !!user, sbCookieCount });
+  }
 
   if (!user) {
-    if (GUARD_DEBUG) console.log('[GUARD] landing path=/api/auth/landing session=false reason=no user redirect=clear-session');
+    // Transient missing cookie (e.g. redirect race): do not clear session. Only clear when we have sb-* cookies but invalid session.
+    if (sbCookieCount === 0) {
+      if (GUARD_DEBUG) console.log('[GUARD] landing path=/api/auth/landing session=false sbCookieCount=0 reason=missing_cookie redirect=login');
+      return NextResponse.redirect(new URL('/auth/login?reason=missing_cookie', request.url));
+    }
+    if (GUARD_DEBUG) console.log('[GUARD] landing path=/api/auth/landing session=false sbCookieCount=' + sbCookieCount + ' reason=invalid_session redirect=clear-session');
     return NextResponse.redirect(new URL('/api/auth/clear-session?next=/auth/login', request.url));
   }
 

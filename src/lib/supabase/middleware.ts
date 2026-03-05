@@ -21,8 +21,8 @@ const PUBLIC_PATHS = [
   '/launcher',
 ];
 
-const AUTH_DEBUG = process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_AUTH_DEBUG === '1';
-const GUARD_DEBUG = process.env.NODE_ENV === 'development' && (process.env.NEXT_PUBLIC_AUTH_DEBUG === '1' || process.env.NEXT_PUBLIC_GUARD_DEBUG === '1');
+const AUTH_DEBUG = process.env.NODE_ENV === 'development' && (process.env.NEXT_PUBLIC_AUTH_DEBUG === '1' || process.env.DEBUG_AUTH === '1');
+const GUARD_DEBUG = process.env.NODE_ENV === 'development' && (process.env.NEXT_PUBLIC_AUTH_DEBUG === '1' || process.env.NEXT_PUBLIC_GUARD_DEBUG === '1' || process.env.DEBUG_AUTH === '1');
 
 function debugLog(msg: string, data?: Record<string, unknown>) {
   if (AUTH_DEBUG) console.log('[auth middleware]', msg, data ?? '');
@@ -88,7 +88,7 @@ export async function updateSession(request: NextRequest) {
           authCookiesSet.push(...cookiesToSet);
           response = NextResponse.next({ request });
           cookiesToSet.forEach(({ name, value, options }) =>
-            response.cookies.set(name, value, options)
+            response.cookies.set(name, value, { ...options, path: '/' })
           );
         },
       },

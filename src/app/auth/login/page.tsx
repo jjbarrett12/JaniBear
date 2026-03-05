@@ -11,7 +11,7 @@ export const dynamic = 'force-dynamic';
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ redirect?: string; next?: string; session?: string; error?: string }>;
+  searchParams: Promise<{ redirect?: string; next?: string; session?: string; error?: string; reason?: string }>;
 }) {
   const params = await searchParams;
   const redirectTo = params.redirect ?? params.next ?? null;
@@ -23,6 +23,7 @@ export default async function LoginPage({
     redirect(`/api/auth/clear-session?next=${encodeURIComponent(nextUrl)}`);
   }
 
+  const DEBUG_AUTH = process.env.NODE_ENV === 'development' && (process.env.NEXT_PUBLIC_AUTH_DEBUG === '1' || process.env.DEBUG_AUTH === '1');
   let defaultEmail: string | undefined;
   let user: { id: string } | null = null;
   try {
@@ -31,6 +32,9 @@ export default async function LoginPage({
     user = data?.user ?? null;
   } catch {
     // Supabase/env error — still show login form
+  }
+  if (DEBUG_AUTH) {
+    console.log('[AUTH_DEBUG] /auth/login page', { hasUser: !!user });
   }
   if (user) {
     return (
@@ -47,13 +51,15 @@ export default async function LoginPage({
   const urlError =
     params.error === 'session'
       ? 'Session could not be established. Please sign in again.'
-      : params.error === 'invalid'
-        ? 'Invalid email or password. Please try again.'
-        : params.error === 'missing'
-          ? 'Email and password are required.'
-          : params.error === 'unconfirmed'
-            ? 'Your email is not confirmed yet. Check your inbox (and spam) for the confirmation link.'
-            : null;
+      : params.reason === 'missing_cookie' || params.error === 'missing_cookie'
+        ? 'Session wasn\'t ready. Please sign in again.'
+        : params.error === 'invalid'
+          ? 'Invalid email or password. Please try again.'
+          : params.error === 'missing'
+            ? 'Email and password are required.'
+            : params.error === 'unconfirmed'
+              ? 'Your email is not confirmed yet. Check your inbox (and spam) for the confirmation link.'
+              : null;
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-10 sm:py-12 relative overflow-hidden" style={{ backgroundColor: '#0a0a0f' }}>

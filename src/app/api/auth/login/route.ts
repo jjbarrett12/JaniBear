@@ -84,5 +84,11 @@ export async function POST(request: NextRequest) {
     successRedirect.cookies.set(REMEMBER_EMAIL_COOKIE, '', { path: '/', maxAge: 0 });
   }
 
+  const DEBUG_AUTH = process.env.NODE_ENV === 'development' && (process.env.NEXT_PUBLIC_AUTH_DEBUG === '1' || process.env.DEBUG_AUTH === '1');
+  if (DEBUG_AUTH) {
+    const cookieCount = successRedirect.cookies.getAll().length;
+    console.log('[AUTH_DEBUG] POST /api/auth/login signIn succeeded', { redirectTo: continueUrl.toString(), setCookieCount: cookieCount });
+  }
+
   return successRedirect;
 }

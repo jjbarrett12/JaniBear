@@ -1,8 +1,9 @@
 /**
  * Post-login landing — see project root AUTH_FLOW.md.
  * Sets active_org_id and redirects to dashboard or onboarding.
+ * Uses request.cookies (not next/headers) so we see the same session as the browser sent.
  */
-import { createClient } from '@/lib/supabase/server';
+import { createServerClient } from '@supabase/ssr';
 import { NextRequest, NextResponse } from 'next/server';
 
 const ACTIVE_ORG_COOKIE = 'active_org_id';
@@ -10,7 +11,20 @@ const COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
 const GUARD_DEBUG = process.env.NODE_ENV === 'development' && (process.env.NEXT_PUBLIC_AUTH_DEBUG === '1' || process.env.NEXT_PUBLIC_GUARD_DEBUG === '1');
 
 async function handleLanding(request: NextRequest) {
-  const supabase = await createClient();
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll();
+        },
+        setAll() {
+          // Session refresh cookies: not applied here; landing only reads session and redirects.
+        },
+      },
+    }
+  );
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
@@ -37,15 +51,15 @@ async function handleLanding(request: NextRequest) {
     (redirectTo.startsWith('/app/') || redirectTo === '/onboarding' || redirectTo === '/launcher' || redirectTo.startsWith('/auth/'));
   const destination = safeRedirect ? redirectTo : '/app/dashboard';
   if (GUARD_DEBUG) console.log('[GUARD] landing path=/api/auth/landing session=true org_id=' + membership.org_id + ' onboarded=true reason=set cookie redirect=' + destination);
-  const res = NextResponse.redirect(new URL(destination, request.url));
-  res.cookies.set(ACTIVE_ORG_COOKIE, membership.org_id, {
+  const redirectRes = NextResponse.redirect(new URL(destination, request.url));
+  redirectRes.cookies.set(ACTIVE_ORG_COOKIE, membership.org_id, {
     path: '/',
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
     maxAge: COOKIE_MAX_AGE,
   });
-  return res;
+  return redirectRes;
 }
 
 /**

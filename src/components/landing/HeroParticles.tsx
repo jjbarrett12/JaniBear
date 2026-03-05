@@ -14,7 +14,7 @@ export function HeroParticles() {
 
   return (
     <div
-      className="hero-particles-layer absolute inset-0 overflow-hidden pointer-events-none"
+      className="hero-particles-layer absolute inset-0 z-0 overflow-hidden pointer-events-none"
       aria-hidden
       style={{ clipPath: 'inset(0 0 40% 0)' }}
     >

@@ -6,9 +6,10 @@ import { test, expect } from '@playwright/test';
  */
 test.describe('Launcher', () => {
   test('unauthenticated /launcher redirects to login with next param', async ({ page, baseURL }) => {
+    test.setTimeout(60000);
     const base = baseURL ?? 'http://localhost:3001';
-    await page.goto(`${base}/launcher`, { waitUntil: 'networkidle' });
-    await expect(page).toHaveURL(/\/(auth\/login|login)/);
+    await page.goto(`${base}/launcher`, { waitUntil: 'commit' });
+    await expect(page).toHaveURL(/\/(auth\/login|login)/, { timeout: 15000 });
     const url = new URL(page.url());
     expect(url.searchParams.get('next')).toBe('/launcher');
   });

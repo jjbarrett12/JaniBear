@@ -39,7 +39,7 @@ export function Hero() {
         <HeroParticles />
       )}
 
-      <div className="relative container mx-auto px-4 max-w-6xl flex flex-col items-center pt-0">
+      <div className="relative z-10 container mx-auto px-4 max-w-6xl flex flex-col items-center pt-0">
         <h1
           id="hero-heading"
           className="text-center max-w-4xl mx-auto font-heading text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white tracking-tight hero-headline"

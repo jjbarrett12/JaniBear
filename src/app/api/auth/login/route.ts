@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
 
   const landingPath =
     redirectParam?.startsWith('/') && !redirectParam.includes('//') &&
-    (redirectParam.startsWith('/app/') || redirectParam === '/onboarding' || redirectParam.startsWith('/auth/'))
+    (redirectParam.startsWith('/app/') || redirectParam === '/onboarding' || redirectParam === '/launcher' || redirectParam.startsWith('/auth/'))
       ? `/api/auth/landing?redirect=${encodeURIComponent(redirectParam)}`
       : '/api/auth/landing';
   const successRedirect = NextResponse.redirect(new URL(landingPath, baseUrl));

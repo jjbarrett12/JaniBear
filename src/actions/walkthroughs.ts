@@ -2,7 +2,8 @@
 
 import { createClient } from '@/lib/supabase/server';
 import { requireOrg } from '@/lib/auth';
-import { requirePermission } from '@/lib/permissions';
+import { requirePermission } from '@/lib/authz';
+import { PERMISSIONS } from '@/lib/permissions';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
@@ -15,8 +16,8 @@ const createWalkthroughSchema = z.object({
 });
 
 export async function createWalkthrough(formData: FormData) {
-  await requirePermission('view_kpis');
   const org = await requireOrg();
+  await requirePermission(PERMISSIONS.DASHBOARD_SALES_VIEW, org.org_id);
   const supabase = await createClient();
   
   const rawData = {
@@ -49,13 +50,25 @@ export async function createWalkthrough(formData: FormData) {
 }
 
 export async function updateWalkthroughStatus(id: string, status: string) {
-  await requirePermission('view_kpis');
+  const org = await requireOrg();
+  await requirePermission(PERMISSIONS.DASHBOARD_SALES_VIEW, org.org_id);
   const supabase = await createClient();
-  
+
+  const { data: row, error: fetchErr } = await supabase
+    .from('walkthroughs')
+    .select('id, org_id')
+    .eq('id', id)
+    .eq('org_id', org.org_id)
+    .maybeSingle();
+  if (fetchErr || !row) {
+    throw new Error('Walkthrough not found or access denied');
+  }
+
   const { error } = await supabase
     .from('walkthroughs')
     .update({ status, completed_at: status === 'completed' ? new Date().toISOString() : null })
-    .eq('id', id);
+    .eq('id', id)
+    .eq('org_id', org.org_id);
 
   if (error) throw error;
   revalidatePath(`/app/walkthroughs/${id}`);

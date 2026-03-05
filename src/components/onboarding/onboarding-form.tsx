@@ -142,6 +142,7 @@ export function OnboardingForm() {
       const { data: orgIdFromRpc, error: rpcError } = await supabase.rpc('create_org_for_signup', {
         org_name: orgName,
         owner_user_id: currentUserId,
+        p_org_type: orgType,
       });
 
       if (!rpcError && orgIdFromRpc) {

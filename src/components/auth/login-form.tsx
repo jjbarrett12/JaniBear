@@ -194,31 +194,14 @@ export function LoginForm({ defaultEmail = '', redirectParam }: LoginFormProps) 
       ) : (
         <form
           className="space-y-4"
-          onSubmit={async (e) => {
-            e.preventDefault();
-            if (isSubmitting || !email?.trim() || !password) return;
+          action="/api/auth/login"
+          method="post"
+          onSubmit={() => {
             setIsSubmitting(true);
             setSubmitError(null);
-            const formData = new FormData(e.currentTarget as HTMLFormElement);
-            if (redirect) formData.set('redirect', redirect);
-            try {
-              const res = await fetch('/api/auth/login', {
-                method: 'POST',
-                body: formData,
-                redirect: 'manual',
-              });
-              const location = res.headers.get('Location');
-              if (location) {
-                window.location.href = location;
-                return;
-              }
-              setSubmitError({ error: 'Sign-in failed. Please try again.' });
-            } catch {
-              setSubmitError({ error: 'Network error. Please try again.' });
-            }
-            setIsSubmitting(false);
           }}
         >
+          {redirect ? <input type="hidden" name="redirect" value={redirect} /> : null}
           <div className="space-y-2">
             <Label htmlFor="login-email" className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Email</Label>
             <Input

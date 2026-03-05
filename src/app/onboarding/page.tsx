@@ -2,14 +2,16 @@ import { redirect } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
+import { getOnboardingState } from '@/lib/onboarding/getOnboardingState';
 import { OnboardingForm } from '@/components/onboarding/onboarding-form';
 import { BrandName } from '@/components/ui/brand-name';
 
 export default async function OnboardingPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
+  const state = await getOnboardingState(user?.id ?? null);
 
-  if (!user) {
+  if (state === 'NEED_AUTH' || !user) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center px-4 bg-gradient-to-br from-gray-50 to-gray-100">
         <div className="text-center space-y-4 max-w-sm">
@@ -25,17 +27,8 @@ export default async function OnboardingPage() {
       </div>
     );
   }
-
-  const { data: membership } = await supabase
-    .from('org_members')
-    .select('org_id')
-    .eq('user_id', user.id)
-    .limit(1)
-    .maybeSingle();
-
-  if (membership) {
-    redirect('/auth/set-org-and-continue?next=/app/dashboard');
-  }
+  if (state === 'NEED_PLAN') redirect('/app/onboarding');
+  if (state === 'READY') redirect('/auth/set-org-and-continue?next=/app/dashboard');
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-50 to-gray-100">

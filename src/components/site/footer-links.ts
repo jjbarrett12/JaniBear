@@ -3,8 +3,6 @@
  * Use for Footer.tsx and for link validation (scripts/check-footer-links.mjs).
  * Internal routes use path only; external use full URL.
  */
-import { LOGIN_URL } from '@/lib/auth-urls';
-
 export interface FooterLink {
   label: string;
   href: string;
@@ -26,7 +24,7 @@ export const FOOTER_PRODUCT: FooterColumn = {
     { label: 'Why JANIBEAR', href: '/why-janibear' },
     { label: "Who It's For", href: '/#who-its-for' },
     { label: 'Contact', href: '/contact' },
-    { label: 'Sign In', href: LOGIN_URL },
+    { label: 'Sign In', href: '/auth/login' },
   ],
 };
 

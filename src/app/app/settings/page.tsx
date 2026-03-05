@@ -1,5 +1,8 @@
+import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
-import { requireOrg } from '@/lib/auth';
+import { requireOrg, getCurrentUserId } from '@/lib/auth';
+import { requirePermission } from '@/lib/auth/requirePermission';
+import { isAuthzError } from '@/lib/auth/errors';
 import { BrandingSettings } from '@/components/settings/branding-settings';
 import { BenchmarkingSettings } from '@/components/settings/benchmarking-settings';
 import { ProfilePhotoSettings } from '@/components/settings/profile-photo-settings';
@@ -14,6 +17,14 @@ const ADMIN_ROLES = ['owner', 'admin', 'manager'];
 
 export default async function SettingsPage() {
   const org = await requireOrg();
+  const userId = await getCurrentUserId();
+  if (!userId) redirect('/auth/login');
+  try {
+    await requirePermission({ orgId: org.org_id, userId, permission: 'settings.branding' });
+  } catch (e) {
+    if (isAuthzError(e)) redirect('/app/forbidden');
+    throw e;
+  }
   const supabase = await createClient();
   const role = (org as { role?: string }).role ?? null;
   const canManageBenchmarking = role !== null && ADMIN_ROLES.includes(role.toLowerCase());

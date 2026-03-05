@@ -19,7 +19,9 @@
     "generate-icons": "node scripts/create-icons.js",
     "test:imports": "node scripts/test-imports.js",
     "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui"
+    "test:e2e:ui": "playwright test --ui",
+    "seed:test": "tsx scripts/seedTestOrg.ts",
+    "test:all": "npm run seed:test && npm run test:e2e"
   },
   "dependencies": {
     "@babel/runtime": "^7.26.0",

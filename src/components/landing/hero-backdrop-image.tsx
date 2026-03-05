@@ -5,6 +5,7 @@ import { useState } from 'react';
 
 /** Hero background: stadium/arena only (no laptop/devices). Overlay devices are in HeroCenterImage. */
 const BACKDROP_PATHS = [
+  '/BBALL%20HERO.png',
   '/hero-stadium.png',
   '/stadium.png',
   '/stadium%20hero3.png',

@@ -46,6 +46,7 @@ const enApp = {
 
     // Sidebar
     navDashboard: 'Dashboard',
+    navCockpit: 'Cockpit',
     navUniversity: 'JANIBEAR University',
     navSales: 'Sales',
     navOperations: 'Operations',
@@ -247,6 +248,7 @@ const esOverrides: Partial<typeof enApp> = {
     today: 'Hoy',
 
     navDashboard: 'Panel',
+    navCockpit: 'Cabina',
     navUniversity: 'JANIBEAR University',
     navSales: 'Ventas',
     navOperations: 'Operaciones',

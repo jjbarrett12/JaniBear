@@ -127,12 +127,15 @@ export function LoginForm({ defaultEmail = '', redirectParam }: LoginFormProps) 
   };
 
   return (
-    <div className="rounded-2xl border border-zinc-200/90 dark:border-zinc-700/80 bg-white dark:bg-gray-900 shadow-xl shadow-zinc-200/20 dark:shadow-none p-6 sm:p-8">
+    <div
+      className="rounded-2xl border shadow-xl p-6 sm:p-8 text-zinc-100"
+      style={{ borderColor: '#3f3f46', backgroundColor: '#18181b' }}
+    >
       <div className="space-y-3">
         <Button
           type="button"
           variant="outline"
-          className="w-full h-12 rounded-xl border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-800 font-medium text-[15px]"
+          className="w-full h-12 rounded-xl border-zinc-500 bg-zinc-800 hover:bg-zinc-700 text-zinc-100 font-medium text-[15px]"
           onClick={() => handleOAuthSignIn('google')}
           disabled={!!oauthLoading || magicLinkLoading}
         >
@@ -142,7 +145,7 @@ export function LoginForm({ defaultEmail = '', redirectParam }: LoginFormProps) 
         <Button
           type="button"
           variant="outline"
-          className="w-full h-12 rounded-xl border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-800 font-medium text-[15px]"
+          className="w-full h-12 rounded-xl border-zinc-500 bg-zinc-800 hover:bg-zinc-700 text-zinc-100 font-medium text-[15px]"
           onClick={() => handleOAuthSignIn('facebook')}
           disabled={!!oauthLoading || magicLinkLoading}
         >
@@ -153,10 +156,10 @@ export function LoginForm({ defaultEmail = '', redirectParam }: LoginFormProps) 
 
       <div className="relative my-6">
         <span className="absolute inset-0 flex items-center">
-          <span className="w-full border-t border-zinc-200" />
+          <span className="w-full border-t border-zinc-600" />
         </span>
-        <span className="relative flex justify-center bg-white dark:bg-gray-900">
-          <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400 px-3">or sign in with email</span>
+        <span className="relative flex justify-center px-3" style={{ backgroundColor: '#18181b' }}>
+          <span className="text-xs font-medium text-zinc-400">or sign in with email</span>
         </span>
       </div>
 
@@ -306,7 +309,7 @@ export function LoginForm({ defaultEmail = '', redirectParam }: LoginFormProps) 
         </form>
       )}
 
-      <div className="mt-6 pt-4 border-t border-zinc-100 space-y-3 text-center">
+      <div className="mt-6 pt-4 border-t border-zinc-600 space-y-3 text-center">
         <button
           type="button"
           onClick={() => setIsMagicLink(!isMagicLink)}

@@ -28,12 +28,15 @@ export async function POST(request: NextRequest) {
     return NextResponse.redirect(loginErrorUrl);
   }
 
+  // Redirect to /auth/continue first so the browser commits session cookies before hitting landing (avoids redirect loop / throttling).
   const landingPath =
     redirectParam?.startsWith('/') && !redirectParam.includes('//') &&
     (redirectParam.startsWith('/app/') || redirectParam === '/onboarding' || redirectParam === '/launcher' || redirectParam.startsWith('/auth/'))
       ? `/api/auth/landing?redirect=${encodeURIComponent(redirectParam)}`
       : '/api/auth/landing';
-  const successRedirect = NextResponse.redirect(new URL(landingPath, baseUrl));
+  const continueUrl = new URL('/auth/continue', baseUrl);
+  continueUrl.searchParams.set('next', landingPath);
+  const successRedirect = NextResponse.redirect(continueUrl);
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

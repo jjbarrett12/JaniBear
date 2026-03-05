@@ -1,28 +1,28 @@
-import { Suspense } from 'react';
 import { redirect } from 'next/navigation';
 import Image from 'next/image';
+import Link from 'next/link';
 import { cookies } from 'next/headers';
 import { createClient } from '@/lib/supabase/server';
-import { LoginForm } from '@/components/auth/login-form';
+import { LoginAlreadySignedIn } from '@/components/auth/login-already-signed-in';
 
 export const metadata = { title: 'Sign in | JANIBEAR' };
 export const dynamic = 'force-dynamic';
 
-function safeLandingRedirect(redirectParam: string | null): string {
-  if (!redirectParam?.startsWith('/') || redirectParam.includes('//')) return '/api/auth/landing';
-  if (redirectParam.startsWith('/app/') || redirectParam === '/onboarding' || redirectParam === '/launcher' || redirectParam.startsWith('/auth/')) {
-    return `/api/auth/landing?redirect=${encodeURIComponent(redirectParam)}`;
-  }
-  return '/api/auth/landing';
-}
-
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ redirect?: string; next?: string }>;
+  searchParams: Promise<{ redirect?: string; next?: string; session?: string; error?: string }>;
 }) {
   const params = await searchParams;
   const redirectTo = params.redirect ?? params.next ?? null;
+
+  if (params.session === 'invalid') {
+    const nextUrl = redirectTo
+      ? `/auth/login?redirect=${encodeURIComponent(redirectTo)}`
+      : '/auth/login';
+    redirect(`/api/auth/clear-session?next=${encodeURIComponent(nextUrl)}`);
+  }
+
   let defaultEmail: string | undefined;
   let user: { id: string } | null = null;
   try {
@@ -33,7 +33,9 @@ export default async function LoginPage({
     // Supabase/env error — still show login form
   }
   if (user) {
-    redirect(safeLandingRedirect(redirectTo));
+    return (
+      <LoginAlreadySignedIn redirectTo={redirectTo} />
+    );
   }
   try {
     const cookieStore = await cookies();
@@ -42,9 +44,19 @@ export default async function LoginPage({
     defaultEmail = undefined;
   }
 
+  const urlError =
+    params.error === 'session'
+      ? 'Session could not be established. Please sign in again.'
+      : params.error === 'invalid'
+        ? 'Invalid email or password. Please try again.'
+        : params.error === 'missing'
+          ? 'Email and password are required.'
+          : params.error === 'unconfirmed'
+            ? 'Your email is not confirmed yet. Check your inbox (and spam) for the confirmation link.'
+            : null;
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-10 sm:py-12 relative overflow-hidden" style={{ backgroundColor: '#0a0a0f' }}>
-      {/* Background: dark backdrop */}
       <div className="absolute inset-0 bg-gradient-to-b from-zinc-900 via-zinc-950 to-black" aria-hidden />
       <div className="w-full max-w-[420px] relative z-10" style={{ isolation: 'isolate' }}>
         <div className="text-center mb-8">
@@ -64,16 +76,65 @@ export default async function LoginPage({
           <p className="text-sm mt-1" style={{ color: '#a1a1aa' }}>Sign in to your account to continue</p>
           <p className="text-xs mt-1" style={{ color: '#71717a' }}>One device per account — signing in elsewhere signs out other sessions.</p>
         </div>
-        <Suspense fallback={
-          <div className="rounded-2xl border shadow-xl p-6 sm:p-8 animate-pulse h-[320px]" style={{ borderColor: '#3f3f46', backgroundColor: '#18181b' }} aria-label="Loading sign in form" />
-        }>
-          <LoginForm defaultEmail={defaultEmail} redirectParam={redirectTo ?? undefined} />
-        </Suspense>
-        <noscript>
-          <p className="mt-6 text-center">
-            <a href="/auth/login" className="text-sm font-medium text-amber-400 hover:text-amber-300 underline">Sign in</a>
+
+        {/* Server-rendered form: native POST so session cookies are committed before redirect (see docs/AUTH_LOGIN_REGression.md). Do not replace with fetch() + client redirect. */}
+        <div className="rounded-2xl border shadow-xl p-6 sm:p-8 text-zinc-100" style={{ borderColor: '#3f3f46', backgroundColor: '#18181b' }}>
+          <form action="/api/auth/login" method="post" className="space-y-4">
+            {redirectTo ? <input type="hidden" name="redirect" value={redirectTo} /> : null}
+            {urlError && (
+              <div className="text-sm text-red-300 bg-red-950/50 p-3 rounded-xl border border-red-800">
+                {urlError}
+              </div>
+            )}
+            <div className="space-y-2">
+              <label htmlFor="login-email" className="text-sm font-medium block">Email</label>
+              <input
+                id="login-email"
+                name="email"
+                type="email"
+                placeholder="you@company.com"
+                defaultValue={defaultEmail ?? ''}
+                required
+                autoComplete="email"
+                className="w-full h-12 rounded-xl border bg-zinc-800 border-zinc-600 text-zinc-100 placeholder-zinc-500 px-4 focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+              />
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="login-password" className="text-sm font-medium block">Password</label>
+              <input
+                id="login-password"
+                name="password"
+                type="password"
+                placeholder="••••••••"
+                required
+                autoComplete="current-password"
+                className="w-full h-12 rounded-xl border bg-zinc-800 border-zinc-600 text-zinc-100 placeholder-zinc-500 px-4 focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+              />
+            </div>
+            <div className="flex items-center justify-between gap-2">
+              <label className="flex items-center gap-2 cursor-pointer select-none text-sm">
+                <input type="checkbox" name="remember_me" value="1" className="w-4 h-4 rounded border-zinc-500 text-amber-500" />
+                <span>Remember me</span>
+              </label>
+              <Link href="/auth/forgot-password" className="text-sm font-medium text-amber-400 hover:text-amber-300">
+                Forgot password?
+              </Link>
+            </div>
+            <button
+              type="submit"
+              className="w-full h-12 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-semibold text-[15px]"
+            >
+              Sign in
+            </button>
+          </form>
+          <p className="mt-6 pt-4 border-t text-center text-sm" style={{ borderColor: '#3f3f46' }}>
+            Don&apos;t have an account?{' '}
+            <Link href="/auth/signup" className="font-semibold text-amber-400 hover:text-amber-300">Sign up</Link>
           </p>
-        </noscript>
+          <p className="mt-2 text-center text-sm text-zinc-500">
+            <a href="/auth/logout" className="text-amber-400 hover:text-amber-300 underline">Sign out and try again</a>
+          </p>
+        </div>
       </div>
     </div>
   );

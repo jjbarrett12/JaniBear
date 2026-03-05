@@ -14,8 +14,8 @@ async function handleLanding(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
-    if (GUARD_DEBUG) console.log('[GUARD] landing path=/api/auth/landing session=false reason=no user redirect=login');
-    return NextResponse.redirect(new URL('/auth/login', request.url));
+    if (GUARD_DEBUG) console.log('[GUARD] landing path=/api/auth/landing session=false reason=no user redirect=clear-session');
+    return NextResponse.redirect(new URL('/api/auth/clear-session?next=/auth/login', request.url));
   }
 
   const { data: membership } = await supabase

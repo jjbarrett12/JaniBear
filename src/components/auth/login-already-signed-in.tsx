@@ -5,20 +5,19 @@ import Link from 'next/link';
 
 /**
  * Shown when user hits /auth/login but is already signed in.
- * Uses client-side redirect to /api/auth/landing to avoid a server 302 loop
- * (login -> landing -> login when cookies don't propagate on redirect).
+ * Redirect to dashboard (or requested path) so middleware can set active_org_id.
+ * Using /app/dashboard avoids relying on /api/auth/landing seeing cookies (which can be empty on some runtimes).
  */
 export function LoginAlreadySignedIn({ redirectTo }: { redirectTo: string | null }) {
-  const landingUrl =
-    !redirectTo?.startsWith('/') || redirectTo.includes('//')
-      ? '/api/auth/landing'
-      : redirectTo.startsWith('/app/') || redirectTo === '/onboarding' || redirectTo === '/launcher' || redirectTo.startsWith('/auth/')
-        ? `/api/auth/landing?redirect=${encodeURIComponent(redirectTo)}`
-        : '/api/auth/landing';
+  const destination =
+    redirectTo?.startsWith('/') && !redirectTo.includes('//') &&
+    (redirectTo.startsWith('/app/') || redirectTo === '/onboarding' || redirectTo === '/launcher' || redirectTo.startsWith('/auth/'))
+      ? redirectTo
+      : '/app/dashboard';
 
   useEffect(() => {
-    window.location.href = landingUrl;
-  }, [landingUrl]);
+    window.location.href = destination;
+  }, [destination]);
 
   const clearUrl = redirectTo
     ? `/api/auth/clear-session?next=${encodeURIComponent(`/auth/login?redirect=${encodeURIComponent(redirectTo)}`)}`
@@ -34,8 +33,8 @@ export function LoginAlreadySignedIn({ redirectTo }: { redirectTo: string | null
         </p>
         <div className="flex flex-col gap-3">
           <Link
-            href={landingUrl}
-            className="text-sm font-medium text-amber-400 hover:text-amber-300 underline"
+            href={destination}
+            className="text-sm font-medium text-indigo-400 hover:text-indigo-300 underline"
           >
             Go to dashboard
           </Link>

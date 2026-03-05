@@ -1,7 +1,8 @@
 /**
  * Post-login landing — see project root AUTH_FLOW.md.
  * Sets active_org_id and redirects to dashboard or onboarding.
- * Uses request.cookies (not next/headers) so we see the same session as the browser sent.
+ * Uses request.cookies (and Cookie header fallback) so we see the same session as the browser sent.
+ * On Vercel Edge / some runtimes, request.cookies can be empty; parsing Cookie header fixes "already signed in" → bounce back to login.
  */
 import { createServerClient } from '@supabase/ssr';
 import { NextRequest, NextResponse } from 'next/server';
@@ -10,6 +11,21 @@ const ACTIVE_ORG_COOKIE = 'active_org_id';
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
 const GUARD_DEBUG = process.env.NODE_ENV === 'development' && (process.env.NEXT_PUBLIC_AUTH_DEBUG === '1' || process.env.NEXT_PUBLIC_GUARD_DEBUG === '1');
 
+function getCookiesFromRequest(request: NextRequest): { name: string; value: string }[] {
+  const fromStore = request.cookies.getAll();
+  if (fromStore.length > 0) return fromStore;
+  const raw = request.headers.get('cookie');
+  if (!raw?.trim()) return [];
+  return raw.split(';').map((part) => {
+    const eq = part.trim().indexOf('=');
+    if (eq <= 0) return { name: '', value: '' };
+    return {
+      name: part.slice(0, eq).trim(),
+      value: part.slice(eq + 1).trim(),
+    };
+  }).filter((c) => c.name.length > 0);
+}
+
 async function handleLanding(request: NextRequest) {
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -17,7 +33,7 @@ async function handleLanding(request: NextRequest) {
     {
       cookies: {
         getAll() {
-          return request.cookies.getAll();
+          return getCookiesFromRequest(request);
         },
         setAll() {
           // Session refresh cookies: not applied here; landing only reads session and redirects.

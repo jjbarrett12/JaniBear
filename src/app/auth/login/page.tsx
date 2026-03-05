@@ -96,7 +96,7 @@ export default async function LoginPage({
                 defaultValue={defaultEmail ?? ''}
                 required
                 autoComplete="email"
-                className="w-full h-12 rounded-xl border bg-zinc-800 border-zinc-600 text-zinc-100 placeholder-zinc-500 px-4 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+                className="w-full h-12 rounded-xl border bg-zinc-800 border-zinc-600 text-zinc-100 placeholder-zinc-500 px-4 focus:outline-none focus:ring-2 focus:ring-cyan-500/50"
               />
             </div>
             <div className="space-y-2">
@@ -108,31 +108,31 @@ export default async function LoginPage({
                 placeholder="••••••••"
                 required
                 autoComplete="current-password"
-                className="w-full h-12 rounded-xl border bg-zinc-800 border-zinc-600 text-zinc-100 placeholder-zinc-500 px-4 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+                className="w-full h-12 rounded-xl border bg-zinc-800 border-zinc-600 text-zinc-100 placeholder-zinc-500 px-4 focus:outline-none focus:ring-2 focus:ring-cyan-500/50"
               />
             </div>
             <div className="flex items-center justify-between gap-2">
               <label className="flex items-center gap-2 cursor-pointer select-none text-sm">
-                <input type="checkbox" name="remember_me" value="1" className="w-4 h-4 rounded border-zinc-500 text-indigo-500" />
+                <input type="checkbox" name="remember_me" value="1" className="w-4 h-4 rounded border-zinc-500 text-cyan-500" />
                 <span>Remember me</span>
               </label>
-              <Link href="/auth/forgot-password" className="text-sm font-medium text-indigo-400 hover:text-indigo-300">
+              <Link href="/auth/forgot-password" className="text-sm font-medium text-cyan-400 hover:text-cyan-300">
                 Forgot password?
               </Link>
             </div>
             <button
               type="submit"
-              className="w-full h-12 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 hover:brightness-105 text-white font-semibold text-[15px] border-0 shadow-[0_4px_20px_rgba(99,102,241,0.4)] hover:shadow-[0_8px_32px_rgba(99,102,241,0.5)] transition-all duration-200"
+              className="w-full h-12 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-white font-semibold text-[15px] border-0 transition-colors duration-200"
             >
               Sign in
             </button>
           </form>
           <p className="mt-6 pt-4 border-t text-center text-sm" style={{ borderColor: '#3f3f46' }}>
             Don&apos;t have an account?{' '}
-            <Link href="/auth/signup" className="font-semibold text-indigo-400 hover:text-indigo-300">Sign up</Link>
+            <Link href="/auth/signup" className="font-semibold text-cyan-400 hover:text-cyan-300">Sign up</Link>
           </p>
           <p className="mt-2 text-center text-sm text-zinc-500">
-            <a href="/auth/logout" className="text-indigo-400 hover:text-indigo-300 underline">Sign out and try again</a>
+            <a href="/auth/logout" className="text-cyan-400 hover:text-cyan-300 underline">Sign out and try again</a>
           </p>
         </div>
       </div>

@@ -83,15 +83,15 @@ export function DashboardDrawer({
               <SheetDescription>{meta.description}</SheetDescription>
             </SheetHeader>
             <div className="flex flex-col h-full overflow-hidden">
-              <div className="shrink-0 flex items-center gap-3 px-6 pt-6 pb-2">
+              <div className="shrink-0 flex items-center gap-3 px-4 pt-5 pb-2 sm:px-6 sm:pt-6">
                 {Icon && (
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                    <Icon className="h-5 w-5" />
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <Icon className="h-4 w-4" />
                   </div>
                 )}
-                <div>
-                  <h2 className="text-lg font-semibold tracking-tight">{meta.title}</h2>
-                  <p className="text-sm text-muted-foreground">{meta.description}</p>
+                <div className="min-w-0">
+                  <h2 className="text-base font-semibold tracking-tight text-foreground">{meta.title}</h2>
+                  <p className="text-sm text-muted-foreground mt-0.5">{meta.description}</p>
                 </div>
               </div>
               {data && activePanel && (

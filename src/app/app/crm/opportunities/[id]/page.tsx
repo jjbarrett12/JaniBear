@@ -1,4 +1,4 @@
-import { requireOrg } from '@/lib/auth';
+import { requireOrg, getCurrentUserId } from '@/lib/auth';
 import { getOpportunityDetail } from '@/actions/crm';
 import { getLaunchPlanByOpportunity, computeReadiness, getLaunchPlanAccess } from '@/actions/launch-plan';
 import { getPlanType } from '@/lib/is-premium';
@@ -28,11 +28,12 @@ export default async function OpportunityDetailPage({
     notFound();
   }
 
+  const userId = await getCurrentUserId();
   const [plan, readiness, access, planType] = await Promise.all([
     getLaunchPlanByOpportunity(org.org_id, id),
     computeReadiness(id),
     getLaunchPlanAccess(),
-    getPlanType(org.org_id),
+    getPlanType(org.org_id, userId),
   ]);
 
   const opp = data.opportunity;

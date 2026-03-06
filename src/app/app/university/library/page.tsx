@@ -1,4 +1,4 @@
-import { requireOrg } from '@/lib/auth';
+import { requireOrg, getCurrentUserId } from '@/lib/auth';
 import { canWriteOrg } from '@/lib/auth';
 import { isPremiumPlan } from '@/lib/is-premium';
 import { createClient } from '@/lib/supabase/server';
@@ -28,7 +28,8 @@ const categoryIcons: Record<string, React.ComponentType<{ className?: string }>>
 
 export default async function UniversityLibraryPage() {
   const org = await requireOrg();
-  const premium = await isPremiumPlan(org.org_id);
+  const userId = await getCurrentUserId();
+  const premium = await isPremiumPlan(org.org_id, userId);
   const canEdit = await canWriteOrg(org.org_id);
   const supabase = await createClient();
 

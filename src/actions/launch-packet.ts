@@ -8,10 +8,9 @@ import { isOperationsEnabled } from '@/lib/is-premium';
 /** Sales: move packet to ready or sent_to_ops. Only when status is draft or review. Requires Grizzly+. */
 export async function sendLaunchPacketToOps(packetId: string): Promise<{ error?: string }> {
   const org = await requireOrg();
-  const operationsEnabled = await isOperationsEnabled(org.org_id);
-  if (!operationsEnabled) return { error: 'Launch to Operations is not available on your plan. Upgrade to Grizzly to hand off to Ops.' };
-
   const userId = await getCurrentUserId();
+  const operationsEnabled = await isOperationsEnabled(org.org_id, userId);
+  if (!operationsEnabled) return { error: 'Launch to Operations is not available on your plan. Upgrade to Grizzly to hand off to Ops.' };
   const supabase = await createClient();
 
   const { data: packet } = await supabase

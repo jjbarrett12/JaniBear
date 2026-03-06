@@ -88,6 +88,12 @@ export type AIInsight = {
   hasAlerts: boolean;
 };
 
+/** Buildings/sites scheduled for service today (for cockpit KPI strip). */
+export type BuildingsScheduledToday = number;
+
+/** Inspections due today (for cockpit KPI strip). */
+export type InspectionsDueToday = number;
+
 export type CommandCenterData = {
   revenue: RevenuePulse;
   risk: RiskAlert;
@@ -98,6 +104,10 @@ export type CommandCenterData = {
   pipeline: PipelineSnapshot;
   ai: AIInsight;
   userName: string;
+  /** For cockpit: count of buildings/sites scheduled today. */
+  buildingsScheduledToday?: number;
+  /** For cockpit: inspections due today. */
+  inspectionsDueToday?: number;
 };
 
 const ZERO_REVENUE: RevenuePulse = {
@@ -314,10 +324,12 @@ async function getCommandCenterDataInner(orgId: string): Promise<CommandCenterDa
     else yellow++;
   });
   const todayDay = now.getDay();
-  const visitsDueToday = (schedulesToday.data ?? []).filter(
+  const todaySchedules = (schedulesToday.data ?? []).filter(
     (s: { recurrence: string; weekday: number | null; start_date: string }) =>
       s.recurrence === 'weekly' ? s.weekday === todayDay : s.start_date === TODAY
-  ).length;
+  );
+  const buildingsScheduledToday = todaySchedules.length;
+  const visitsDueToday = buildingsScheduledToday;
   const accountHealth: AccountHealth = {
     pctAbove80: totalAccounts ? Math.round((above80 / totalAccounts) * 100) : 0,
     countBelow60: below60,
@@ -386,6 +398,9 @@ async function getCommandCenterDataInner(orgId: string): Promise<CommandCenterDa
 
   const userName = (profile as { full_name?: string } | null)?.full_name?.split(' ')[0] ?? 'there';
 
+  // Inspections due today: count inspections scheduled/due for today (simplified: use work orders or 0 until we have inspections.due_date)
+  const inspectionsDueToday = 0;
+
   return {
     revenue,
     risk,
@@ -396,6 +411,8 @@ async function getCommandCenterDataInner(orgId: string): Promise<CommandCenterDa
     pipeline,
     ai: ZERO_AI,
     userName,
+    buildingsScheduledToday,
+    inspectionsDueToday,
   };
 }
 

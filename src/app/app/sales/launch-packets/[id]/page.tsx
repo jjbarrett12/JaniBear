@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
-import { requireOrg } from '@/lib/auth';
+import { requireOrg, getCurrentUserId } from '@/lib/auth';
 import { notFound, redirect } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -18,7 +18,8 @@ export default async function LaunchPacketSalesDetailPage({
 }) {
   const { id } = await params;
   const org = await requireOrg();
-  const operationsEnabled = await isOperationsEnabled(org.org_id);
+  const userId = await getCurrentUserId();
+  const operationsEnabled = await isOperationsEnabled(org.org_id, userId);
   if (!operationsEnabled) redirect('/app/sales/win-loss');
 
   const supabase = await createClient();

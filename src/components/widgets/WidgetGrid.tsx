@@ -45,7 +45,7 @@ import type { ResolvedTemplates } from '@/lib/ui/layouts';
 
 const BREAKPOINTS = { lg: 1200, md: 996, sm: 768 };
 const COLS = { lg: 4, md: 2, sm: 1 };
-const ROW_HEIGHT = 120;
+const ROW_HEIGHT = 140;
 const DRAG_HANDLE = '[data-widget-drag-handle]';
 
 export interface WidgetGridProps {

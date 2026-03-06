@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { ElevatedCard } from '@/components/ui/elevated-card';
 import { cn } from '@/lib/utils';
 
 export type MetricCardProps = {
@@ -21,6 +20,46 @@ const badgeClass = {
   danger: 'bg-red-500/15 text-red-600 dark:text-red-400',
 };
 
+/**
+ * Metric content only (no card wrapper). Used inside WidgetFrame which provides the card.
+ * Single source of padding (p-4 sm:p-5) to avoid double card + cramped layout.
+ */
+function MetricCardContent({
+  title,
+  value,
+  subtitle,
+  badge,
+  children,
+  className,
+}: MetricCardProps) {
+  return (
+    <div className={cn('p-4 sm:p-5', className)}>
+      <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-1">
+        {title}
+      </p>
+      <div className="flex items-baseline justify-between gap-2">
+        <span className="font-heading text-3xl font-semibold tracking-tight text-foreground">
+          {value}
+        </span>
+        {badge && (
+          <span
+            className={cn(
+              'shrink-0 rounded-md px-2 py-0.5 text-xs font-medium',
+              badgeClass[badge.variant]
+            )}
+          >
+            {badge.label}
+          </span>
+        )}
+      </div>
+      {subtitle && (
+        <p className="mt-1 text-xs text-muted-foreground">{subtitle}</p>
+      )}
+      {children}
+    </div>
+  );
+}
+
 export function MetricCard({
   title,
   value,
@@ -30,39 +69,7 @@ export function MetricCard({
   className,
   children,
 }: MetricCardProps) {
-  const content = (
-    <ElevatedCard
-      className={cn(
-        href && 'cursor-pointer',
-        className
-      )}
-    >
-      <div className="p-5">
-        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-1">
-          {title}
-        </p>
-        <div className="flex items-baseline justify-between gap-2">
-          <span className="font-heading text-3xl font-semibold tracking-tight text-foreground">
-            {value}
-          </span>
-          {badge && (
-            <span
-              className={cn(
-                'shrink-0 rounded-md px-2 py-0.5 text-xs font-medium',
-                badgeClass[badge.variant]
-              )}
-            >
-              {badge.label}
-            </span>
-          )}
-        </div>
-        {subtitle && (
-          <p className="mt-1 text-xs text-muted-foreground">{subtitle}</p>
-        )}
-        {children}
-      </div>
-    </ElevatedCard>
-  );
+  const content = <MetricCardContent title={title} value={value} subtitle={subtitle} badge={badge} className={className}>{children}</MetricCardContent>;
 
   if (href) {
     return (

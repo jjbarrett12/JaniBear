@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
-import { requireOrg } from '@/lib/auth';
+import { requireOrg, getCurrentUserId } from '@/lib/auth';
 import Link from 'next/link';
 import { SalesPageShell } from '@/components/sales/page-shell';
 import { PageHeader } from '@/components/sales/page-header';
@@ -21,7 +21,8 @@ import { MarkAsWonButton } from '@/components/sales/mark-as-won-button';
 export default async function SalesProposalsPage() {
   const org = await requireOrg();
   const supabase = await createClient();
-  const planType = await getPlanType(org.org_id);
+  const userId = await getCurrentUserId();
+  const planType = await getPlanType(org.org_id, userId);
   const isCub = planType === 'cub';
 
   const { data: proposals } = await supabase

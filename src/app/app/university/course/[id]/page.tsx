@@ -1,4 +1,4 @@
-import { requireOrg } from '@/lib/auth';
+import { requireOrg, getCurrentUserId } from '@/lib/auth';
 import { getCourse, listEnrollmentsForUser } from '@/actions/university-training';
 import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,12 +8,14 @@ import { GraduationCap } from 'lucide-react';
 import { isPremiumPlan } from '@/lib/is-premium';
 import { UniversityCourseClient } from './university-course-client';
 
-export default async function UniversityCoursePage({ params }: { params: { id: string } }) {
+export default async function UniversityCoursePage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const org = await requireOrg();
-  const premium = await isPremiumPlan(org.org_id);
-  const { course, lessons, error } = await getCourse(params.id);
+  const userId = await getCurrentUserId();
+  const premium = await isPremiumPlan(org.org_id, userId);
+  const { course, lessons, error } = await getCourse(id);
   const { enrollments } = await listEnrollmentsForUser(org.org_id);
-  const enrollment = (enrollments ?? []).find((e) => e.course_id === params.id);
+  const enrollment = (enrollments ?? []).find((e) => e.course_id === id);
 
   if (error || !course) {
     return (

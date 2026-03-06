@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import { requireOrg } from '@/lib/auth';
+import { requireOrg, getCurrentUserId } from '@/lib/auth';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { SalesPageShell } from '@/components/sales/page-shell';
@@ -10,7 +10,8 @@ import { isOperationsEnabled } from '@/lib/is-premium';
 
 export default async function LaunchPacketsPage() {
   const org = await requireOrg();
-  const operationsEnabled = await isOperationsEnabled(org.org_id);
+  const userId = await getCurrentUserId();
+  const operationsEnabled = await isOperationsEnabled(org.org_id, userId);
   if (!operationsEnabled) redirect('/app/sales/win-loss');
 
   const supabase = await createClient();

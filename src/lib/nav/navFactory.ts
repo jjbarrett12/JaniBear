@@ -168,6 +168,7 @@ function buildOperationsSection(): NavSection {
       { href: '/app/ops/supplies', labelKey: 'navSupplies', icon: Package },
       { href: '/app/ops/contracts', labelKey: 'navContracts', icon: FileUp },
       { href: '/app/ops/command-center', labelKey: 'navCommandCenter', icon: LayoutGrid },
+      { href: '/app/ops/service-deployments', labelKey: 'navServiceDeployments', icon: Rocket },
       { href: '/app/ops/performance', labelKey: 'navOperatorPerformance', icon: Trophy },
       { href: '/app/ops/risk', labelKey: 'navAccountsAtRisk', icon: AlertCircle },
       { href: '/app/ops/settings/risk', labelKey: 'navRiskSettings', icon: Shield },

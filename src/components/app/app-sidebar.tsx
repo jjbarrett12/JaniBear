@@ -24,10 +24,11 @@ export async function AppSidebar({
   const { data: { user } } = await supabase.auth.getUser();
   const org = await requireOrg();
 
+  const userId = user?.id ?? null;
   const [organizationResult, premium, planType, navAlertsFetched, memberRow] = await Promise.all([
     supabase.from('organizations').select('logo_url').eq('id', org.org_id).maybeSingle(),
-    isPremiumPlan(org.org_id),
-    getPlanType(org.org_id),
+    isPremiumPlan(org.org_id, userId),
+    getPlanType(org.org_id, userId),
     navAlertsProp == null ? getNavAlertCounts() : Promise.resolve(navAlertsProp),
     supabase.from('org_members').select('role').eq('org_id', org.org_id).eq('user_id', user?.id ?? '').maybeSingle(),
   ]);

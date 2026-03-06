@@ -1,4 +1,4 @@
-import { requireOrg } from '@/lib/auth';
+import { requireOrg, getCurrentUserId } from '@/lib/auth';
 import { isPremiumPlan } from '@/lib/is-premium';
 import { getCourseBySlug, getAllCourseSlugs } from '@/lib/university/courses';
 import { notFound } from 'next/navigation';
@@ -25,7 +25,8 @@ export default async function UniversityCoursePage({
 }) {
   const { slug } = await params;
   const org = await requireOrg();
-  const premium = await isPremiumPlan(org.org_id);
+  const userId = await getCurrentUserId();
+  const premium = await isPremiumPlan(org.org_id, userId);
   const course = getCourseBySlug(slug);
 
   if (!course) notFound();

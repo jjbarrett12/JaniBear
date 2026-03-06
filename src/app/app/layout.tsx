@@ -1,6 +1,7 @@
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { requireOrg } from '@/lib/auth';
+import { requireOrg, getCurrentUserId } from '@/lib/auth';
+import { getIsPlatformAdmin } from '@/lib/platform-guard';
 import { AppSidebar } from '@/components/app/app-sidebar';
 import { AppMainWithHeader } from '@/components/app/app-main-with-header';
 import { BottomNav } from '@/components/app/bottom-nav';
@@ -52,7 +53,9 @@ export default async function AppLayout({
     pathname.startsWith('/app/upgrade') ||
     pathname.startsWith('/app/onboarding') ||
     pathname.startsWith('/app/onboarding/');
-  if (billingLocked && !allowedWhenLocked) {
+  const userId = await getCurrentUserId();
+  const isSuperAdmin = userId ? await getIsPlatformAdmin(userId) : false;
+  if (billingLocked && !allowedWhenLocked && !isSuperAdmin) {
     redirect('/app/billing');
   }
 

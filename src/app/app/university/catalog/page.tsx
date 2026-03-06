@@ -1,4 +1,4 @@
-import { requireOrg } from '@/lib/auth';
+import { requireOrg, getCurrentUserId } from '@/lib/auth';
 import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -8,7 +8,8 @@ import { isPremiumPlan } from '@/lib/is-premium';
 
 export default async function UniversityCatalogPage() {
   const org = await requireOrg();
-  const premium = await isPremiumPlan(org.org_id);
+  const userId = await getCurrentUserId();
+  const premium = await isPremiumPlan(org.org_id, userId);
   const { courses } = await listCourses(org.org_id);
   const { enrollments } = await listEnrollmentsForUser(org.org_id);
   const enrollmentByCourse = new Map((enrollments ?? []).map((e) => [e.course_id, e]));

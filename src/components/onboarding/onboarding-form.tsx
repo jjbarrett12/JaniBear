@@ -36,9 +36,9 @@ function SignOutLink() {
       type="button"
       onClick={handleSignOut}
       disabled={signingOut}
-      className="font-medium text-amber-600 hover:text-amber-700 disabled:opacity-50"
+      className="text-slate-600 hover:text-slate-900 font-medium disabled:opacity-50 transition-colors"
     >
-      {signingOut ? 'Signing out…' : 'Sign out and go to sign in'}
+      {signingOut ? 'Signing out…' : 'Sign out'}
     </button>
   );
 }
@@ -147,7 +147,7 @@ export function OnboardingForm() {
 
       if (!rpcError && orgIdFromRpc) {
         // RPC succeeded (051 applied); org and membership created. Optionally set org_type if column exists (e.g. via separate update by app if allowed).
-        window.location.href = '/auth/set-org-and-continue?next=/app/dashboard';
+        window.location.href = '/auth/set-org-and-continue?next=/onboarding/import';
         return;
       }
 
@@ -176,7 +176,7 @@ export function OnboardingForm() {
         throw new Error(`Membership: ${memberError.message}`);
       }
 
-      window.location.href = '/auth/set-org-and-continue?next=/app/dashboard';
+      window.location.href = '/auth/set-org-and-continue?next=/onboarding/import';
       return;
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Failed to create organization';
@@ -188,11 +188,11 @@ export function OnboardingForm() {
 
   if (isCheckingAuth) {
     return (
-      <Card>
-        <CardContent className="p-8">
-          <div className="flex flex-col items-center justify-center space-y-4">
-            <Loader2 className="h-8 w-8 animate-spin text-amber-500" />
-            <p className="text-gray-600">Loading...</p>
+      <Card className="rounded-xl border-slate-200/90 bg-white shadow-sm">
+        <CardContent className="p-10">
+          <div className="flex flex-col items-center justify-center gap-4">
+            <Loader2 className="h-8 w-8 animate-spin text-slate-400" />
+            <p className="text-sm text-slate-600">Loading…</p>
           </div>
         </CardContent>
       </Card>
@@ -200,17 +200,17 @@ export function OnboardingForm() {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Create Organization</CardTitle>
-        <CardDescription>
-          Set up your organization to start managing inspections
+    <Card className="rounded-xl border-slate-200/90 bg-white shadow-sm">
+      <CardHeader className="space-y-1 pb-2">
+        <CardTitle className="text-lg font-semibold tracking-tight text-slate-900">Create your organization</CardTitle>
+        <CardDescription className="text-slate-600">
+          Set up your organization to start managing inspections and crews.
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-6">
+      <CardContent className="pt-2">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-2">
-            <Label>I am signing up as</Label>
+            <Label className="text-slate-700 font-medium">I am signing up as</Label>
             <Select
               value={orgType}
               onValueChange={(v) => setOrgType(v as OnboardingOrgType)}
@@ -227,12 +227,12 @@ export function OnboardingForm() {
                 ))}
               </SelectContent>
             </Select>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-slate-500">
               This determines your dashboard and features (Owner/Operator, Franchisee, or Franchisor).
             </p>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="orgName">Organization Name</Label>
+            <Label htmlFor="orgName" className="text-slate-700 font-medium">Organization name</Label>
             <Input
               id="orgName"
               type="text"
@@ -245,7 +245,7 @@ export function OnboardingForm() {
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="fullName">Your Full Name</Label>
+            <Label htmlFor="fullName" className="text-slate-700 font-medium">Your full name</Label>
             <Input
               id="fullName"
               type="text"
@@ -257,25 +257,24 @@ export function OnboardingForm() {
           </div>
           
           {error && (
-            <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-md">
+            <div className="rounded-lg border border-red-200 bg-red-50/80 px-4 py-3 text-sm text-red-700" role="alert">
               {error}
             </div>
           )}
-          
-          <Button type="submit" className="w-full h-14 text-lg" disabled={isLoading} size="lg">
+
+          <Button type="submit" className="w-full h-12 font-medium" disabled={isLoading} size="lg">
             {isLoading ? (
               <>
-                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                Creating...
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Creating organization…
               </>
             ) : (
-              'Create Organization'
+              'Create organization'
             )}
           </Button>
 
-          <p className="text-center text-sm text-zinc-500 pt-2">
-            Need to use a different account?{' '}
-            <SignOutLink />
+          <p className="text-center text-xs text-slate-500 pt-1">
+            Need a different account? <SignOutLink />
           </p>
         </form>
       </CardContent>

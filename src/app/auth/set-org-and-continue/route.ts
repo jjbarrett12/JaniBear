@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
   const safeNext =
     nextParam.startsWith('/') &&
     !nextParam.includes('//') &&
-    (nextParam.startsWith('/app/') || nextParam === '/onboarding' || nextParam.startsWith('/auth/'));
+    (nextParam.startsWith('/app/') || nextParam.startsWith('/onboarding') || nextParam.startsWith('/auth/'));
   const target = safeNext ? nextParam : '/app/dashboard';
 
   const supabase = await createClient();

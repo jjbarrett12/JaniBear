@@ -13,6 +13,8 @@ import { getImpersonateOrgId } from '@/actions/platform';
 import { resolveShellForOrg, isFranchiseeEnrolled } from '@/lib/shell';
 import { getProGearEnabled } from '@/lib/pro-gear-enabled';
 import { ServiceWorkerRegister } from '@/components/app/ServiceWorkerRegister';
+import { getOrganizationTrialState } from '@/lib/trial/getOrganizationTrialState';
+import { enforceTrialExpiration } from '@/lib/trial/enforceTrialExpiration';
 
 // Ensure layout always runs with current request (cookies) on client-side navigation
 export const dynamic = 'force-dynamic';
@@ -30,13 +32,16 @@ export default async function AppLayout({
   const pathname = (await headers()).get('x-pathname') ?? '';
 
   const [organizationResult, orgSettingsResult, navAlerts, shell, franchiseeEnrolled, proGearEnabled] = await Promise.all([
-    supabase.from('organizations').select('name, primary_color, secondary_color, logo_url, slug, billing_status, past_due_since, locked_since').eq('id', org.org_id).maybeSingle(),
+    supabase.from('organizations').select('name, primary_color, secondary_color, logo_url, slug, billing_status, past_due_since, locked_since, trial_started_at, trial_ends_at, trial_mode').eq('id', org.org_id).maybeSingle(),
     supabase.from('org_settings').select('display_name, logo_url, primary_color, accent_color').eq('org_id', org.org_id).maybeSingle(),
     getNavAlertCounts(),
     resolveShellForOrg(org.org_id),
     isFranchiseeEnrolled(org.org_id),
     getProGearEnabled(org.org_id),
   ]);
+
+  await enforceTrialExpiration(supabase, org.org_id);
+  const trialState = await getOrganizationTrialState(supabase, org.org_id);
 
   const billing = organizationResult.data;
   const billingLocked =
@@ -93,7 +98,7 @@ export default async function AppLayout({
       <ShellGuard shell={shell} />
       <div className="min-h-screen bg-background">
         <AppSidebar navAlerts={navAlerts} shell={shell} franchiseeEnrolled={franchiseeEnrolled} proGearEnabled={proGearEnabled} />
-        <AppMainWithHeader orgName={orgName} navAlerts={navAlerts} impersonatingOrgName={impersonatingOrgName}>
+        <AppMainWithHeader orgName={orgName} navAlerts={navAlerts} impersonatingOrgName={impersonatingOrgName} trialState={trialState}>
           {children}
         </AppMainWithHeader>
         <BottomNav navAlerts={navAlerts} shell={shell} />

@@ -8,6 +8,8 @@ import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Building2, Edit } from 'lucide-react';
 import { AccountDetailTabs } from '@/components/accounts/account-detail-tabs';
 import { AccountLifecycleRibbon } from '@/components/accounts/account-lifecycle-ribbon';
+import { RecommendedOperatorsPanel } from '@/components/accounts/RecommendedOperatorsPanel';
+import { suggestOperator } from '@/lib/accounts/suggestOperator';
 
 export default async function AccountDetailPage({
   params,
@@ -51,6 +53,32 @@ export default async function AccountDetailPage({
       : account.status !== 'active' && launchPacketStatus && ['draft', 'review'].includes(launchPacketStatus)
         ? 'sales'
         : null;
+
+  const { data: riskSnapshot } = await supabase
+    .from('account_risk_snapshots')
+    .select('risk_level, risk_score, reasons, status')
+    .eq('org_id', org.org_id)
+    .eq('account_id', id)
+    .eq('status', 'active')
+    .maybeSingle();
+  const showRiskBanner =
+    riskSnapshot &&
+    (riskSnapshot.risk_level === 'high' || riskSnapshot.risk_level === 'critical');
+
+  let suggestedOperators: Awaited<ReturnType<typeof suggestOperator>> | null = null;
+  const facilityWithCoords = facilities?.find(
+    (f: { latitude?: number | null; longitude?: number | null }) =>
+      f.latitude != null && f.longitude != null
+  ) as { latitude: number; longitude: number; territory_id?: string | null } | undefined;
+  if (facilityWithCoords) {
+    suggestedOperators = await suggestOperator({
+      org_id: org.org_id,
+      account_lat: facilityWithCoords.latitude,
+      account_lng: facilityWithCoords.longitude,
+      territory_id: facilityWithCoords.territory_id ?? null,
+      limit: 5,
+    });
+  }
 
   return (
     <div className="space-y-6">
@@ -98,6 +126,22 @@ export default async function AccountDetailPage({
         accountStatus={account.status as 'active' | 'inactive'}
         launchPacketStatus={launchPacketStatus}
         nextAction={nextAction}
+      />
+
+      {showRiskBanner && (
+        <AccountRiskBanner
+          accountId={id}
+          accountName={account.name}
+          riskLevel={riskSnapshot!.risk_level as string}
+          riskScore={riskSnapshot!.risk_score as number}
+          topReason={(riskSnapshot!.reasons as string[])?.[0] ?? null}
+        />
+      )}
+
+      <RecommendedOperatorsPanel
+        orgId={org.org_id}
+        accountId={id}
+        initialSuggestions={suggestedOperators ?? null}
       />
 
       <AccountDetailTabs account={account} facilities={facilities ?? []} />

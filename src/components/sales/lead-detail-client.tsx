@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { setLeadStatusAction } from '@/actions/leads';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -53,17 +54,8 @@ export function LeadDetailClient({
 
   const handleStatusChange = async (newStatus: string) => {
     setSavingStatus(true);
-    const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-    const { data: membership } = await supabase.from('org_members').select('org_id').eq('user_id', user.id).single();
-    if (!membership?.org_id) return;
-    await supabase
-      .from('leads')
-      .update({ status: newStatus, updated_at: new Date().toISOString() })
-      .eq('id', leadId)
-      .eq('org_id', membership.org_id);
-    setStatus(newStatus);
+    const res = await setLeadStatusAction(leadId, newStatus);
+    if (res.ok) setStatus(newStatus);
     setSavingStatus(false);
     router.refresh();
   };
@@ -86,7 +78,8 @@ export function LeadDetailClient({
       notes: apptNotes || null,
       status: 'scheduled',
     });
-    await supabase.from('leads').update({ status: 'walkthrough_scheduled', updated_at: new Date().toISOString() }).eq('id', leadId).eq('org_id', membership.org_id);
+    await setLeadStatusAction(leadId, 'walkthrough_scheduled');
+    setStatus('walkthrough_scheduled');
     setApptDate('');
     setApptTime('');
     setApptLocation('');

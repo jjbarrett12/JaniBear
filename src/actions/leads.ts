@@ -204,18 +204,35 @@ export async function convertLeadToOpportunity(
   return { ok: true, opportunityId: opportunity.id, accountId };
 }
 
-/** Set lead status (e.g. 'lost' for Disqualify). */
+/** Set lead status (e.g. 'lost' for Disqualify). Updates rep_lead_counters when status bucket changes. */
 export async function setLeadStatusAction(leadId: string, status: string): Promise<{ ok: boolean; error?: string }> {
   const org = await requireOrg();
   const supabase = await createClient();
   const allowed = ['new', 'contacted', 'walkthrough_scheduled', 'walkthrough_done', 'proposal_sent', 'won', 'lost'];
   if (!allowed.includes(status)) return { ok: false, error: 'Invalid status' };
+  const { data: lead } = await supabase
+    .from('leads')
+    .select('assigned_user_id, status')
+    .eq('id', leadId)
+    .eq('org_id', org.org_id)
+    .single();
+  const prevStatus = (lead as { status?: string } | null)?.status ?? null;
+  const assignee = (lead as { assigned_user_id?: string | null } | null)?.assigned_user_id ?? null;
   const { error } = await supabase
     .from('leads')
     .update({ status, updated_at: new Date().toISOString() })
     .eq('id', leadId)
     .eq('org_id', org.org_id);
   if (error) return { ok: false, error: error.message };
+  if (assignee && (prevStatus !== status)) {
+    const { updateRepLeadCounters } = await import('@/lib/leads/capacity/updateRepLeadCounters');
+    await updateRepLeadCounters(org.org_id, {
+      prevAssigneeId: assignee,
+      newAssigneeId: assignee,
+      prevStatus,
+      newStatus: status,
+    });
+  }
   revalidatePath('/app/sales/leads');
   revalidatePath(`/app/sales/leads/${leadId}`);
   return { ok: true };

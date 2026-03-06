@@ -1,21 +1,42 @@
-import { redirect } from 'next/navigation';
-import { requireOrg } from '@/lib/auth';
-import { getUserContext } from '@/lib/user-context';
+import Link from 'next/link';
+import { requireOrg, getCurrentUserId } from '@/lib/auth';
+import { headers } from 'next/headers';
+import { getSettingsPermissions } from '@/lib/auth/permission-helpers';
 import { createClient } from '@/lib/supabase/server';
 import { AiControlCenterPage } from '@/components/ai/AiControlCenterPage';
 import type { AiOrgConfigRow, AiModuleStateRow, AiAutomationRuleRow } from '@/app/app/settings/ai/types';
-
-const ADMIN_ROLES = ['owner', 'admin', 'manager'];
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Lock } from 'lucide-react';
 
 export default async function AiSettingsPage() {
   const org = await requireOrg();
+  const userId = await getCurrentUserId();
+  if (!userId) return null;
+  const pathname = (await headers()).get('x-pathname') ?? '/app/settings/ai';
+  const permissions = await getSettingsPermissions(org.org_id, userId, pathname);
+  const canManageAi = permissions['settings.org.edit'] ?? false;
+
+  if (!canManageAi) {
+    return (
+      <div className="space-y-6">
+        <Card>
+          <CardContent className="flex flex-col items-center justify-center py-12 text-center">
+            <Lock className="h-12 w-12 text-muted-foreground mb-4" />
+            <h2 className="text-lg font-semibold text-foreground">You don&apos;t have access to this section</h2>
+            <p className="text-sm text-muted-foreground mt-2 max-w-md">
+              AI Control Center is restricted. Ask an owner or admin to grant you access.
+            </p>
+            <Button asChild variant="secondary" className="mt-4">
+              <Link href="/app/settings">Back to Settings</Link>
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   const orgId = org.org_id;
-
-  const { context } = await getUserContext();
-  const role = (context.role ?? context.effectiveRole ?? '').toLowerCase();
-  const canManage = ADMIN_ROLES.includes(role) || context.capabilities['ai_settings.manage'];
-  if (!canManage) redirect('/app/settings');
-
   const supabase = await createClient();
   const period = new Date().toISOString().slice(0, 7);
 

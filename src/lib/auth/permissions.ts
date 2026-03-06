@@ -1,8 +1,8 @@
 /**
  * RBAC permission keys (v1) — single source of truth.
  * Server/DB enforce; UI hides by permission.
+ * settings.view / settings.profile.edit: everyone; rest gated by role.
  */
-
 export const PERMISSIONS = [
   'org.read',
   'org.update',
@@ -39,9 +39,47 @@ export const PERMISSIONS = [
   'dashboard.sales',
   'dashboard.ops',
   'dashboard.exec',
+  'settings.view',
+  'settings.profile.edit',
+  'settings.org.view',
+  'settings.org.edit',
+  'settings.billing.view',
+  'settings.billing.manage',
+  'settings.users.view',
+  'settings.users.manage',
+  'settings.roles.manage',
+  'settings.integrations.manage',
   'settings.branding',
   'settings.integrations',
   'settings.ai',
+  'maps.read',
+  'maps.write',
+  'lead.read',
+  'lead.write',
+  'lead.import',
+  'lead.admin',
+  'ops.read',
+  'ops.write',
+  'accounts.read',
+  'accounts.write',
+  'coverage.read',
+  'coverage.write',
+  'coverage.admin',
 ] as const;
 
 export type PermissionKey = (typeof PERMISSIONS)[number];
+
+/** Settings-specific keys for tab visibility and mutation gating. */
+export const SETTINGS_PERMISSION_KEYS = [
+  'settings.view',
+  'settings.profile.edit',
+  'settings.org.view',
+  'settings.org.edit',
+  'settings.billing.view',
+  'settings.billing.manage',
+  'settings.users.view',
+  'settings.users.manage',
+  'settings.roles.manage',
+  'settings.integrations.manage',
+] as const;
+export type SettingsPermissionKey = (typeof SETTINGS_PERMISSION_KEYS)[number];

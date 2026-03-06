@@ -1,6 +1,11 @@
 /**
  * Navigation factory: builds sidebar sections from org_type, role, and feature flags.
  * Single codebase; no forking. Enforces Sales vs Ops and franchisee/franchisor visibility.
+ *
+ * Best-practice changes vs your current version:
+ * - No mutation (no .push on nested arrays). Everything is immutable and deterministic.
+ * - No unsafe assumptions (items is optional). We always use a safe fallback.
+ * - Feature-flag additions are appended via array spreads.
  */
 import type { AppTranslationKey } from '@/lib/app-translations';
 import type { NavAlertCounts } from '@/actions/nav-alerts';
@@ -17,7 +22,6 @@ import {
   Settings,
   TrendingUp,
   ListChecks,
-  Award,
   FileSearch,
   Package,
   Wallet,
@@ -34,7 +38,6 @@ import {
   UserCheck,
   Briefcase,
   LayoutGrid,
-  LineChart,
   BarChart2,
   QrCode,
   CalendarCheck,
@@ -105,9 +108,8 @@ function buildExecutiveSection(): NavSection {
   };
 }
 
-/** Sales section: Leads, Accounts (Prospects), Contacts, Territories, Opportunities, Walkthroughs, Proposals. */
+/** Sales section: Leads, Accounts (Prospects), Contacts, Opportunities, Walkthroughs, Proposals, Maps. */
 function buildSalesSection(input: NavFactoryInput): NavSection {
-  const { franchiseeEnrolled } = input;
   const items: NavItem[] = [
     { href: '/app/sales/leads', labelKey: 'navLeads', icon: TrendingUp },
     { href: '/app/sales/accounts', labelKey: 'navAccountsProspects', icon: Building2 },
@@ -115,10 +117,12 @@ function buildSalesSection(input: NavFactoryInput): NavSection {
     { href: '/app/sales/pipeline', labelKey: 'navOpportunities', icon: LayoutDashboard },
     { href: '/app/sales/walkthroughs', labelKey: 'navWalkthroughs', icon: FileSearch },
     { href: '/app/sales/proposals', labelKey: 'navProposals', icon: Calculator },
+    { href: '/app/map', labelKey: 'navMap', icon: Map },
+    ...(input.franchiseeEnrolled
+      ? [{ href: '/app/opportunities/network', labelKey: 'navNetworkOpportunities', icon: Briefcase } satisfies NavItem]
+      : []),
   ];
-  if (franchiseeEnrolled) {
-    items.push({ href: '/app/opportunities/network', labelKey: 'navNetworkOpportunities', icon: Briefcase });
-  }
+
   return {
     id: 'sales',
     labelKey: 'navGrowth',
@@ -128,7 +132,7 @@ function buildSalesSection(input: NavFactoryInput): NavSection {
 }
 
 /** Launch section: the bridge between Sales and Operations. */
-function buildLaunchSection(input: NavFactoryInput): NavSection {
+function buildLaunchSection(): NavSection {
   return {
     id: 'launch',
     labelKey: 'navLaunch',
@@ -146,8 +150,8 @@ function buildLaunchSection(input: NavFactoryInput): NavSection {
   };
 }
 
-/** Operations section: Accounts (Active), Sites, Map, Crews, Schedules, Inspections, QC, Issues, Tasks, Supplies, Contracts, Reporting. */
-function buildOperationsSection(input: NavFactoryInput): NavSection {
+/** Operations section: Accounts (Active), Sites, Crews, Schedules, Inspections, QC, Issues, Tasks, Supplies, Contracts, Reporting, Maps. */
+function buildOperationsSection(): NavSection {
   return {
     id: 'operations',
     labelKey: 'navOperations',
@@ -163,14 +167,18 @@ function buildOperationsSection(input: NavFactoryInput): NavSection {
       { href: '/app/ops/tasks', labelKey: 'navMyTasks', icon: ClipboardCheck },
       { href: '/app/ops/supplies', labelKey: 'navSupplies', icon: Package },
       { href: '/app/ops/contracts', labelKey: 'navContracts', icon: FileUp },
+      { href: '/app/ops/command-center', labelKey: 'navCommandCenter', icon: LayoutGrid },
+      { href: '/app/ops/performance', labelKey: 'navOperatorPerformance', icon: Trophy },
+      { href: '/app/ops/risk', labelKey: 'navAccountsAtRisk', icon: AlertCircle },
+      { href: '/app/ops/settings/risk', labelKey: 'navRiskSettings', icon: Shield },
       { href: '/app/kpis', labelKey: 'navReporting', icon: BarChart3 },
+      { href: '/app/map', labelKey: 'navMap', icon: Map },
     ],
   };
 }
 
 /** System section: Admin Dashboard, Commission, Renewals, Automations, Users, Invites, Roles, Audit, AI Settings, Training, Pro Gear, Organization. */
 function buildSystemSection(input: NavFactoryInput): NavSection {
-  const { orgType } = input;
   const base: NavItem[] = [
     { href: '/app/admin', labelKey: 'navAdminDashboard', icon: LayoutDashboard },
     { href: '/app/admin', labelKey: 'navCommissionDashboard', icon: Percent },
@@ -185,10 +193,10 @@ function buildSystemSection(input: NavFactoryInput): NavSection {
     { href: '/app/pro-gear', labelKey: 'navProGear', icon: ShoppingBag },
     { href: '/app/settings', labelKey: 'navOrganization', icon: Settings },
   ];
+
   const items =
-    orgType === 'franchisee'
-      ? base.filter((i) => i.labelKey !== 'navOrganization')
-      : [...base];
+    input.orgType === 'franchisee' ? base.filter((i) => i.labelKey !== 'navOrganization') : base;
+
   return {
     id: 'system',
     labelKey: 'navSystem',
@@ -199,20 +207,29 @@ function buildSystemSection(input: NavFactoryInput): NavSection {
 
 /** Franchisor: Network + Franchise + Control; includes KPI Dashboard. */
 function buildFranchisorSections(input: NavFactoryInput): NavSection[] {
-  const sections: NavSection[] = [
+  const networkSalesItem: NavItem = {
+    href: '/app/opportunities/network',
+    labelKey: 'navNetworkOpportunities',
+    icon: Briefcase,
+  };
+
+  const franchisorExecutiveItems: NavItem[] = [
+    { href: '/app/franchise', labelKey: 'navPlacementBoard', icon: LayoutDashboard },
+    { href: '/app/franchise/listings', labelKey: 'navListings', icon: LayoutList },
+    { href: '/app/franchise/interests', labelKey: 'navInterests', icon: ListTodo },
+    { href: '/app/franchise/awards', labelKey: 'navAwards', icon: Trophy },
+    { href: '/app/franchise/memberships', labelKey: 'navMemberships', icon: UserCheck },
+    { href: '/app/kpis', labelKey: 'navKpiDashboard', icon: BarChart3 },
+    { href: '/app/benchmarks', labelKey: 'navBenchmarks', icon: BarChart2 },
+    { href: '/app/alerts', labelKey: 'navAlerts', icon: AlertCircle },
+    ...(input.featureFlags?.franchisor_controls_sales ? [networkSalesItem] : []),
+  ];
+
+  return [
     {
       id: 'franchisor',
       labelKey: 'navExecutive',
-      items: [
-        { href: '/app/franchise', labelKey: 'navPlacementBoard', icon: LayoutDashboard },
-        { href: '/app/franchise/listings', labelKey: 'navListings', icon: LayoutList },
-        { href: '/app/franchise/interests', labelKey: 'navInterests', icon: ListTodo },
-        { href: '/app/franchise/awards', labelKey: 'navAwards', icon: Trophy },
-        { href: '/app/franchise/memberships', labelKey: 'navMemberships', icon: UserCheck },
-        { href: '/app/kpis', labelKey: 'navKpiDashboard', icon: BarChart3 },
-        { href: '/app/benchmarks', labelKey: 'navBenchmarks', icon: BarChart2 },
-        { href: '/app/alerts', labelKey: 'navAlerts', icon: AlertCircle },
-      ],
+      items: franchisorExecutiveItems,
     },
     {
       id: 'system',
@@ -223,14 +240,6 @@ function buildFranchisorSections(input: NavFactoryInput): NavSection[] {
       ],
     },
   ];
-  if (input.featureFlags?.franchisor_controls_sales) {
-    sections[0].items.push({
-      href: '/app/opportunities/network',
-      labelKey: 'navNetworkOpportunities',
-      icon: Briefcase,
-    });
-  }
-  return sections;
 }
 
 /**
@@ -240,17 +249,15 @@ function buildFranchisorSections(input: NavFactoryInput): NavSection[] {
  * - Franchisor: Network + Franchise + Control only (no Sales/Launch/Ops).
  */
 export function buildNavSections(input: NavFactoryInput): NavSection[] {
-  const { orgType } = input;
-
-  if (orgType === 'franchisor') {
+  if (input.orgType === 'franchisor') {
     return buildFranchisorSections(input);
   }
 
   return [
     buildExecutiveSection(),
     buildSalesSection(input),
-    buildLaunchSection(input),
-    buildOperationsSection(input),
+    buildLaunchSection(),
+    buildOperationsSection(),
     buildSystemSection(input),
   ];
 }

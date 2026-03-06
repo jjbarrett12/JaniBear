@@ -6,25 +6,26 @@ import { getActiveOrgIdFromCookie } from '@/lib/user-context';
 import { checkSeatLimit } from '@/lib/org-limits';
 import { revalidatePath } from 'next/cache';
 import { ASSIGNABLE_ROLES, type AssignableRole } from '@/lib/team-roles';
+import { requirePermission } from '@/lib/auth/requirePermission';
+import { isAuthzError, isAuthContextError } from '@/lib/auth/errors';
 
-/** Update an org member's role. Caller must be owner/admin/manager; cannot change an owner's role. */
+/** Update an org member's role. Caller must have settings.users.manage (or be site admin). */
 export async function updateMemberRole(
   membershipId: string,
   newRole: string
 ): Promise<{ error?: string }> {
-  const supabase = await createClient();
   const userId = await getCurrentUserId();
   const orgId = await getActiveOrgIdFromCookie();
   if (!userId || !orgId) return { error: 'Unauthorized' };
+  try {
+    await requirePermission({ orgId, userId, permission: 'settings.users.manage' });
+  } catch (e) {
+    if (isAuthzError(e)) return { error: 'Forbidden' };
+    if (isAuthContextError(e)) return { error: 'Unauthorized' };
+    throw e;
+  }
 
-  const { data: caller } = await supabase
-    .from('org_members')
-    .select('role')
-    .eq('org_id', orgId)
-    .eq('user_id', userId)
-    .single();
-  if (!caller || !['owner', 'admin', 'manager'].includes(caller.role))
-    return { error: 'Forbidden' };
+  const supabase = await createClient();
 
   if (!ASSIGNABLE_ROLES.includes(newRole as AssignableRole))
     return { error: 'Invalid role' };
@@ -47,21 +48,20 @@ export async function updateMemberRole(
   return {};
 }
 
-/** Remove a member from the organization. Caller must be owner/admin; cannot remove owner. */
+/** Remove a member from the organization. Caller must have settings.users.manage (or be site admin). */
 export async function removeMember(membershipId: string): Promise<{ error?: string }> {
-  const supabase = await createClient();
   const userId = await getCurrentUserId();
   const orgId = await getActiveOrgIdFromCookie();
   if (!userId || !orgId) return { error: 'Unauthorized' };
+  try {
+    await requirePermission({ orgId, userId, permission: 'settings.users.manage' });
+  } catch (e) {
+    if (isAuthzError(e)) return { error: 'Forbidden' };
+    if (isAuthContextError(e)) return { error: 'Unauthorized' };
+    throw e;
+  }
 
-  const { data: caller } = await supabase
-    .from('org_members')
-    .select('role')
-    .eq('org_id', orgId)
-    .eq('user_id', userId)
-    .single();
-  if (!caller || !['owner', 'admin'].includes(caller.role))
-    return { error: 'Forbidden' };
+  const supabase = await createClient();
 
   const { data: target } = await supabase
     .from('org_members')
@@ -78,24 +78,23 @@ export async function removeMember(membershipId: string): Promise<{ error?: stri
   return {};
 }
 
-/** Create an org invite; returns the join URL. Checks seat limit at creation time. */
+/** Create an org invite; returns the join URL. Caller must have settings.users.manage (or be site admin). */
 export async function createOrgInvite(
   email: string,
   role: string
 ): Promise<{ inviteLink?: string; error?: string }> {
-  const supabase = await createClient();
   const userId = await getCurrentUserId();
   const orgId = await getActiveOrgIdFromCookie();
   if (!userId || !orgId) return { error: 'Unauthorized' };
+  try {
+    await requirePermission({ orgId, userId, permission: 'settings.users.manage' });
+  } catch (e) {
+    if (isAuthzError(e)) return { error: 'Forbidden' };
+    if (isAuthContextError(e)) return { error: 'Unauthorized' };
+    throw e;
+  }
 
-  const { data: caller } = await supabase
-    .from('org_members')
-    .select('role')
-    .eq('org_id', orgId)
-    .eq('user_id', userId)
-    .single();
-  if (!caller || !['owner', 'admin', 'manager'].includes(caller.role))
-    return { error: 'Forbidden' };
+  const supabase = await createClient();
 
   if (!ASSIGNABLE_ROLES.includes(role as AssignableRole))
     return { error: 'Invalid role' };
@@ -125,21 +124,20 @@ export async function createOrgInvite(
   return { inviteLink };
 }
 
-/** Revoke an org invite. Caller must be owner/admin. */
+/** Revoke an org invite. Caller must have settings.users.manage (or be site admin). */
 export async function revokeInvite(inviteId: string): Promise<{ error?: string }> {
-  const supabase = await createClient();
   const userId = await getCurrentUserId();
   const orgId = await getActiveOrgIdFromCookie();
   if (!userId || !orgId) return { error: 'Unauthorized' };
+  try {
+    await requirePermission({ orgId, userId, permission: 'settings.users.manage' });
+  } catch (e) {
+    if (isAuthzError(e)) return { error: 'Forbidden' };
+    if (isAuthContextError(e)) return { error: 'Unauthorized' };
+    throw e;
+  }
 
-  const { data: caller } = await supabase
-    .from('org_members')
-    .select('role')
-    .eq('org_id', orgId)
-    .eq('user_id', userId)
-    .single();
-  if (!caller || !['owner', 'admin'].includes(caller.role))
-    return { error: 'Forbidden' };
+  const supabase = await createClient();
 
   const { data: invite } = await supabase
     .from('org_invites')

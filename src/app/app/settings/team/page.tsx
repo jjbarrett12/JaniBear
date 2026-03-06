@@ -1,10 +1,12 @@
 import { createClient } from '@/lib/supabase/server';
 import { requireOrg, getCurrentUserId } from '@/lib/auth';
 import { redirect } from 'next/navigation';
+import { headers } from 'next/headers';
+import { getSettingsPermissions } from '@/lib/auth/permission-helpers';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Users, UserPlus } from 'lucide-react';
+import { ArrowLeft, Users, UserPlus, Lock } from 'lucide-react';
 import { checkSeatLimit } from '@/lib/org-limits';
 import { updateMemberRole } from '@/actions/team';
 import { TeamMembersTable } from './team-members-table';
@@ -14,17 +16,38 @@ export default async function SettingsTeamPage() {
   const org = await requireOrg();
   const userId = await getCurrentUserId();
   if (!userId) redirect('/auth/login');
-  const supabase = await createClient();
+  const pathname = (await headers()).get('x-pathname') ?? '/app/settings/team';
+  const permissions = await getSettingsPermissions(org.org_id, userId, pathname);
+  const canViewUsers = permissions['settings.users.view'] ?? permissions['settings.users.manage'] ?? false;
+  const canManageUsers = permissions['settings.users.manage'] ?? false;
 
-  const { data: member } = await supabase
-    .from('org_members')
-    .select('role')
-    .eq('org_id', org.org_id)
-    .eq('user_id', userId)
-    .single();
-  if (!member || !['owner', 'admin', 'manager'].includes(member.role)) {
-    redirect('/app/settings');
+  if (!canViewUsers) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center gap-4">
+          <Link href="/app/settings">
+            <Button variant="ghost" size="icon">
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+          </Link>
+        </div>
+        <Card>
+          <CardContent className="flex flex-col items-center justify-center py-12 text-center">
+            <Lock className="h-12 w-12 text-muted-foreground mb-4" />
+            <h2 className="text-lg font-semibold text-foreground">You don&apos;t have access to this section</h2>
+            <p className="text-sm text-muted-foreground mt-2 max-w-md">
+              Team management is restricted. Ask an owner or admin to grant you access or to make changes for you.
+            </p>
+            <Button asChild variant="secondary" className="mt-4">
+              <Link href="/app/settings">Back to Settings</Link>
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
+
+  const supabase = await createClient();
 
   const [seatCheck, { data: members }] = await Promise.all([
     checkSeatLimit(org.org_id),

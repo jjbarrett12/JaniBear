@@ -1,65 +1,32 @@
 'use client';
 
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import dynamic from 'next/dynamic';
-import { createClient } from '@/lib/supabase/client';
-import { MapFilters } from './MapFilters';
-import { SiteDrawer } from './SiteDrawer';
-import { ProspectDrawer } from './ProspectDrawer';
+import type { LatLngBounds } from 'leaflet';
+import { MapCommandBar } from './MapCommandBar';
+import { MapQueuePanel } from './MapQueuePanel';
+import { MapIntelDrawer } from './MapIntelDrawer';
 import { MapShell } from './MapShell';
-import { LayerToggleCluster, readLayersFromStorage, parseLayersFromSearchParams, layersToSearchParams } from './LayerToggleCluster';
-import { HeatLayerLegend } from './HeatLayerLegend';
-import { BuildingIntelCard } from './BuildingIntelCard';
-import { PinsListPanel } from './PinsListPanel';
 import type {
   TerritoryMapPayload,
   MapMode,
   FacilityWithHealth,
   Prospect,
   Quadrant,
+  MapEntity,
 } from '@/types/territory-map';
-import type { MapPin } from '@/lib/sales/territory/types';
-import type { LayerId } from '@/lib/sales/territory/salesTerritoryConfig';
-import { TERRITORY_WAR_LAYERS_ENABLED, BUILDING_INTEL_CARD_ENABLED } from '@/lib/sales/territory/feature-flags';
-import { getBuildingIntel } from '@/lib/sales/territory/fetchers';
-import type { BuildingIntel } from '@/lib/sales/territory/types';
+import { getDefaultLayersForMode, type UnifiedLayerId } from './UnifiedLayerToggles';
+import type { WarMapLayerId } from './MapLayerChips';
 import { getSavedMapView } from '@/lib/territory-map-view-storage';
 
 const MapCanvas = dynamic(() => import('./MapCanvas').then((m) => m.MapCanvas), {
   ssr: false,
   loading: () => (
-    <div className="flex h-full items-center justify-center rounded-lg border border-border bg-card text-muted-foreground">
+    <div className="flex h-full items-center justify-center rounded-lg border border-white/10 bg-black/20 text-zinc-400">
       Loading map…
     </div>
   ),
 });
-
-function prospectsToMapPins(prospects: Prospect[]): MapPin[] {
-  return prospects.map((p) => ({
-    id: p.id,
-    name: p.name ?? 'Unknown',
-    lat: p.lat,
-    lng: p.lng,
-    type: 'prospect',
-    stage: p.status,
-    zip: p.postal ?? null,
-    sqft: null,
-    estValueMonthly: null,
-  }));
-}
-
-function facilitiesToMapPins(facilities: FacilityWithHealth[]): MapPin[] {
-  return facilities.map((f) => ({
-    id: f.id,
-    name: f.name,
-    lat: f.latitude,
-    lng: f.longitude,
-    type: 'client',
-    zip: f.zip ?? null,
-    sqft: null,
-    estValueMonthly: null,
-  }));
-}
 
 interface Props {
   data: TerritoryMapPayload;
@@ -69,25 +36,25 @@ interface Props {
 
 export function TerritoryMapPage({ data, orgId, initialMode = 'ops' }: Props) {
   const [mode, setMode] = useState<MapMode>(initialMode);
-  const [selectedSite, setSelectedSite] = useState<FacilityWithHealth | null>(null);
-  const [selectedProspect, setSelectedProspect] = useState<Prospect | null>(null);
-  const [userId, setUserId] = useState<string | null>(null);
-  const [enabledLayerIds, setEnabledLayerIds] = useState<LayerId[]>([]);
-  const [buildingIntel, setBuildingIntel] = useState<BuildingIntel | null>(null);
-  const [intelLoading, setIntelLoading] = useState(false);
-
-  // Restore map view from localStorage so zoom/position persist when returning to the page
-  const [savedMapView] = useState(() => (typeof window !== 'undefined' ? getSavedMapView(orgId) : null));
-
-  // Filters
-  const [accountFilter, setAccountFilter] = useState<string>('all');
-  const [healthFilter, setHealthFilter] = useState<string>('all');
-  const [statusFilter, setStatusFilter] = useState<string>('all');
   const [searchText, setSearchText] = useState('');
+  const [unifiedLayers, setUnifiedLayers] = useState<Set<UnifiedLayerId>>(() =>
+    getDefaultLayersForMode(initialMode)
+  );
+  const [selectedEntity, setSelectedEntity] = useState<MapEntity | null>(null);
+  const [selectedFacility, setSelectedFacility] = useState<FacilityWithHealth | null>(null);
   const [fitToPinsTrigger, setFitToPinsTrigger] = useState(0);
-
-  // Quadrants managed locally after initial load (add newly drawn ones)
   const [quadrants, setQuadrants] = useState<Quadrant[]>(data.quadrants);
+  const [coverageFilter, setCoverageFilter] = useState<'my' | 'all' | 'by_rep'>('my');
+  const [mapBounds, setMapBounds] = useState<LatLngBounds | null>(null);
+  const [selectedVerticalIds, setSelectedVerticalIds] = useState<Set<string>>(new Set());
+  const [showVerticalOwnership, setShowVerticalOwnership] = useState(false);
+  const [showRiskLayer, setShowRiskLayer] = useState(false);
+
+  const savedMapView = typeof window !== 'undefined' ? getSavedMapView(orgId) : null;
+
+  const handleBoundsChange = useCallback((bounds: LatLngBounds) => {
+    setMapBounds(bounds);
+  }, []);
 
   const modeQuadrants = useMemo(
     () => quadrants.filter((q) => q.mode === mode),
@@ -95,239 +62,218 @@ export function TerritoryMapPage({ data, orgId, initialMode = 'ops' }: Props) {
   );
 
   const filteredFacilities = useMemo(() => {
-    let list = data.facilities;
-    if (accountFilter !== 'all') {
-      list = list.filter((f) => f.account_id === accountFilter);
-    }
-    if (healthFilter !== 'all') {
-      list = list.filter((f) => f.health_status === healthFilter);
-    }
-    if (searchText) {
-      const q = searchText.toLowerCase();
-      list = list.filter(
-        (f) =>
-          f.name.toLowerCase().includes(q) ||
-          f.account_name.toLowerCase().includes(q) ||
-          f.address_line1?.toLowerCase().includes(q) ||
-          f.city?.toLowerCase().includes(q) ||
-          f.state?.toLowerCase().includes(q) ||
-          f.zip?.toLowerCase().includes(q)
-      );
-    }
-    return list;
-  }, [data.facilities, accountFilter, healthFilter, searchText]);
+    if (!searchText.trim()) return data.facilities;
+    const q = searchText.toLowerCase().trim();
+    return data.facilities.filter(
+      (f) =>
+        f.name.toLowerCase().includes(q) ||
+        f.account_name.toLowerCase().includes(q) ||
+        (f.address_line1?.toLowerCase().includes(q)) ||
+        (f.city?.toLowerCase().includes(q)) ||
+        (f.state?.toLowerCase().includes(q)) ||
+        (f.zip?.toLowerCase().includes(q))
+    );
+  }, [data.facilities, searchText]);
 
   const filteredProspects = useMemo(() => {
-    let list = data.prospects;
-    if (statusFilter !== 'all') {
-      list = list.filter((p) => p.status === statusFilter);
+    if (!searchText.trim()) return data.prospects;
+    const q = searchText.toLowerCase().trim();
+    return data.prospects.filter(
+      (p) =>
+        p.name?.toLowerCase().includes(q) ||
+        (p.address1?.toLowerCase().includes(q)) ||
+        (p.city?.toLowerCase().includes(q)) ||
+        (p.state?.toLowerCase().includes(q)) ||
+        (p.postal?.toLowerCase().includes(q)) ||
+        (p.industry?.toLowerCase().includes(q))
+    );
+  }, [data.prospects, searchText]);
+
+  const handleModeChange = useCallback((next: MapMode) => {
+    setMode(next);
+    setUnifiedLayers(getDefaultLayersForMode(next));
+    setSelectedEntity(null);
+    setSelectedFacility(null);
+  }, []);
+
+  const handleLayerToggle = useCallback((id: WarMapLayerId, enabled: boolean) => {
+    setUnifiedLayers((prev) => {
+      const next = new Set(prev);
+      if (enabled) next.add(id);
+      else next.delete(id);
+      return next;
+    });
+  }, []);
+
+  const handleSelectFromQueue = useCallback((entity: MapEntity, facility?: FacilityWithHealth) => {
+    setSelectedEntity(entity);
+    setSelectedFacility(facility ?? null);
+  }, []);
+
+  const handleSelectEntityFromMap = useCallback((entity: MapEntity) => {
+    setSelectedEntity(entity);
+    if (entity.type === 'account') {
+      const fac = data.facilities.find((f) => f.id === entity.id) ?? null;
+      setSelectedFacility(fac);
+    } else {
+      setSelectedFacility(null);
     }
-    if (searchText) {
-      const q = searchText.toLowerCase();
-      list = list.filter(
-        (p) =>
-          p.name?.toLowerCase().includes(q) ||
-          p.address1?.toLowerCase().includes(q) ||
-          p.city?.toLowerCase().includes(q) ||
-          p.state?.toLowerCase().includes(q) ||
-          p.postal?.toLowerCase().includes(q) ||
-          p.industry?.toLowerCase().includes(q)
-      );
-    }
-    return list;
-  }, [data.prospects, statusFilter, searchText]);
+  }, [data.facilities]);
+
+  const handleCloseIntel = useCallback(() => {
+    setSelectedEntity(null);
+    setSelectedFacility(null);
+  }, []);
 
   const handleQuadrantCreated = useCallback((q: Quadrant) => {
     setQuadrants((prev) => [...prev, q]);
   }, []);
 
-  const handleCloseDrawers = useCallback(() => {
-    setSelectedSite(null);
-    setSelectedProspect(null);
-    setBuildingIntel(null);
-  }, []);
+  const flyToTarget = useMemo(
+    () => (selectedEntity ? { lat: selectedEntity.lat, lng: selectedEntity.lng } : null),
+    [selectedEntity?.id, selectedEntity?.lat, selectedEntity?.lng]
+  );
 
-  useEffect(() => {
-    createClient().auth.getUser().then(({ data: { user } }) => {
-      if (user) setUserId(user.id);
+  const handleSelectSite = useCallback((s: FacilityWithHealth) => {
+    setSelectedEntity({
+      id: s.id,
+      name: s.name,
+      lat: s.latitude,
+      lng: s.longitude,
+      type: 'account',
+      meta: { account_name: s.account_name },
     });
+    setSelectedFacility(s);
   }, []);
 
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const params = new URLSearchParams(window.location.search);
-    const fromUrl = parseLayersFromSearchParams(params);
-    if (fromUrl.length > 0) {
-      setEnabledLayerIds(fromUrl);
-      return;
-    }
-    setEnabledLayerIds(readLayersFromStorage(userId));
-  }, [userId]);
+  const handleSelectProspect = useCallback((p: Prospect) => {
+    setSelectedEntity({
+      id: p.id,
+      name: p.name ?? 'Prospect',
+      lat: p.lat,
+      lng: p.lng,
+      type: 'lead',
+      meta: { status: p.status },
+    });
+    setSelectedFacility(null);
+  }, []);
 
-  useEffect(() => {
-    if (!BUILDING_INTEL_CARD_ENABLED || !selectedProspect) {
-      setBuildingIntel(null);
-      return;
-    }
-    setIntelLoading(true);
-    getBuildingIntel(orgId, selectedProspect.id)
-      .then(setBuildingIntel)
-      .catch(() => setBuildingIntel(null))
-      .finally(() => setIntelLoading(false));
-  }, [BUILDING_INTEL_CARD_ENABLED, selectedProspect, orgId]);
+  const handleZoomToResults = useCallback(() => {
+    setFitToPinsTrigger((t) => t + 1);
+  }, []);
 
-  const handleLayerToggle = useCallback((layerId: LayerId, enabled: boolean) => {
-    setEnabledLayerIds((prev) => {
-      const next = enabled ? [...prev, layerId] : prev.filter((id) => id !== layerId);
-      if (typeof window !== 'undefined' && window.history?.replaceState) {
-        const url = new URL(window.location.href);
-        if (next.length) url.searchParams.set('layers', next.join(','));
-        else url.searchParams.delete('layers');
-        window.history.replaceState({}, '', url.toString());
-      }
+  const filteredLeads = useMemo(() => {
+    const verts = data.verticals ?? [];
+    if (selectedVerticalIds.size === 0) return data.leads;
+    return data.leads.filter((l) => {
+      const vid = l.meta?.vertical_id as string | undefined;
+      return vid && selectedVerticalIds.has(vid);
+    });
+  }, [data.leads, data.verticals, selectedVerticalIds]);
+
+  const verticalColorById = useMemo(() => {
+    const verts = data.verticals ?? [];
+    const palette = ['#eab308', '#3b82f6', '#22c55e', '#a855f7', '#ef4444', '#06b6d4', '#f97316', '#ec4899'];
+    const out: Record<string, string> = {};
+    verts.forEach((v, i) => { out[v.id] = palette[i % palette.length]; });
+    return out;
+  }, [data.verticals]);
+
+  const unifiedLayersData = useMemo(
+    () => ({
+      leads: filteredLeads,
+      accounts: data.accounts,
+      crews: data.crews,
+      franchisees: data.franchisees,
+      territories: data.territories,
+      serviceAreas: data.serviceAreas,
+    }),
+    [filteredLeads, data.accounts, data.crews, data.franchisees, data.territories, data.serviceAreas]
+  );
+
+  const handleVerticalFilterToggle = useCallback((verticalId: string, selected: boolean) => {
+    setSelectedVerticalIds((prev) => {
+      const next = new Set(prev);
+      if (selected) next.add(verticalId);
+      else next.delete(verticalId);
       return next;
     });
   }, []);
 
-  const warBoardPins = useMemo(() => {
-    if (mode === 'sales') return prospectsToMapPins(filteredProspects);
-    return facilitiesToMapPins(filteredFacilities);
-  }, [mode, filteredProspects, filteredFacilities]);
-
-  const showWarBoard = mode === 'sales' && (TERRITORY_WAR_LAYERS_ENABLED || BUILDING_INTEL_CARD_ENABLED);
+  const hasSearchResults = (filteredFacilities.length + filteredProspects.length) > 0;
+  const showZoomToResults = searchText.trim().length > 0 && hasSearchResults;
 
   return (
-    <div className="flex h-[calc(100vh-4rem)] flex-col gap-0 overflow-hidden">
-      {/* Header with Sales / Operations color toggle */}
-      <div className="flex items-center justify-between border-b border-border bg-card px-4 py-3">
-        <div>
-          <h1 className="text-xl font-semibold text-foreground">Map</h1>
-          <p className="text-sm text-muted-foreground">
-            {mode === 'ops'
-              ? 'Map crews, customers, sites, and franchisees'
-              : 'Graph areas, territories, and prospects'}
-          </p>
-        </div>
-        <div className="flex items-center gap-0 rounded-lg border border-border bg-muted/50 p-0.5">
-          <button
-            onClick={() => { setMode('ops'); handleCloseDrawers(); }}
-            className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
-              mode === 'ops'
-                ? 'bg-emerald-500 text-white shadow-sm'
-                : 'text-muted-foreground hover:text-foreground hover:bg-muted'
-            }`}
-          >
-            Operations
-          </button>
-          <button
-            onClick={() => { setMode('sales'); handleCloseDrawers(); }}
-            className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
-              mode === 'sales'
-                ? 'bg-blue-500 text-white shadow-sm'
-                : 'text-muted-foreground hover:text-foreground hover:bg-muted'
-            }`}
-          >
-            Sales
-          </button>
-        </div>
-      </div>
+    <div className="-m-4 md:-m-6 lg:-m-8 flex h-[calc(100vh-4rem)] flex-col overflow-hidden bg-[#0a0a0f] min-h-[calc(100vh-4rem)] w-[calc(100%+2rem)] md:w-[calc(100%+3rem)] lg:w-[calc(100%+4rem)] max-w-none">
+      <MapCommandBar
+        mode={mode}
+        onModeChange={handleModeChange}
+        searchValue={searchText}
+        onSearchChange={setSearchText}
+        layerIds={unifiedLayers}
+        onLayerToggle={handleLayerToggle}
+        coverageFilter={coverageFilter}
+        onCoverageFilterChange={setCoverageFilter}
+        showCoverageFilter={data.coverageAreas.length > 0 && unifiedLayers.has('coverage')}
+        coverageAdmin={data.coverageAdmin ?? false}
+        onZoomToResults={showZoomToResults ? handleZoomToResults : undefined}
+        verticals={data.verticals ?? []}
+        selectedVerticalIds={selectedVerticalIds}
+        onVerticalFilterToggle={handleVerticalFilterToggle}
+        showVerticalOwnership={showVerticalOwnership}
+        onShowVerticalOwnershipChange={setShowVerticalOwnership}
+        showRiskLayer={showRiskLayer}
+        onShowRiskLayerChange={setShowRiskLayer}
+      />
 
-      {/* Body */}
-      <div className="flex flex-1 overflow-hidden">
-        {/* Left panel */}
-        <MapFilters
+      <div className="flex flex-1 min-h-0">
+        <MapQueuePanel
           mode={mode}
-          accounts={data.accounts}
-          accountFilter={accountFilter}
-          onAccountFilter={setAccountFilter}
-          healthFilter={healthFilter}
-          onHealthFilter={setHealthFilter}
-          statusFilter={statusFilter}
-          onStatusFilter={setStatusFilter}
+          data={data}
+          selectedId={selectedEntity?.id ?? null}
+          onSelect={handleSelectFromQueue}
           searchText={searchText}
-          onSearchText={setSearchText}
-          sitesCount={filteredFacilities.length}
-          prospectsCount={filteredProspects.length}
-          onZoomToResults={() => setFitToPinsTrigger((t) => t + 1)}
+          mapBounds={mapBounds}
         />
 
-        {/* Map */}
         <div className="relative flex-1 min-w-0">
           <MapShell status="ready" emptyMessage="No pins in view">
-<MapCanvas
-            mode={mode}
-            facilities={filteredFacilities}
-            prospects={filteredProspects}
-            quadrants={modeQuadrants}
-            orgId={orgId}
-            onSelectSite={setSelectedSite}
-            onSelectProspect={setSelectedProspect}
-            onQuadrantCreated={handleQuadrantCreated}
-            initialCenter={savedMapView?.center}
-            initialZoom={savedMapView?.zoom}
-            fitToPinsTrigger={fitToPinsTrigger}
-          />
+            <MapCanvas
+              mode={mode}
+              facilities={filteredFacilities}
+              prospects={filteredProspects}
+              quadrants={modeQuadrants}
+              orgId={orgId}
+              onSelectSite={handleSelectSite}
+              onSelectProspect={handleSelectProspect}
+              onQuadrantCreated={handleQuadrantCreated}
+              initialCenter={savedMapView?.center}
+              initialZoom={savedMapView?.zoom}
+              fitToPinsTrigger={fitToPinsTrigger}
+              unifiedLayersVisible={unifiedLayers}
+              unifiedLayersData={unifiedLayersData}
+              onSelectEntity={handleSelectEntityFromMap}
+              heatmapLeads={data.heatmapLeads}
+              heatmapAccounts={data.heatmapAccounts}
+              flyToTarget={flyToTarget}
+              coverageAreas={data.coverageAreas}
+              coverageFilter={coverageFilter}
+              myCoverageAreaIds={data.myCoverageAreaIds ?? []}
+              onBoundsChange={handleBoundsChange}
+              showVerticalOwnership={showVerticalOwnership}
+              verticalColorById={verticalColorById}
+              showRiskLayer={showRiskLayer}
+              coverageGaps={data.coverageGaps ?? []}
+            />
           </MapShell>
-
-          {/* War board: top-right layer toggles */}
-          {showWarBoard && TERRITORY_WAR_LAYERS_ENABLED && (
-            <div className="absolute top-3 right-3 z-[500]">
-              <LayerToggleCluster
-                enabledLayerIds={enabledLayerIds}
-                onToggle={handleLayerToggle}
-                userId={userId}
-              />
-            </div>
-          )}
-
-          {/* War board: heat layer legend when any layer on */}
-          {showWarBoard && enabledLayerIds.length > 0 && (
-            <div className="absolute bottom-3 left-3 z-[500]">
-              <HeatLayerLegend enabledLayerIds={enabledLayerIds} />
-            </div>
-          )}
-
-          {/* Building Intel Card (floating, when sales + prospect selected) */}
-          {showWarBoard && BUILDING_INTEL_CARD_ENABLED && (buildingIntel || intelLoading) && (
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[1000] pointer-events-auto">
-              {intelLoading ? (
-                <div className="rounded-xl border border-white/20 bg-zinc-900/95 px-6 py-4 text-sm text-zinc-400">
-                  Loading…
-                </div>
-              ) : buildingIntel ? (
-                <BuildingIntelCard intel={buildingIntel} onClose={handleCloseDrawers} />
-              ) : null}
-            </div>
-          )}
         </div>
 
-        {/* Right: Pins list (war board) or drawers */}
-        {showWarBoard ? (
-          <PinsListPanel
-            pins={warBoardPins}
-            selectedPinId={selectedProspect?.id ?? selectedSite?.id ?? null}
-            onSelectPin={(pin) => {
-              if (pin.type === 'prospect') {
-                const p = filteredProspects.find((x) => x.id === pin.id);
-                if (p) setSelectedProspect(p);
-              } else {
-                const f = filteredFacilities.find((x) => x.id === pin.id);
-                if (f) setSelectedSite(f);
-              }
-            }}
-          />
-        ) : null}
-
-        {/* Right drawer (ops or sales when intel card disabled) */}
-        {!showWarBoard && selectedSite && (
-          <SiteDrawer site={selectedSite} onClose={() => setSelectedSite(null)} />
-        )}
-        {!showWarBoard && selectedProspect && (
-          <ProspectDrawer prospect={selectedProspect} onClose={() => setSelectedProspect(null)} />
-        )}
-        {showWarBoard && !BUILDING_INTEL_CARD_ENABLED && selectedProspect && (
-          <ProspectDrawer prospect={selectedProspect} onClose={() => setSelectedProspect(null)} />
-        )}
+        <MapIntelDrawer
+          entity={selectedEntity}
+          facility={selectedFacility}
+          orgId={orgId}
+          onClose={handleCloseIntel}
+        />
       </div>
     </div>
   );

@@ -340,6 +340,21 @@
   }
 }
 
+/* War Map: high-priority marker pulse */
+@keyframes premium-marker-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.4; }
+  50% { transform: scale(1.8); opacity: 0; }
+}
+.premium-marker-pulse {
+  animation: premium-marker-pulse 1.5s ease-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .premium-marker-pulse {
+    animation: none;
+    opacity: 0;
+  }
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

@@ -29,16 +29,21 @@ type LeadRow = {
   created_at: string;
   updated_at: string;
   converted_opportunity_id?: string | null;
+  overflow?: boolean;
+  overflow_reason?: string | null;
+  assigned_user_id?: string | null;
 };
 
 export function LeadsTableWithDrawer({
   leads,
   accounts,
   orgId,
+  overflowMode = false,
 }: {
   leads: LeadRow[];
   accounts: { id: string; name: string }[];
   orgId: string;
+  overflowMode?: boolean;
 }) {
   const router = useRouter();
   const [drawerLeadId, setDrawerLeadId] = useState<string | null>(null);

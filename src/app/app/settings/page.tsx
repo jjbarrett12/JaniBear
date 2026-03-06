@@ -2,8 +2,7 @@ import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
 import { createClient } from '@/lib/supabase/server';
 import { requireOrg, getCurrentUserId } from '@/lib/auth';
-import { requirePermission } from '@/lib/auth/requirePermission';
-import { isAuthzError, isAuthContextError, getAuthContextRedirectPath } from '@/lib/auth/errors';
+import { getSettingsPermissions } from '@/lib/auth/permission-helpers';
 import { BrandingSettings } from '@/components/settings/branding-settings';
 import { BenchmarkingSettings } from '@/components/settings/benchmarking-settings';
 import { ProfilePhotoSettings } from '@/components/settings/profile-photo-settings';
@@ -14,23 +13,14 @@ import { Button, buttonVariants } from '@/components/ui/button';
 import { Settings, Palette, Upload, Users, Database } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-const ADMIN_ROLES = ['owner', 'admin', 'manager'];
-
 export default async function SettingsPage() {
   const org = await requireOrg();
   const userId = await getCurrentUserId();
   if (!userId) redirect('/auth/login');
   const pathname = (await headers()).get('x-pathname') ?? '/app/settings';
-  try {
-    await requirePermission({ orgId: org.org_id, userId, permission: 'settings.branding', pathname });
-  } catch (e) {
-    if (isAuthzError(e)) redirect('/app/forbidden');
-    if (isAuthContextError(e)) redirect(getAuthContextRedirectPath(e.code));
-    redirect('/app/authz-error');
-  }
+  const permissions = await getSettingsPermissions(org.org_id, userId, pathname);
   const supabase = await createClient();
-  const role = (org as { role?: string }).role ?? null;
-  const canManageBenchmarking = role !== null && ADMIN_ROLES.includes(role.toLowerCase());
+  const canManageBenchmarking = permissions['settings.org.edit'] ?? false;
 
   // Get organization with branding data (.maybeSingle() so RLS/empty doesn't throw)
   const { data: organization } = await supabase
@@ -38,6 +28,10 @@ export default async function SettingsPage() {
     .select('id, name, primary_color, secondary_color, logo_url')
     .eq('id', org.org_id)
     .maybeSingle();
+
+  const canViewOrg = permissions['settings.org.view'] ?? permissions['settings.org.edit'] ?? false;
+  const canViewUsers = permissions['settings.users.view'] ?? permissions['settings.users.manage'] ?? false;
+  const canViewBilling = permissions['settings.billing.view'] ?? permissions['settings.billing.manage'] ?? false;
 
   return (
     <div className="space-y-6">
@@ -47,7 +41,8 @@ export default async function SettingsPage() {
       </div>
 
       <div className="space-y-6">
-        <ProfilePhotoSettings />
+        {(permissions['settings.view'] ?? permissions['settings.profile.edit']) && <ProfilePhotoSettings />}
+        {(permissions['settings.org.view'] ?? permissions['settings.org.edit'] ?? false) && (
         <BrandingSettings
           orgId={org.org_id}
           initialData={{
@@ -56,6 +51,7 @@ export default async function SettingsPage() {
             logo_url: organization?.logo_url,
           }}
         />
+        )}
         {canManageBenchmarking && <BenchmarkingSettings orgId={org.org_id} />}
         <Card>
           <CardHeader>
@@ -73,6 +69,7 @@ export default async function SettingsPage() {
             </Link>
           </CardContent>
         </Card>
+        {canViewUsers && (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -87,7 +84,8 @@ export default async function SettingsPage() {
             </Link>
           </CardContent>
         </Card>
-        {canManageBenchmarking && (
+        )}
+        {(canManageBenchmarking ?? false) && (
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -106,6 +104,7 @@ export default async function SettingsPage() {
             </CardContent>
           </Card>
         )}
+        {canViewOrg && (
         <Card>
           <CardHeader>
             <CardTitle>Organization</CardTitle>
@@ -129,6 +128,7 @@ export default async function SettingsPage() {
             </div>
           </CardContent>
         </Card>
+        )}
       </div>
     </div>
   );

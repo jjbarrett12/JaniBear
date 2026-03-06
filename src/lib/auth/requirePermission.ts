@@ -1,18 +1,13 @@
 /**
- * Require permission in org for user. Uses request-scoped cached has_permission.
+ * Require permission in org for user. Site admin always allowed; else membership + role permissions.
  * Only throws AuthzError (→ redirect to /app/forbidden) when result is false (definitive denial).
  * RPC/DB errors throw generic Error (→ /app/authz-error); invalid orgId/userId throw AuthContextError.
+ * Central implementation in permission-helpers; this adds E2E hook and re-exports.
  */
 import { headers } from 'next/headers';
-import { AuthzError, AuthContextError } from './errors';
 import type { PermissionKey } from './permissions';
-import { requireMembership } from './requireMembership';
-import { hasPermissionCached } from './authz-cache';
 import { logAuthzError } from './authz-log';
-
-function isValidId(value: unknown): value is string {
-  return typeof value === 'string' && value.trim().length > 0;
-}
+import { requirePermission as requirePermissionImpl } from './permission-helpers';
 
 export async function requirePermission(params: {
   orgId: string;
@@ -31,25 +26,5 @@ export async function requirePermission(params: {
     }
   }
 
-  if (!isValidId(orgId)) {
-    throw new AuthContextError('NO_ORG', 'Missing or invalid orgId');
-  }
-  if (!isValidId(userId)) {
-    throw new AuthContextError('NO_SESSION', 'Missing or invalid userId');
-  }
-
-  await requireMembership({ orgId, userId, pathname });
-
-  const allowed = await hasPermissionCached({
-    orgId,
-    userId,
-    permission,
-    pathname,
-  });
-
-  if (allowed === true) {
-    return;
-  }
-
-  throw new AuthzError('FORBIDDEN', `Missing permission: ${permission}`);
+  await requirePermissionImpl(params);
 }

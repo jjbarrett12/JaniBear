@@ -1,0 +1,68 @@
+/**
+ * Governance permission keys — single source of truth for permission-based authorization.
+ * Use these in requirePermission, PermissionGate, and RLS. Never gate by role name.
+ * Domains: sales, launch, ops, crews, quality, org, billing, reports, financials, franchise, platform.
+ */
+export const GOVERNANCE_PERMISSIONS = [
+  'sales.dashboard.view',
+  'sales.leads.view',
+  'sales.leads.create',
+  'sales.walkthroughs.create',
+  'sales.proposals.create',
+  'sales.proposals.approve',
+  'sales.deals.close',
+  'launch.queue.view',
+  'launch.queue.accept',
+  'launch.handoffs.create',
+  'launch.handoffs.update',
+  'ops.dashboard.view',
+  'ops.accounts.view',
+  'ops.accounts.create',
+  'ops.accounts.update',
+  'ops.tasks.create',
+  'ops.tasks.update',
+  'ops.tasks.assign',
+  'ops.crews.view',
+  'ops.crews.create',
+  'ops.crews.update',
+  'ops.crews.assign',
+  'ops.crews.replace',
+  'ops.crews.deactivate',
+  'quality.inspections.view',
+  'quality.inspections.create',
+  'quality.inspections.complete',
+  'quality.issues.create',
+  'quality.issues.resolve',
+  'quality.risk.view',
+  'org.users.view',
+  'org.users.invite',
+  'org.users.update_role',
+  'org.settings.view',
+  'org.settings.manage',
+  'org.templates.manage',
+  'org.integrations.manage',
+  'org.ai.manage',
+  'billing.view',
+  'billing.subscription.manage',
+  'billing.payment_methods.manage',
+  'billing.invoices.view',
+  'billing.addons.manage',
+  'reports.view',
+  'reports.export',
+  'financials.view',
+  'financials.manage',
+  'franchise.network.view',
+  'franchise.network.audit',
+  'franchise.franchisees.manage',
+  'platform.orgs.view',
+  'platform.orgs.manage',
+  'platform.users.impersonate',
+  'platform.billing.adjust',
+  'platform.settings.manage',
+  'platform.audit.view',
+] as const;
+
+export type GovernancePermissionKey = (typeof GOVERNANCE_PERMISSIONS)[number];
+
+/** Permission key for RPC and guards — can be governance key or legacy key. */
+export type PermissionKey = GovernancePermissionKey | string;

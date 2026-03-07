@@ -24,6 +24,15 @@ export default async function PlatformOrgDetailPage({
     .single();
 
   if (!org) notFound();
+
+  const { data: sub } = await supabase
+    .from('org_subscriptions')
+    .select('plan_code, status')
+    .eq('org_id', orgId)
+    .eq('status', 'active')
+    .maybeSingle();
+  const displayPlan = sub?.plan_code ?? org.plan ?? '—';
+
   const currentShell = (org.shell as ShellKey) ?? 'owner_operator';
 
   const { data: members } = await supabase
@@ -40,7 +49,7 @@ export default async function PlatformOrgDetailPage({
         breadcrumb={<Link href="/platform/orgs" className="text-muted-foreground hover:text-foreground">Orgs</Link>}
         title={org.name ?? 'Org'}
         badge={<StatusPill status={status} />}
-        description={`Created ${created} · Plan ${org.plan ?? '—'}`}
+        description={`Created ${created} · Plan ${displayPlan}`}
         actions={<ImpersonateButton orgId={orgId} orgName={org.name ?? 'Org'} />}
       />
 
@@ -66,7 +75,7 @@ export default async function PlatformOrgDetailPage({
           <CardContent className="space-y-2 text-sm">
             <p><span className="text-muted-foreground">ID</span> {org.id}</p>
             <p><span className="text-muted-foreground">Status</span> {org.status ?? '—'}</p>
-            <p><span className="text-muted-foreground">Plan</span> {org.plan ?? '—'}</p>
+            <p><span className="text-muted-foreground">Plan</span> {displayPlan}</p>
             <p><span className="text-muted-foreground">Shell</span> {currentShell}</p>
             <p><span className="text-muted-foreground">Created</span> {created}</p>
           </CardContent>

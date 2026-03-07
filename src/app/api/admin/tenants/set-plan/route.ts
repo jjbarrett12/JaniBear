@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { getEffectiveAccessForCurrentUser } from '@/lib/access';
+import { syncPlanState } from '@/lib/billing/plan-source';
 
 /**
  * POST /api/admin/tenants/set-plan
@@ -26,12 +27,7 @@ export async function POST(request: NextRequest) {
   }
 
   const supabase = await createClient();
-  const { error } = await supabase
-    .from('org_subscriptions')
-    .upsert(
-      { org_id: tenantId, plan_code: planCode, status: 'active' },
-      { onConflict: 'org_id' }
-    );
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  const { error } = await syncPlanState(supabase, tenantId, planCode, 'active');
+  if (error) return NextResponse.json({ error: (error as { message?: string }).message ?? 'Failed to set plan' }, { status: 500 });
   return NextResponse.json({ ok: true });
 }

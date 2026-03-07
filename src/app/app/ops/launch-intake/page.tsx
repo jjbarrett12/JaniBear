@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Rocket } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { LaunchIntakeList } from '@/components/launch/launch-intake-list';
+import { LAUNCH_HANDOFF_COPY } from '@/lib/launch-handoff-copy';
 
 export default async function LaunchIntakePage({
   searchParams,
@@ -61,7 +62,7 @@ export default async function LaunchIntakePage({
           Launch Intake
         </h1>
         <p className="text-muted-foreground text-sm mt-1">
-          Review Launch Packets from Sales. Accept to activate the account and create schedules; Request Changes to send back with a reason.
+          {LAUNCH_HANDOFF_COPY.intakeListIntro}
         </p>
       </div>
 

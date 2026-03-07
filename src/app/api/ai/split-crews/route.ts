@@ -141,8 +141,9 @@ Optimize for: ${optimizeFor}`;
       },
       method: 'simple',
     });
-  } catch (error) {
-    console.error('Crew split error:', error);
+  } catch (error: unknown) {
+    const { logError } = await import('@/lib/observability');
+    logError({ message: 'AI crew split failed', domain: 'ai', error });
     return NextResponse.json(
       { error: 'Failed to split crews' },
       { status: 500 }

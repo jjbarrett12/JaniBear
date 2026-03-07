@@ -12,6 +12,9 @@ import { hasPermissionCached } from './authz-cache';
 import { AuthzError, AuthContextError } from './errors';
 import { logAuthzDenial } from './authz-log';
 import type { PermissionKey, SettingsPermissionKey } from './permissions';
+
+/** Permission key for checks — legacy (PermissionKey) or governance key (string). */
+export type AnyPermissionKey = PermissionKey | string;
 import { SETTINGS_PERMISSION_KEYS } from './permissions';
 import type { MembershipRow } from './requireMembership';
 import { requireMembership } from './requireMembership';
@@ -56,7 +59,7 @@ export async function getOrgMembership(
 export async function hasPermission(
   orgId: string,
   userId: string,
-  permissionKey: PermissionKey,
+  permissionKey: AnyPermissionKey,
   pathname?: string | null
 ): Promise<boolean> {
   if (await isSiteAdmin(userId)) return true;
@@ -75,7 +78,7 @@ export async function hasPermission(
 export async function requirePermission(params: {
   orgId: string;
   userId: string;
-  permission: PermissionKey;
+  permission: AnyPermissionKey;
   pathname?: string | null;
 }): Promise<void> {
   const { orgId, userId, permission, pathname } = params;

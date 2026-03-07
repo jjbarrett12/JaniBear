@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { processSequenceSteps } from '@/lib/marketing-automation';
+import { logError } from '@/lib/observability';
 
 /**
  * GET/POST /api/cron/sequence-processor
@@ -31,7 +32,7 @@ async function runSequenceCron(request: NextRequest) {
     const result = await processSequenceSteps();
     return NextResponse.json({ ok: true, ...result });
   } catch (err) {
-    console.error('cron/sequence-processor:', err);
+    logError({ message: 'sequence-processor cron failed', domain: 'cron', meta: { job_name: 'sequence-processor' }, error: err });
     return NextResponse.json(
       { error: err instanceof Error ? err.message : 'Unknown error' },
       { status: 500 }

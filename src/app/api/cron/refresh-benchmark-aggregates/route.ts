@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { logError } from '@/lib/observability';
 
 /**
  * GET/POST /api/cron/refresh-benchmark-aggregates
@@ -47,7 +48,7 @@ async function runRefresh(request: NextRequest) {
       codeRowsUpdated: codeResult.data ?? 0,
     });
   } catch (err) {
-    console.error('cron/refresh-benchmark-aggregates:', err);
+    logError({ message: 'refresh-benchmark-aggregates cron failed', domain: 'cron', meta: { job_name: 'refresh-benchmark-aggregates' }, error: err });
     return NextResponse.json(
       { error: err instanceof Error ? err.message : 'Unknown error' },
       { status: 500 }

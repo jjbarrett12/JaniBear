@@ -12,15 +12,15 @@ export function SalesPageShell({
   breadcrumb?: ReactNode;
 }) {
   return (
-    <div className="flex flex-col min-h-0 flex-1">
+    <div className="flex flex-col min-h-0 flex-1 bg-background">
       {breadcrumb != null && (
-        <nav className="shrink-0 px-1 py-2 text-sm text-muted-foreground border-b border-border/60">
+        <nav className="shrink-0 px-4 py-2 text-xs font-medium text-muted-foreground border-b border-border/60 sm:px-6">
           {breadcrumb}
         </nav>
       )}
       <div className="flex flex-1 min-h-0">
         {leftRail != null && (
-          <aside className="shrink-0 w-52 border-r border-border/60 overflow-y-auto hidden lg:block">
+          <aside className="shrink-0 w-52 border-r border-border/60 overflow-y-auto hidden lg:block bg-card/30">
             {leftRail}
           </aside>
         )}

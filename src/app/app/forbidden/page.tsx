@@ -10,9 +10,17 @@ export default function ForbiddenPage() {
       <p className="text-muted-foreground mt-2 text-center max-w-md">
         You don&apos;t have permission to view this page.
       </p>
-      <Button asChild className="mt-6">
-        <Link href="/app/dashboard">Back to dashboard</Link>
-      </Button>
+      <div className="mt-6 flex flex-col sm:flex-row gap-3">
+        <Button asChild>
+          <Link href="/app/dashboard">Go to dashboard</Link>
+        </Button>
+        <Button asChild variant="outline">
+          <Link href="/app/settings">Switch organization</Link>
+        </Button>
+      </div>
+      <p className="text-muted-foreground text-sm mt-6 text-center max-w-sm">
+        If you believe you should have access, contact your organization admin.
+      </p>
     </div>
   );
 }

@@ -37,12 +37,12 @@ async function main() {
     console.error('User not found for email:', email);
     process.exit(1);
   }
-  const { error } = await supabase.from('platform_admins').upsert(
+  const { error: upsertError } = await supabase.from('platform_admins').upsert(
     { user_id: userId, note: 'Super admin (seeded by email)' },
     { onConflict: 'user_id' }
   );
-  if (error) {
-    console.error('Insert failed:', error.message);
+  if (upsertError) {
+    console.error('Insert failed:', upsertError.message);
     process.exit(1);
   }
   console.log('Seeded platform_admin for:', email, '(user_id:', userId, ')');

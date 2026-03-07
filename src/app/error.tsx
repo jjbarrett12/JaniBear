@@ -1,5 +1,6 @@
 'use client';
 
+import * as Sentry from '@sentry/nextjs';
 import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -13,7 +14,7 @@ export default function Error({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error('Application error:', error);
+    Sentry.captureException(error);
   }, [error]);
 
   return (
@@ -25,7 +26,7 @@ export default function Error({
             <CardTitle>Something went wrong</CardTitle>
           </div>
           <CardDescription>
-            An unexpected error occurred. Please try again.
+            An unexpected error occurred. Please try again. If this keeps happening, try refreshing or contact support.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">

@@ -7,6 +7,7 @@ import { Plus, Building2 } from 'lucide-react';
 import { SalesPageShell } from '@/components/sales/page-shell';
 import { PageHeader } from '@/components/sales/page-header';
 import { AccountsListWithFilter } from '@/components/accounts/accounts-list-with-filter';
+import { SALES_COPY } from '@/lib/sales-module-copy';
 
 export default async function SalesAccountsPage({
   searchParams,
@@ -53,23 +54,24 @@ export default async function SalesAccountsPage({
         </span>
       }
     >
-      <div className="p-4 md:p-6 space-y-6">
+      <div className="mx-auto w-full max-w-[1400px] px-4 py-5 sm:px-6 sm:py-6 space-y-5">
         <PageHeader
-          title="Accounts"
-          description="Prospects and customers — walkthroughs, scope, and proposals live here."
+          title={SALES_COPY.accounts.title}
+          description={SALES_COPY.accounts.description}
+          strap={SALES_COPY.accounts.strap}
           primaryCta={
             <Link href="/app/accounts/new">
-              <Button className="gap-2">
+              <Button size="sm" className="gap-2 h-9">
                 <Plus className="h-4 w-4" />
-                New Account
+                {SALES_COPY.accounts.newAccount}
               </Button>
             </Link>
           }
           filters={
             <>
-              <Link href="/app/sales/accounts"><Button variant={!view ? 'default' : 'outline'} size="sm">All</Button></Link>
-              <Link href="/app/sales/accounts?view=prospects"><Button variant={view === 'prospects' ? 'default' : 'outline'} size="sm">Prospects</Button></Link>
-              <Link href="/app/sales/accounts?view=customers"><Button variant={view === 'customers' ? 'default' : 'outline'} size="sm">Customers</Button></Link>
+              <Link href="/app/sales/accounts"><Button variant={!view ? 'default' : 'outline'} size="sm" className="h-8 text-xs">{SALES_COPY.accounts.all}</Button></Link>
+              <Link href="/app/sales/accounts?view=prospects"><Button variant={view === 'prospects' ? 'default' : 'outline'} size="sm" className="h-8 text-xs">{SALES_COPY.accounts.prospects}</Button></Link>
+              <Link href="/app/sales/accounts?view=customers"><Button variant={view === 'customers' ? 'default' : 'outline'} size="sm" className="h-8 text-xs">{SALES_COPY.accounts.customers}</Button></Link>
             </>
           }
         />
@@ -80,12 +82,12 @@ export default async function SalesAccountsPage({
             getAccountHref={(id) => `/app/sales/accounts/${id}`}
           />
         ) : (
-          <Card className="dark:bg-gray-800 dark:border-gray-700">
+          <Card className="rounded-xl border-border bg-card/80 dark:bg-card/90">
             <CardContent className="py-12 text-center">
-              <Building2 className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <p className="text-muted-foreground mb-4">No accounts yet</p>
+              <Building2 className="h-10 w-10 text-muted-foreground mx-auto mb-3" />
+              <p className="text-sm text-muted-foreground mb-3">{SALES_COPY.accounts.noAccounts}</p>
               <Link href="/app/accounts/new">
-                <Button>Create Your First Account</Button>
+                <Button size="sm" className="h-9">New account</Button>
               </Link>
             </CardContent>
           </Card>

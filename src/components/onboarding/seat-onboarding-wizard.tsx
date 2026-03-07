@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/select';
 import { Loader2, ArrowRight, ArrowLeft } from 'lucide-react';
 import { formatPrice } from '@/lib/billing/pricing';
+import { AppErrorBlock } from '@/components/app/app-error-block';
 
 const STEPS = [
   { id: 1, title: 'Organization', short: 'Org' },
@@ -297,7 +298,15 @@ export function SeatOnboardingWizard() {
             <p className="text-lg font-semibold">
               {monthlyTotalCents != null ? formatPrice(monthlyTotalCents) : '—'} / month
             </p>
-            {error && <p className="text-sm text-destructive">{error}</p>}
+            {error && (
+              <AppErrorBlock
+                title="Checkout couldn't start"
+                message={error}
+                recovery="Check your connection and try again. If it persists, contact support."
+                onRetry={() => setError(null)}
+                retryLabel="Dismiss"
+              />
+            )}
             <div className="flex gap-3">
               <Button onClick={() => setStep(3)} variant="outline">
                 <ArrowLeft className="mr-2 h-4 w-4" />

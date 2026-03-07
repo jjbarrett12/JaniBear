@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAIService } from '@/lib/ai/openai-service';
 import { requireOperatorOrg } from '@/lib/api-guard';
+import { logError } from '@/lib/observability';
 
 /**
  * Operator-only. Suggests staffing review based on outcome metrics only.
@@ -68,7 +69,7 @@ Return valid JSON only: { "suggestion": "your narrative here", "focus_areas": ["
       });
     }
   } catch (error: unknown) {
-    console.error('AI staffing suggestions error:', error);
+    logError({ message: 'AI staffing suggestions failed', domain: 'ai', error });
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Failed to generate suggestions' },
       { status: 500 }

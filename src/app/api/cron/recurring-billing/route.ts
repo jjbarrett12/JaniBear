@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { processDueBillingSchedules } from '@/lib/recurring-billing';
+import { startCronRun, finishCronRun } from '@/lib/observability';
 
 /**
  * GET/POST /api/cron/recurring-billing
@@ -27,14 +28,14 @@ async function runBillingCron(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
+  const runId = await startCronRun('recurring-billing');
   try {
     const result = await processDueBillingSchedules();
+    await finishCronRun(runId, 'success');
     return NextResponse.json({ ok: true, ...result });
   } catch (err) {
-    console.error('cron/recurring-billing:', err);
-    return NextResponse.json(
-      { error: err instanceof Error ? err.message : 'Unknown error' },
-      { status: 500 }
-    );
+    const msg = err instanceof Error ? err.message : 'Unknown error';
+    await finishCronRun(runId, 'failure', msg);
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }

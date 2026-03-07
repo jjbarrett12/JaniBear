@@ -27,7 +27,7 @@ export default function DashboardError({
             <CardTitle>Dashboard couldn&apos;t load</CardTitle>
           </div>
           <CardDescription>
-            Something went wrong loading dashboard data. You can try again or go to another page.
+            Something went wrong loading dashboard data. You can try again or go to another page. If this keeps happening, try refreshing or contact support.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">

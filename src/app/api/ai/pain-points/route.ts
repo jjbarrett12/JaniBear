@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAIService } from '@/lib/ai/openai-service';
 import { requireApiOrg } from '@/lib/api-guard';
+import { logError } from '@/lib/observability';
 
 /**
  * Extract customer pain points and summary from a walk-through transcript.
@@ -33,7 +34,7 @@ export async function POST(request: NextRequest) {
     const result = await aiService.extractPainPoints(transcriptText);
     return NextResponse.json(result);
   } catch (error: unknown) {
-    console.error('AI pain points error:', error);
+    logError({ message: 'AI pain points failed', domain: 'ai', error });
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Failed to extract pain points' },
       { status: 500 }

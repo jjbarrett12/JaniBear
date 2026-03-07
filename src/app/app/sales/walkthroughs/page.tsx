@@ -4,8 +4,9 @@ import Link from 'next/link';
 import { SalesPageShell } from '@/components/sales/page-shell';
 import { PageHeader } from '@/components/sales/page-header';
 import { Button } from '@/components/ui/button';
-import { Plus, Calendar, List } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { WalkthroughsTableCalendar } from '@/components/sales/walkthroughs-table-calendar';
+import { SALES_COPY } from '@/lib/sales-module-copy';
 
 export default async function SalesWalkthroughsPage() {
   const org = await requireOrg();
@@ -51,15 +52,16 @@ export default async function SalesWalkthroughsPage() {
         </span>
       }
     >
-      <div className="p-4 md:p-6 space-y-6">
+      <div className="mx-auto w-full max-w-[1400px] px-4 py-5 sm:px-6 sm:py-6 space-y-5">
         <PageHeader
-          title="Walkthroughs"
-          description="Site assessments. Create scope from a walkthrough to build a proposal."
+          title={SALES_COPY.walkthroughs.title}
+          description={SALES_COPY.walkthroughs.description}
+          strap={SALES_COPY.walkthroughs.strap}
           primaryCta={
             <Link href="/app/walkthroughs/new">
-              <Button className="gap-2">
+              <Button size="sm" className="gap-2 h-9">
                 <Plus className="h-4 w-4" />
-                Schedule Walkthrough
+                {SALES_COPY.walkthroughs.newWalkthrough}
               </Button>
             </Link>
           }

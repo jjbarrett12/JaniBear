@@ -1,6 +1,7 @@
 import { createAdminClient } from '@/lib/supabase/admin';
 import { NextRequest, NextResponse } from 'next/server';
 import { recalculateOperatorScores } from '@/lib/performance/recalculateOperatorScores';
+import { logError } from '@/lib/observability';
 
 /**
  * GET/POST /api/cron/daily-operator-performance
@@ -35,7 +36,7 @@ async function runRecalc(request: NextRequest) {
     }
     return NextResponse.json({ ok: true, orgs: orgIds.length });
   } catch (e) {
-    console.error('daily-operator-performance:', e);
+    logError({ message: 'daily-operator-performance cron failed', domain: 'cron', meta: { job_name: 'daily-operator-performance' }, error: e });
     return NextResponse.json(
       { error: e instanceof Error ? e.message : 'Recalc failed' },
       { status: 500 }

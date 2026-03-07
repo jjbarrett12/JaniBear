@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { acceptLaunchPacket, rejectLaunchPacket } from '@/actions/launch-packet';
 import { CheckCircle2, XCircle } from 'lucide-react';
+import { AppErrorBlock } from '@/components/app/app-error-block';
+import { LAUNCH_HANDOFF_COPY } from '@/lib/launch-handoff-copy';
 
 export function AcceptRejectLaunchForm({ packetId }: { packetId: string }) {
   const router = useRouter();
@@ -73,7 +75,6 @@ export function AcceptRejectLaunchForm({ packetId }: { packetId: string }) {
           </Button>
         </div>
       </div>
-      {error && <p className="text-sm text-destructive">{error}</p>}
     </div>
   );
 }

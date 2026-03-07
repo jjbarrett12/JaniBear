@@ -21,33 +21,45 @@ import {
   CheckCircle2
 } from 'lucide-react';
 
+export type WalkthroughInitialLead = {
+  companyName: string;
+  contactName: string;
+  contactEmail: string;
+  contactPhone: string;
+  siteAddress: string;
+  siteCity: string;
+  siteState: string;
+  siteZip: string;
+};
+
 interface WalkthroughFormProps {
   orgId: string;
   userId: string;
   userName?: string;
+  initialLead?: WalkthroughInitialLead;
 }
 
-export function WalkthroughForm({ orgId, userId, userName }: WalkthroughFormProps) {
+export function WalkthroughForm({ orgId, userId, userName, initialLead }: WalkthroughFormProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [isGettingAISuggestions, setIsGettingAISuggestions] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [step, setStep] = useState(1);
   
-  // Form state
+  // Form state (pre-fill from lead when initialLead provided)
   const [formData, setFormData] = useState({
     // Customer Info
-    companyName: '',
-    contactName: '',
-    contactEmail: '',
-    contactPhone: '',
+    companyName: initialLead?.companyName ?? '',
+    contactName: initialLead?.contactName ?? '',
+    contactEmail: initialLead?.contactEmail ?? '',
+    contactPhone: initialLead?.contactPhone ?? '',
     
     // Site Info
-    siteName: '',
-    siteAddress: '',
-    siteCity: '',
-    siteState: '',
-    siteZip: '',
+    siteName: initialLead?.companyName ?? '',
+    siteAddress: initialLead?.siteAddress ?? '',
+    siteCity: initialLead?.siteCity ?? '',
+    siteState: initialLead?.siteState ?? '',
+    siteZip: initialLead?.siteZip ?? '',
     
     // Site Details
     squareFootage: '',

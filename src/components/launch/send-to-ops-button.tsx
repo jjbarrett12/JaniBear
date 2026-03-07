@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { sendLaunchPacketToOps } from '@/actions/launch-packet';
 import { Send } from 'lucide-react';
+import { AppErrorBlock } from '@/components/app/app-error-block';
 
 export function SendToOpsButton({ packetId }: { packetId: string }) {
   const router = useRouter();
@@ -31,7 +32,15 @@ export function SendToOpsButton({ packetId }: { packetId: string }) {
         <Send className="h-4 w-4" />
         {loading ? 'Sending…' : 'Submit to Operations'}
       </Button>
-      {error && <p className="text-sm text-destructive">{error}</p>}
+      {error && (
+        <AppErrorBlock
+          title="Couldn't send to Operations"
+          message={error}
+          recovery="Check your connection and try again."
+          onRetry={() => setError(null)}
+          retryLabel="Try again"
+        />
+      )}
     </div>
   );
 }

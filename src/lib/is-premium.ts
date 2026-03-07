@@ -7,18 +7,33 @@ const PREMIUM_PLANS = ['grizzly', 'kodiak'];
 export type PlanType = 'cub' | 'grizzly' | 'kodiak';
 
 /**
- * Resolve plan type for org. When userId is provided and that user is a platform admin,
- * returns 'kodiak' (zero restrictions). Otherwise reads organizations.plan.
+ * Canonical plan resolution: org_subscriptions.plan_code (single source of truth).
+ * Fallback: organizations.plan for legacy/backfill; then 'cub'.
+ * Platform admin always gets 'kodiak'.
  */
 export async function getPlanType(orgId: string, userId?: string | null): Promise<PlanType> {
   if (userId && (await getIsPlatformAdmin(userId))) return 'kodiak';
   const supabase = await createClient();
+
+  const { data: sub } = await supabase
+    .from('org_subscriptions')
+    .select('plan_code')
+    .eq('org_id', orgId)
+    .eq('status', 'active')
+    .maybeSingle();
+
+  if (sub?.plan_code) {
+    const code = (sub.plan_code as string).toLowerCase().replace(/\s+/g, '-');
+    if (code === 'kodiak') return 'kodiak';
+    if (code === 'grizzly') return 'grizzly';
+    return 'cub';
+  }
+
   const { data: org } = await supabase
     .from('organizations')
     .select('plan')
     .eq('id', orgId)
     .single();
-
   const plan = (org?.plan ?? 'free').toLowerCase().replace(/\s+/g, '-');
   if (plan === 'kodiak') return 'kodiak';
   if (plan === 'grizzly') return 'grizzly';

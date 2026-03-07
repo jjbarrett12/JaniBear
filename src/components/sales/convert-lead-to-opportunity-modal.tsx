@@ -65,7 +65,8 @@ export function ConvertLeadToOpportunityModal({
       return;
     }
     setOpen(false);
-    router.push(`/app/kpis?tab=pipeline&highlight=${encodeURIComponent(result.opportunityId)}`);
+    // Next action: complete launch packet for ops handoff
+    router.push(`/app/sales/launch-packets/${result.launchPacketId}?from=conversion`);
   };
 
   return (
@@ -180,7 +181,7 @@ export function ConvertLeadToOpportunityModal({
                     Cancel
                   </Button>
                   <Button type="submit" disabled={pending}>
-                    {pending ? 'Converting…' : 'Convert & open in Pipeline'}
+                    {pending ? 'Converting…' : 'Convert & open Launch Packet'}
                   </Button>
                 </div>
               </form>

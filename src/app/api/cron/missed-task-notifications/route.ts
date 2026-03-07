@@ -1,5 +1,6 @@
 import { createAdminClient } from '@/lib/supabase/admin';
 import { NextRequest, NextResponse } from 'next/server';
+import { startCronRun, finishCronRun, logError } from '@/lib/observability';
 
 const DEFAULT_COMPLETION_TIME = '17:00'; // 5 PM
 const MISSED_BUFFER_HOURS = 1;
@@ -31,6 +32,7 @@ async function runMissedTaskCheck(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
+  const runId = await startCronRun('missed-task-notifications');
   try {
     const supabase = createAdminClient();
     const now = new Date();
@@ -55,11 +57,12 @@ async function runMissedTaskCheck(request: NextRequest) {
       .lte('due_date', now.toISOString().slice(0, 10));
 
     if (assignError) {
-      console.error('missed-task-notifications: task_assignments query failed', assignError);
+      await finishCronRun(runId, 'failure', assignError.message);
       return NextResponse.json({ error: assignError.message }, { status: 500 });
     }
 
     if (!assignments?.length) {
+      await finishCronRun(runId, 'success');
       return NextResponse.json({ ok: true, sent: 0 });
     }
 
@@ -117,19 +120,18 @@ async function runMissedTaskCheck(request: NextRequest) {
       });
 
       if (insertError) {
-        console.error('missed-task-notifications: insert failed for', ta.id, insertError);
+        logError({ message: 'missed-task-notifications notification insert failed', domain: 'cron', meta: { task_assignment_id: ta.id }, error: insertError });
         continue;
       }
       sent++;
       alreadyNotifiedIds.add(ta.id);
     }
 
+    await finishCronRun(runId, 'success');
     return NextResponse.json({ ok: true, sent });
   } catch (err) {
-    console.error('missed-task-notifications:', err);
-    return NextResponse.json(
-      { error: err instanceof Error ? err.message : 'Unknown error' },
-      { status: 500 }
-    );
+    const msg = err instanceof Error ? err.message : 'Unknown error';
+    await finishCronRun(runId, 'failure', msg);
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }

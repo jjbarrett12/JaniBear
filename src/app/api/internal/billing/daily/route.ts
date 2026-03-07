@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { startCronRun, finishCronRun, logError } from '@/lib/observability';
+import { syncPlanState } from '@/lib/billing/plan-source';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2023-10-16',
@@ -29,17 +31,22 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const supabase = createAdminClient();
-  const now = new Date();
-  const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-  const fourteenDaysAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
+  const runId = await startCronRun('billing-daily');
+  try {
+    const supabase = createAdminClient();
+    const now = new Date();
+    const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const fourteenDaysAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
 
-  const { data: orgs } = await supabase
+    const { data: orgs } = await supabase
     .from('organizations')
     .select('id, stripe_customer_id, billing_status, past_due_since, locked_since, stripe_subscription_id')
     .not('stripe_customer_id', 'is', null);
 
-  if (!orgs) return NextResponse.json({ ok: true, processed: 0 });
+    if (!orgs) {
+      await finishCronRun(runId, 'success');
+      return NextResponse.json({ ok: true, processed: 0 });
+    }
 
   for (const org of orgs) {
     if (!org.stripe_customer_id) continue;
@@ -96,7 +103,7 @@ export async function POST(request: NextRequest) {
         }
       }
     } catch (e) {
-      console.error('Billing daily: expiring card check failed for org', org.id, e);
+      logError({ message: 'Billing daily: expiring card check failed', domain: 'stripe', meta: { orgId: org.id }, error: e });
     }
 
     // 2) Past due locking
@@ -106,7 +113,7 @@ export async function POST(request: NextRequest) {
         try {
           await stripe.subscriptions.cancel(org.stripe_subscription_id);
         } catch (e) {
-          console.error('Billing daily: cancel subscription failed for org', org.id, e);
+          logError({ message: 'Billing daily: cancel subscription failed', domain: 'stripe', meta: { orgId: org.id }, error: e });
         }
         await supabase
           .from('organizations')
@@ -116,6 +123,7 @@ export async function POST(request: NextRequest) {
             stripe_subscription_id: null,
           })
           .eq('id', org.id);
+        await syncPlanState(supabase, org.id, 'cub', 'canceled');
         await supabase.from('org_billing_events').insert({
           org_id: org.id,
           type: 'subscription_canceled',
@@ -135,5 +143,12 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  return NextResponse.json({ ok: true, processed: orgs.length });
+    await finishCronRun(runId, 'success');
+    return NextResponse.json({ ok: true, processed: orgs.length });
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : 'Unknown error';
+    logError({ message: 'billing-daily cron failed', domain: 'cron', meta: { job_name: 'billing-daily' }, error: err });
+    await finishCronRun(runId, 'failure', msg);
+    throw err;
+  }
 }

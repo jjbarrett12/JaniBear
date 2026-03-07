@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAIService } from '@/lib/ai/openai-service';
 import { requireApiOrg } from '@/lib/api-guard';
+import { logError } from '@/lib/observability';
 
 export async function POST(request: NextRequest) {
   try {
@@ -29,10 +30,10 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json({ suggestions });
-  } catch (error: any) {
-    console.error('AI compliance suggestions error:', error);
+  } catch (error: unknown) {
+    logError({ message: 'AI compliance suggestions failed', domain: 'ai', error });
     return NextResponse.json(
-      { error: error.message || 'Failed to generate suggestions' },
+      { error: error instanceof Error ? error.message : 'Failed to generate suggestions' },
       { status: 500 }
     );
   }

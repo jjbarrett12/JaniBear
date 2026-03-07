@@ -10,13 +10,17 @@ import { SendToOpsButton } from '@/components/launch/send-to-ops-button';
 import type { LaunchPacketRecord } from '@/components/launch/launch-packet-detail';
 import { Lock } from 'lucide-react';
 import { isOperationsEnabled } from '@/lib/is-premium';
+import { LAUNCH_HANDOFF_COPY } from '@/lib/launch-handoff-copy';
 
 export default async function LaunchPacketSalesDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ from?: string }>;
 }) {
   const { id } = await params;
+  const { from } = await searchParams;
   const org = await requireOrg();
   const userId = await getCurrentUserId();
   const operationsEnabled = await isOperationsEnabled(org.org_id, userId);
@@ -68,9 +72,14 @@ export default async function LaunchPacketSalesDetailPage({
       }
     >
       <div className="p-4 md:p-6 space-y-6">
+        {from === 'conversion' && (
+          <div className="rounded-lg border border-green-500/30 bg-green-500/10 p-3 text-sm text-green-800 dark:text-green-200">
+            <strong>Conversion complete.</strong> Next: complete the launch packet below and submit to Ops for handoff.
+          </div>
+        )}
         <PageHeader
           title="Launch to Operations"
-          description="Deal handoff to Operations. Complete the checklist, then Submit to Operations. Status: Draft → Ready → Submitted."
+          description={`Deal handoff to Operations. Complete the checklist, then Submit to Operations. ${LAUNCH_HANDOFF_COPY.submitToOpsExplanation}`}
           primaryCta={
             canSendToOps ? (
               <SendToOpsButton packetId={id} />

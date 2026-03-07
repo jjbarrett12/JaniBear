@@ -1,18 +1,12 @@
 /**
  * Regression: Authorized users must never see /app/forbidden during navigation between modules.
- * Login -> click multiple nav links -> URL must never equal /app/forbidden.
- * Requires E2E_LOGIN_EMAIL and E2E_LOGIN_PASSWORD (use an account with access to dashboard, settings, etc.).
+ * No content flash on forbidden: login → click nav links → URL must never be /app/forbidden.
  */
 import { test, expect } from '@playwright/test';
-
-const E2E_EMAIL = process.env.E2E_LOGIN_EMAIL;
-const E2E_PASSWORD = process.env.E2E_LOGIN_PASSWORD;
+import { getDefaultLogin, skipWithoutE2ECredentials, SELECTORS } from './helpers/selectors';
 
 test.beforeEach(() => {
-  test.skip(
-    !E2E_EMAIL || !E2E_PASSWORD,
-    'Set E2E_LOGIN_EMAIL and E2E_LOGIN_PASSWORD to run forbidden-no-flash E2E tests.'
-  );
+  test.skip(skipWithoutE2ECredentials(), 'Set E2E_LOGIN_EMAIL and E2E_LOGIN_PASSWORD to run forbidden-no-flash E2E tests.');
 });
 
 test.describe('Forbidden — no flash for authorized user', () => {
@@ -24,10 +18,12 @@ test.describe('Forbidden — no flash for authorized user', () => {
   }) => {
     const base = baseURL ?? 'http://localhost:3001';
 
+    const creds = getDefaultLogin();
+    if (!creds) return;
     await page.goto(`${base}/auth/login`, { waitUntil: 'domcontentloaded' });
-    await page.getByLabel(/email/i).fill(E2E_EMAIL!);
-    await page.getByLabel(/password/i).fill(E2E_PASSWORD!);
-    await page.getByRole('button', { name: /sign in/i }).click();
+    await page.getByLabel(SELECTORS.login.emailInput).fill(creds.email);
+    await page.getByLabel(SELECTORS.login.passwordInput).fill(creds.password);
+    await page.getByRole('button', { name: SELECTORS.login.submitButton }).click();
     await expect(page).toHaveURL(/\/(app\/|onboarding)/, { timeout: 20000 });
 
     const navTargets = [
@@ -69,37 +65,39 @@ test.describe('Authz error page', () => {
     page,
     baseURL,
   }) => {
-    test.skip(!E2E_EMAIL || !E2E_PASSWORD, 'Set E2E_LOGIN_EMAIL and E2E_LOGIN_PASSWORD');
+    const creds = getDefaultLogin();
+    if (!creds) return;
     const base = baseURL ?? 'http://localhost:3001';
     await page.goto(`${base}/auth/login`, { waitUntil: 'domcontentloaded' });
-    await page.getByLabel(/email/i).fill(E2E_EMAIL!);
-    await page.getByLabel(/password/i).fill(E2E_PASSWORD!);
-    await page.getByRole('button', { name: /sign in/i }).click();
+    await page.getByLabel(SELECTORS.login.emailInput).fill(creds.email);
+    await page.getByLabel(SELECTORS.login.passwordInput).fill(creds.password);
+    await page.getByRole('button', { name: SELECTORS.login.submitButton }).click();
     await expect(page).toHaveURL(/\/(app\/|onboarding)/, { timeout: 20000 });
     await page.goto(`${base}/app/authz-error`, { waitUntil: 'domcontentloaded' });
-    await expect(page.getByText(/couldn't verify access/i)).toBeVisible();
-    await expect(page.getByRole('button', { name: /retry/i })).toBeVisible();
-    await expect(page.getByRole('link', { name: /back to dashboard/i })).toBeVisible();
+    await expect(page.getByText(SELECTORS.authzError.heading)).toBeVisible();
+    await expect(page.getByRole('button', { name: SELECTORS.authzError.retry })).toBeVisible();
+    await expect(page.getByRole('link', { name: SELECTORS.authzError.backToDashboard })).toBeVisible();
     await expect(page.getByRole('link', { name: /contact support/i })).toBeVisible();
   });
 
-  test('when authz RPC is forced to fail (E2E_AUTHZ_SIMULATE_FAIL=1), user lands on /app/authz-error not forbidden', async ({
+  test('when authz RPC is forced to fail (E2E_AUTHZ_SIMULATE_FAIL=1), user lands on /app/authz-error', async ({
     page,
     baseURL,
   }) => {
-    test.skip(!E2E_EMAIL || !E2E_PASSWORD, 'Set E2E_LOGIN_EMAIL and E2E_LOGIN_PASSWORD');
     test.skip(process.env.E2E_AUTHZ_SIMULATE_FAIL !== '1', 'Set E2E_AUTHZ_SIMULATE_FAIL=1 to run');
+    const creds = getDefaultLogin();
+    if (!creds) return;
     const base = baseURL ?? 'http://localhost:3001';
     await page.goto(`${base}/auth/login`, { waitUntil: 'domcontentloaded' });
-    await page.getByLabel(/email/i).fill(E2E_EMAIL!);
-    await page.getByLabel(/password/i).fill(E2E_PASSWORD!);
-    await page.getByRole('button', { name: /sign in/i }).click();
+    await page.getByLabel(SELECTORS.login.emailInput).fill(creds.email);
+    await page.getByLabel(SELECTORS.login.passwordInput).fill(creds.password);
+    await page.getByRole('button', { name: SELECTORS.login.submitButton }).click();
     await expect(page).toHaveURL(/\/(app\/|onboarding)/, { timeout: 20000 });
     await page.goto(`${base}/app/ops`, {
       waitUntil: 'domcontentloaded',
       headers: { 'x-test-simulate-authz-fail': '1' },
     });
     await expect(page).toHaveURL(/\/app\/authz-error/);
-    await expect(page.getByText(/couldn't verify access/i)).toBeVisible();
+    await expect(page.getByText(SELECTORS.authzError.heading)).toBeVisible();
   });
 });

@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, ClipboardCheck, MapPin, Calendar } from 'lucide-react';
 import { formatDate, formatDateTime } from '@/lib/utils';
+import { AppEmptyState } from '@/components/app/app-empty-state';
 
 export default async function InspectionsPage() {
   const org = await requireOrg();
@@ -22,7 +23,7 @@ export default async function InspectionsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-foreground">Inspections</h1>
-          <p className="text-muted-foreground mt-1">View and manage inspections</p>
+          <p className="text-muted-foreground mt-1">Run quality checks at locations and track scores over time.</p>
         </div>
         <Link href="/app/inspections/start">
           <Button>
@@ -77,12 +78,17 @@ export default async function InspectionsPage() {
         </Card>
       ) : (
         <Card>
-          <CardContent className="py-12 text-center">
-            <ClipboardCheck className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-500 mb-4">No inspections yet</p>
-            <Link href="/app/inspections/start">
-              <Button>Start Your First Inspection</Button>
-            </Link>
+          <CardContent className="py-12">
+            <AppEmptyState
+              icon={<ClipboardCheck className="h-6 w-6" />}
+              title="No inspections yet"
+              description="Inspections help you track quality and compliance at each location."
+              action={
+                <Link href="/app/inspections/start">
+                  <Button>Start your first inspection</Button>
+                </Link>
+              }
+            />
           </CardContent>
         </Card>
       )}

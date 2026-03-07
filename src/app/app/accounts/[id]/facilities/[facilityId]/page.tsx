@@ -59,7 +59,7 @@ export default async function FacilityDetailPage({
     .from('launch_plans')
     .select('id, opportunity_id, status, start_date')
     .eq('org_id', org.org_id)
-    .eq('location_id', facilityId)
+    .or(`facility_id.eq.${facilityId},location_id.eq.${facilityId}`)
     .order('updated_at', { ascending: false })
     .limit(1)
     .maybeSingle();

@@ -3,6 +3,7 @@ import { cookies } from 'next/headers';
 import Stripe from 'stripe';
 import { createClient } from '@/lib/supabase/server';
 import { commitSeatsAfterCheckout } from '@/lib/billing/commit-seats';
+import { planCodeFromSeatCounts, planCodeToLegacyPlan } from '@/lib/billing/plan-source';
 
 export const dynamic = 'force-dynamic';
 
@@ -61,6 +62,16 @@ export default async function OnboardingSuccessPage({
     redirect('/app/onboarding');
   }
 
+  const planCode = planCodeFromSeatCounts({
+    cub_count: session.metadata?.cub_count as string,
+    super_cub_count: session.metadata?.super_cub_count as string,
+    grizzly_count: session.metadata?.grizzly_count as string,
+    super_grizzly_count: session.metadata?.super_grizzly_count as string,
+    kodiak_count: session.metadata?.kodiak_count as string,
+    super_kodiak_count: session.metadata?.super_kodiak_count as string,
+  });
+  const legacyPlan = planCodeToLegacyPlan(planCode);
+
   await supabase
     .from('organizations')
     .update({
@@ -69,8 +80,16 @@ export default async function OnboardingSuccessPage({
       billing_status: 'active',
       past_due_since: null,
       locked_since: null,
+      plan: legacyPlan,
     })
     .eq('id', orgId);
+
+  await supabase
+    .from('org_subscriptions')
+    .upsert(
+      { org_id: orgId, plan_code: planCode, status: 'active' },
+      { onConflict: 'org_id' }
+    );
 
   const counts = {
     org_id: orgId,

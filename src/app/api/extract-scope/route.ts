@@ -3,6 +3,7 @@ import { extractScope } from '@/lib/ai';
 import { createClient } from '@/lib/supabase/server';
 import { requireApiOrg } from '@/lib/api-guard';
 import { requireFeature, guardToResponse } from '@/lib/access';
+import { logError } from '@/lib/observability';
 
 export async function POST(req: Request) {
   try {
@@ -41,7 +42,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json(result);
   } catch (error) {
-    console.error('extract-scope error:', error);
+    logError({ message: 'extract-scope failed', domain: 'lidar', error });
     return NextResponse.json({ error: 'Internal Error' }, { status: 500 });
   }
 }

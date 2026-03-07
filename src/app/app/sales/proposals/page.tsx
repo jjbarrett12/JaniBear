@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { SalesPageShell } from '@/components/sales/page-shell';
 import { PageHeader } from '@/components/sales/page-header';
 import { Button } from '@/components/ui/button';
+import { SALES_COPY } from '@/lib/sales-module-copy';
 import {
   Table,
   TableBody,
@@ -56,51 +57,55 @@ export default async function SalesProposalsPage() {
         </span>
       }
     >
-      <div className="p-4 md:p-6 space-y-6">
+      <div className="mx-auto w-full max-w-[1400px] px-4 py-5 sm:px-6 sm:py-6 space-y-5">
         <PageHeader
-          title="Proposals"
-          description="Sent proposals and status. When accepted, open Launch to Operations to hand off to Ops."
+          title={SALES_COPY.proposals.title}
+          description={SALES_COPY.proposals.description}
+          strap={SALES_COPY.proposals.strap}
           primaryCta={
             <Link href="/app/proposals/build">
-              <Button className="gap-2">
+              <Button size="sm" className="gap-2 h-9">
                 <Plus className="h-4 w-4" />
-                New Proposal
+                {SALES_COPY.proposals.newProposal}
               </Button>
             </Link>
           }
         />
-        <div className="rounded-md border border-border">
+        <div className="rounded-xl border border-border bg-card/80 dark:bg-card/90 overflow-hidden">
           <Table>
             <TableHeader>
-              <TableRow>
-                <TableHead>Account</TableHead>
-                <TableHead>Amount</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Last sent</TableHead>
-                <TableHead>Created</TableHead>
-                <TableHead className="w-32" />
+              <TableRow className="border-border hover:bg-transparent">
+                <TableHead className="text-xs font-medium uppercase tracking-wider text-muted-foreground py-3">Account</TableHead>
+                <TableHead className="text-xs font-medium uppercase tracking-wider text-muted-foreground py-3">Amount</TableHead>
+                <TableHead className="text-xs font-medium uppercase tracking-wider text-muted-foreground py-3">Status</TableHead>
+                <TableHead className="text-xs font-medium uppercase tracking-wider text-muted-foreground py-3">Sent</TableHead>
+                <TableHead className="text-xs font-medium uppercase tracking-wider text-muted-foreground py-3">Days open</TableHead>
+                <TableHead className="w-32 py-3" />
               </TableRow>
             </TableHeader>
             <TableBody>
               {!proposals?.length ? (
-                <TableRow>
-                  <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
-                    No proposals yet. Build one from a walkthrough or scope.
+                <TableRow className="hover:bg-transparent">
+                  <TableCell colSpan={6} className="text-center text-sm text-muted-foreground py-10">
+                    {SALES_COPY.proposals.noProposals}
                   </TableCell>
                 </TableRow>
               ) : (
-                proposals.map((p) => (
-                  <TableRow key={p.id}>
-                    <TableCell className="font-medium">{proposalAccountName(p)}</TableCell>
-                    <TableCell>{p.total_amount != null ? formatCurrency(Number(p.total_amount)) : '—'}</TableCell>
-                    <TableCell>
-                      <Badge variant={p.status === 'accepted' ? 'default' : p.status === 'rejected' ? 'destructive' : 'outline'} className="capitalize">
+                proposals.map((p) => {
+                  const sentAt = p.sent_at ? new Date(p.sent_at) : null;
+                  const daysOpen = sentAt && (p.status === 'sent' || p.status === 'viewed') ? Math.floor((Date.now() - sentAt.getTime()) / 864e5) : null;
+                  return (
+                  <TableRow key={p.id} className="border-border hover:bg-muted/40">
+                    <TableCell className="py-2.5 font-medium text-foreground">{proposalAccountName(p)}</TableCell>
+                    <TableCell className="py-2.5 font-semibold tabular-nums text-foreground">{p.total_amount != null ? formatCurrency(Number(p.total_amount)) : '—'}</TableCell>
+                    <TableCell className="py-2.5">
+                      <Badge variant={p.status === 'accepted' ? 'default' : p.status === 'rejected' ? 'destructive' : 'outline'} className="text-[10px] font-medium uppercase tracking-wider capitalize">
                         {p.status}
                       </Badge>
                     </TableCell>
-                    <TableCell className="text-muted-foreground text-sm">{p.sent_at ? formatDate(p.sent_at) : '—'}</TableCell>
-                    <TableCell className="text-muted-foreground text-sm">{formatDate(p.created_at)}</TableCell>
-                    <TableCell>
+                    <TableCell className="py-2.5 text-sm text-muted-foreground tabular-nums">{p.sent_at ? formatDate(p.sent_at) : '—'}</TableCell>
+                    <TableCell className="py-2.5 text-sm tabular-nums text-muted-foreground">{daysOpen != null ? `${daysOpen}d` : '—'}</TableCell>
+                    <TableCell className="py-2.5">
                       {p.status === 'accepted' && (
                         isCub ? (
                           p.opportunity_id ? (
@@ -110,16 +115,17 @@ export default async function SalesProposalsPage() {
                           )
                         ) : (
                           <Link href="/app/sales/launch-packets">
-                            <Button variant="outline" size="sm" className="gap-1">
+                            <Button variant="outline" size="sm" className="gap-1 h-8">
                               <Rocket className="h-3 w-3" />
-                              Launch to Operations
+                              {SALES_COPY.proposals.launchToOps}
                             </Button>
                           </Link>
                         )
                       )}
                     </TableCell>
                   </TableRow>
-                ))
+                  );
+                })
               )}
             </TableBody>
           </Table>

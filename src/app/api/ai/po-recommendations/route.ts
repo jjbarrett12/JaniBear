@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { getAIService } from '@/lib/ai/openai-service';
 import { requireApiOrg } from '@/lib/api-guard';
+import { logError } from '@/lib/observability';
 
 export async function POST(request: NextRequest) {
   try {
@@ -37,10 +38,10 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json(recommendations);
-  } catch (error: any) {
-    console.error('AI PO recommendations error:', error);
+  } catch (error: unknown) {
+    logError({ message: 'AI PO recommendations failed', domain: 'ai', error });
     return NextResponse.json(
-      { error: error.message || 'Failed to generate recommendations' },
+      { error: error instanceof Error ? error.message : 'Failed to generate recommendations' },
       { status: 500 }
     );
   }

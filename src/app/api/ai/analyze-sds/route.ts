@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAIService } from '@/lib/ai/openai-service';
 import { requireApiOrg } from '@/lib/api-guard';
+import { logError } from '@/lib/observability';
 
 export async function POST(request: NextRequest) {
   try {
@@ -38,10 +39,10 @@ export async function POST(request: NextRequest) {
     const analysis = await aiService.analyzeSDS(textContent);
 
     return NextResponse.json(analysis);
-  } catch (error: any) {
-    console.error('AI SDS analysis error:', error);
+  } catch (error: unknown) {
+    logError({ message: 'AI SDS analysis failed', domain: 'ai', error });
     return NextResponse.json(
-      { error: error.message || 'Failed to analyze SDS' },
+      { error: error instanceof Error ? error.message : 'Failed to analyze SDS' },
       { status: 500 }
     );
   }

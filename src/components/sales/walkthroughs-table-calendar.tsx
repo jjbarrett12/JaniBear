@@ -50,44 +50,44 @@ export function WalkthroughsTableCalendar({ walkthroughs }: { walkthroughs: Walk
       </div>
 
       {viewMode === 'table' ? (
-        <div className="rounded-md border border-border">
+        <div className="rounded-xl border border-border bg-card/80 dark:bg-card/90 overflow-hidden">
           <Table>
             <TableHeader>
-              <TableRow>
-                <TableHead>Date</TableHead>
-                <TableHead>Account</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+              <TableRow className="border-border hover:bg-transparent">
+                <TableHead className="text-xs font-medium uppercase tracking-wider text-muted-foreground py-3">Date</TableHead>
+                <TableHead className="text-xs font-medium uppercase tracking-wider text-muted-foreground py-3">Account</TableHead>
+                <TableHead className="text-xs font-medium uppercase tracking-wider text-muted-foreground py-3">Status</TableHead>
+                <TableHead className="text-right text-xs font-medium uppercase tracking-wider text-muted-foreground py-3">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {walkthroughs.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={4} className="text-center text-muted-foreground py-8">
+                <TableRow className="hover:bg-transparent">
+                  <TableCell colSpan={4} className="text-center text-sm text-muted-foreground py-10">
                     No walkthroughs yet. Schedule one to get started.
                   </TableCell>
                 </TableRow>
               ) : (
                 walkthroughs.map((w) => (
-                  <TableRow key={w.id}>
-                    <TableCell className="text-muted-foreground">
+                  <TableRow key={w.id} className="border-border hover:bg-muted/40">
+                    <TableCell className="py-2.5 text-sm tabular-nums text-muted-foreground">
                       {w.scheduled_at ? formatDate(w.scheduled_at) : 'Unscheduled'}
                     </TableCell>
-                    <TableCell className="font-medium">{w.accountName}</TableCell>
-                    <TableCell>
-                      <Badge variant={w.status === 'completed' ? 'secondary' : 'outline'} className="capitalize">
+                    <TableCell className="py-2.5 font-medium text-foreground">{w.accountName}</TableCell>
+                    <TableCell className="py-2.5">
+                      <Badge variant={w.status === 'completed' ? 'secondary' : 'outline'} className="text-[10px] font-medium uppercase tracking-wider capitalize">
                         {w.status}
                       </Badge>
                     </TableCell>
-                    <TableCell className="text-right">
+                    <TableCell className="py-2.5 text-right">
                       <div className="flex justify-end gap-2">
                         <Link href={`/app/walkthroughs/${w.id}`}>
-                          <Button variant="ghost" size="sm">View</Button>
+                          <Button variant="ghost" size="sm" className="h-8">View</Button>
                         </Link>
                         <Link href={`/app/proposals/build?walkthrough=${w.id}`}>
-                          <Button variant="outline" size="sm" className="gap-1">
+                          <Button variant="outline" size="sm" className="gap-1 h-8">
                             <FileText className="h-3 w-3" />
-                            Create Scope
+                            Create scope
                           </Button>
                         </Link>
                       </div>

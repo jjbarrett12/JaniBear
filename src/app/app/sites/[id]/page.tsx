@@ -21,12 +21,29 @@ export default async function SiteDetailPage({
   const org = await requireOrg();
   const supabase = await createClient();
 
-  const { data: location } = await supabase
+  let location = await supabase
     .from('locations')
     .select('*')
     .eq('id', locationId)
     .eq('org_id', org.org_id)
-    .single();
+    .single()
+    .then((r) => r.data);
+
+  if (!location) {
+    const facility = await supabase
+      .from('facilities')
+      .select('*')
+      .eq('id', locationId)
+      .eq('org_id', org.org_id)
+      .single()
+      .then((r) => r.data);
+    if (facility) {
+      location = {
+        ...facility,
+        client_id: (facility as { account_id?: string | null }).account_id ?? null,
+      } as typeof location;
+    }
+  }
 
   if (!location) notFound();
 
@@ -86,7 +103,7 @@ export default async function SiteDetailPage({
       .from('opportunities')
       .select('id')
       .eq('org_id', org.org_id)
-      .eq('location_id', locationId))
+      .or(`location_id.eq.${locationId},facility_id.eq.${locationId}`))
       .data?.map((o) => o.id) ?? [];
   let bidsViaOpp: { id: string; status: string; total_estimated_cost?: number; opportunity_id?: string; created_at: string }[] = [];
   if (opportunityIds.length > 0) {

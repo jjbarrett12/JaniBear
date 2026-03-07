@@ -7,6 +7,7 @@ import { PageHeader } from '@/components/sales/page-header';
 import { createClient } from '@/lib/supabase/server';
 import { Badge } from '@/components/ui/badge';
 import { isOperationsEnabled } from '@/lib/is-premium';
+import { CreateLaunchPacketButton } from '@/components/sales/create-launch-packet-button';
 
 export default async function LaunchPacketsPage() {
   const org = await requireOrg();
@@ -16,17 +17,22 @@ export default async function LaunchPacketsPage() {
 
   const supabase = await createClient();
 
-  const { data: packets } = await supabase
-    .from('launch_packets')
-    .select('id, account_id, status, created_at, ready_at')
-    .eq('org_id', org.org_id)
-    .order('created_at', { ascending: false })
-    .limit(50);
+  const [packetsRes, allAccountsRes] = await Promise.all([
+    supabase
+      .from('launch_packets')
+      .select('id, account_id, status, created_at, ready_at')
+      .eq('org_id', org.org_id)
+      .order('created_at', { ascending: false })
+      .limit(50),
+    supabase.from('accounts').select('id, name').eq('org_id', org.org_id).order('name').limit(200),
+  ]);
 
-  const list = (packets ?? []) as { id: string; account_id: string; status: string; created_at: string; ready_at: string | null }[];
+  const packets = packetsRes.data ?? [];
+  const list = packets as { id: string; account_id: string; status: string; created_at: string; ready_at: string | null }[];
   const accountIds = [...new Set(list.map((p) => p.account_id).filter(Boolean))];
-  const { data: accounts } = accountIds.length ? await supabase.from('accounts').select('id, name').in('id', accountIds) : { data: [] };
-  const accountName = new Map((accounts ?? []).map((a) => [a.id, a.name]));
+  const { data: accountsForNames } = accountIds.length ? await supabase.from('accounts').select('id, name').in('id', accountIds) : { data: [] };
+  const accountName = new Map((accountsForNames ?? []).map((a) => [a.id, a.name]));
+  const accountsForCreate = (allAccountsRes.data ?? []).map((a) => ({ id: a.id, name: a.name }));
 
   const statusLabel = (s: string) =>
     s === 'sent_to_ops' ? 'Submitted' : s === 'ready' ? 'Ready' : s === 'review' ? 'Review' : s.replace(/_/g, ' ');
@@ -43,6 +49,7 @@ export default async function LaunchPacketsPage() {
         <PageHeader
           title="Launch to Operations"
           description="Ready-for-launch checklist → Submit to Operations. Ops reviews in Launch Intake. Status: Draft → Ready → Submitted."
+          primaryCta={<CreateLaunchPacketButton accounts={accountsForCreate} />}
         />
         <Card>
           <CardHeader>

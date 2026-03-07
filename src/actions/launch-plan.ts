@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { requireOrg } from '@/lib/auth';
 import { revalidatePath } from 'next/cache';
+import { getOperationalSiteId, hasOperationalSite, OPERATIONAL_SITE_LABEL } from '@/lib/ops/operational-site';
 
 const LAUNCH_PLAN_WRITE_ROLES = ['owner', 'manager', 'admin', 'sales', 'ops'] as const;
 const LAUNCH_PLAN_READ_ROLES = ['owner', 'manager', 'admin', 'inspector', 'sales', 'ops'] as const;
@@ -70,51 +71,96 @@ export async function getLaunchPlansForOpsList(
   if (!plans?.length) return [];
 
   const clientIds = [...new Set(plans.map((p) => p.client_id).filter(Boolean))] as string[];
-  const locationIds = [...new Set(plans.map((p) => p.location_id).filter(Boolean))] as string[];
+  const siteIds = [...new Set(plans.map((p) => getOperationalSiteId(p)).filter(Boolean))] as string[];
+  const opportunityIds = [...new Set(plans.map((p) => p.opportunity_id).filter(Boolean))] as string[];
   const { data: clients } = await supabase.from('clients').select('id, name').in('id', clientIds);
-  const { data: locations } = await supabase.from('locations').select('id, name').in('id', locationIds);
+  let locationMap = new Map<string, string>();
+  const opportunityToFacilities = new Map<string, { id: string; name: string }[]>();
+  if (siteIds.length > 0) {
+    const { data: facilitiesById } = await supabase.from('facilities').select('id, name').in('id', siteIds).eq('org_id', org_id);
+    if (facilitiesById?.length) {
+      locationMap = new Map((facilitiesById ?? []).map((f: { id: string; name: string }) => [f.id, f.name]));
+    }
+    if (locationMap.size < siteIds.length) {
+      const { data: locations } = await supabase.from('locations').select('id, name').in('id', siteIds);
+      (locations ?? []).forEach((l: { id: string; name: string }) => { if (!locationMap.has(l.id)) locationMap.set(l.id, l.name); });
+    }
+  }
+  if (opportunityIds.length > 0) {
+    const { data: opps } = await supabase.from('opportunities').select('id, account_id').in('id', opportunityIds);
+    const accountIds = [...new Set((opps ?? []).map((o: { account_id: string | null }) => o.account_id).filter(Boolean))] as string[];
+    if (accountIds.length > 0) {
+      const { data: facilitiesByAccount } = await supabase.from('facilities').select('id, name, account_id').in('account_id', accountIds).eq('org_id', org_id);
+      const accToFacs = new Map<string, { id: string; name: string }[]>();
+      (facilitiesByAccount ?? []).forEach((f: { id: string; name: string; account_id: string }) => {
+        if (!accToFacs.has(f.account_id)) accToFacs.set(f.account_id, []);
+        accToFacs.get(f.account_id)!.push({ id: f.id, name: f.name });
+      });
+      (opps ?? []).forEach((o: { id: string; account_id: string | null }) => {
+        if (o.account_id && accToFacs.has(o.account_id)) opportunityToFacilities.set(o.id, accToFacs.get(o.account_id)!);
+      });
+    }
+  }
   const clientMap = new Map((clients ?? []).map((c) => [c.id, c.name]));
-  const locationMap = new Map((locations ?? []).map((l) => [l.id, l.name]));
 
   const out: LaunchPlanListRow[] = [];
   for (const p of plans) {
     const opsSetup = (p.ops_setup as Record<string, unknown>) ?? {};
     const risks = Array.isArray(p.risks) ? p.risks : [];
-    const locationId = p.location_id as string | null;
+    const siteId = getOperationalSiteId(p);
+    const facilityIdsFromOpp = opportunityToFacilities.get(p.opportunity_id)?.map((f) => f.id) ?? [];
+    const idsToCheck = siteId ? [siteId] : facilityIdsFromOpp;
     let crewAssigned = !!(opsSetup.crew_id as string)?.trim();
     let scheduleExists = opsSetup.schedule_planned === true;
     let inspectionPlanned = opsSetup.inspection_planned === true;
-    if (locationId) {
+    for (const fid of idsToCheck) {
       const { data: ca } = await supabase
         .from('crew_assignments')
         .select('id')
         .eq('org_id', org_id)
-        .or(`location_id.eq.${locationId},facility_id.eq.${locationId}`)
+        .or(`location_id.eq.${fid},facility_id.eq.${fid}`)
         .eq('is_active', true)
         .limit(1);
-      if ((ca?.length ?? 0) > 0) crewAssigned = true;
+      if ((ca?.length ?? 0) > 0) {
+        crewAssigned = true;
+        break;
+      }
+    }
+    for (const fid of idsToCheck) {
       const { data: sched } = await supabase
         .from('schedules')
         .select('id')
         .eq('org_id', org_id)
-        .or(`location_id.eq.${locationId},facility_id.eq.${locationId}`)
+        .or(`location_id.eq.${fid},facility_id.eq.${fid}`)
         .eq('is_active', true)
         .limit(1);
-      if ((sched?.length ?? 0) > 0) scheduleExists = true;
+      if ((sched?.length ?? 0) > 0) {
+        scheduleExists = true;
+        break;
+      }
+    }
+    for (const fid of idsToCheck) {
       const { data: schedT } = await supabase
         .from('schedules')
         .select('template_id')
         .eq('org_id', org_id)
-        .or(`location_id.eq.${locationId},facility_id.eq.${locationId}`)
+        .or(`location_id.eq.${fid},facility_id.eq.${fid}`)
         .not('template_id', 'is', null)
         .limit(1);
-      if ((schedT?.length ?? 0) > 0) inspectionPlanned = true;
+      if ((schedT?.length ?? 0) > 0) {
+        inspectionPlanned = true;
+        break;
+      }
     }
+    const locationName =
+      (siteId && locationMap.get(siteId)) ??
+      opportunityToFacilities.get(p.opportunity_id)?.[0]?.name ??
+      null;
     out.push({
       id: p.id,
       opportunity_id: p.opportunity_id,
       client_name: p.client_id ? (clientMap.get(p.client_id) ?? null) : null,
-      location_name: p.location_id ? (locationMap.get(p.location_id) ?? null) : null,
+      location_name: locationName,
       status: p.status,
       start_date: p.start_date,
       crew_assigned: crewAssigned,
@@ -131,7 +177,9 @@ export type LaunchPlanRow = {
   org_id: string;
   opportunity_id: string;
   client_id: string | null;
+  /** @deprecated Prefer facility_id for operational flows. */
   location_id: string | null;
+  facility_id: string | null;
   status: string;
   start_date: string | null;
   sales_owner_user_id: string | null;
@@ -150,7 +198,7 @@ export type ReadinessResult = {
   riskFlags: { severity: string; code: string; message: string }[];
 };
 
-/** Get the most recent launch plan for a location (for site profile card). */
+/** Get the most recent launch plan for an operational site (facility or legacy location). */
 export async function getLaunchPlanByLocation(
   org_id: string,
   location_id: string
@@ -162,7 +210,7 @@ export async function getLaunchPlanByLocation(
     .from('launch_plans')
     .select('*')
     .eq('org_id', org_id)
-    .eq('location_id', location_id)
+    .or(`facility_id.eq.${location_id},location_id.eq.${location_id}`)
     .order('updated_at', { ascending: false })
     .limit(1)
     .maybeSingle();
@@ -192,7 +240,7 @@ export async function createLaunchPlan(opportunity_id: string): Promise<{ id?: s
 
   const { data: opportunity } = await supabase
     .from('opportunities')
-    .select('id, org_id, client_id, location_id')
+    .select('id, org_id, client_id, location_id, facility_id')
     .eq('id', opportunity_id)
     .eq('org_id', org.org_id)
     .single();
@@ -205,6 +253,7 @@ export async function createLaunchPlan(opportunity_id: string): Promise<{ id?: s
     .maybeSingle();
   if (existing) return { error: 'Launch plan already exists for this opportunity' };
 
+  const siteId = getOperationalSiteId(opportunity as { facility_id?: string | null; location_id?: string | null });
   const { data: plan, error } = await supabase
     .from('launch_plans')
     .insert({
@@ -212,6 +261,7 @@ export async function createLaunchPlan(opportunity_id: string): Promise<{ id?: s
       opportunity_id,
       client_id: opportunity.client_id ?? null,
       location_id: opportunity.location_id ?? null,
+      facility_id: (opportunity as { facility_id?: string | null }).facility_id ?? null,
       status: 'draft',
       sales_inputs: {},
       ops_setup: {},
@@ -370,12 +420,13 @@ export async function computeReadiness(opportunity_id: string): Promise<Readines
 
   const { data: opportunity } = await supabase
     .from('opportunities')
-    .select('id, org_id, client_id, location_id')
+    .select('id, org_id, client_id, location_id, facility_id')
     .eq('id', opportunity_id)
     .single();
   if (!opportunity) {
     return { salesReady: false, opsReady: false, missing: ['Opportunity not found'], riskFlags: [] };
   }
+  const oppWithFacility = opportunity as { facility_id?: string | null; location_id?: string | null };
 
   const { data: plan } = await supabase
     .from('launch_plans')
@@ -398,7 +449,7 @@ export async function computeReadiness(opportunity_id: string): Promise<Readines
 
   // —— Sales ready gates ——
   if (!opportunity.client_id) missing.push('Opportunity must have a client');
-  if (!opportunity.location_id) missing.push('Opportunity must have a location');
+  if (!hasOperationalSite(oppWithFacility)) missing.push(`Opportunity must have a ${OPERATIONAL_SITE_LABEL}`);
 
   let decisionMaker = false;
   let facilityContact = false;
@@ -416,50 +467,43 @@ export async function computeReadiness(opportunity_id: string): Promise<Readines
     missing.push('At least one decision_maker and one facility contact required (or mark contacts unknown in Sales Inputs)');
   }
 
+  const readinessSiteId = getOperationalSiteId(oppWithFacility);
   const serviceWindow =
     (salesInputs.service_window as string)?.trim() ||
     (salesInputs.service_window_days as string)?.trim();
   let locationNotes = '';
-  if (opportunity.location_id) {
-    const { data: loc } = await supabase
-      .from('locations')
-      .select('notes, days_of_service')
-      .eq('id', opportunity.location_id)
-      .single();
-    locationNotes = [loc?.notes, loc?.days_of_service].filter(Boolean).join(' ') ?? '';
+  if (readinessSiteId) {
+    const { data: fac } = oppWithFacility.facility_id
+      ? await supabase.from('facilities').select('service_notes, access_notes').eq('id', oppWithFacility.facility_id).single()
+      : { data: null };
+    const { data: loc } = await supabase.from('locations').select('notes, days_of_service').eq('id', readinessSiteId).single();
+    const facNotes = fac ? [fac.service_notes, fac.access_notes].filter(Boolean).join(' ') : '';
+    locationNotes = [facNotes, loc?.notes, loc?.days_of_service].filter(Boolean).join(' ') ?? '';
   }
   if (!serviceWindow && !locationNotes?.trim()) {
-    missing.push('Service window required (Sales Inputs or location notes)');
+    missing.push('Service window required (Sales Inputs or site notes)');
   }
 
   const accessCode =
     (salesInputs.access_security as string)?.trim() || (salesInputs.door_code as string)?.trim();
   let locationDoorCode = '';
-  if (opportunity.location_id) {
-    const { data: loc } = await supabase
-      .from('locations')
-      .select('door_alarm_code')
-      .eq('id', opportunity.location_id)
-      .single();
+  if (readinessSiteId) {
+    const { data: loc } = await supabase.from('locations').select('door_alarm_code').eq('id', readinessSiteId).single();
     locationDoorCode = (loc?.door_alarm_code as string) ?? '';
   }
   if (!accessCode?.trim() && !locationDoorCode?.trim()) {
-    missing.push('Access/alarm code required (location or Sales Inputs)');
+    missing.push('Access/alarm code required (site or Sales Inputs)');
   }
 
   let squareFootageOk = false;
   let restroomCountOk = false;
-  if (opportunity.location_id) {
-    const { data: loc } = await supabase
-      .from('locations')
-      .select('square_footage, restroom_count')
-      .eq('id', opportunity.location_id)
-      .single();
+  if (readinessSiteId) {
+    const { data: loc } = await supabase.from('locations').select('square_footage, restroom_count').eq('id', readinessSiteId).single();
     squareFootageOk = loc?.square_footage != null;
     restroomCountOk = loc?.restroom_count != null;
   }
-  if (!squareFootageOk) missing.push('Location square footage required');
-  if (!restroomCountOk) missing.push('Location restroom count required');
+  if (!squareFootageOk) missing.push('Site square footage required');
+  if (!restroomCountOk) missing.push('Site restroom count required');
 
   const scopeSummary = (salesInputs.scope_summary as string)?.trim();
   if (!scopeSummary) missing.push('Scope summary required in Sales Inputs');
@@ -472,55 +516,35 @@ export async function computeReadiness(opportunity_id: string): Promise<Readines
   const salesReady = salesMissing.length === 0;
 
   // —— Ops ready gates ——
-  const locationId = opportunity.location_id as string | null;
+  const operationalSiteId = getOperationalSiteId(oppWithFacility);
   let crewAssigned = false;
   let scheduleExists = false;
   let inspectionPlanned = false;
 
-  if (locationId) {
+  if (operationalSiteId) {
     const { data: crewRows } = await supabase
       .from('crew_assignments')
       .select('id')
       .eq('org_id', opportunity.org_id)
-      .eq('location_id', locationId)
+      .or(`location_id.eq.${operationalSiteId},facility_id.eq.${operationalSiteId}`)
       .eq('is_active', true)
       .limit(1);
     crewAssigned = (crewRows?.length ?? 0) > 0 || !!(opsSetup.crew_id as string)?.trim();
-    if (!crewAssigned) {
-      const { data: facRows } = await supabase
-        .from('crew_assignments')
-        .select('id')
-        .eq('org_id', opportunity.org_id)
-        .eq('facility_id', locationId)
-        .eq('is_active', true)
-        .limit(1);
-      crewAssigned = (facRows?.length ?? 0) > 0 || !!(opsSetup.crew_id as string)?.trim();
-    }
 
     const { data: schedRows } = await supabase
       .from('schedules')
       .select('id')
       .eq('org_id', opportunity.org_id)
-      .eq('location_id', locationId)
+      .or(`location_id.eq.${operationalSiteId},facility_id.eq.${operationalSiteId}`)
       .eq('is_active', true)
       .limit(1);
     scheduleExists = (schedRows?.length ?? 0) > 0 || opsSetup.schedule_planned === true;
-    if (!scheduleExists) {
-      const { data: schedFac } = await supabase
-        .from('schedules')
-        .select('id')
-        .eq('org_id', opportunity.org_id)
-        .eq('facility_id', locationId)
-        .eq('is_active', true)
-        .limit(1);
-      scheduleExists = (schedFac?.length ?? 0) > 0 || opsSetup.schedule_planned === true;
-    }
 
     const { data: schedWithTemplate } = await supabase
       .from('schedules')
       .select('template_id')
       .eq('org_id', opportunity.org_id)
-      .or(`location_id.eq.${locationId},facility_id.eq.${locationId}`)
+      .or(`location_id.eq.${operationalSiteId},facility_id.eq.${operationalSiteId}`)
       .not('template_id', 'is', null)
       .limit(1);
     inspectionPlanned =
@@ -528,8 +552,8 @@ export async function computeReadiness(opportunity_id: string): Promise<Readines
   }
 
   const opsMissing: string[] = [];
-  if (!crewAssigned) opsMissing.push('Crew assignment for location or ops_setup.crew_id');
-  if (!scheduleExists) opsMissing.push('Schedule for location or ops_setup.schedule_planned');
+  if (!crewAssigned) opsMissing.push(`Crew assignment for ${OPERATIONAL_SITE_LABEL} or ops_setup.crew_id`);
+  if (!scheduleExists) opsMissing.push(`Schedule for ${OPERATIONAL_SITE_LABEL} or ops_setup.schedule_planned`);
   if (!inspectionPlanned) opsMissing.push('Inspection template selected or ops_setup.inspection_planned');
   if (!plan?.start_date) opsMissing.push('Start date required');
 

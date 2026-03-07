@@ -1,6 +1,9 @@
 /**
  * Structured authz logging: [authz] prefix. Server-only; avoid leaking details to client.
+ * Uses observability logger for production (Sentry when configured).
  */
+import { logError, captureException } from '@/lib/observability';
+
 const PREFIX = '[authz]';
 
 export function logAuthzError(params: {
@@ -12,18 +15,18 @@ export function logAuthzError(params: {
   error?: unknown;
 }): void {
   const { message, orgId, userId, permission, pathname, error } = params;
-  const payload: Record<string, unknown> = { message };
-  if (orgId != null) payload.orgId = orgId;
-  if (userId != null) payload.userId = userId;
-  if (permission != null) payload.permission = permission;
-  if (pathname != null) payload.pathname = pathname;
-  if (error != null) payload.error = error instanceof Error ? error.message : String(error);
-  console.error(PREFIX, JSON.stringify(payload));
+  const meta: Record<string, unknown> = {};
+  if (orgId != null) meta.orgId = orgId;
+  if (userId != null) meta.userId = userId;
+  if (permission != null) meta.permission = permission;
+  if (pathname != null) meta.pathname = pathname;
+  logError({ message, domain: 'auth', meta, error });
+  console.error(PREFIX, JSON.stringify({ message, ...meta, error: error instanceof Error ? error.message : String(error) }));
 }
 
 /**
  * Log when auth fails (denial). Include is_site_admin and membershipRole for debugging.
- * Call only on server; do not expose to client.
+ * Reports to Sentry with domain 'auth' for production visibility (no PII beyond ids).
  */
 export function logAuthzDenial(params: {
   userId: string;
@@ -43,4 +46,6 @@ export function logAuthzDenial(params: {
     pathname: params.pathname ?? undefined,
   };
   console.error(PREFIX, JSON.stringify(payload));
+  const err = new Error('Permission denied');
+  captureException(err, { domain: 'auth', meta: { permissionKey: params.permissionKey, pathname: params.pathname ?? undefined } });
 }

@@ -1,0 +1,43 @@
+# GRIZZLY Sales Engine — Design Rules
+
+**Identity:** Premium dark-mode revenue system for commercial janitorial sales. Sales war room. Revenue weapon. Fast, sharp, aggressive. Built for field reps and managers.
+
+**Tagline:** Hunt · Book · Close · Manage.
+
+## Four Modes
+
+1. **Hunt** — Leads, territory map. Target board. Find and qualify.
+2. **Book** — Walkthroughs. Field schedule. Site assessments and scheduling.
+3. **Close** — Pipeline (opportunities), proposals. Kill chain. Move deals to revenue.
+4. **Manage** — Accounts and contacts. Relationships. Lean list.
+
+## Page Personalities
+
+- **Sales Command** = Cockpit. One view: what needs action, what’s closest to money, what’s stuck. Mode strip (Hunt / Book / Close / Manage) at top.
+- **Leads** = Target board. Dense table, saved views, score/status/source badges, hot and stale obvious.
+- **Walkthroughs** = Field scheduling tool. List + calendar. Date, account, status, create scope.
+- **Pipeline** = Kill chain. Stage columns, value prominent, next action on cards. Move toward close.
+- **Proposals** = Revenue follow-up control. Amount, sent date, days open, follow-up status.
+- **Accounts** = Relationships. Lean list. Prospects / customers filter.
+
+## Visual Rules
+
+- Premium dark surfaces: `bg-card/80`, `dark:bg-card/90`, `border-border`, `rounded-xl`.
+- Compact KPI cards: small labels (`text-[11px]`), clear values, accent by variant (success/warning/danger).
+- Polished badges: `text-[10px]` or `text-xs`, uppercase where appropriate, semantic color (emerald/amber/rose).
+- Dense tables: compact `py-2.5`, clear header row (`text-xs uppercase tracking-wider`), row hover.
+- Strap above page title: `text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/80` for mode/context (e.g. "Target board", "Kill chain").
+- Revenue emphasis: emerald for value/amounts; numeric tabular-nums.
+- Sticky actions: action bar or primary CTAs visible without scroll where possible.
+
+## No-Gos
+
+- Giant dashboard fluff or low-density empty layouts.
+- Generic table styling without card container or hierarchy.
+- Overuse of gradients or admin/settings vibe.
+- Weak stage distinction on pipeline.
+- Cluttered forms above the fold.
+
+## Copy
+
+Use `SALES_COPY` and `GRIZZLY` from `@/lib/sales-module-copy` for all sales UI strings. Add new keys there rather than hardcoding.

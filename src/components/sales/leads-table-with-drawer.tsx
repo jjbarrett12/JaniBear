@@ -16,7 +16,7 @@ import { Badge } from '@/components/ui/badge';
 import { RightDrawer } from '@/components/sales/right-drawer';
 import { getLeadForDrawer, convertLeadToOpportunity, setLeadStatusAction } from '@/actions/leads';
 import type { LeadForDrawer } from '@/actions/leads';
-import { formatDate, formatRelativeTime } from '@/lib/utils';
+import { formatDate, formatRelativeTime, cn } from '@/lib/utils';
 import { ConvertLeadToOpportunityModal } from '@/components/sales/convert-lead-to-opportunity-modal';
 import { Mail, Phone, Building2, Calendar, TrendingUp, PhoneCall, CheckSquare, XCircle } from 'lucide-react';
 
@@ -32,6 +32,9 @@ type LeadRow = {
   overflow?: boolean;
   overflow_reason?: string | null;
   assigned_user_id?: string | null;
+  lead_score?: number | null;
+  next_follow_up_at?: string | null;
+  import_batch_id?: string | null;
 };
 
 export function LeadsTableWithDrawer({
@@ -77,53 +80,86 @@ export function LeadsTableWithDrawer({
   const lead = drawerData?.lead;
   const title = lead ? (lead.contact_name || lead.company || 'Lead') : 'Lead';
 
+  const today = new Date().toISOString().slice(0, 10);
+  const isOverdue = (dateStr: string | null | undefined) => (dateStr ? dateStr.slice(0, 10) < today : false);
+
   return (
     <>
-      <div className="rounded-md border border-border">
+      <div className="rounded-xl border border-border bg-card/80 dark:bg-card/90 overflow-hidden">
         <Table>
           <TableHeader>
-            <TableRow>
-              <TableHead>Lead / Company</TableHead>
-              <TableHead>Source</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Last touch</TableHead>
-              <TableHead>Owner</TableHead>
-              <TableHead>Next step</TableHead>
-              <TableHead>Created</TableHead>
+            <TableRow className="border-border hover:bg-transparent">
+              <TableHead className="text-xs font-medium uppercase tracking-wider text-muted-foreground py-3">Company</TableHead>
+              <TableHead className="text-xs font-medium uppercase tracking-wider text-muted-foreground py-3">Source</TableHead>
+              <TableHead className="text-xs font-medium uppercase tracking-wider text-muted-foreground py-3">Status</TableHead>
+              <TableHead className="text-right text-xs font-medium uppercase tracking-wider text-muted-foreground py-3">Score</TableHead>
+              <TableHead className="text-xs font-medium uppercase tracking-wider text-muted-foreground py-3">Next follow-up</TableHead>
+              <TableHead className="text-xs font-medium uppercase tracking-wider text-muted-foreground py-3">Created</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {leads.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
+              <TableRow className="hover:bg-transparent">
+                <TableCell colSpan={6} className="text-center text-sm text-muted-foreground py-10">
                   No leads yet. Create one to get started.
                 </TableCell>
               </TableRow>
             ) : (
-              leads.map((row) => (
-                <TableRow
-                  key={row.id}
-                  className="cursor-pointer hover:bg-muted/50"
-                  onClick={() => setDrawerLeadId(row.id)}
-                >
-                  <TableCell className="font-medium">
-                    <div className="flex flex-col">
-                      <span>{row.contact_name || '—'}</span>
-                      {row.company && <span className="text-xs text-muted-foreground">{row.company}</span>}
-                    </div>
-                  </TableCell>
-                  <TableCell className="capitalize text-muted-foreground">{row.source?.replace('_', ' ') ?? '—'}</TableCell>
-                  <TableCell>
-                    <Badge variant={row.status === 'lost' ? 'secondary' : 'outline'} className="capitalize">
-                      {row.status?.replace(/_/g, ' ') ?? 'new'}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-muted-foreground text-sm">{formatRelativeTime(row.updated_at)}</TableCell>
-                  <TableCell className="text-muted-foreground">—</TableCell>
-                  <TableCell className="text-muted-foreground">—</TableCell>
-                  <TableCell className="text-muted-foreground text-sm">{formatDate(row.created_at)}</TableCell>
-                </TableRow>
-              ))
+              leads.map((row) => {
+                const overdue = isOverdue(row.next_follow_up_at);
+                const scoreTier = row.lead_score == null ? null : row.lead_score >= 70 ? 'hot' : row.lead_score >= 40 ? 'warm' : 'cold';
+                return (
+                  <TableRow
+                    key={row.id}
+                    className="cursor-pointer hover:bg-muted/40 border-border transition-colors"
+                    onClick={() => setDrawerLeadId(row.id)}
+                  >
+                    <TableCell className="py-2.5">
+                      <div className="flex flex-col min-w-0">
+                        <span className="font-medium text-foreground truncate">{row.company || row.contact_name || '—'}</span>
+                        {row.company && row.contact_name && <span className="text-xs text-muted-foreground truncate">{row.contact_name}</span>}
+                      </div>
+                    </TableCell>
+                    <TableCell className="py-2.5">
+                      <span className="text-xs text-muted-foreground capitalize">{row.source?.replace(/_/g, ' ') ?? '—'}</span>
+                    </TableCell>
+                    <TableCell className="py-2.5">
+                      <Badge
+                        variant={row.status === 'lost' ? 'secondary' : 'outline'}
+                        className="text-[10px] font-medium uppercase tracking-wider capitalize border-0 bg-muted/60 text-muted-foreground data-[variant=secondary]:bg-muted"
+                      >
+                        {row.status?.replace(/_/g, ' ') ?? 'new'}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-right py-2.5 tabular-nums">
+                      {row.lead_score != null ? (
+                        <span
+                          className={cn(
+                            'text-xs font-medium',
+                            scoreTier === 'hot' && 'text-emerald-500 dark:text-emerald-400',
+                            scoreTier === 'warm' && 'text-amber-500 dark:text-amber-400'
+                          )}
+                        >
+                          {row.lead_score}
+                        </span>
+                      ) : (
+                        '—'
+                      )}
+                    </TableCell>
+                    <TableCell className="py-2.5">
+                      {row.next_follow_up_at ? (
+                        <span className={cn('text-xs tabular-nums', overdue && 'text-rose-500 dark:text-rose-400 font-medium')}>
+                          {formatDate(row.next_follow_up_at)}
+                          {overdue && ' · Overdue'}
+                        </span>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">—</span>
+                      )}
+                    </TableCell>
+                    <TableCell className="py-2.5 text-xs text-muted-foreground tabular-nums">{formatDate(row.created_at)}</TableCell>
+                  </TableRow>
+                );
+              })
             )}
           </TableBody>
         </Table>

@@ -309,14 +309,17 @@ export async function createActivity(payload: {
   opportunity_id?: string | null;
   assigned_to?: string | null;
 }): Promise<{ id?: string; error?: string }> {
-  await requireOrg();
+  const org = await requireOrg();
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
+
+  // Use server-derived org only (tenant isolation: ignore client-supplied org_id)
+  const org_id = org.org_id;
 
   const { data, error } = await supabase
     .from('crm_activities')
     .insert({
-      org_id: payload.org_id,
+      org_id,
       type: payload.type,
       subject: payload.subject ?? null,
       body: payload.body ?? null,
@@ -336,13 +339,14 @@ export async function createActivity(payload: {
 }
 
 export async function completeActivity(activity_id: string): Promise<{ error?: string }> {
-  await requireOrg();
+  const org = await requireOrg();
   const supabase = await createClient();
 
   const { error } = await supabase
     .from('crm_activities')
     .update({ completed_at: new Date().toISOString() })
-    .eq('id', activity_id);
+    .eq('id', activity_id)
+    .eq('org_id', org.org_id);
 
   if (error) return { error: error.message };
   revalidatePath('/app/crm');

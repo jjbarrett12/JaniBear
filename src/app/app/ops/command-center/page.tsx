@@ -3,17 +3,12 @@ import { headers } from 'next/headers';
 import { requireOrg, getCurrentUserId } from '@/lib/auth';
 import { requirePermission } from '@/lib/auth/requirePermission';
 import { isAuthzError, isAuthContextError, getAuthContextRedirectPath } from '@/lib/auth/errors';
-import { getCommandCenterData } from '@/lib/ops/getCommandCenterData';
-import { CommandCenterView } from '@/components/ops/CommandCenterView';
-import type { CommandCenterData as CommandCenterDataShape } from '@/lib/ops/command-center-types';
+import { getOpsCommandCenterData } from '@/lib/ops/getOpsCommandCenterData';
+import { OpsCommandCenterPage } from '@/components/ops/ops-command-center';
 
 export const dynamic = 'force-dynamic';
 
-export default async function CommandCenterPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ date?: string; territoryId?: string; verticalId?: string; riskLevel?: string; search?: string }>;
-}) {
+export default async function CommandCenterPage() {
   const org = await requireOrg();
   const userId = await getCurrentUserId();
   if (!userId) redirect('/auth/login');
@@ -26,29 +21,7 @@ export default async function CommandCenterPage({
     redirect('/app/authz-error');
   }
 
-  let canWrite = false;
-  try {
-    await requirePermission({ orgId: org.org_id, userId, permission: 'ops.write', pathname });
-    canWrite = true;
-  } catch {
-    // read-only view
-  }
+  const data = await getOpsCommandCenterData(org.org_id);
 
-  const params = await searchParams;
-  const data: CommandCenterDataShape = await getCommandCenterData(org.org_id, {
-    date: params.date ?? undefined,
-    territoryId: params.territoryId ?? null,
-    verticalId: params.verticalId ?? null,
-    riskLevel: params.riskLevel ?? null,
-    search: params.search ?? null,
-  });
-
-  return (
-    <CommandCenterView
-      initialData={data}
-      orgId={org.org_id}
-      canWrite={canWrite}
-      searchParams={params}
-    />
-  );
+  return <OpsCommandCenterPage data={data} />;
 }

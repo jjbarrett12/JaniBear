@@ -40,7 +40,8 @@ export async function POST(req: Request) {
 
     return NextResponse.json(result);
   } catch (error) {
-    console.error('transcribe error:', error);
+    const { logError } = await import('@/lib/observability');
+    logError({ message: 'Transcribe failed', domain: 'lidar', error });
     return NextResponse.json({ error: 'Internal Error' }, { status: 500 });
   }
 }

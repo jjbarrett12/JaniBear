@@ -1,13 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
+import { claimStripeEvent, markStripeEventProcessed } from '@/lib/billing/stripe-webhook-utils';
+import { logError, logStructured } from '@/lib/observability';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2023-10-16',
   typescript: true,
 });
 
-const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
+const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET ?? process.env.STRIPE_BILLING_WEBHOOK_SECRET;
 
 export async function POST(request: NextRequest) {
   const body = await request.text();
@@ -16,20 +19,29 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Missing stripe-signature header' }, { status: 400 });
   }
   if (!webhookSecret) {
-    console.error('STRIPE_WEBHOOK_SECRET is not set');
+    logError({ message: 'Stripe webhook not configured', domain: 'stripe', meta: { missing: 'STRIPE_WEBHOOK_SECRET' } });
     return NextResponse.json({ error: 'Webhook not configured' }, { status: 503 });
   }
 
   let event: Stripe.Event;
-
   try {
     event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
-  } catch (err: any) {
-    console.error('Webhook signature verification failed:', err.message);
-    return NextResponse.json(
-      { error: `Webhook Error: ${err.message}` },
-      { status: 400 }
-    );
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : 'Unknown error';
+    logError({ message: 'Stripe webhook signature verification failed', domain: 'stripe', error: err });
+    return NextResponse.json({ error: `Webhook Error: ${msg}` }, { status: 400 });
+  }
+
+  const admin = createAdminClient();
+  const claim = await claimStripeEvent(admin, event.id, event.type);
+  if (claim === 'skip') {
+    logStructured({
+      message: 'Stripe webhook duplicate or already processed',
+      domain: 'stripe',
+      level: 'info',
+      meta: { event_id: event.id, event_type: event.type },
+    });
+    return NextResponse.json({ received: true });
   }
 
   try {
@@ -77,38 +89,23 @@ export async function POST(request: NextRequest) {
           break;
         }
 
-        // Legacy: subscription/plan checkout
-        console.log('Checkout session completed:', session.id);
         break;
       }
 
       case 'customer.subscription.updated':
-      case 'customer.subscription.deleted': {
-        const subscription = event.data.object as Stripe.Subscription;
-        
-        // Handle subscription updates/cancellations
-        console.log('Subscription updated:', subscription.id);
-        
-        // Update subscription status in Supabase
-        // const supabase = await createClient();
-        // await supabase
-        //   .from('subscriptions')
-        //   .update({ status: subscription.status })
-        //   .eq('stripe_subscription_id', subscription.id);
-
+      case 'customer.subscription.deleted':
         break;
-      }
 
       default:
-        console.log(`Unhandled event type: ${event.type}`);
+        break;
     }
 
+    await markStripeEventProcessed(admin, event.id, true);
     return NextResponse.json({ received: true });
-  } catch (error: any) {
-    console.error('Error processing webhook:', error);
-    return NextResponse.json(
-      { error: 'Webhook processing failed' },
-      { status: 500 }
-    );
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    await markStripeEventProcessed(admin, event.id, false, message);
+    logError({ message: 'Stripe webhook processing failed', domain: 'stripe', meta: { event_id: event.id, event_type: event.type }, error });
+    return NextResponse.json({ error: 'Webhook processing failed' }, { status: 500 });
   }
 }

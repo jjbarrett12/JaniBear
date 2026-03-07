@@ -52,6 +52,34 @@ export async function createLead(input: CreateLeadInput): Promise<CreateLeadResu
     return { ok: false, error: error.message };
   }
   if (!lead?.id) return { ok: false, error: 'Failed to create lead' };
+
+  // Duplicate detection: flag new lead if it matches existing leads in org
+  try {
+    const { data: candidates } = await supabase
+      .from('leads')
+      .select('id, org_id, company, contact_name, email, phone, city, state, address')
+      .eq('org_id', org.org_id)
+      .limit(400);
+    const newLeadRecord = {
+      id: lead.id,
+      org_id: org.org_id,
+      company: input.company ?? null,
+      contact_name: input.contact_name ?? null,
+      email: input.email ?? null,
+      phone: input.phone ?? null,
+      city: input.city ?? null,
+      state: input.state ?? null,
+      address: input.address ?? null,
+    };
+    const { findDuplicateCandidates } = await import('@/lib/sales/duplicateDetection');
+    const matches = findDuplicateCandidates(newLeadRecord, (candidates ?? []) as Parameters<typeof findDuplicateCandidates>[1], lead.id);
+    if (matches.length > 0) {
+      await supabase.from('leads').update({ is_possible_duplicate: true, updated_at: new Date().toISOString() }).eq('id', lead.id).eq('org_id', org.org_id);
+    }
+  } catch {
+    // Non-fatal: duplicate flag is best-effort
+  }
+
   revalidatePath('/app/sales/leads');
   revalidatePath('/app/sales/leads/new');
   return { ok: true, leadId: lead.id };
@@ -107,108 +135,71 @@ export type ConvertLeadToOpportunityInput = {
   /** Create new account; name required. */
   createNewAccount?: boolean;
   accountName?: string;
+  /** Link this proposal to the new opportunity. */
+  proposalId?: string | null;
   stage?: string;
   expectedValueCents?: number | null;
   closeDate?: string | null;
 };
 
 export type ConvertLeadToOpportunityResult =
-  | { ok: true; opportunityId: string; accountId: string }
+  | { ok: true; opportunityId: string; accountId: string; contactId: string; launchPacketId: string; alreadyConverted?: boolean }
   | { ok: false; error: string };
 
-/** Convert a lead to an opportunity: create/link account, create opportunity, update lead. */
+/**
+ * Convert lead to Contact → Account → Opportunity → Launch Packet (production-safe, idempotent).
+ * Creates account_contact, find-or-create account, opportunity, launch packet with full payload; audit logged.
+ * If lead already converted, returns existing ids and ensures a launch packet exists.
+ */
 export async function convertLeadToOpportunity(
   input: ConvertLeadToOpportunityInput
 ): Promise<ConvertLeadToOpportunityResult> {
   const org = await requireOrg();
   const userId = await getCurrentUserId();
-  const supabase = await createClient();
+  if (!userId) return { ok: false, error: 'Not signed in' };
 
-  const { data: lead } = await supabase
-    .from('leads')
-    .select('id, org_id, company, contact_name, converted_opportunity_id')
-    .eq('id', input.leadId)
-    .eq('org_id', org.org_id)
-    .single();
+  const { convertLeadAndCreateLaunchPacket } = await import('@/lib/sales/convert-and-launch');
+  const result = await convertLeadAndCreateLaunchPacket({
+    orgId: org.org_id,
+    userId,
+    leadId: input.leadId,
+    accountId: input.accountId,
+    createNewAccount: input.createNewAccount,
+    accountName: input.accountName ?? undefined,
+    proposalId: input.proposalId,
+    stage: input.stage,
+    expectedValueCents: input.expectedValueCents,
+    closeDate: input.closeDate ?? undefined,
+  });
 
-  if (!lead) return { ok: false, error: 'Lead not found' };
-  if (lead.converted_opportunity_id) return { ok: false, error: 'Lead already converted to an opportunity' };
-
-  let accountId: string;
-
-  if (input.createNewAccount && input.accountName?.trim()) {
-    const name = input.accountName.trim();
-    const { data: newAccount, error: accountError } = await supabase
-      .from('accounts')
-      .insert({
-        org_id: org.org_id,
-        name,
-        status: 'inactive',
-      })
-      .select('id')
-      .single();
-    if (accountError || !newAccount) return { ok: false, error: accountError?.message ?? 'Failed to create account' };
-    accountId = newAccount.id;
-  } else if (input.accountId) {
-    const { data: existing } = await supabase
-      .from('accounts')
-      .select('id')
-      .eq('id', input.accountId)
-      .eq('org_id', org.org_id)
-      .single();
-    if (!existing) return { ok: false, error: 'Account not found' };
-    accountId = existing.id;
-  } else {
-    return { ok: false, error: 'Select an account or create a new one' };
-  }
-
-  const stage = (input.stage?.trim() || 'qualified').toLowerCase().replace(/\s+/g, '_');
-  const estValue = input.expectedValueCents != null ? input.expectedValueCents / 100 : null;
-
-  const { data: opportunity, error: oppError } = await supabase
-    .from('opportunities')
-    .insert({
-      org_id: org.org_id,
-      account_id: accountId,
-      stage: stage || 'qualified',
-      est_value: estValue,
-      owner_id: userId ?? undefined,
-      created_by: userId ?? undefined,
-    })
-    .select('id')
-    .single();
-
-  if (oppError || !opportunity) return { ok: false, error: oppError?.message ?? 'Failed to create opportunity' };
-
-  const { error: updateError } = await supabase
-    .from('leads')
-    .update({
-      converted_opportunity_id: opportunity.id,
-      converted_account_id: accountId,
-      updated_at: new Date().toISOString(),
-    })
-    .eq('id', input.leadId)
-    .eq('org_id', org.org_id);
-
-  if (updateError) return { ok: false, error: updateError.message };
-
-  if (process.env.NODE_ENV === 'development') {
-    console.warn('[convertLeadToOpportunity]', { leadId: input.leadId, opportunityId: opportunity.id, accountId });
-  }
+  if (!result.ok) return { ok: false, error: result.error };
 
   revalidatePath('/app/sales/leads');
   revalidatePath(`/app/sales/leads/${input.leadId}`);
+  revalidatePath('/app/sales/launch-packets');
+  revalidatePath(`/app/sales/launch-packets/${result.launchPacketId}`);
   revalidatePath('/app/sales/pipeline');
   revalidatePath('/app/crm/pipeline');
-  revalidatePath(`/app/crm/opportunities/${opportunity.id}`);
-  return { ok: true, opportunityId: opportunity.id, accountId };
+  revalidatePath(`/app/crm/opportunities/${result.opportunityId}`);
+  return {
+    ok: true,
+    opportunityId: result.opportunityId,
+    accountId: result.accountId,
+    contactId: result.contactId,
+    launchPacketId: result.launchPacketId,
+    alreadyConverted: result.alreadyConverted,
+  };
 }
 
 /** Set lead status (e.g. 'lost' for Disqualify). Updates rep_lead_counters when status bucket changes. */
 export async function setLeadStatusAction(leadId: string, status: string): Promise<{ ok: boolean; error?: string }> {
   const org = await requireOrg();
   const supabase = await createClient();
-  const allowed = ['new', 'contacted', 'walkthrough_scheduled', 'walkthrough_done', 'proposal_sent', 'won', 'lost'];
+  const allowed = [
+    'new', 'enriched', 'working', 'attempted_contact', 'contacted', 'qualified',
+    'walkthrough_scheduled', 'walkthrough_completed', 'walkthrough_done', 'proposal_stage', 'proposal_sent',
+    'converted', 'unqualified', 'won', 'lost',
+  ];
   if (!allowed.includes(status)) return { ok: false, error: 'Invalid status' };
   const { data: lead } = await supabase
     .from('leads')
@@ -233,6 +224,25 @@ export async function setLeadStatusAction(leadId: string, status: string): Promi
       newStatus: status,
     });
   }
+  revalidatePath('/app/sales/leads');
+  revalidatePath(`/app/sales/leads/${leadId}`);
+  return { ok: true };
+}
+
+/** GRIZZLY: Assign lead to a rep (assigned_to and assigned_user_id for compatibility). */
+export async function assignLeadAction(leadId: string, userId: string | null): Promise<{ ok: boolean; error?: string }> {
+  const org = await requireOrg();
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from('leads')
+    .update({
+      assigned_user_id: userId ?? null,
+      assigned_to: userId ?? null,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', leadId)
+    .eq('org_id', org.org_id);
+  if (error) return { ok: false, error: error.message };
   revalidatePath('/app/sales/leads');
   revalidatePath(`/app/sales/leads/${leadId}`);
   return { ok: true };

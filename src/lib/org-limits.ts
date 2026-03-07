@@ -1,12 +1,15 @@
 import { createClient } from '@/lib/supabase/server';
 
+/**
+ * Seat limit check. Uses organizations.seat_limit (set by checkout/commit-seats).
+ * Plan tier is canonical in org_subscriptions.plan_code; organizations.plan is legacy sync only.
+ */
 export async function checkSeatLimit(orgId: string) {
   const supabase = await createClient();
 
-  // Get org limit
   const { data: org } = await supabase
     .from('organizations')
-    .select('seat_limit, plan')
+    .select('seat_limit')
     .eq('id', orgId)
     .single();
 

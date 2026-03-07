@@ -1,10 +1,12 @@
 'use client';
 
 import { useState, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import type { CoverageGapRow } from '@/lib/shifts/coverage-gaps-data';
 import type { ShiftBackupRecommendation } from '@/lib/shifts/recommendBackup';
 import { AlertCircle, UserPlus } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 interface Props {
   gaps: CoverageGapRow[];
@@ -12,6 +14,8 @@ interface Props {
 }
 
 export function CoverageGapsWidget({ gaps, dateLabel }: Props) {
+  const router = useRouter();
+  const { toast } = useToast();
   const [loadingId, setLoadingId] = useState<string | null>(null);
   const [recs, setRecs] = useState<Record<string, ShiftBackupRecommendation[]>>({});
   const [assigning, setAssigning] = useState<string | null>(null);
@@ -38,7 +42,8 @@ export function CoverageGapsWidget({ gaps, dateLabel }: Props) {
       });
       if (res.ok) {
         setRecs((prev) => ({ ...prev, [shiftId]: [] }));
-        window.location.reload();
+        toast({ title: 'Backup assigned', description: 'Coverage has been updated.' });
+        router.refresh();
       }
     } finally {
       setAssigning(null);

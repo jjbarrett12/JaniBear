@@ -5,6 +5,9 @@ import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { formatDate } from '@/lib/utils';
+import { AppEmptyState } from '@/components/app/app-empty-state';
+import { LAUNCH_HANDOFF_COPY } from '@/lib/launch-handoff-copy';
+import { Rocket } from 'lucide-react';
 
 export type LaunchIntakeItem = {
   id: string;
@@ -41,7 +44,11 @@ export function LaunchIntakeList({
       </CardHeader>
       <CardContent>
         {items.length === 0 ? (
-          <p className="text-muted-foreground">No launches in queue. Sales will submit when ready.</p>
+          <AppEmptyState
+            icon={<Rocket className="h-6 w-6" />}
+            title="No launches in queue"
+            description={LAUNCH_HANDOFF_COPY.intakeEmpty}
+          />
         ) : (
           <ul className="divide-y divide-border">
             {items.map((p) => (

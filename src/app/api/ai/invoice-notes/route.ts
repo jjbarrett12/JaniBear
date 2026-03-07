@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAIService } from '@/lib/ai/openai-service';
 import { requireApiOrg } from '@/lib/api-guard';
+import { logError } from '@/lib/observability';
 
 export async function POST(request: NextRequest) {
   try {
@@ -31,7 +32,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ notes });
   } catch (error: unknown) {
-    console.error('AI invoice notes error:', error);
+    logError({ message: 'AI invoice notes failed', domain: 'ai', error });
     const message = error instanceof Error ? error.message : 'Failed to generate notes';
     const isTimeout = typeof message === 'string' && (message.includes('timeout') || message.includes('ETIMEDOUT'));
     return NextResponse.json(

@@ -14,14 +14,33 @@ export interface DashboardHeaderProps {
   userName: string;
   orgName?: string | null;
   subtitle?: string;
+  /** When dashboard data was fetched (ISO string). Shown as "Data as of ..." for trust. */
+  dataFetchedAt?: string | null;
   quickActions?: React.ReactNode;
   className?: string;
+}
+
+function formatDataAsOf(iso: string): string {
+  try {
+    const d = new Date(iso);
+    const now = new Date();
+    const diffMs = now.getTime() - d.getTime();
+    const diffMins = Math.floor(diffMs / 60_000);
+    if (diffMins < 1) return 'Just now';
+    if (diffMins < 60) return `${diffMins} min ago`;
+    const diffHours = Math.floor(diffMins / 60);
+    if (diffHours < 24) return `${diffHours}h ago`;
+    return d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+  } catch {
+    return '';
+  }
 }
 
 export function DashboardHeader({
   userName,
   orgName,
   subtitle = "Here's what's happening with your operations today.",
+  dataFetchedAt,
   quickActions,
   className,
 }: DashboardHeaderProps) {
@@ -62,6 +81,11 @@ export function DashboardHeader({
         </h1>
         {subtitle && (
           <p className="text-sm text-muted-foreground mt-1 max-w-xl">{subtitle}</p>
+        )}
+        {dataFetchedAt && (
+          <p className="text-xs text-muted-foreground/80 mt-0.5" title={new Date(dataFetchedAt).toLocaleString()}>
+            Data as of {formatDataAsOf(dataFetchedAt)}
+          </p>
         )}
       </div>
       <div className="flex flex-wrap items-center gap-2 sm:gap-3 shrink-0">

@@ -108,6 +108,8 @@ export type CommandCenterData = {
   buildingsScheduledToday?: number;
   /** For cockpit: inspections due today. */
   inspectionsDueToday?: number;
+  /** When this data was fetched (ISO string). For "Data as of" trust signal in UI. */
+  fetchedAt?: string;
 };
 
 const ZERO_REVENUE: RevenuePulse = {
@@ -413,6 +415,7 @@ async function getCommandCenterDataInner(orgId: string): Promise<CommandCenterDa
     userName,
     buildingsScheduledToday,
     inspectionsDueToday,
+    fetchedAt: new Date().toISOString(),
   };
 }
 

@@ -49,6 +49,7 @@ export function CockpitSection({ orgId }: { orgId: string }) {
         <DashboardHeader
           userName={data.userName}
           subtitle={DASHBOARD_COPY.headerSubtitle}
+          dataFetchedAt={data.fetchedAt ?? null}
         />
         <KpiStrip kpis={kpis} onKpiClick={handleKpiClick} />
         <AlertRail

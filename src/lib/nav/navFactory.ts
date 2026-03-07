@@ -108,13 +108,14 @@ function buildExecutiveSection(): NavSection {
   };
 }
 
-/** Sales section: Leads, Accounts (Prospects), Contacts, Opportunities, Walkthroughs, Proposals, Maps. */
+/** Sales section: Command (landing), Leads, Accounts, Opportunities, Walkthroughs, Proposals, Map. */
 function buildSalesSection(input: NavFactoryInput): NavSection {
   const items: NavItem[] = [
+    { href: '/app/sales', labelKey: 'navSalesCommand', icon: LayoutGrid },
     { href: '/app/sales/leads', labelKey: 'navLeads', icon: TrendingUp },
     { href: '/app/sales/accounts', labelKey: 'navAccountsProspects', icon: Building2 },
     { href: '/app/crm/contacts', labelKey: 'navContacts', icon: Users },
-    { href: '/app/sales/pipeline', labelKey: 'navOpportunities', icon: LayoutDashboard },
+    { href: '/app/crm/pipeline', labelKey: 'navOpportunities', icon: LayoutDashboard },
     { href: '/app/sales/walkthroughs', labelKey: 'navWalkthroughs', icon: FileSearch },
     { href: '/app/sales/proposals', labelKey: 'navProposals', icon: Calculator },
     { href: '/app/map', labelKey: 'navMap', icon: Map },

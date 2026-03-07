@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { requireOperatorOrg } from '@/lib/api-guard';
 import { getAIService } from '@/lib/ai/openai-service';
+import { logError } from '@/lib/observability';
 
 const SYSTEM_PROMPT = `You are an expert at extracting structured data from janitorial service schedules and contracts.
 
@@ -57,8 +58,8 @@ export async function POST(request: Request) {
       success: true,
       data: extractedData,
     });
-  } catch (error) {
-    console.error('Schedule scan error:', error);
+  } catch (error: unknown) {
+    logError({ message: 'AI schedule scan failed', domain: 'ai', error });
     return NextResponse.json(
       { error: 'Failed to process document' },
       { status: 500 }

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { processRenewalReminders } from '@/lib/contract-renewals';
+import { logError } from '@/lib/observability';
 
 /**
  * GET/POST /api/cron/contract-renewals
@@ -31,7 +32,7 @@ async function runRenewalCron(request: NextRequest) {
     const result = await processRenewalReminders();
     return NextResponse.json({ ok: true, ...result });
   } catch (err) {
-    console.error('cron/contract-renewals:', err);
+    logError({ message: 'contract-renewals cron failed', domain: 'cron', meta: { job_name: 'contract-renewals' }, error: err });
     return NextResponse.json(
       { error: err instanceof Error ? err.message : 'Unknown error' },
       { status: 500 }

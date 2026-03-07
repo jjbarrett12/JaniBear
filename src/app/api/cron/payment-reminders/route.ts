@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { sendEmail } from '@/lib/email';
+import { startCronRun, finishCronRun } from '@/lib/observability';
 
 /**
  * GET/POST /api/cron/payment-reminders
@@ -28,6 +29,7 @@ async function runReminderCron(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
+  const runId = await startCronRun('payment-reminders');
   try {
     const supabase = createAdminClient();
     const now = new Date().toISOString();
@@ -40,6 +42,7 @@ async function runReminderCron(request: NextRequest) {
       .limit(100);
 
     if (error) {
+      await finishCronRun(runId, 'failure', error.message);
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
@@ -91,12 +94,11 @@ async function runReminderCron(request: NextRequest) {
       }
     }
 
+    await finishCronRun(runId, 'success');
     return NextResponse.json({ ok: true, sent });
   } catch (err) {
-    console.error('cron/payment-reminders:', err);
-    return NextResponse.json(
-      { error: err instanceof Error ? err.message : 'Unknown error' },
-      { status: 500 }
-    );
+    const msg = err instanceof Error ? err.message : 'Unknown error';
+    await finishCronRun(runId, 'failure', msg);
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }

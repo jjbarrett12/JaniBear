@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { createClient } from '@/lib/supabase/server';
 import { getCurrentUser } from '@/lib/auth';
+import { logError } from '@/lib/observability';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2023-10-16',
@@ -141,7 +142,7 @@ export async function POST(request: NextRequest) {
       sessionId: session.id,
     });
   } catch (err: unknown) {
-    console.error('Pro Gear checkout error:', err);
+    logError({ message: 'Pro Gear checkout failed', domain: 'stripe', error: err });
     const message = err instanceof Error ? err.message : 'Checkout failed';
     return NextResponse.json({ error: message }, { status: 500 });
   }

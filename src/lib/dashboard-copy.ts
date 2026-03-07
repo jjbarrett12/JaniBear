@@ -62,7 +62,7 @@ export const DASHBOARD_COPY = {
   /** Alert rail (banner above or beside main content) */
   alertRail: {
     withCount: (n: number) => (n === 1 ? "1 needs attention" : `${n} need attention`),
-    empty: "All clear",
+    empty: "All caught up",
     viewQueue: "View queue",
   },
 } as const;

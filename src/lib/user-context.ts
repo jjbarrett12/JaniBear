@@ -25,9 +25,14 @@ export type UserContext = {
   modules: Record<string, boolean>;
 };
 
+/** Header set by middleware when org is resolved from path (/org/[slug]) or subdomain. Only set after membership check. */
+const RESOLVED_ORG_HEADER = 'x-resolved-org-id';
+
 /**
  * Read active org id from httpOnly cookie (set by API or client after switch).
  * Falls back to Cookie header when cookies() is empty (e.g. on client-side nav).
+ * When entering via /org/[slug] or subdomain, cookie is set on the response in the same request,
+ * so layout does not see it yet; fall back to x-resolved-org-id from middleware (already validated).
  */
 export async function getActiveOrgIdFromCookie(): Promise<string | null> {
   const cookieStore = await cookies();
@@ -35,10 +40,13 @@ export async function getActiveOrgIdFromCookie(): Promise<string | null> {
   if (c?.value) return c.value;
   const headersList = await headers();
   const cookieHeader = headersList.get('cookie');
-  if (!cookieHeader) return null;
-  const match = cookieHeader.match(new RegExp(`${ACTIVE_ORG_COOKIE}=([^;]+)`));
-  const raw = match?.[1]?.trim();
-  return raw?.replace(/^"|"$/g, '') ?? null;
+  if (cookieHeader) {
+    const match = cookieHeader.match(new RegExp(`${ACTIVE_ORG_COOKIE}=([^;]+)`));
+    const raw = match?.[1]?.trim();
+    if (raw) return raw?.replace(/^"|"$/g, '') ?? null;
+  }
+  const resolved = headersList.get(RESOLVED_ORG_HEADER)?.trim();
+  return resolved ?? null;
 }
 
 /**

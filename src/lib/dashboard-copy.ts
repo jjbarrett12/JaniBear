@@ -5,7 +5,7 @@
 
 export const DASHBOARD_COPY = {
   /** Header subtitle (one line under greeting) */
-  headerSubtitle: "Daily command. Today's route, crew, and compliance.",
+  headerSubtitle: "Daily command. What are we cleaning today?",
 
   /** KPI strip — short, scannable labels */
   kpi: {
@@ -20,15 +20,15 @@ export const DASHBOARD_COPY = {
   /** Main panels (left column) */
   panels: {
     route: {
-      title: "Today's route",
-      description: "Buildings and coverage for today's run.",
+      title: "What are we cleaning today?",
+      description: "Sites and coverage for today's run.",
       action: "View schedule",
       emptyMap: "Operations map",
       emptyMapHint: "Territory coverage view — coming soon",
     },
     routeAndInspections: {
       title: "Route & inspections",
-      description: "Today's route and inspections due.",
+      description: "Today's cleaning plan and inspections due.",
       action: "Inspections",
       summary: (buildings: number, inspections: number) =>
         `${buildings} buildings on route · ${inspections} inspections`,

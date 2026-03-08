@@ -96,7 +96,6 @@ function buildExecutiveSection(): NavSection {
     labelKey: 'navExecutive',
     theme: 'executive',
     items: [
-      { href: '/app/executive', labelKey: 'navCockpit', icon: LayoutGrid },
       { href: '/app/dashboard', labelKey: 'navDashboard', icon: LayoutDashboard },
       { href: '/app/financial-health', labelKey: 'navRevenueForecast', icon: Wallet },
       { href: '/app/alerts', labelKey: 'navAlerts', icon: AlertCircle },

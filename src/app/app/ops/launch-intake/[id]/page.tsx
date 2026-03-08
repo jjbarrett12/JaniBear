@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import { LaunchPacketDetail, type LaunchPacketRecord } from '@/components/launch/launch-packet-detail';
-import { AcceptRejectLaunchForm } from '@/components/launch/accept-reject-launch-form';
+import { LaunchIntakeActions } from '@/components/launch/launch-intake-actions';
 
 export default async function LaunchIntakeDetailPage({
   params,
@@ -65,7 +65,7 @@ export default async function LaunchIntakeDetailPage({
       </div>
 
       <LaunchPacketDetail packet={record} mode="ops">
-        {canAcceptReject && <AcceptRejectLaunchForm packetId={id} />}
+        {canAcceptReject && <LaunchIntakeActions packetId={id} />}
       </LaunchPacketDetail>
     </div>
   );

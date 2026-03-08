@@ -18,7 +18,12 @@ export default async function SettingsPage() {
   const userId = await getCurrentUserId();
   if (!userId) redirect('/auth/login');
   const pathname = (await headers()).get('x-pathname') ?? '/app/settings';
-  const permissions = await getSettingsPermissions(org.org_id, userId, pathname);
+  let permissions: Record<string, boolean>;
+  try {
+    permissions = await getSettingsPermissions(org.org_id, userId, pathname);
+  } catch {
+    permissions = {};
+  }
   const supabase = await createClient();
   const canManageBenchmarking = permissions['settings.org.edit'] ?? false;
 

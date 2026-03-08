@@ -55,7 +55,7 @@ export function SitesSearchFilter({
         <Input
           id="sites-search"
           name="q"
-          placeholder="Site name, address, city..."
+          placeholder="Service address name, address, city..."
           defaultValue={initialQ}
           className="max-w-xs"
         />

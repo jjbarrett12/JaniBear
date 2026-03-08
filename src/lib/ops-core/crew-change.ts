@@ -1,5 +1,9 @@
 /**
  * Crew change workflow — request → approval/rejection → new assignment.
+ *
+ * SECURITY: This module does NOT validate auth or org membership. Callers (API routes, server actions)
+ * MUST resolve orgId from session/cookie (never from client body), verify the user is a member of that org,
+ * and require appropriate permission (e.g. ops.crews.update) before calling these functions.
  */
 import 'server-only';
 import { createClient } from '@/lib/supabase/server';

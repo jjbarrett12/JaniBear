@@ -57,7 +57,7 @@ export function SiteCreateForm({
         .insert({
           org_id: orgId,
           client_id: form.client_id || null,
-          name: form.name.trim() || 'Unnamed Site',
+          name: form.name.trim() || 'Unnamed service address',
           address: form.address.trim() || null,
           city: form.city.trim() || null,
           state: form.state.trim() || null,
@@ -75,7 +75,7 @@ export function SiteCreateForm({
       router.push(`/app/sites/${data.id}`);
       router.refresh();
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Failed to create site');
+      setError(err instanceof Error ? err.message : 'Failed to create service address');
     } finally {
       setLoading(false);
     }
@@ -84,8 +84,8 @@ export function SiteCreateForm({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>New site</CardTitle>
-        <p className="text-sm text-muted-foreground">Data is stored in locations (canonical). No writes to public.sites.</p>
+        <CardTitle>New service address</CardTitle>
+        <p className="text-sm text-muted-foreground">Data is stored in locations. Link to an account from the account record.</p>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -105,8 +105,8 @@ export function SiteCreateForm({
             </Select>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="name">Site name *</Label>
-            <Input id="name" value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} placeholder="Building or site name" required />
+            <Label htmlFor="name">Service address name *</Label>
+            <Input id="name" value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} placeholder="Building or address name" required />
           </div>
           <div className="space-y-2">
             <Label htmlFor="address">Address</Label>
@@ -159,7 +159,7 @@ export function SiteCreateForm({
             <Textarea id="notes" value={form.notes} onChange={(e) => setForm((f) => ({ ...f, notes: e.target.value }))} rows={3} />
           </div>
           <div className="flex gap-2">
-            <Button type="submit" disabled={loading}>{loading ? 'Creating…' : 'Create site'}</Button>
+            <Button type="submit" disabled={loading}>{loading ? 'Creating…' : 'Create service address'}</Button>
             <Button type="button" variant="outline" onClick={() => router.push('/app/sites')}>Cancel</Button>
           </div>
         </form>

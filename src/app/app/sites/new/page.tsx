@@ -21,8 +21,8 @@ export default async function NewSitePage() {
           <ArrowLeft className="h-5 w-5 text-muted-foreground" />
         </Link>
         <div>
-          <h1 className="text-2xl font-bold text-foreground">New site</h1>
-          <p className="text-muted-foreground">Add a site (location). Stored in public.locations only.</p>
+          <h1 className="text-2xl font-bold text-foreground">New service address</h1>
+          <p className="text-muted-foreground">Add a service address linked to an account. Stored in public.locations.</p>
         </div>
       </div>
       <SiteCreateForm orgId={org.org_id} clients={clients ?? []} />

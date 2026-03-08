@@ -107,13 +107,13 @@ export default async function SitesPage({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Sites</h1>
-          <p className="text-muted-foreground mt-1">Locations (sites) linked to clients and ops</p>
+          <h1 className="text-3xl font-bold text-foreground">Service addresses</h1>
+          <p className="text-muted-foreground mt-1">Physical addresses linked to accounts and ops</p>
         </div>
         <Link href="/app/sites/new">
           <Button>
             <Plus className="mr-2 h-4 w-4" />
-            New Site
+            New service address
           </Button>
         </Link>
       </div>
@@ -130,7 +130,7 @@ export default async function SitesPage({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Site</TableHead>
+              <TableHead>Service address</TableHead>
               <TableHead>Client</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Sq ft</TableHead>
@@ -193,7 +193,7 @@ export default async function SitesPage({
             {!rows.length && (
               <TableRow>
                 <TableCell colSpan={8} className="h-24 text-center text-muted-foreground">
-                  No sites found.
+                  No service addresses found.
                 </TableCell>
               </TableRow>
             )}

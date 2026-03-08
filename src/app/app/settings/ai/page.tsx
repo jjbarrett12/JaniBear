@@ -15,7 +15,7 @@ export default async function AiSettingsPage() {
   if (!userId) return null;
   const pathname = (await headers()).get('x-pathname') ?? '/app/settings/ai';
   const permissions = await getSettingsPermissions(org.org_id, userId, pathname);
-  const canManageAi = permissions['settings.org.edit'] ?? false;
+  const canManageAi = permissions['settings.ai'] ?? permissions['settings.org.edit'] ?? false;
 
   if (!canManageAi) {
     return (

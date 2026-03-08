@@ -55,7 +55,7 @@ export const OPS_COMMAND_COPY = {
       title: 'Upcoming Go-Lives',
       description: 'New accounts launching soon.',
       empty: 'No upcoming go-lives.',
-      action: 'Launch intake',
+      action: 'Activations',
     },
   },
 } as const;

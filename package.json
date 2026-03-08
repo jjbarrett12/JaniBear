@@ -13,6 +13,7 @@
     "build": "next build",
     "start": "next start -p 3001",
     "deploy": "node scripts/deploy-to-live.js",
+    "deploy:vercel": "vercel --prod",
     "delpoy": "npm run deploy",
     "lint": "next lint",
     "check:footer": "node scripts/check-footer-links.mjs",

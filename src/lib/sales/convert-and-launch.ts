@@ -289,6 +289,16 @@ export async function convertLeadAndCreateLaunchPacket(
     // Non-fatal
   }
 
+  // Account Intelligence Profile: link account to profile (deal closed won)
+  try {
+    const { getByLeadId } = await import('@/lib/account-intelligence/profile-repository');
+    const { onDealClosedWon } = await import('@/lib/account-intelligence/events');
+    const profile = await getByLeadId(input.orgId, input.leadId);
+    if (profile) await onDealClosedWon(input.orgId, profile.id, accountId, opportunity.id);
+  } catch {
+    // Non-fatal
+  }
+
   return {
     ok: true,
     opportunityId: opportunity.id,

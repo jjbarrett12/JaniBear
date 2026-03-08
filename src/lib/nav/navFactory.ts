@@ -11,7 +11,6 @@ import type { AppTranslationKey } from '@/lib/app-translations';
 import type { NavAlertCounts } from '@/actions/nav-alerts';
 import {
   LayoutDashboard,
-  MapPin,
   FileText,
   Calendar,
   ClipboardCheck,
@@ -40,11 +39,7 @@ import {
   LayoutGrid,
   BarChart2,
   QrCode,
-  CalendarCheck,
-  ClipboardList,
   UserPlus,
-  ScanSearch,
-  RotateCcw,
   Percent,
   Radar,
   Workflow,
@@ -107,7 +102,7 @@ function buildExecutiveSection(): NavSection {
   };
 }
 
-/** Sales section: Command (landing), Leads, Accounts, Opportunities, Walkthroughs, Proposals, Map. */
+/** Sales section: Command, Leads, Accounts, Contacts, Pipeline, Walkthroughs, Proposals, Launch to Ops, Map. */
 function buildSalesSection(input: NavFactoryInput): NavSection {
   const items: NavItem[] = [
     { href: '/app/sales', labelKey: 'navSalesCommand', icon: LayoutGrid },
@@ -117,6 +112,7 @@ function buildSalesSection(input: NavFactoryInput): NavSection {
     { href: '/app/crm/pipeline', labelKey: 'navOpportunities', icon: LayoutDashboard },
     { href: '/app/sales/walkthroughs', labelKey: 'navWalkthroughs', icon: FileSearch },
     { href: '/app/sales/proposals', labelKey: 'navProposals', icon: Calculator },
+    { href: '/app/sales/launch-packets', labelKey: 'navLaunchToOperations', icon: Rocket, alertKey: 'handoffsCount' },
     { href: '/app/map', labelKey: 'navMap', icon: Map },
     ...(input.franchiseeEnrolled
       ? [{ href: '/app/opportunities/network', labelKey: 'navNetworkOpportunities', icon: Briefcase } satisfies NavItem]
@@ -131,49 +127,30 @@ function buildSalesSection(input: NavFactoryInput): NavSection {
   };
 }
 
-/** Launch section: the bridge between Sales and Operations. */
-function buildLaunchSection(): NavSection {
-  return {
-    id: 'launch',
-    labelKey: 'navLaunch',
-    theme: 'launch',
-    items: [
-      { href: '/app/ops/launch-intake', labelKey: 'navActivationQueue', icon: Rocket, alertKey: 'handoffsCount' },
-      { href: '/app/sales/launch-packets', labelKey: 'navLaunchToOperations', icon: FileUp },
-      { href: '/app/sales/scope', labelKey: 'navScopePacket', icon: FileText },
-      { href: '/app/ops/launch-intake', labelKey: 'navHandoffChecklist', icon: ClipboardList },
-      { href: '/app/ops/launches', labelKey: 'navStaffingPlan', icon: UserPlus },
-      { href: '/app/ops/launches', labelKey: 'navGoLiveCalendar', icon: CalendarCheck },
-      { href: '/app/ops/launch-intake', labelKey: 'navFirstInspectionSetup', icon: ScanSearch },
-      { href: '/app/ops/launches', labelKey: 'nav30DayReview', icon: RotateCcw },
-    ],
-  };
-}
-
-/** Operations section: Accounts (Active), Sites, Crews, Schedules, Inspections, QC, Issues, Tasks, Supplies, Contracts, Reporting, Maps. */
+/** Operations section: Command Center, Activations, Accounts, Crews, Mapping, Inspections, Issues, Performance, etc. Launch folded in; Activations = intake + go-live. */
 function buildOperationsSection(): NavSection {
   return {
     id: 'operations',
     labelKey: 'navOperations',
     theme: 'operations',
     items: [
+      { href: '/app/ops/command-center', labelKey: 'navCommandCenter', icon: LayoutGrid },
+      { href: '/app/ops/launch-intake', labelKey: 'navActivations', icon: Rocket, alertKey: 'handoffsCount' },
       { href: '/app/ops/accounts', labelKey: 'navAccountsActive', icon: Building2 },
-      { href: '/app/sites', labelKey: 'navLocations', icon: MapPin },
       { href: '/app/ops/crews', labelKey: 'navCrewManagement', icon: Users },
+      { href: '/app/map', labelKey: 'navMap', icon: Map },
       { href: '/app/ops/schedules', labelKey: 'navServiceSchedules', icon: Calendar, alertKey: 'missedTaskCount' },
       { href: '/app/ops/inspections', labelKey: 'navInspections', icon: ClipboardCheck },
       { href: '/app/ops/qc', labelKey: 'navQualityControl', icon: ListChecks },
       { href: '/app/ops/issues-sla', labelKey: 'navSlaTracking', icon: AlertCircle, alertKey: 'openIssuesCount' },
       { href: '/app/ops/tasks', labelKey: 'navMyTasks', icon: ClipboardCheck },
+      { href: '/app/ops/performance', labelKey: 'navOperatorPerformance', icon: Trophy },
       { href: '/app/ops/supplies', labelKey: 'navSupplies', icon: Package },
       { href: '/app/ops/contracts', labelKey: 'navContracts', icon: FileUp },
-      { href: '/app/ops/command-center', labelKey: 'navCommandCenter', icon: LayoutGrid },
       { href: '/app/ops/service-deployments', labelKey: 'navServiceDeployments', icon: Rocket },
-      { href: '/app/ops/performance', labelKey: 'navOperatorPerformance', icon: Trophy },
       { href: '/app/ops/risk', labelKey: 'navAccountsAtRisk', icon: AlertCircle },
       { href: '/app/ops/settings/risk', labelKey: 'navRiskSettings', icon: Shield },
       { href: '/app/kpis', labelKey: 'navReporting', icon: BarChart3 },
-      { href: '/app/map', labelKey: 'navMap', icon: Map },
     ],
   };
 }
@@ -195,8 +172,8 @@ function buildSystemSection(input: NavFactoryInput): NavSection {
     { href: '/app/settings', labelKey: 'navOrganization', icon: Settings },
   ];
 
-  const items =
-    input.orgType === 'franchisee' ? base.filter((i) => i.labelKey !== 'navOrganization') : base;
+  // Show all system items including Settings/Organization for every org type (page gates by permissions).
+  const items = base;
 
   return {
     id: 'system',
@@ -245,9 +222,10 @@ function buildFranchisorSections(input: NavFactoryInput): NavSection[] {
 
 /**
  * Build full nav sections for the given org_type, role, and feature flags.
- * Enterprise order: EXECUTIVE → SALES → LAUNCH → OPERATIONS → SYSTEM.
- * - Independent/franchisee: all five sections.
- * - Franchisor: Network + Franchise + Control only (no Sales/Launch/Ops).
+ * Enterprise order: EXECUTIVE → SALES → OPERATIONS → SYSTEM.
+ * Launch is not a standalone section: Sales ends with "Launch to Ops"; Ops begins with "Activations".
+ * - Independent/franchisee: four sections.
+ * - Franchisor: Network + Franchise + Control only (no Sales/Ops).
  */
 export function buildNavSections(input: NavFactoryInput): NavSection[] {
   if (input.orgType === 'franchisor') {
@@ -257,7 +235,6 @@ export function buildNavSections(input: NavFactoryInput): NavSection[] {
   return [
     buildExecutiveSection(),
     buildSalesSection(input),
-    buildLaunchSection(),
     buildOperationsSection(),
     buildSystemSection(input),
   ];

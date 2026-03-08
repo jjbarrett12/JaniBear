@@ -2,9 +2,8 @@ import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
 import { getServerContextOrThrow } from '@/lib/auth/serverGuards';
 import { requirePermission } from '@/lib/auth/requirePermission';
-import { requireEntitlement } from '@/lib/billing/requireEntitlement';
+import { hasEntitlement } from '@/lib/billing/requireEntitlement';
 import { isAuthzError, isAuthContextError, getAuthContextRedirectPath } from '@/lib/auth/errors';
-import { isEntitlementError } from '@/lib/billing/errors';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -29,27 +28,15 @@ export default async function HelpHubQRPage() {
     throw e;
   }
 
-  try {
-    await requireEntitlement({
-      orgId: ctx.orgId,
-      userId: ctx.userId,
-      moduleKey: 'helphubqr',
-      pathname,
-    });
-  } catch (e) {
-    if (isEntitlementError(e)) {
-      const from = encodeURIComponent(pathname || '/app/helphub');
-      redirect(`/app/upgrade?module=helphubqr&from=${from}`);
-    }
-    redirect('/app/authz-error');
-  }
+  const hasHelpHub = await hasEntitlement(ctx.orgId, ctx.userId, 'helphubqr');
+  const setupHref = hasHelpHub ? '/app/helphub/setup' : `/app/upgrade?module=helphubqr&from=${encodeURIComponent(pathname || '/app/helphub')}`;
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-foreground">HelpHubQR</h1>
+        <h1 className="text-3xl font-bold text-foreground">HelpHub QR</h1>
         <p className="text-gray-600 dark:text-gray-400 mt-1">
-          Customer ticketing — view requests and set up a ticket link or QR per location
+          Create QR codes for your service addresses so staff or guests in hotels and large facilities can scan to request housekeeping or cleaning help.
         </p>
       </div>
 
@@ -64,7 +51,7 @@ export default async function HelpHubQRPage() {
             </CardHeader>
             <CardContent>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                See and manage all service tickets from your locations. Filter by status or location.
+                See and manage service requests from QR scans. Filter by status or service address.
               </p>
               <Button variant="secondary" className="mt-4">
                 Open tickets
@@ -73,20 +60,22 @@ export default async function HelpHubQRPage() {
           </Card>
         </Link>
 
-        <Link href="/app/helphub/setup">
+        <Link href={setupHref}>
           <Card className="hover:shadow-md transition-shadow cursor-pointer h-full">
             <CardHeader>
               <div className="flex items-center gap-2">
                 <QrCode className="h-6 w-6 text-primary" />
-                <CardTitle>Setup by customer</CardTitle>
+                <CardTitle>Create QR codes</CardTitle>
               </div>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                Get a unique ticket link and QR code for each location so customers can submit requests.
+                {hasHelpHub
+                  ? 'Generate a unique QR code and ticket link for each service address. Print or display so guests can scan to submit requests.'
+                  : 'Add HelpHub QR to your plan to generate QR codes per service address for housekeeping and service requests.'}
               </p>
               <Button variant="secondary" className="mt-4">
-                Setup by location
+                {hasHelpHub ? 'Set up by service address' : 'Add to plan'}
               </Button>
             </CardContent>
           </Card>

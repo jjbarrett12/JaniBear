@@ -21,7 +21,7 @@ export const DASHBOARD_COPY = {
   panels: {
     route: {
       title: "What are we cleaning today?",
-      description: "Sites and coverage for today's run.",
+      description: "Service addresses and coverage for today's run.",
       action: "View schedule",
       emptyMap: "Operations map",
       emptyMapHint: "Territory coverage view — coming soon",

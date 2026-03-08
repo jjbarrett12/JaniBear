@@ -52,7 +52,8 @@ export default async function AppLayout({
     pathname === '/app/billing' ||
     pathname.startsWith('/app/upgrade') ||
     pathname.startsWith('/app/onboarding') ||
-    pathname.startsWith('/app/onboarding/');
+    pathname.startsWith('/app/onboarding/') ||
+    pathname.startsWith('/app/settings');
   const userId = await getCurrentUserId();
   const isSuperAdmin = userId ? await getIsPlatformAdmin(userId) : false;
   if (billingLocked && !allowedWhenLocked && !isSuperAdmin) {

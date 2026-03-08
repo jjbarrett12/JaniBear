@@ -80,6 +80,14 @@ export async function createLead(input: CreateLeadInput): Promise<CreateLeadResu
     // Non-fatal: duplicate flag is best-effort
   }
 
+  // Account Intelligence Profile: ensure profile for new lead (Hunt → Stalk → Kill → Launch to Ops)
+  try {
+    const { onLeadCreated } = await import('@/lib/account-intelligence/events');
+    await onLeadCreated(org.org_id, lead.id);
+  } catch {
+    // Non-fatal: profile table may not exist yet; lead creation still succeeds
+  }
+
   revalidatePath('/app/sales/leads');
   revalidatePath('/app/sales/leads/new');
   return { ok: true, leadId: lead.id };

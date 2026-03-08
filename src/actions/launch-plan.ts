@@ -413,7 +413,7 @@ export async function transitionStatus(
 }
 
 export async function computeReadiness(opportunity_id: string): Promise<ReadinessResult> {
-  await requireOrg();
+  const org = await requireOrg();
   const supabase = await createClient();
   const missing: string[] = [];
   const riskFlags: { severity: string; code: string; message: string }[] = [];
@@ -422,6 +422,7 @@ export async function computeReadiness(opportunity_id: string): Promise<Readines
     .from('opportunities')
     .select('id, org_id, client_id, location_id, facility_id')
     .eq('id', opportunity_id)
+    .eq('org_id', org.org_id)
     .single();
   if (!opportunity) {
     return { salesReady: false, opsReady: false, missing: ['Opportunity not found'], riskFlags: [] };
@@ -432,6 +433,7 @@ export async function computeReadiness(opportunity_id: string): Promise<Readines
     .from('launch_plans')
     .select('sales_inputs, ops_setup, risks, start_date')
     .eq('opportunity_id', opportunity_id)
+    .eq('org_id', org.org_id)
     .maybeSingle();
 
   const salesInputs = (plan?.sales_inputs as Record<string, unknown>) ?? {};

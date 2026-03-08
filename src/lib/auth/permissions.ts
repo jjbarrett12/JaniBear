@@ -81,5 +81,6 @@ export const SETTINGS_PERMISSION_KEYS = [
   'settings.users.manage',
   'settings.roles.manage',
   'settings.integrations.manage',
+  'settings.ai',
 ] as const;
 export type SettingsPermissionKey = (typeof SETTINGS_PERMISSION_KEYS)[number];

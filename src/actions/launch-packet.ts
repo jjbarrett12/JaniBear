@@ -128,8 +128,11 @@ export async function rejectLaunchPacket(
   return {};
 }
 
-/** Ops: accept launch — atomic: activate account, locations, create schedules/tasks/inspection/SLA, audit. */
-export async function acceptLaunchPacket(packetId: string): Promise<{ error?: string }> {
+/** Ops: accept launch — atomic: activate account, locations, create schedules/tasks/inspection/SLA, audit. Optional initialCrewId from AI recommendation. */
+export async function acceptLaunchPacket(
+  packetId: string,
+  options?: { initialCrewId?: string }
+): Promise<{ error?: string }> {
   const org = await requireOrg();
   const userId = await getCurrentUserId();
   const supabase = await createClient();
@@ -242,6 +245,7 @@ export async function acceptLaunchPacket(packetId: string): Promise<{ error?: st
           sourceProposalId,
           contractRef: payload.contract_ref ?? null,
           lineTypes: lineTypesFromPayload.length > 0 ? lineTypesFromPayload : undefined,
+          initialCrewId: options?.initialCrewId ?? undefined,
         },
       });
       serviceAgreementId = agreementId;

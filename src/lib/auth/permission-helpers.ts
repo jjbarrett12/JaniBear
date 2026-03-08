@@ -1,7 +1,7 @@
 /**
  * Central server authorization helpers. Single place for permission checks.
- * Site admin always allowed; otherwise membership + role permissions.
- * Do not implement ad-hoc permission logic in pages or actions — use these.
+ * Site admin always allowed; org owner/admin allowed all org-scoped permissions; else membership + role permissions.
+ * See docs/AUTHORIZATION_MODEL.md.
  */
 import 'server-only';
 import { getCurrentUser } from '@/lib/auth';
@@ -11,6 +11,7 @@ import { isSiteAdmin } from './siteAdmin';
 import { hasPermissionCached } from './authz-cache';
 import { AuthzError, AuthContextError } from './errors';
 import { logAuthzDenial } from './authz-log';
+import { isOrgOwnerRole, isGrantedToOrgOwner } from './canonical';
 import type { PermissionKey, SettingsPermissionKey } from './permissions';
 
 /** Permission key for checks — legacy (PermissionKey) or governance key (string). */
@@ -54,7 +55,7 @@ export async function getOrgMembership(
 
 /**
  * Returns true if the user has the permission in the org.
- * Site admin always returns true. Otherwise uses cached has_permission RPC.
+ * Site admin always true; org owner/admin true for org-scoped permissions; else cached has_permission RPC.
  */
 export async function hasPermission(
   orgId: string,
@@ -63,6 +64,8 @@ export async function hasPermission(
   pathname?: string | null
 ): Promise<boolean> {
   if (await isSiteAdmin(userId)) return true;
+  const membership = await getOrgMembership(orgId, userId);
+  if (membership && isOrgOwnerRole(membership.role) && isGrantedToOrgOwner(String(permissionKey))) return true;
   return hasPermissionCached({
     orgId,
     userId,
@@ -93,6 +96,7 @@ export async function requirePermission(params: {
   }
 
   const membership = await requireMembership({ orgId, userId, pathname });
+  if (isOrgOwnerRole(membership.role) && isGrantedToOrgOwner(String(permission))) return;
   const allowed = await hasPermissionCached({
     orgId,
     userId,
@@ -115,7 +119,7 @@ export async function requirePermission(params: {
 
 /**
  * Returns which settings permissions the user has in the org. Used for Settings tab visibility.
- * Site admin gets all true.
+ * Site admin and org owner/admin get all true; else per-key from RPC.
  */
 export async function getSettingsPermissions(
   orgId: string,
@@ -123,8 +127,14 @@ export async function getSettingsPermissions(
   pathname?: string | null
 ): Promise<Record<SettingsPermissionKey, boolean>> {
   const result = {} as Record<SettingsPermissionKey, boolean>;
-  const admin = await isSiteAdmin(userId);
-  if (admin) {
+  if (await isSiteAdmin(userId)) {
+    for (const key of SETTINGS_PERMISSION_KEYS) {
+      result[key] = true;
+    }
+    return result;
+  }
+  const membership = await getOrgMembership(orgId, userId);
+  if (membership && isOrgOwnerRole(membership.role)) {
     for (const key of SETTINGS_PERMISSION_KEYS) {
       result[key] = true;
     }

@@ -50,9 +50,9 @@ export default async function HelpHubSetupPage() {
   }
 
   const supabase = await createClient();
-  const { data: locations } = await supabase
-    .from('locations')
-    .select('id, name, address, city, state')
+  const { data: facilities } = await supabase
+    .from('facilities')
+    .select('id, name, address_line1, city, state')
     .eq('org_id', ctx.orgId)
     .order('name');
 
@@ -66,10 +66,10 @@ export default async function HelpHubSetupPage() {
         </Link>
         <div>
           <h1 className="text-3xl font-bold text-foreground">
-            HelpHubQR — Setup by customer
+            HelpHub QR — Create QR codes by service address
           </h1>
           <p className="text-gray-600 dark:text-gray-400 mt-1">
-            Use the link or QR for each site so that customer can submit service requests
+            Generate a unique QR code and ticket link for each service address. Staff or guests can scan to submit housekeeping or service requests.
           </p>
         </div>
       </div>
@@ -81,21 +81,22 @@ export default async function HelpHubSetupPage() {
         </p>
       )}
 
-      {locations && locations.length > 0 ? (
+      {facilities && facilities.length > 0 ? (
         <div className="grid gap-4 md:grid-cols-2">
-          {locations.map((loc) => {
-            const ticketUrl = baseUrl ? `${baseUrl}/ticket/${loc.id}` : `[APP_URL]/ticket/${loc.id}`;
-            const qrSrc = `/api/qr?location=${loc.id}`;
+          {facilities.map((fac) => {
+            const ticketUrl = baseUrl ? `${baseUrl}/ticket/${fac.id}` : `[APP_URL]/ticket/${fac.id}`;
+            const qrSrc = `/api/qr?facility=${fac.id}`;
+            const addressLine = [fac.address_line1, fac.city, fac.state].filter(Boolean).join(', ');
             return (
-              <Card key={loc.id}>
+              <Card key={fac.id}>
                 <CardHeader>
                   <div className="flex items-center gap-2">
                     <MapPin className="h-5 w-5 text-primary" />
-                    <CardTitle>{loc.name}</CardTitle>
+                    <CardTitle>{fac.name}</CardTitle>
                   </div>
-                  {(loc.address || loc.city) && (
+                  {addressLine && (
                     <p className="text-sm text-gray-600 dark:text-gray-400">
-                      {[loc.address, loc.city, loc.state].filter(Boolean).join(', ')}
+                      {addressLine}
                     </p>
                   )}
                 </CardHeader>
@@ -113,14 +114,14 @@ export default async function HelpHubSetupPage() {
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={qrSrc}
-                        alt={`QR for ${loc.name}`}
+                        alt={`QR for ${fac.name}`}
                         width={140}
                         height={140}
                         className="block"
                       />
                     </div>
                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                      Print or display at this site so visitors can scan to submit a request.
+                      Print or display at this service address so staff or guests can scan to submit a housekeeping or service request.
                     </p>
                   </div>
                 </CardContent>
@@ -131,10 +132,10 @@ export default async function HelpHubSetupPage() {
       ) : (
         <Card>
           <CardContent className="py-10 text-center text-gray-600 dark:text-gray-400">
-            <p>No sites yet. Add sites first, then return here to get ticket links and QR codes.</p>
+            <p>No service addresses yet. Add accounts and service addresses first, then return here to generate QR codes and ticket links.</p>
             <Link href="/app/sites">
               <Button variant="secondary" className="mt-4">
-                Go to Sites
+                Go to service addresses
               </Button>
             </Link>
           </CardContent>
